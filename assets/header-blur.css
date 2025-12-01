@@ -1,0 +1,137 @@
+/* 
+  PLUPACK Custom Header Styles
+*/
+
+/* ========================================
+   TRANSPARENT / GLASSMORPHISM STYLES
+   ======================================== */
+
+/* Transparent state - completely transparent */
+.header[transparent]:not([data-sticky-state='active']) .header__row {
+  background-color: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+}
+
+/* Sticky state - glass effect with blur */
+.header[sticky][data-sticky-state='active'] .header__row,
+.header[transparent][data-sticky-state='active'] .header__row {
+  background-color: rgba(
+    20,
+    108,
+    144,
+    0.85
+  ) !important; /* #146C90 with opacity */
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* Ensure white text on transparent/glass background */
+.header[transparent] {
+  --color-foreground: #ffffff;
+  --color-foreground-rgb: 255, 255, 255;
+}
+
+.header[transparent] .menu-list__link,
+.header[transparent] .header-actions__action,
+.header[transparent] .search-action {
+  color: #ffffff !important;
+}
+
+.header[transparent] .header-actions__action svg,
+.header[transparent] .search-action svg {
+  stroke: #ffffff;
+}
+
+/* ========================================
+   HOVER EFFECTS
+   ======================================== */
+
+.header .menu-list__link:hover {
+  opacity: 0.8;
+}
+
+.header .header-actions__action:hover,
+.header .search-action:hover {
+  opacity: 0.8;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE
+   ======================================== */
+
+@media screen and (max-width: 749px) {
+  .header .header__columns {
+    padding-inline: 20px !important;
+  }
+
+  .header header-actions {
+    gap: 16px !important;
+  }
+
+  .header .header-actions__action svg,
+  .header .search-action svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .header .header-logo img,
+  .header .header-logo svg {
+    max-height: 32px;
+  }
+}
+
+/* ========================================
+   DYNAMIC HEADER TINT
+   Changes header color based on scroll position
+   over light/dark background sections
+   ======================================== */
+
+/* Light tint (default) - white text for dark backgrounds */
+.header--tint-light,
+.header[transparent] {
+  --header-tint-color: #ffffff;
+}
+
+.header--tint-light .menu-list__link,
+.header--tint-light .header-actions__action,
+.header--tint-light .search-action,
+.header--tint-light .header-logo a {
+  color: #ffffff !important;
+}
+
+.header--tint-light .header-actions__action svg,
+.header--tint-light .search-action svg {
+  stroke: #ffffff !important;
+}
+
+/* Dark tint - dark text for light backgrounds */
+.header--tint-dark .menu-list__link,
+.header--tint-dark .header-actions__action,
+.header--tint-dark .search-action,
+.header--tint-dark .header-logo a {
+  color: #146c90 !important;
+}
+
+.header--tint-dark .header-actions__action svg,
+.header--tint-dark .search-action svg {
+  stroke: #146c90 !important;
+}
+
+/* Smooth transition for tint changes */
+.header .menu-list__link,
+.header .header-actions__action,
+.header .search-action,
+.header .header-logo a,
+.header .header-actions__action svg,
+.header .search-action svg {
+  transition: color 0.3s ease, stroke 0.3s ease;
+}
+
+/* When sticky is active with dark tint, adjust blur background */
+.header--tint-dark[sticky][data-sticky-state='active'] .header__row {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}

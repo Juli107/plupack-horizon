@@ -1,4 +1,17 @@
 {% # theme-check-disable %}
+
+{%- comment -%}
+  Shopify Theme Fonts
+
+  Fonts are loaded from Shopify's CDN based on Theme Settings.
+  React components access font info via window.SHOPIFY_DATA.theme.fonts
+
+  SINGLE SOURCE OF TRUTH:
+  - Set fonts in Theme Settings > Typography
+  - Shopify loads the fonts automatically
+  - React reads the font-family names to use the same fonts
+{%- endcomment -%}
+
 {%- unless settings.type_body_font.system? -%}
   <link
     rel="preload"

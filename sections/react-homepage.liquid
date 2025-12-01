@@ -1,0 +1,239 @@
+{% comment %}
+  React Interactive Homepage
+
+  This section loads the full React app that powers the interactive homepage.
+  All scroll animations, 3D elements, and interactive content are handled by React.
+
+  The React app is built separately and outputs to assets/react-homepage.js
+
+  WORKFLOW:
+  1. Edit React components in /react-app/src/
+  2. Run `pnpm build` in /react-app to build to assets
+  3. Shopify theme dev auto-syncs the new JS file
+{% endcomment %}
+
+{% comment %}
+  ============================================
+  PASSING LIQUID DATA TO REACT
+  ============================================
+  This is the key pattern: inject Liquid variables as a global JS object
+  BEFORE the React bundle loads. React reads window.SHOPIFY_DATA
+{% endcomment %}
+
+<script>
+  window.SHOPIFY_DATA = {
+    // Shop info
+    shop: {
+      name: {{ shop.name | json }},
+      currency: {{ shop.currency | json }},
+      domain: {{ shop.domain | json }}
+    },
+
+    // Section settings (from schema below)
+    settings: {
+      backgroundColor: {{ section.settings.background_color | json }},
+      accentColor: {{ section.settings.accent_color | json }},
+      headingText: {{ section.settings.heading_text | json }},
+      subheadingText: {{ section.settings.subheading_text | json }}
+    },
+
+    // ============================================
+    // THEME-WIDE SETTINGS (single source of truth)
+    // These come from Theme Settings in Shopify Admin
+    // ============================================
+    theme: {
+      // Typography - fonts are loaded by Shopify, React just uses the family names
+      fonts: {
+        body: {
+          family: {{ settings.type_body_font.family | json }},
+          fallback: {{ settings.type_body_font.fallback_families | json }},
+          weight: {{ settings.type_body_font.weight | json }},
+          style: {{ settings.type_body_font.style | json }}
+        },
+        heading: {
+          family: {{ settings.type_heading_font.family | json }},
+          fallback: {{ settings.type_heading_font.fallback_families | json }},
+          weight: {{ settings.type_heading_font.weight | json }},
+          style: {{ settings.type_heading_font.style | json }}
+        },
+        subheading: {
+          family: {{ settings.type_subheading_font.family | json }},
+          fallback: {{ settings.type_subheading_font.fallback_families | json }},
+          weight: {{ settings.type_subheading_font.weight | json }},
+          style: {{ settings.type_subheading_font.style | json }}
+        },
+        accent: {
+          family: {{ settings.type_accent_font.family | json }},
+          fallback: {{ settings.type_accent_font.fallback_families | json }},
+          weight: {{ settings.type_accent_font.weight | json }},
+          style: {{ settings.type_accent_font.style | json }}
+        }
+      },
+
+      // Font sizes (from theme settings)
+      fontSizes: {
+        paragraph: {{ settings.type_size_paragraph | json }},
+        h1: {{ settings.type_size_h1 | json }},
+        h2: {{ settings.type_size_h2 | json }},
+        h3: {{ settings.type_size_h3 | json }},
+        h4: {{ settings.type_size_h4 | json }},
+        h5: {{ settings.type_size_h5 | json }},
+        h6: {{ settings.type_size_h6 | json }}
+      },
+
+      // Button styles (from active color scheme)
+      buttons: {
+        primary: {
+          background: {{ settings.color_schemes.default.settings.primary_button_background | json }},
+          text: {{ settings.color_schemes.default.settings.primary_button_text | json }},
+          border: {{ settings.color_schemes.default.settings.primary_button_border | json }},
+          hoverBackground: {{ settings.color_schemes.default.settings.primary_button_hover_background | json }},
+          hoverText: {{ settings.color_schemes.default.settings.primary_button_hover_text | json }},
+          borderRadius: {{ settings.button_border_radius | json }}
+        },
+        secondary: {
+          background: {{ settings.color_schemes.default.settings.secondary_button_background | json }},
+          text: {{ settings.color_schemes.default.settings.secondary_button_text | json }},
+          border: {{ settings.color_schemes.default.settings.secondary_button_border | json }}
+        }
+      },
+
+      // Colors (from active color scheme)
+      colors: {
+        background: {{ settings.color_schemes.default.settings.background | json }},
+        foreground: {{ settings.color_schemes.default.settings.foreground | json }},
+        foregroundHeading: {{ settings.color_schemes.default.settings.foreground_heading | json }},
+        primary: {{ settings.color_schemes.default.settings.primary | json }},
+        border: {{ settings.color_schemes.default.settings.border | json }}
+      },
+
+      // Border radius settings
+      borderRadius: {
+        buttons: {{ settings.button_border_radius | json }},
+        inputs: {{ settings.input_border_radius | json }},
+        cards: {{ settings.card_corner_radius | json }}
+      }
+    },
+
+    // You can pass product data if on product page
+    {% if product %}
+    product: {
+      title: {{ product.title | json }},
+      price: {{ product.price | money_without_currency | json }},
+      images: {{ product.images | map: 'src' | json }},
+      handle: {{ product.handle | json }}
+    },
+    {% endif %}
+
+    // You can pass collection data
+    {% if collection %}
+    collection: {
+      title: {{ collection.title | json }},
+      productsCount: {{ collection.products_count | json }}
+    },
+    {% endif %}
+
+    // Customer data (if logged in)
+    {% if customer %}
+    customer: {
+      firstName: {{ customer.first_name | json }},
+      email: {{ customer.email | json }}
+    },
+    {% endif %}
+
+    // Cart data
+    cart: {
+      itemCount: {{ cart.item_count | json }},
+      totalPrice: {{ cart.total_price | money_without_currency | json }}
+    },
+
+    // Routes for navigation
+    routes: {
+      cart: {{ routes.cart_url | json }},
+      collections: {{ routes.collections_url | json }},
+      allProducts: {{ routes.all_products_collection_url | json }}
+    },
+
+    // Section ID for multiple instances
+    sectionId: {{ section.id | json }}
+  };
+</script>
+
+{% comment %} Mount point for React app {% endcomment %}
+<div
+  id="react-homepage"
+  class="react-homepage"
+  data-section-id="{{ section.id }}"
+></div>
+
+{% comment %} Load React bundle (built from react-app/) {% endcomment %}
+<script src="{{ 'react-homepage.js' | asset_url }}" type="module" defer></script>
+
+{% stylesheet %}
+  /*
+    The React app controls the entire homepage experience.
+    Lenis handles smooth scrolling, GSAP handles animations.
+    We just need to ensure the container doesn't interfere.
+  */
+  .react-homepage {
+    width: 100%;
+    position: relative;
+    /* React controls height through its sections */
+  }
+
+  /* Ensure canvas fills its container */
+  .react-homepage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Reset any default Shopify section padding/margin that might interfere */
+  .react-homepage-section {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Override Shopify's transparent header offset for this section */
+  .react-homepage-section .spacing-style,
+  .react-homepage-section.spacing-style {
+    --section-top-offset: 0px !important;
+    --padding-block-start: 0px !important;
+    padding-top: 0 !important;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "React Homepage",
+  "tag": "section",
+  "class": "react-homepage-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#146C90"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Hero Content"
+    }
+  ],
+  "presets": [
+    {
+      "name": "React Homepage"
+    }
+  ]
+}
+{% endschema %}
