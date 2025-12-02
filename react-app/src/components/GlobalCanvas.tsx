@@ -10,18 +10,12 @@ import { Scene } from './canvas/Scene';
 
 export function GlobalCanvas() {
   return (
-    <div
-      className="fixed inset-0 z-10 pointer-events-none"
-      style={{
-        width: '100vw',
-        height: '100vh',
-      }}
-    >
+    <div className="fixed inset-0 z-10 pointer-events-none w-screen h-screen">
       <Canvas
-        camera={{ position: [0, 0, 10], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
-        style={{ background: 'transparent' }}
+        className="bg-transparent"
       >
+        {/* Camera is controlled by ScrollCamera using keyframes */}
         <ScrollCamera />
         <Scene />
       </Canvas>

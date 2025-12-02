@@ -168,7 +168,7 @@ export function ServicesSection() {
             {services.map((service) => (
               <div
                 key={service.id}
-                className="service-card w-[400px] md:w-[500px] h-[450px] p-8 md:p-12 flex flex-col justify-between relative group shrink-0"
+                className="service-card w-[85vw] md:w-[600px] h-[450px] p-8 md:p-12 flex flex-col justify-between relative group shrink-0"
               >
                 {/* Glassmorphism Background */}
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-sm transform transition-transform duration-500 group-hover:scale-[1.02]"></div>
@@ -182,10 +182,10 @@ export function ServicesSection() {
                   </div>
 
                   <div className="mt-auto">
-                    <h3 className="text-2xl md:text-3xl font-medium mb-4 font-['Montserrat'] leading-tight">
+                    <h3 className="text-2xl md:text-3xl font-medium mb-4 font-['Montserrat'] leading-tight min-h-[90px] flex items-end">
                       {service.title}
                     </h3>
-                    <p className="text-base md:text-lg font-['Open_Sans'] opacity-90 leading-relaxed">
+                    <p className="text-base md:text-lg font-['Open_Sans'] opacity-90 leading-relaxed min-h-40">
                       {service.description}
                     </p>
                   </div>

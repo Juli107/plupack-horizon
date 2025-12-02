@@ -12,7 +12,7 @@ export function Hero() {
           <div className="lg:w-2/3 flex flex-col justify-start relative">
             <h1
               style={{ fontFamily: getFontFamily('heading') }}
-              className="text-6xl md:text-8xl lg:text-[7rem] leading-[0.9] font-medium uppercase tracking-wide mt-[-0.05em]"
+              className="text-6xl md:text-8xl lg:text-[7.2rem] leading-[0.9] font-medium uppercase tracking-wide mt-[-0.05em]"
             >
               EMBALAJE <br />
               <span className="-tracking-wide">PARA CADA</span>

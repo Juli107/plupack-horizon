@@ -16,7 +16,7 @@ export function Scene() {
 
       {/* Hero Section 3D Content (scroll position ~0) */}
       {/* Carousel positioned so it appears at the hero section */}
-      <group position={[0, -7.8, 0]}>
+      <group position={[0, -7.6, 0]}>
         <Carousel radius={7} />
       </group>
     </>

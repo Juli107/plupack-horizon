@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import { useShopifyTheme } from '../hooks/useShopifyTheme';
 import { Hero } from './hero/Hero';
 import { ServicesSection } from './ServicesSection';
+import { IndustryDynamicsSection } from './IndustryDynamicsSection';
 import { NoiseOverlay } from './NoiseOverlay';
 import { GlobalCanvas } from './GlobalCanvas';
 
@@ -166,6 +167,7 @@ export function Homepage({
       <NoiseOverlay />
       <Hero />
       <ServicesSection />
+      <IndustryDynamicsSection />
 
       {/* Additional scroll content for demo */}
       <ScrollSections
