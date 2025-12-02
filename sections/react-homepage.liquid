@@ -52,36 +52,27 @@
         body: {
           family: {{ settings.type_body_font.family | json }},
           fallback: {{ settings.type_body_font.fallback_families | json }},
-          weight: {{ settings.type_body_font.weight | default: 400 | json }},
-          style: {{ settings.type_body_font.style | default: 'normal' | json }}
+          weight: {{ settings.type_body_font.weight | json }},
+          style: {{ settings.type_body_font.style | json }}
         },
         heading: {
           family: {{ settings.type_heading_font.family | json }},
           fallback: {{ settings.type_heading_font.fallback_families | json }},
-          weight: {{ settings.type_heading_font.weight | default: 700 | json }},
-          style: {{ settings.type_heading_font.style | default: 'normal' | json }}
+          weight: {{ settings.type_heading_font.weight | json }},
+          style: {{ settings.type_heading_font.style | json }}
         },
         subheading: {
           family: {{ settings.type_subheading_font.family | json }},
           fallback: {{ settings.type_subheading_font.fallback_families | json }},
-          weight: {{ settings.type_subheading_font.weight | default: 500 | json }},
-          style: {{ settings.type_subheading_font.style | default: 'normal' | json }}
+          weight: {{ settings.type_subheading_font.weight | json }},
+          style: {{ settings.type_subheading_font.style | json }}
         },
         accent: {
           family: {{ settings.type_accent_font.family | json }},
           fallback: {{ settings.type_accent_font.fallback_families | json }},
-          weight: {{ settings.type_accent_font.weight | default: 700 | json }},
-          style: {{ settings.type_accent_font.style | default: 'normal' | json }}
+          weight: {{ settings.type_accent_font.weight | json }},
+          style: {{ settings.type_accent_font.style | json }}
         }
-      },
-
-      // Also provide CSS variable references as fallback
-      // React can use these if direct font values fail
-      cssVars: {
-        headingFont: 'var(--font-heading--family)',
-        bodyFont: 'var(--font-body--family)',
-        subheadingFont: 'var(--font-subheading--family)',
-        accentFont: 'var(--font-accent--family)'
       },
 
       // Font sizes (from theme settings)

@@ -135,7 +135,10 @@ export function getShopifyData(): ShopifyData {
 // ============================================
 export function getFontFamily(font: FontConfig | undefined): string {
   if (!font) return 'system-ui, sans-serif';
-  return `"${font.family}", ${font.fallback}`;
+  // Remove any existing quotes from the font family name
+  // (Shopify's Liquid sometimes outputs font names with quotes already)
+  const cleanFamily = font.family.replace(/^["']|["']$/g, '');
+  return `"${cleanFamily}", ${font.fallback}`;
 }
 
 // ============================================
@@ -163,9 +166,9 @@ export function getThemeDefaults(): ShopifyTheme {
         style: 'normal',
       },
       accent: {
-        family: 'Montserrat',
-        fallback: 'sans-serif',
-        weight: '700',
+        family: 'Roboto Mono',
+        fallback: 'monospace',
+        weight: '400',
         style: 'normal',
       },
     },

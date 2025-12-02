@@ -17,7 +17,7 @@ export function HeroScene() {
         {/* Carousel Logic: Ring/Circle formation */}
         {/* Positioned in lower half (y: -4) and behind UI (if desired) but prompts says "moves over bottom of title" */}
         {/* Z-Index logic handled in CSS: Canvas z-20 > Title z-10 */}
-        <group position={[0, -7, 0]}>
+        <group position={[0, -7.5, 0]}>
           <Carousel radius={7} />
         </group>
       </Canvas>

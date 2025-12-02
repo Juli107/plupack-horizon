@@ -11,38 +11,78 @@ export function HeroOverlay() {
         <div className="lg:w-2/3 flex flex-col justify-start -z-1 relative">
           <h1
             style={{ fontFamily: getFontFamily('heading') }}
-            className="text-6xl md:text-8xl lg:text-8xl font-medium uppercase leading-[0.95] tracking-tight"
+            className="text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] font-medium uppercase tracking-normal mt-[-0.05em]"
           >
-            <div>EMBALAJE QUE</div>
-            <div>SIGUE TU</div>
-            <div
-              className="text-transparent relative font-extrabold"
-              style={{
-                WebkitTextStroke: '2px white',
-                fontFamily: getFontFamily('heading'),
-              }}
-            >
-              DINÁMICA
+            EMBALAJE <br />
+            <span className="-tracking-wider">PARA CADA</span>
+            <br />
+            <div className="relative inline-block">
+              <div className="opacity-0 font-extrabold">DINÁMICA</div>
+
+              <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
+                <defs>
+                  <filter
+                    id="outline-filter"
+                    x="-20%"
+                    y="-20%"
+                    width="140%"
+                    height="140%"
+                  >
+                    <feMorphology
+                      in="SourceAlpha"
+                      result="DILATED"
+                      operator="dilate"
+                      radius="2.8"
+                    />
+                    <feComposite
+                      in="DILATED"
+                      in2="SourceAlpha"
+                      operator="out"
+                      result="OUTLINE"
+                    />
+                    <feFlood floodColor="white" result="COLOR" />
+                    <feComposite
+                      in="COLOR"
+                      in2="OUTLINE"
+                      operator="in"
+                      result="FINAL"
+                    />
+                  </filter>
+                </defs>
+                <text
+                  x="0.05em"
+                  y="0.9em"
+                  className="font-extrabold tracking-wide"
+                  style={{
+                    fontFamily: getFontFamily('heading'),
+                    fontSize: 'inherit',
+                    filter: 'url(#outline-filter)',
+                    fill: 'white',
+                  }}
+                >
+                  DINÁMICA
+                </text>
+              </svg>
             </div>
           </h1>
         </div>
 
         {/* Right: Info Panel - z-30 to be above 3D elements */}
-        <div className="lg:w-1/3 flex flex-col justify-start items-start lg:pl-10 mt-10 lg:mt-0 pointer-events-auto z-30 relative pt-2">
+        <div className="lg:w-1/3 flex flex-col justify-start items-start lg:pl-10 mt-10 lg:mt-0 pointer-events-auto z-30 relative pt-2 gap-3">
           {/* Eyebrow */}
           <div
-            className="text-xs tracking-[0.2em] uppercase opacity-80 mb-4 font-semibold"
-            style={{ fontFamily: getFontFamily('body') }}
+            className="text-xs tracking-[0.2em] uppercase opacity-80 font-semibold"
+            style={{ fontFamily: getFontFamily('accent') }}
           >
             PROVEEDOR INTEGRAL
           </div>
 
           {/* Separator */}
-          <div className="w-12 h-px bg-white/50 mb-6"></div>
+          <div className="w-full h-px bg-white/50"></div>
 
           {/* Body */}
           <p
-            className="text-base md:text-lg leading-relaxed opacity-90 mb-8 max-w-md"
+            className="leading-relaxed max-w-md"
             style={{ fontFamily: getFontFamily('body') }}
           >
             Plupack es una empresa que se adapta a las necesidades de
@@ -70,12 +110,14 @@ export function HeroOverlay() {
       </div>
 
       {/* Footer Badge */}
-      <div
-        className="absolute bottom-6 right-6 md:bottom-12 md:right-12 text-xs font-bold tracking-[0.2em] opacity-60 uppercase"
-        style={{ fontFamily: getFontFamily('body') }}
+      <p
+        className="absolute bottom-6 right-6 md:bottom-12 md:right-12 text-xs font-medium tracking-[0.2em] uppercase"
+        style={{ fontFamily: getFontFamily('accent') }}
       >
-        EST. 2017 ARGENTINA
-      </div>
+        EST. 2017
+        <br />
+        ARGENTINA
+      </p>
     </section>
   );
 }
