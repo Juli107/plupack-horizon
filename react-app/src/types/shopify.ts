@@ -145,27 +145,27 @@ export function getThemeDefaults(): ShopifyTheme {
   return {
     fonts: {
       body: {
-        family: 'Work Sans',
+        family: 'Open Sans',
         fallback: 'sans-serif',
         weight: '400',
         style: 'normal',
       },
       heading: {
-        family: 'Anonymous Pro',
-        fallback: 'monospace',
-        weight: '400',
+        family: 'Montserrat',
+        fallback: 'sans-serif',
+        weight: '700',
         style: 'normal',
       },
       subheading: {
-        family: 'Work Sans',
+        family: 'Montserrat',
         fallback: 'sans-serif',
         weight: '500',
         style: 'normal',
       },
       accent: {
-        family: 'Anonymous Pro',
-        fallback: 'monospace',
-        weight: '400',
+        family: 'Montserrat',
+        fallback: 'sans-serif',
+        weight: '700',
         style: 'normal',
       },
     },

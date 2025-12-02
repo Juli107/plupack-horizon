@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -26,7 +27,13 @@ export default defineConfig({
       output: {
         entryFileNames: '[name].js',
         chunkFileNames: 'react-chunks/[name]-[hash].js',
-        assetFileNames: 'react-assets/[name]-[hash][extname]',
+        assetFileNames: (assetInfo) => {
+          // Output CSS with predictable name for Shopify
+          if (assetInfo.name?.endsWith('.css')) {
+            return 'react-homepage.css';
+          }
+          return 'react-assets/[name]-[hash][extname]';
+        },
       },
     },
   },

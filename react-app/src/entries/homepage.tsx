@@ -2,6 +2,9 @@ import { createRoot } from 'react-dom/client';
 import { Homepage } from '@components/Homepage';
 import { getShopifyData } from '../types/shopify';
 
+// Import Tailwind CSS v4 styles
+import '../styles/globals.css';
+
 // Get data from Shopify (injected by Liquid)
 const shopifyData = getShopifyData();
 

@@ -1,16 +1,14 @@
-import {
-  Environment,
-  Float,
-  MeshDistortMaterial,
-} from '@react-three/drei';
+import { Environment, Float } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useShopifyTheme } from '../hooks/useShopifyTheme';
+import { Hero } from './hero/Hero';
+import { NoiseOverlay } from './NoiseOverlay';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -91,358 +89,22 @@ function useLenis() {
 // ============================================
 // 3D SCENE COMPONENTS
 // ============================================
-
-interface AnimatedSphereProps {
-  scrollProgress: React.MutableRefObject<number>;
-  color?: string;
-}
-
-// Animated sphere that responds to scroll
-function AnimatedSphere({
-  scrollProgress,
-  color = '#ffffff',
-}: AnimatedSphereProps) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-
-    // Base rotation
-    meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
-    meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-
-    // Scroll-based scale and position
-    const progress = scrollProgress.current;
-    meshRef.current.scale.setScalar(1 + progress * 0.5);
-    meshRef.current.position.y = progress * -2;
-    meshRef.current.position.z = progress * -3;
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <mesh ref={meshRef}>
-        <icosahedronGeometry args={[1.5, 4]} />
-        <MeshDistortMaterial
-          color={color}
-          speed={2}
-          distort={0.3}
-          roughness={0.2}
-          metalness={0.8}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-// Secondary floating elements
-function FloatingElements({
-  scrollProgress,
-}: {
-  scrollProgress: React.MutableRefObject<number>;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-
-  // Create random positions for smaller shapes
-  const positions = useMemo(
-    () =>
-      Array.from({ length: 12 }, () => ({
-        x: (Math.random() - 0.5) * 10,
-        y: (Math.random() - 0.5) * 8,
-        z: (Math.random() - 0.5) * 6 - 2,
-        scale: Math.random() * 0.3 + 0.1,
-      })),
-    []
-  );
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-
-    const progress = scrollProgress.current;
-
-    // Rotate entire group based on scroll
-    groupRef.current.rotation.y = progress * Math.PI;
-    groupRef.current.rotation.x = progress * 0.5;
-
-    // Scatter elements as user scrolls
-    groupRef.current.children.forEach((child, i) => {
-      const originalPos = positions[i];
-      child.position.x = originalPos.x + progress * originalPos.x * 2;
-      child.position.y =
-        originalPos.y + Math.sin(state.clock.elapsedTime + i) * 0.1;
-    });
-  });
-
-  return (
-    <group ref={groupRef}>
-      {positions.map((pos, i) => (
-        <mesh
-          key={i}
-          position={[pos.x, pos.y, pos.z]}
-          scale={pos.scale}
-        >
-          <octahedronGeometry args={[1]} />
-          <meshStandardMaterial
-            color="#ffffff"
-            opacity={0.6}
-            transparent
-            wireframe={i % 2 === 0}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
+// (Removed old hero components: AnimatedSphere, FloatingElements)
 
 // ============================================
 // 2D OVERLAY COMPONENTS (Above 3D)
 // ============================================
-
-interface TextOverlayProps {
-  headingText: string;
-  subheadingText: string;
-  accentColor: string;
-}
-
-function TextOverlay({
-  headingText,
-  subheadingText,
-  accentColor,
-}: TextOverlayProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const subheadingRef = useRef<HTMLParagraphElement>(null);
-
-  // Get theme fonts from Shopify settings
-  const { getFontFamily } = useShopifyTheme();
-
-  useGSAP(() => {
-    // Initial entrance animation
-    gsap.from(headingRef.current, {
-      y: 100,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power3.out',
-      delay: 0.3,
-    });
-
-    gsap.from(subheadingRef.current, {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      delay: 0.6,
-    });
-
-    // Scroll-triggered exit animation
-    gsap.to(containerRef.current, {
-      y: -200,
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: '+=300',
-        scrub: 1,
-      },
-    });
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        textAlign: 'center',
-        color: accentColor,
-        fontFamily: getFontFamily('body'), // Uses Shopify theme font
-        pointerEvents: 'none',
-        zIndex: 10, // ABOVE the 3D canvas
-      }}
-    >
-      <h1
-        ref={headingRef}
-        style={{
-          fontSize: 'clamp(2rem, 8vw, 6rem)',
-          margin: 0,
-          fontWeight: 700,
-          letterSpacing: '-0.02em',
-          textShadow: '0 4px 30px rgba(0,0,0,0.3)',
-          fontFamily: getFontFamily('heading'), // Uses Shopify heading font
-        }}
-      >
-        {headingText}
-      </h1>
-      <p
-        ref={subheadingRef}
-        style={{
-          fontSize: 'clamp(1rem, 2vw, 1.5rem)',
-          opacity: 0.8,
-          marginTop: '1rem',
-          textShadow: '0 2px 20px rgba(0,0,0,0.2)',
-        }}
-      >
-        {subheadingText}
-      </p>
-    </div>
-  );
-}
+// (Removed old hero components: TextOverlay)
 
 // ============================================
 // 2D BACKGROUND LAYER (Behind 3D)
 // ============================================
-
-interface BackgroundLayerProps {
-  backgroundColor: string;
-}
-
-function BackgroundLayer({ backgroundColor }: BackgroundLayerProps) {
-  const layer1Ref = useRef<HTMLDivElement>(null);
-  const layer2Ref = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    // Parallax background layers
-    gsap.to(layer1Ref.current, {
-      y: 200,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: layer1Ref.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.5,
-      },
-    });
-
-    gsap.to(layer2Ref.current, {
-      y: 100,
-      scale: 1.1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: layer2Ref.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
-      },
-    });
-  }, []);
-
-  return (
-    <>
-      {/* Background gradient layer - z-index: 1 (furthest back) */}
-      <div
-        ref={layer1Ref}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: `linear-gradient(180deg, ${backgroundColor} 0%, ${adjustColor(
-            backgroundColor,
-            -30
-          )} 100%)`,
-          zIndex: 1,
-        }}
-      />
-
-      {/* Abstract shape layer - z-index: 2 */}
-      <div
-        ref={layer2Ref}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 2,
-          overflow: 'hidden',
-        }}
-      >
-        {/* Decorative circles */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '10%',
-            right: '10%',
-            width: '30vw',
-            height: '30vw',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${adjustColor(
-              backgroundColor,
-              20
-            )}40 0%, transparent 70%)`,
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '20%',
-            left: '5%',
-            width: '40vw',
-            height: '40vw',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${adjustColor(
-              backgroundColor,
-              -20
-            )}30 0%, transparent 70%)`,
-          }}
-        />
-      </div>
-    </>
-  );
-}
+// (Removed old hero components: BackgroundLayer)
 
 // ============================================
 // SCROLL INDICATOR
 // ============================================
-
-function ScrollIndicator({ accentColor }: { accentColor: string }) {
-  const indicatorRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    // Bounce animation
-    gsap.to(indicatorRef.current, {
-      y: 10,
-      duration: 1,
-      ease: 'power1.inOut',
-      repeat: -1,
-      yoyo: true,
-    });
-
-    // Fade out on scroll
-    gsap.to(indicatorRef.current, {
-      opacity: 0,
-      scrollTrigger: {
-        trigger: indicatorRef.current,
-        start: 'top 90%',
-        end: 'top 70%',
-        scrub: true,
-      },
-    });
-  }, []);
-
-  return (
-    <div
-      ref={indicatorRef}
-      style={{
-        position: 'absolute',
-        bottom: '5%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        color: accentColor,
-        zIndex: 10,
-        pointerEvents: 'none',
-      }}
-    >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M12 5v14M5 12l7 7 7-7" />
-      </svg>
-    </div>
-  );
-}
+// (Removed old hero components: ScrollIndicator)
 
 // ============================================
 // UTILITY FUNCTIONS
@@ -478,8 +140,8 @@ export function Homepage({
   backgroundColor = '#146C90',
   shopName = 'Store',
   accentColor = '#ffffff',
-  headingText,
-  subheadingText,
+  headingText: _headingText,
+  subheadingText: _subheadingText,
 }: HomepageProps) {
   // Initialize Lenis smooth scroll
   useLenis();
@@ -487,79 +149,17 @@ export function Homepage({
   // Header tint controller
   const { setHeaderTint } = useHeaderTintControl();
 
-  // Track scroll progress for 3D animations
-  const scrollProgress = useRef(0);
-
   useGSAP(() => {
-    // Update scroll progress ref for R3F useFrame
-    ScrollTrigger.create({
-      trigger: 'body',
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => {
-        scrollProgress.current = self.progress;
-      },
-    });
-
-    // Set initial header tint to light (for dark/blue background)
     setHeaderTint('light');
   }, []);
 
   return (
-    <>
-      {/* 
-        LAYER ARCHITECTURE:
-        z-index 1-2: Background (2D) - gradient, decorative shapes
-        z-index 5:   3D Canvas - Three.js scene
-        z-index 10:  Overlay (2D) - text, UI elements
-      */}
-
-      {/* Hero Section - Fixed height for scroll effect */}
-      <section
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '100vh',
-          overflow: 'hidden',
-        }}
-      >
-        {/* 2D BACKGROUND LAYER (z-index 1-2) */}
-        <BackgroundLayer backgroundColor={backgroundColor} />
-
-        {/* 3D CANVAS LAYER (z-index 5) */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 5,
-          }}
-        >
-          <Canvas
-            camera={{ position: [0, 0, 8], fov: 45 }}
-            gl={{ antialias: true, alpha: true }}
-            style={{ background: 'transparent' }}
-          >
-            <Environment preset="city" />
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-
-            <AnimatedSphere
-              scrollProgress={scrollProgress}
-              color={accentColor}
-            />
-            <FloatingElements scrollProgress={scrollProgress} />
-          </Canvas>
-        </div>
-
-        {/* 2D OVERLAY LAYER (z-index 10) */}
-        <TextOverlay
-          headingText={headingText ?? shopName}
-          subheadingText={subheadingText ?? 'Scroll to explore'}
-          accentColor={accentColor}
-        />
-
-        <ScrollIndicator accentColor={accentColor} />
-      </section>
+    <main
+      className="relative w-full overflow-x-hidden -z-10"
+      style={{ backgroundColor: backgroundColor }}
+    >
+      <NoiseOverlay />
+      <Hero />
 
       {/* Additional scroll content for demo */}
       <ScrollSections
@@ -574,7 +174,7 @@ export function Homepage({
         accentColor={accentColor}
         shopName={shopName}
       />
-    </>
+    </main>
   );
 }
 

@@ -1,0 +1,60 @@
+/*
+  TAILWIND CSS v4 - PLUPACK HOMEPAGE
+  
+  Google Fonts are loaded via <link> tag in index.html for local dev.
+  In production, Shopify loads fonts automatically.
+  
+  STRATEGY: We use `important` flag to ensure Tailwind utilities 
+  win over Shopify's base.css specificity. This prevents theme styles
+  from overriding our React components while the other 12 Liquid 
+  pages work normally (they don't load this CSS).
+*/
+@import 'tailwindcss' important;
+
+/*
+  Reset styles specifically for the React container.
+  This ensures our React app starts with a clean slate without
+  affecting the rest of the Shopify theme.
+*/
+#react-homepage {
+  /* Isolate from Shopify's inherited styles */
+  all: initial;
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+  box-sizing: border-box;
+  
+  /* Ensure our container can hold positioned children */
+  position: relative;
+}
+
+#react-homepage *,
+#react-homepage *::before,
+#react-homepage *::after {
+  box-sizing: border-box;
+}
+
+/* Override Shopify's base reset for elements inside our container */
+#react-homepage img,
+#react-homepage svg,
+#react-homepage video,
+#react-homepage canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#react-homepage button {
+  cursor: pointer;
+}
+
+/* 
+  Custom theme extensions can be added here.
+  Example:
+  
+  @theme {
+    --color-brand: #146C90;
+    --font-display: "Inter", sans-serif;
+  }
+*/
