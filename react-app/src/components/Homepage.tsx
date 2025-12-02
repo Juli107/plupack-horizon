@@ -8,7 +8,9 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useShopifyTheme } from '../hooks/useShopifyTheme';
 import { Hero } from './hero/Hero';
+import { ServicesSection } from './ServicesSection';
 import { NoiseOverlay } from './NoiseOverlay';
+import { GlobalCanvas } from './GlobalCanvas';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -155,11 +157,15 @@ export function Homepage({
 
   return (
     <main
-      className="relative w-full overflow-x-hidden -z-10"
+      className="relative w-full overflow-x-hidden"
       style={{ backgroundColor: backgroundColor }}
     >
+      {/* Global fixed 3D canvas - scroll synced camera */}
+      <GlobalCanvas />
+
       <NoiseOverlay />
       <Hero />
+      <ServicesSection />
 
       {/* Additional scroll content for demo */}
       <ScrollSections

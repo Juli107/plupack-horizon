@@ -89,7 +89,7 @@ export function Carousel({ radius = 6, count = 10 }: CarouselProps) {
       <group key={i} position={[x, y, 0]} rotation={[0, 0, angle]}>
         <Float speed={2} rotationIntensity={0.2} floatIntensity={0.2}>
           <mesh>
-            <boxGeometry args={[1.5, 1.5, 1.5]} />
+            <boxGeometry args={[2, 2, 2]} />
             <meshStandardMaterial
               color="#E0E0E0"
               roughness={0.4}

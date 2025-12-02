@@ -1,5 +1,3 @@
-// Import noise image directly - works in local dev
-// In production, Shopify asset URL is used from SHOPIFY_DATA
 import noiseImage from '../assets/noise.webp';
 
 /**
@@ -20,7 +18,7 @@ export function NoiseOverlay() {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] pointer-events-none opacity-10 bg-repeat"
+      className="fixed inset-0 z-9 pointer-events-none opacity-8 bg-repeat"
       style={{
         mixBlendMode: 'soft-light',
         backgroundImage: `url(${noiseUrl})`,
