@@ -150,6 +150,12 @@
 
   assign class = 'header'
 
+  if template.name == 'index'
+     assign class = class | append: ' header--home'
+  else
+    assign class = class | append: ' header--internal'
+  endif
+
   if transparent_color_scheme
     assign class = class | append: ' ' | append: transparent_color_scheme
   endif
