@@ -106,8 +106,22 @@ export interface ShopifyRoutes {
   allProducts: string;
 }
 
+export interface ShopifyAssets {
+  noiseTexture?: string;
+  industry1?: string;
+  industry2?: string;
+  industry3?: string;
+  gastronomy1?: string;
+  gastronomy2?: string;
+  gastronomy3?: string;
+  institution1?: string;
+  institution2?: string;
+  institution3?: string;
+}
+
 export interface ShopifyData {
   shop?: ShopifyShop;
+  assets?: ShopifyAssets;
   settings?: ShopifySettings;
   theme?: ShopifyTheme;
   product?: ShopifyProduct;

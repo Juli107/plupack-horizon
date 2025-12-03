@@ -1,7 +1,8 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState, useEffect } from 'react';
+import { useLenis } from 'lenis/react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
 
@@ -20,92 +21,173 @@ interface StockSectionProps {
   buttonUrl?: string;
 }
 
-// ============================================
-// RESPONSIVE POSITIONS HOOK
-// ============================================
-function useResponsivePositions() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Desktop positions - spread out more
-  const desktopPositions = [
-    { x: -35, y: -38, rotate: -5, scale: 1 }, // Top left
-    { x: 35, y: -32, rotate: 8, scale: 1.1 }, // Top right
-    { x: -38, y: 38, rotate: -3, scale: 0.95 }, // Bottom left
-    { x: 38, y: 35, rotate: 5, scale: 1.05 }, // Bottom right
-    { x: -20, y: -5, rotate: -8, scale: 0.85 }, // Center left
-    { x: 22, y: 8, rotate: 10, scale: 0.8 }, // Center right
-  ];
-
-  // Mobile positions - tighter, vertical layout
-  const mobilePositions = [
-    { x: -30, y: -35, rotate: -3, scale: 0.8 }, // Top left
-    { x: 30, y: -30, rotate: 5, scale: 0.85 }, // Top right
-    { x: -32, y: 32, rotate: -5, scale: 0.75 }, // Bottom left
-    { x: 32, y: 35, rotate: 3, scale: 0.8 }, // Bottom right
-    { x: -15, y: 0, rotate: -2, scale: 0.7 }, // Middle left
-    { x: 18, y: 5, rotate: 4, scale: 0.65 }, // Middle right
-  ];
-
-  return isMobile ? mobilePositions : desktopPositions;
+interface ImagePosition {
+  x: number;
+  y: number;
+  rotate: number;
+  scale: number;
+  layer: 1 | 2 | 3;
 }
 
 // ============================================
+// FIXED POSITIONS FOR A CLEAN LAYOUT
+// Positions are in percentages from center
+// Arranged to frame the title nicely
+// ============================================
+const DESKTOP_POSITIONS: ImagePosition[] = [
+  // Top row - left to right
+  { x: -42, y: -35, rotate: -8, scale: 0.85, layer: 2 },
+  { x: -25, y: -38, rotate: 5, scale: 0.9, layer: 3 },
+  { x: -5, y: -42, rotate: -3, scale: 0.75, layer: 1 },
+  { x: 15, y: -40, rotate: 6, scale: 0.85, layer: 2 },
+  { x: 38, y: -36, rotate: -5, scale: 0.9, layer: 3 },
+
+  // Left side - top to bottom
+  { x: -45, y: -10, rotate: -12, scale: 1, layer: 3 },
+  { x: -48, y: 18, rotate: 8, scale: 0.8, layer: 1 },
+
+  // Right side - top to bottom
+  { x: 42, y: -8, rotate: 10, scale: 0.95, layer: 3 },
+  { x: 45, y: 15, rotate: -6, scale: 0.85, layer: 2 },
+  { x: 48, y: 35, rotate: 4, scale: 0.75, layer: 1 },
+
+  // Bottom row - left to right
+  { x: -38, y: 38, rotate: 6, scale: 0.9, layer: 2 },
+  { x: -15, y: 42, rotate: -8, scale: 0.85, layer: 3 },
+  { x: 8, y: 40, rotate: 5, scale: 0.8, layer: 2 },
+  { x: 28, y: 38, rotate: -4, scale: 0.9, layer: 3 },
+  { x: 45, y: 42, rotate: 7, scale: 0.75, layer: 1 },
+];
+
+const MOBILE_POSITIONS: ImagePosition[] = [
+  // Top area
+  { x: -35, y: -38, rotate: -8, scale: 0.8, layer: 2 },
+  { x: 0, y: -42, rotate: 5, scale: 0.75, layer: 1 },
+  { x: 35, y: -38, rotate: -5, scale: 0.85, layer: 3 },
+
+  // Left side
+  { x: -40, y: -5, rotate: -10, scale: 0.9, layer: 3 },
+  { x: -42, y: 25, rotate: 6, scale: 0.75, layer: 1 },
+
+  // Right side
+  { x: 40, y: 0, rotate: 8, scale: 0.85, layer: 2 },
+  { x: 42, y: 28, rotate: -6, scale: 0.8, layer: 3 },
+
+  // Bottom area
+  { x: -32, y: 40, rotate: 5, scale: 0.85, layer: 2 },
+  { x: 5, y: 42, rotate: -7, scale: 0.9, layer: 3 },
+  { x: 35, y: 38, rotate: 4, scale: 0.75, layer: 1 },
+];
+
+// ============================================
 // STOCK SECTION COMPONENT
+// Uses CSS sticky positioning for natural scroll feel
+// Compatible with Lenis smooth scroll
 // ============================================
 export function StockSection({
   buttonText: propButtonText,
   buttonUrl: propButtonUrl,
 }: StockSectionProps) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const pinContainerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
   const imagesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const numberRef = useRef<HTMLSpanElement>(null);
   const { getFontFamily } = useShopifyTheme();
+  const [isMobile, setIsMobile] = useState(false);
+  const [hasCountedUp, setHasCountedUp] = useState(false);
+
+  // Check for mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Get product images and settings from Shopify data
   const shopifyData = getShopifyData();
   const stockData = (shopifyData as any).stockSection ?? {};
 
   const productImages: ProductImage[] = stockData.productImages ?? [];
+  const productCount = stockData.productCount ?? 170;
   const buttonText =
     propButtonText ?? stockData.buttonText ?? 'Ver catálogo';
   const buttonUrl =
     propButtonUrl ?? stockData.buttonUrl ?? '/collections/all';
 
-  // Get responsive positions
-  const explodedPositions = useResponsivePositions();
+  // Use fixed positions based on screen size
+  const positions = useMemo(() => {
+    const basePositions = isMobile
+      ? MOBILE_POSITIONS
+      : DESKTOP_POSITIONS;
+    // Only use as many positions as we have images
+    return basePositions.slice(0, productImages.length);
+  }, [isMobile, productImages.length]);
+
+  // Sync with Lenis - ensures ScrollTrigger stays in sync with smooth scroll
+  useLenis(() => {
+    ScrollTrigger.update();
+  });
+
+  // Auto count-up animation when section enters viewport
+  useEffect(() => {
+    if (hasCountedUp) return;
+
+    const numberElement = numberRef.current;
+    const containerElement = containerRef.current;
+
+    if (!numberElement || !containerElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setHasCountedUp(true);
+          observer.disconnect();
+
+          const counter = { val: 0 };
+          gsap.to(counter, {
+            val: productCount,
+            duration: 2,
+            ease: 'power2.out',
+            onUpdate: () => {
+              numberElement.textContent =
+                '+' + Math.round(counter.val);
+            },
+          });
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(containerElement);
+
+    return () => observer.disconnect();
+  }, [hasCountedUp, productCount]);
 
   useGSAP(
     () => {
-      if (
-        !sectionRef.current ||
-        !pinContainerRef.current ||
-        !contentRef.current
-      )
-        return;
+      if (!containerRef.current || !stickyRef.current) return;
+
+      // Only run image animations if we have images
       if (productImages.length === 0) return;
 
-      const section = sectionRef.current;
-      const pinContainer = pinContainerRef.current;
-      const content = contentRef.current;
       const images = imagesRef.current.filter(
         Boolean
       ) as HTMLDivElement[];
+      if (images.length === 0) return;
 
-      // Set initial state - all images clustered in center (hidden)
+      const container = containerRef.current;
+
+      // Set initial state - images at center, invisible
       gsap.set(images, {
         xPercent: -50,
         yPercent: -50,
+        left: '50%',
+        top: '50%',
         x: 0,
         y: 0,
         scale: 0,
@@ -113,153 +195,282 @@ export function StockSection({
         rotation: 0,
       });
 
-      // Set initial content state
-      gsap.set(content, {
-        opacity: 0,
-        y: 40,
-      });
-
-      // Create the main explosion timeline with PIN
+      // Main scroll-driven animation for images
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: section,
+          trigger: container,
           start: 'top top',
-          end: '+=150%', // Scroll for 150% of viewport height
-          scrub: 1,
-          pin: pinContainer,
-          pinSpacing: true,
-          anticipatePin: 1,
+          end: 'bottom bottom',
+          scrub: 0.5,
           // markers: true, // Uncomment for debugging
         },
       });
 
-      // Animate each image to its exploded position
-      images.forEach((img, index) => {
-        const pos =
-          explodedPositions[index % explodedPositions.length];
+      // Phase 2: Explode images outward (20% - 80% of scroll)
+      // Stagger by layer: back layer first, then mid, then front
+      const backImages: { el: HTMLDivElement; pos: ImagePosition }[] =
+        [];
+      const midImages: { el: HTMLDivElement; pos: ImagePosition }[] =
+        [];
+      const frontImages: {
+        el: HTMLDivElement;
+        pos: ImagePosition;
+      }[] = [];
 
+      images.forEach((img, index) => {
+        const pos = positions[index];
+        if (!pos) return;
+        if (pos.layer === 1) backImages.push({ el: img, pos });
+        else if (pos.layer === 2) midImages.push({ el: img, pos });
+        else frontImages.push({ el: img, pos });
+      });
+
+      // Back layer - appears first, moves slower
+      backImages.forEach(({ el, pos }) => {
         tl.to(
-          img,
+          el,
+          {
+            x: `${pos.x * 0.8}vw`,
+            y: `${pos.y * 0.8}vh`,
+            scale: pos.scale * 0.85,
+            opacity: 0.6,
+            rotation: pos.rotate,
+            ease: 'power2.out',
+            duration: 0.4,
+          },
+          0.1
+        );
+      });
+
+      // Mid layer
+      midImages.forEach(({ el, pos }) => {
+        tl.to(
+          el,
           {
             x: `${pos.x}vw`,
             y: `${pos.y}vh`,
+            scale: pos.scale * 0.95,
+            opacity: 0.85,
+            rotation: pos.rotate,
+            ease: 'power2.out',
+            duration: 0.4,
+          },
+          0.15
+        );
+      });
+
+      // Front layer - appears last, full opacity
+      frontImages.forEach(({ el, pos }) => {
+        tl.to(
+          el,
+          {
+            x: `${pos.x * 1.1}vw`,
+            y: `${pos.y * 1.1}vh`,
             scale: pos.scale,
             opacity: 1,
             rotation: pos.rotate,
             ease: 'power2.out',
-            duration: 0.5,
+            duration: 0.4,
           },
-          0 // All start together
+          0.2
         );
       });
 
-      // Fade in the content after images explode
-      tl.to(
-        content,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.3,
-          ease: 'power2.out',
-        },
-        0.3
-      );
+      // Continuous parallax movement - each layer moves at different speeds
+      // Back layer: slowest movement (closest to camera focal point)
+      backImages.forEach(({ el, pos }) => {
+        tl.to(
+          el,
+          {
+            y: `${pos.y * 0.8 + 8}vh`,
+            rotation: pos.rotate + 3,
+            duration: 0.5,
+            ease: 'none',
+          },
+          0.5
+        );
+      });
+
+      // Mid layer: medium movement
+      midImages.forEach(({ el, pos }) => {
+        tl.to(
+          el,
+          {
+            y: `${pos.y + 15}vh`,
+            rotation: pos.rotate - 2,
+            duration: 0.5,
+            ease: 'none',
+          },
+          0.5
+        );
+      });
+
+      // Front layer: fastest movement (furthest from camera focal point)
+      frontImages.forEach(({ el, pos }) => {
+        tl.to(
+          el,
+          {
+            y: `${pos.y * 1.1 + 25}vh`,
+            rotation: pos.rotate + 4,
+            duration: 0.5,
+            ease: 'none',
+          },
+          0.5
+        );
+      });
+
+      return () => {
+        ScrollTrigger.getAll().forEach((st) => {
+          if (st.trigger === container) {
+            st.kill();
+          }
+        });
+      };
     },
     {
-      scope: sectionRef,
-      dependencies: [productImages, explodedPositions],
+      scope: containerRef,
+      dependencies: [productImages, positions, isMobile],
     }
   );
 
+  // Get layer-based styling
+  const getLayerStyles = (index: number) => {
+    const pos = positions[index];
+    if (!pos) return { zIndex: 1 };
+
+    const layer = pos.layer;
+    return {
+      zIndex: layer * 10,
+      filter:
+        layer === 1
+          ? 'blur(2px)'
+          : layer === 2
+          ? 'blur(0.5px)'
+          : 'none',
+    };
+  };
+
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full"
+    <div
+      ref={containerRef}
+      className="relative"
       style={{ backgroundColor: '#E8ECF2' }}
     >
-      {/* Pin Container - This gets pinned during scroll */}
+      {/* Sticky container - sticks to top while scrolling through the section */}
       <div
-        ref={pinContainerRef}
-        className="relative w-full h-screen overflow-hidden flex items-center justify-center"
+        ref={stickyRef}
+        className="sticky top-0 w-full h-screen overflow-hidden"
         style={{ backgroundColor: '#E8ECF2' }}
       >
-        {/* Product Images - Positioned absolutely */}
-        <div className="absolute inset-0 pointer-events-none">
-          {productImages.map((image, index) => (
+        {/* Product Images - positioned absolutely from center */}
+        {productImages
+          .slice(0, positions.length)
+          .map((image, index) => (
             <div
               key={index}
               ref={(el) => {
                 imagesRef.current[index] = el;
               }}
-              className="absolute top-1/2 left-1/2 will-change-transform"
+              className="absolute will-change-transform"
               style={{
-                width: 'clamp(80px, 15vw, 180px)',
-                height: 'auto',
+                width: isMobile
+                  ? 'clamp(50px, 18vw, 100px)'
+                  : 'clamp(80px, 12vw, 150px)',
+                ...getLayerStyles(index),
               }}
             >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-auto object-contain"
+              <div
+                className="relative w-full aspect-square rounded-lg overflow-hidden"
                 style={{
-                  filter:
-                    'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15))',
+                  backgroundColor: getRandomBgColor(index),
+                  boxShadow:
+                    positions[index]?.layer === 3
+                      ? '0 15px 40px rgba(0,0,0,0.2)'
+                      : positions[index]?.layer === 2
+                      ? '0 10px 25px rgba(0,0,0,0.15)'
+                      : '0 5px 15px rgba(0,0,0,0.1)',
                 }}
-                loading="lazy"
-              />
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
             </div>
           ))}
-        </div>
 
-        {/* Center Content */}
+        {/* Center Content - Title and Button */}
         <div
-          ref={contentRef}
-          className="relative z-10 text-center px-6 max-w-3xl mx-auto"
+          ref={titleRef}
+          className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
         >
-          {/* Title - Split into lines like the design */}
-          <h2
-            className="font-bold leading-[1.1] mb-8"
-            style={{
-              fontFamily: getFontFamily('heading'),
-              color: '#1B4B6B',
-            }}
-          >
-            <span
-              className="block"
-              style={{ fontSize: 'clamp(2.5rem, 8vw, 5rem)' }}
+          <div className="text-center px-6 max-w-3xl mx-auto pointer-events-auto">
+            <h2
+              className="font-bold leading-[1.1] mb-6"
+              style={{
+                fontFamily: getFontFamily('heading'),
+                color: '#1B4B6B',
+              }}
             >
-              +170
-            </span>
-            <span
-              className="block"
-              style={{ fontSize: 'clamp(1.5rem, 4.5vw, 3rem)' }}
-            >
-              PRODUCTOS EN
-            </span>
-            <span
-              className="block"
-              style={{ fontSize: 'clamp(1.5rem, 4.5vw, 3rem)' }}
-            >
-              STOCK PERMANENTE
-            </span>
-          </h2>
+              <span
+                ref={numberRef}
+                className="stock-number block"
+                style={{ fontSize: 'clamp(3rem, 10vw, 6rem)' }}
+              >
+                +0
+              </span>
+              <span
+                className="block"
+                style={{ fontSize: 'clamp(1.2rem, 4vw, 2.5rem)' }}
+              >
+                PRODUCTOS EN
+              </span>
+              <span
+                className="block"
+                style={{ fontSize: 'clamp(1.2rem, 4vw, 2.5rem)' }}
+              >
+                STOCK PERMANENTE
+              </span>
+            </h2>
 
-          {/* Button */}
-          <a
-            href={buttonUrl}
-            className="inline-block px-8 py-3 bg-white rounded-full font-medium 
-                       transition-all duration-300 hover:scale-105"
-            style={{
-              fontFamily: getFontFamily('body'),
-              color: '#1B4B6B',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(27, 75, 107, 0.1)',
-            }}
-          >
-            {buttonText}
-          </a>
+            <a
+              href={buttonUrl}
+              className="inline-block px-8 py-3 bg-white rounded-full font-medium 
+                         transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              style={{
+                fontFamily: getFontFamily('body'),
+                color: '#1B4B6B',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(27, 75, 107, 0.1)',
+              }}
+            >
+              {buttonText}
+            </a>
+          </div>
         </div>
       </div>
-    </section>
+
+      {/* Extra scroll space - this is what you scroll through while sticky is pinned */}
+      {/* Height = 150vh means you scroll 1.5 viewport heights while content stays sticky */}
+      <div style={{ height: '150vh' }} />
+    </div>
   );
+}
+
+// Helper to get random-ish background colors for image cards
+function getRandomBgColor(index: number): string {
+  const colors = [
+    '#F5E6C8', // warm beige
+    '#E8D4B8', // tan
+    '#D4E5D7', // soft green
+    '#E0EBE8', // mint
+    '#F0E4D7', // cream
+    '#E5E0D4', // taupe
+    '#D8E8E8', // light teal
+    '#F2E8DC', // light sand
+  ];
+  return colors[index % colors.length];
 }

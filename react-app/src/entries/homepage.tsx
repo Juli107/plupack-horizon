@@ -15,7 +15,6 @@ function App() {
         shopifyData.settings?.backgroundColor ?? '#146C90'
       }
       shopName={shopifyData.shop?.name ?? 'Store'}
-      accentColor={shopifyData.settings?.accentColor ?? '#ffffff'}
       headingText={shopifyData.settings?.headingText}
       subheadingText={shopifyData.settings?.subheadingText}
     />

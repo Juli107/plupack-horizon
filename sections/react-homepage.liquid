@@ -31,7 +31,16 @@
 
     // Asset URLs (for images loaded in React)
     assets: {
-      noiseTexture: {{ 'noise.webp' | asset_url | json }}
+      noiseTexture: {{ 'noise.webp' | asset_url | json }},
+      industry1: {{ 'industry-1.webp' | asset_url | json }},
+      industry2: {{ 'industry-2.webp' | asset_url | json }},
+      industry3: {{ 'industry-3.webp' | asset_url | json }},
+      gastronomy1: {{ 'gastronomy-1.webp' | asset_url | json }},
+      gastronomy2: {{ 'gastronomy-2.webp' | asset_url | json }},
+      gastronomy3: {{ 'gastronomy-3.webp' | asset_url | json }},
+      institution1: {{ 'institution-1.webp' | asset_url | json }},
+      institution2: {{ 'institution-2.webp' | asset_url | json }},
+      institution3: {{ 'institution-3.webp' | asset_url | json }}
     },
 
     // Section settings (from schema below)
@@ -47,25 +56,35 @@
       title: {{ section.settings.stock_section_title | json }},
       buttonText: {{ section.settings.stock_section_button_text | json }},
       buttonUrl: {{ section.settings.stock_section_button_url | json }},
+      productCount: {{ section.settings.stock_product_count | default: 170 | json }},
+      // Fetch random products from all collections
       productImages: [
-        {% if section.settings.stock_image_1 != blank %}
-          { src: {{ section.settings.stock_image_1 | image_url: width: 400 | json }}, alt: "Stock product 1" },
-        {% endif %}
-        {% if section.settings.stock_image_2 != blank %}
-          { src: {{ section.settings.stock_image_2 | image_url: width: 400 | json }}, alt: "Stock product 2" },
-        {% endif %}
-        {% if section.settings.stock_image_3 != blank %}
-          { src: {{ section.settings.stock_image_3 | image_url: width: 400 | json }}, alt: "Stock product 3" },
-        {% endif %}
-        {% if section.settings.stock_image_4 != blank %}
-          { src: {{ section.settings.stock_image_4 | image_url: width: 400 | json }}, alt: "Stock product 4" },
-        {% endif %}
-        {% if section.settings.stock_image_5 != blank %}
-          { src: {{ section.settings.stock_image_5 | image_url: width: 400 | json }}, alt: "Stock product 5" },
-        {% endif %}
-        {% if section.settings.stock_image_6 != blank %}
-          { src: {{ section.settings.stock_image_6 | image_url: width: 400 | json }}, alt: "Stock product 6" },
-        {% endif %}
+        {%- assign all_products_array = collections.all.products -%}
+        {%- assign max_images = 15 -%}
+        {%- assign shown_count = 0 -%}
+        {%- assign now = 'now' | date: '%S' | plus: 0 -%}
+        {%- assign product_count = all_products_array.size -%}
+        {%- assign offset = now | modulo: product_count -%}
+        {%- for product in all_products_array limit: 50 offset: offset -%}
+          {%- if shown_count >= max_images -%}
+            {%- break -%}
+          {%- endif -%}
+          {%- if product.featured_image != blank -%}
+            {%- assign shown_count = shown_count | plus: 1 -%}
+        { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }{% unless forloop.last and shown_count >= max_images %},{% endunless %}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if shown_count < max_images -%}
+          {%- for product in all_products_array limit: max_images -%}
+            {%- if shown_count >= max_images -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- if product.featured_image != blank -%}
+              {%- assign shown_count = shown_count | plus: 1 -%}
+        { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }{% unless forloop.last and shown_count >= max_images %},{% endunless %}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       ]
     },
 
@@ -275,6 +294,15 @@
       "default": "+170 PRODUCTOS EN STOCK PERMANENTE"
     },
     {
+      "type": "range",
+      "id": "stock_product_count",
+      "label": "Number displayed in title",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 170
+    },
+    {
       "type": "text",
       "id": "stock_section_button_text",
       "label": "Button Text",
@@ -285,36 +313,6 @@
       "id": "stock_section_button_url",
       "label": "Button URL",
       "default": "/collections/all"
-    },
-    {
-      "type": "image_picker",
-      "id": "stock_image_1",
-      "label": "Stock Image 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "stock_image_2",
-      "label": "Stock Image 2"
-    },
-    {
-      "type": "image_picker",
-      "id": "stock_image_3",
-      "label": "Stock Image 3"
-    },
-    {
-      "type": "image_picker",
-      "id": "stock_image_4",
-      "label": "Stock Image 4"
-    },
-    {
-      "type": "image_picker",
-      "id": "stock_image_5",
-      "label": "Stock Image 5"
-    },
-    {
-      "type": "image_picker",
-      "id": "stock_image_6",
-      "label": "Stock Image 6"
     }
   ],
   "presets": [

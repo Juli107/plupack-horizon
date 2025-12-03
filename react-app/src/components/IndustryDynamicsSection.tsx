@@ -1,7 +1,4 @@
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 // Image Imports
 import industry1 from '../assets/industry_img/industry-1.webp';
@@ -16,6 +13,10 @@ import institution1 from '../assets/industry_img/institution-1.webp';
 import institution2 from '../assets/industry_img/institution-2.webp';
 import institution3 from '../assets/industry_img/institution-3.webp';
 
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
 gsap.registerPlugin(ScrollTrigger);
 
 // Preload images for smoother transitions
@@ -26,30 +27,28 @@ const preloadImages = (images: string[]) => {
   });
 };
 
-// Scroll-synced slideshow component
-const ScrollSlideshow = ({
-  images,
-  slideshowRef,
-}: {
-  images: string[];
-  slideshowRef: React.RefObject<HTMLDivElement | null>;
-}) => {
+// Automatic slideshow component with instant transitions
+const AutomaticSlideshow = ({ images }: { images: string[] }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev: number) => (prev + 1) % images.length);
+    }, 800); // Change image every 800ms
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
-    <div
-      ref={slideshowRef}
-      className="absolute inset-0 w-full h-full will-change-transform"
-    >
+    <div className="absolute inset-0 w-full h-full">
       {images.map((src, index) => (
         <img
           key={src}
           src={src}
           alt=""
-          data-index={index}
-          className="slideshow-image absolute inset-0 w-full h-full object-cover"
-          style={{
-            opacity: index === 0 ? 1 : 0,
-            willChange: 'opacity',
-          }}
+          className={`absolute inset-0 w-full h-full object-cover transition-none ${
+            index === activeIndex ? 'opacity-100' : 'opacity-0'
+          }`}
           loading={index === 0 ? 'eager' : 'lazy'}
           decoding="async"
         />
@@ -62,17 +61,22 @@ export function IndustryDynamicsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Refs for each slideshow container
-  const industrySlideRef = useRef<HTMLDivElement>(null);
-  const gastronomySlideRef = useRef<HTMLDivElement>(null);
-  const institutionSlideRef = useRef<HTMLDivElement>(null);
+  const shopifyAssets = (window as any).SHOPIFY_DATA?.assets;
 
-  const industryImages = [industry1, industry2, industry3];
-  const gastronomyImages = [gastronomy1, gastronomy2, gastronomy3];
+  const industryImages = [
+    shopifyAssets?.industry1 || industry1,
+    shopifyAssets?.industry2 || industry2,
+    shopifyAssets?.industry3 || industry3,
+  ];
+  const gastronomyImages = [
+    shopifyAssets?.gastronomy1 || gastronomy1,
+    shopifyAssets?.gastronomy2 || gastronomy2,
+    shopifyAssets?.gastronomy3 || gastronomy3,
+  ];
   const institutionImages = [
-    institution1,
-    institution2,
-    institution3,
+    shopifyAssets?.institution1 || institution1,
+    shopifyAssets?.institution2 || institution2,
+    shopifyAssets?.institution3 || institution3,
   ];
 
   // Preload all images when component mounts
@@ -141,68 +145,6 @@ export function IndustryDynamicsSection() {
           });
         }
       });
-
-      // Scroll-synced slideshow animation helper
-      const createScrollSlideshow = (
-        slideRef: React.RefObject<HTMLDivElement | null>,
-        imageCount: number
-      ) => {
-        if (!slideRef.current) return;
-
-        const images = slideRef.current.querySelectorAll(
-          '.slideshow-image'
-        );
-        if (images.length === 0) return;
-
-        // Create a timeline that cycles through images based on section scroll
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        });
-
-        // Animate through each image
-        images.forEach((img, index) => {
-          const nextIndex = (index + 1) % imageCount;
-          const progress = index / imageCount;
-
-          if (index < imageCount - 1) {
-            // Fade out current, fade in next
-            tl.to(
-              img,
-              {
-                opacity: 0,
-                duration: 0.1,
-                ease: 'power1.inOut',
-              },
-              progress + 0.8 / imageCount
-            );
-            tl.to(
-              images[nextIndex],
-              {
-                opacity: 1,
-                duration: 0.1,
-                ease: 'power1.inOut',
-              },
-              progress + 0.8 / imageCount
-            );
-          }
-        });
-      };
-
-      // Initialize scroll-synced slideshows
-      createScrollSlideshow(industrySlideRef, industryImages.length);
-      createScrollSlideshow(
-        gastronomySlideRef,
-        gastronomyImages.length
-      );
-      createScrollSlideshow(
-        institutionSlideRef,
-        institutionImages.length
-      );
     },
     { scope: sectionRef }
   );
@@ -225,10 +167,7 @@ export function IndustryDynamicsSection() {
               INDUSTRIA
             </h2>
             <div className="reveal-image w-full md:flex-1 h-48 md:h-64 bg-white/10 relative overflow-hidden mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 will-change-transform transform-gpu">
-              <ScrollSlideshow
-                images={industryImages}
-                slideshowRef={industrySlideRef}
-              />
+              <AutomaticSlideshow images={industryImages} />
             </div>
           </div>
 
@@ -246,10 +185,7 @@ export function IndustryDynamicsSection() {
               <div className="reveal-image w-40 md:w-64 aspect-square bg-white/10 absolute right-0 md:right-20 top-1/2 -translate-y-1/2 z-0 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 will-change-transform transform-gpu">
                 {/* Dark gradient overlay for contrast */}
                 <div className="absolute inset-0 bg-linear-to-l from-black/40 to-transparent z-10 pointer-events-none"></div>
-                <ScrollSlideshow
-                  images={gastronomyImages}
-                  slideshowRef={gastronomySlideRef}
-                />
+                <AutomaticSlideshow images={gastronomyImages} />
               </div>
             </div>
           </div>
@@ -280,10 +216,7 @@ export function IndustryDynamicsSection() {
             </div>
 
             <div className="reveal-image w-full md:w-[400px] h-[400px] md:h-[500px] bg-white/10 relative overflow-hidden mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 will-change-transform transform-gpu">
-              <ScrollSlideshow
-                images={institutionImages}
-                slideshowRef={institutionSlideRef}
-              />
+              <AutomaticSlideshow images={institutionImages} />
             </div>
           </div>
         </div>
