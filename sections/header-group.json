@@ -16,7 +16,6 @@
       "blocks": {
         "header-logo": {
           "type": "_header-logo",
-          "disabled": true,
           "static": true,
           "settings": {
             "hide_logo_on_home_page": false,
