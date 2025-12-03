@@ -35,7 +35,10 @@ const ScrollSlideshow = ({
   slideshowRef: React.RefObject<HTMLDivElement | null>;
 }) => {
   return (
-    <div ref={slideshowRef} className="absolute inset-0 w-full h-full will-change-transform">
+    <div
+      ref={slideshowRef}
+      className="absolute inset-0 w-full h-full will-change-transform"
+    >
       {images.map((src, index) => (
         <img
           key={src}
@@ -58,7 +61,7 @@ const ScrollSlideshow = ({
 export function IndustryDynamicsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Refs for each slideshow container
   const industrySlideRef = useRef<HTMLDivElement>(null);
   const gastronomySlideRef = useRef<HTMLDivElement>(null);
@@ -66,11 +69,19 @@ export function IndustryDynamicsSection() {
 
   const industryImages = [industry1, industry2, industry3];
   const gastronomyImages = [gastronomy1, gastronomy2, gastronomy3];
-  const institutionImages = [institution1, institution2, institution3];
+  const institutionImages = [
+    institution1,
+    institution2,
+    institution3,
+  ];
 
   // Preload all images when component mounts
   useEffect(() => {
-    preloadImages([...industryImages, ...gastronomyImages, ...institutionImages]);
+    preloadImages([
+      ...industryImages,
+      ...gastronomyImages,
+      ...institutionImages,
+    ]);
   }, []);
 
   useGSAP(
@@ -138,7 +149,9 @@ export function IndustryDynamicsSection() {
       ) => {
         if (!slideRef.current) return;
 
-        const images = slideRef.current.querySelectorAll('.slideshow-image');
+        const images = slideRef.current.querySelectorAll(
+          '.slideshow-image'
+        );
         if (images.length === 0) return;
 
         // Create a timeline that cycles through images based on section scroll
@@ -182,8 +195,14 @@ export function IndustryDynamicsSection() {
 
       // Initialize scroll-synced slideshows
       createScrollSlideshow(industrySlideRef, industryImages.length);
-      createScrollSlideshow(gastronomySlideRef, gastronomyImages.length);
-      createScrollSlideshow(institutionSlideRef, institutionImages.length);
+      createScrollSlideshow(
+        gastronomySlideRef,
+        gastronomyImages.length
+      );
+      createScrollSlideshow(
+        institutionSlideRef,
+        institutionImages.length
+      );
     },
     { scope: sectionRef }
   );
@@ -206,7 +225,10 @@ export function IndustryDynamicsSection() {
               INDUSTRIA
             </h2>
             <div className="reveal-image w-full md:flex-1 h-48 md:h-64 bg-white/10 relative overflow-hidden mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 will-change-transform transform-gpu">
-              <ScrollSlideshow images={industryImages} slideshowRef={industrySlideRef} />
+              <ScrollSlideshow
+                images={industryImages}
+                slideshowRef={industrySlideRef}
+              />
             </div>
           </div>
 
@@ -224,7 +246,10 @@ export function IndustryDynamicsSection() {
               <div className="reveal-image w-40 md:w-64 aspect-square bg-white/10 absolute right-0 md:right-20 top-1/2 -translate-y-1/2 z-0 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 will-change-transform transform-gpu">
                 {/* Dark gradient overlay for contrast */}
                 <div className="absolute inset-0 bg-linear-to-l from-black/40 to-transparent z-10 pointer-events-none"></div>
-                <ScrollSlideshow images={gastronomyImages} slideshowRef={gastronomySlideRef} />
+                <ScrollSlideshow
+                  images={gastronomyImages}
+                  slideshowRef={gastronomySlideRef}
+                />
               </div>
             </div>
           </div>
@@ -255,7 +280,10 @@ export function IndustryDynamicsSection() {
             </div>
 
             <div className="reveal-image w-full md:w-[400px] h-[400px] md:h-[500px] bg-white/10 relative overflow-hidden mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 will-change-transform transform-gpu">
-              <ScrollSlideshow images={institutionImages} slideshowRef={institutionSlideRef} />
+              <ScrollSlideshow
+                images={institutionImages}
+                slideshowRef={institutionSlideRef}
+              />
             </div>
           </div>
         </div>

@@ -45,6 +45,9 @@ export interface CameraKeyframe {
 // The camera will lerp smoothly between consecutive keyframes
 
 export const cameraKeyframes: CameraKeyframe[] = [
+  // ============================================
+  // HERO SECTION (0-15%)
+  // ============================================
   {
     scrollPercent: 0,
     position: [0, 0, 10],
@@ -54,19 +57,79 @@ export const cameraKeyframes: CameraKeyframe[] = [
   },
   {
     scrollPercent: 15,
-    position: [0, -5, -10],
-    lookAt: [0, -5, 0],
-    fov: 5,
+    position: [0, -12, -10],
+    lookAt: [0, -12, -10],
+    fov: 45,
   },
+
+  // ============================================
+  // SERVICES & INDUSTRY DYNAMICS (20-54%)
+  // ============================================
+
+  // Hold Camera movement
   {
-    scrollPercent: 30,
+    scrollPercent: 20,
+    position: [0, -30, 30],
+    lookAt: [0, -30, 30],
   },
+
+  {
+    scrollPercent: 40,
+    position: [0, -50, 0],
+    lookAt: [0, -50, 0],
+  },
+
   {
     scrollPercent: 50,
+    position: [0, -50, 0],
+    lookAt: [0, -50, 0],
   },
+
+  // ============================================
+  // INDUSTRIES (54-80%) - Orbital descent around the rod
+  // ============================================
+
+  // Start - Front view, top of rod
+  {
+    scrollPercent: 52,
+    orbit: true,
+    orbitCenter: [0, -58, 0],
+    orbitAngle: Math.PI,
+    orbitRadius: 8,
+    orbitHeight: 0,
+  },
+
+  // Three-quarter rotation - Left side, near bottom
+  {
+    scrollPercent: 70,
+    orbit: true,
+    orbitCenter: [0, -62, 0],
+    orbitAngle: Math.PI * 2.5, // 450 degrees - left side
+    orbitRadius: 8,
+    orbitHeight: 0,
+  },
+
+  // Full rotation - Back at front, bottom of rod
   {
     scrollPercent: 75,
+    orbit: true,
+    orbitCenter: [0, -67, 0],
+    orbitAngle: Math.PI * 3, // 540 degrees - full rotation back to front
+    orbitRadius: 8,
+    orbitHeight: 0,
   },
+
+  // End of rotation
+  {
+    scrollPercent: 80,
+    orbit: false,
+    position: [0, -70, -8],
+    lookAt: [0, -70, 0],
+  },
+
+  // ============================================
+  // TRANSITION TO FOOTER (75-100%)
+  // ============================================
   {
     scrollPercent: 100,
   },
@@ -260,7 +323,28 @@ export function interpolateKeyframes(
   let position: THREE.Vector3;
   let lookAt: THREE.Vector3 | null = null;
 
-  if (isOrbiting && fromOrbit && toOrbit) {
+  // Helper function to get position from orbit parameters
+  const getOrbitPosition = (kf: CameraKeyframe): THREE.Vector3 => {
+    const center = kf.orbitCenter ?? [0, 0, 0];
+    const angle = kf.orbitAngle ?? 0;
+    const radius = kf.orbitRadius ?? 10;
+    const height = kf.orbitHeight ?? 0;
+    return calculateOrbitPosition(center, angle, radius, height);
+  };
+
+  // Helper function to get lookAt from orbit parameters
+  const getOrbitLookAt = (kf: CameraKeyframe): THREE.Vector3 => {
+    const center = kf.orbitCenter ?? [0, 0, 0];
+    const radius = kf.orbitRadius ?? 10;
+    const tilt = kf.orbitTilt ?? 0;
+    return new THREE.Vector3(
+      center[0],
+      center[1] + Math.sin(tilt) * radius,
+      center[2]
+    );
+  };
+
+  if (fromOrbit && toOrbit) {
     // Both keyframes are orbiting - interpolate orbit parameters
     const fromCenter = from.orbitCenter ?? [0, 0, 0];
     const toCenter = to.orbitCenter ?? [0, 0, 0];
@@ -294,8 +378,54 @@ export function interpolateKeyframes(
       center[1] + Math.sin(tilt) * radius,
       center[2]
     );
+  } else if (fromOrbit && !toOrbit) {
+    // Transitioning FROM orbit TO regular position
+    const fromPos = getOrbitPosition(from);
+    const toPos = new THREE.Vector3(...to.position);
+
+    position = new THREE.Vector3(
+      THREE.MathUtils.lerp(fromPos.x, toPos.x, easedT),
+      THREE.MathUtils.lerp(fromPos.y, toPos.y, easedT),
+      THREE.MathUtils.lerp(fromPos.z, toPos.z, easedT)
+    );
+
+    // Interpolate lookAt from orbit center to target lookAt
+    const fromLookAt = getOrbitLookAt(from);
+    if (to.lookAt) {
+      const toLookAt = new THREE.Vector3(...to.lookAt);
+      lookAt = new THREE.Vector3(
+        THREE.MathUtils.lerp(fromLookAt.x, toLookAt.x, easedT),
+        THREE.MathUtils.lerp(fromLookAt.y, toLookAt.y, easedT),
+        THREE.MathUtils.lerp(fromLookAt.z, toLookAt.z, easedT)
+      );
+    } else {
+      lookAt = fromLookAt;
+    }
+  } else if (!fromOrbit && toOrbit) {
+    // Transitioning FROM regular position TO orbit
+    const fromPos = new THREE.Vector3(...from.position);
+    const toPos = getOrbitPosition(to);
+
+    position = new THREE.Vector3(
+      THREE.MathUtils.lerp(fromPos.x, toPos.x, easedT),
+      THREE.MathUtils.lerp(fromPos.y, toPos.y, easedT),
+      THREE.MathUtils.lerp(fromPos.z, toPos.z, easedT)
+    );
+
+    // Interpolate lookAt from source lookAt to orbit center
+    const toLookAt = getOrbitLookAt(to);
+    if (from.lookAt) {
+      const fromLookAt = new THREE.Vector3(...from.lookAt);
+      lookAt = new THREE.Vector3(
+        THREE.MathUtils.lerp(fromLookAt.x, toLookAt.x, easedT),
+        THREE.MathUtils.lerp(fromLookAt.y, toLookAt.y, easedT),
+        THREE.MathUtils.lerp(fromLookAt.z, toLookAt.z, easedT)
+      );
+    } else {
+      lookAt = toLookAt;
+    }
   } else {
-    // Standard position interpolation
+    // Standard position interpolation (neither orbiting)
     position = new THREE.Vector3(
       THREE.MathUtils.lerp(from.position[0], to.position[0], easedT),
       THREE.MathUtils.lerp(from.position[1], to.position[1], easedT),

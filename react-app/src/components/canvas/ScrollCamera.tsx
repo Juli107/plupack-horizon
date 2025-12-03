@@ -1,5 +1,6 @@
 import { PerspectiveCamera } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import {
@@ -13,6 +14,7 @@ import {
 // ============================================
 // This component moves the camera based on scroll position
 // using keyframes defined in cameraKeyframes.ts
+// Uses Lenis scroll values for smooth syncing
 
 const LERP_FACTOR = 0.08;
 
@@ -35,7 +37,7 @@ export function ScrollCamera() {
   const targetFov = useRef(45);
 
   // Track if we're using lookAt or rotation
-  const useLookAt = useRef(true);
+  const useLookAtRef = useRef(true);
 
   // Set this camera as the default
   useEffect(() => {
@@ -44,43 +46,35 @@ export function ScrollCamera() {
     }
   }, [set]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Get scroll progress (0 to 100 percent)
-      const scrollHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = (window.scrollY / scrollHeight) * 100;
+  // Use Lenis scroll for smooth, synced scrolling
+  useLenis((lenis) => {
+    // Get scroll progress (0 to 100 percent) from Lenis
+    const scrollPercent = lenis.progress * 100;
 
-      // Find surrounding keyframes and interpolate
-      const { from, to, t } = findSurroundingKeyframes(
-        scrollPercent,
-        cameraKeyframes
-      );
-      const interpolated = interpolateKeyframes(from, to, t);
+    // console.log('Scroll Percent:', scrollPercent);
 
-      // Set target values
-      targetPosition.current.copy(interpolated.position);
-      targetFov.current = interpolated.fov;
+    // Find surrounding keyframes and interpolate
+    const { from, to, t } = findSurroundingKeyframes(
+      scrollPercent,
+      cameraKeyframes
+    );
+    const interpolated = interpolateKeyframes(from, to, t);
 
-      // Handle lookAt vs rotation
-      if (interpolated.lookAt) {
-        targetLookAt.current = interpolated.lookAt;
-        targetRotation.current = null;
-        useLookAt.current = true;
-      } else if (interpolated.rotation) {
-        targetRotation.current = interpolated.rotation;
-        targetLookAt.current = null;
-        useLookAt.current = false;
-      }
-    };
+    // Set target values
+    targetPosition.current.copy(interpolated.position);
+    targetFov.current = interpolated.fov;
 
-    window.addEventListener('scroll', handleScroll, {
-      passive: true,
-    });
-    handleScroll(); // Initial call
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    // Handle lookAt vs rotation
+    if (interpolated.lookAt) {
+      targetLookAt.current = interpolated.lookAt;
+      targetRotation.current = null;
+      useLookAtRef.current = true;
+    } else if (interpolated.rotation) {
+      targetRotation.current = interpolated.rotation;
+      targetLookAt.current = null;
+      useLookAtRef.current = false;
+    }
+  });
 
   useFrame(() => {
     if (!cameraRef.current) return;
@@ -90,7 +84,7 @@ export function ScrollCamera() {
     cameraRef.current.position.copy(currentPosition.current);
 
     // Handle rotation - either via lookAt or direct rotation
-    if (useLookAt.current && targetLookAt.current) {
+    if (useLookAtRef.current && targetLookAt.current) {
       // Lerp lookAt target
       currentLookAt.current.lerp(targetLookAt.current, LERP_FACTOR);
       cameraRef.current.lookAt(currentLookAt.current);

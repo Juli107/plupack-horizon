@@ -1,17 +1,16 @@
-import { Environment, Float } from '@react-three/drei';
-import { Canvas, useFrame } from '@react-three/fiber';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
+import type { LenisRef } from 'lenis/react';
+import { ReactLenis, useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
 import { useShopifyTheme } from '../hooks/useShopifyTheme';
-import { Hero } from './hero/Hero';
-import { ServicesSection } from './ServicesSection';
-import { IndustryDynamicsSection } from './IndustryDynamicsSection';
-import { NoiseOverlay } from './NoiseOverlay';
 import { GlobalCanvas } from './GlobalCanvas';
+import { Hero } from './hero/Hero';
+import { IndustryDynamicsSection } from './IndustryDynamicsSection';
+import { IndustrySections } from './IndustrySections';
+import { NoiseOverlay } from './NoiseOverlay';
+import { ServicesSection } from './ServicesSection';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -61,53 +60,30 @@ function useHeaderTintControl() {
 }
 
 // ============================================
-// LENIS SMOOTH SCROLL PROVIDER
+// LENIS GSAP INTEGRATION HOOK
 // ============================================
-function useLenis() {
+// This hook syncs Lenis with GSAP ScrollTrigger
+function useLenisGSAP(lenisRef: React.RefObject<LenisRef | null>) {
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-    });
+    // Add Lenis raf to GSAP ticker
+    function update(time: number) {
+      lenisRef.current?.lenis?.raf(time * 1000);
+    }
+    gsap.ticker.add(update);
 
-    // Connect Lenis to GSAP ScrollTrigger
-    lenis.on('scroll', ScrollTrigger.update);
-
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
+    // Disable lag smoothing for immediate responsiveness
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(update);
     };
-  }, []);
+  }, [lenisRef]);
+
+  // Use useLenis to sync with ScrollTrigger (runs on every scroll)
+  useLenis(() => {
+    ScrollTrigger.update();
+  });
 }
-
-// ============================================
-// 3D SCENE COMPONENTS
-// ============================================
-// (Removed old hero components: AnimatedSphere, FloatingElements)
-
-// ============================================
-// 2D OVERLAY COMPONENTS (Above 3D)
-// ============================================
-// (Removed old hero components: TextOverlay)
-
-// ============================================
-// 2D BACKGROUND LAYER (Behind 3D)
-// ============================================
-// (Removed old hero components: BackgroundLayer)
-
-// ============================================
-// SCROLL INDICATOR
-// ============================================
-// (Removed old hero components: ScrollIndicator)
 
 // ============================================
 // UTILITY FUNCTIONS
@@ -141,13 +117,15 @@ interface HomepageProps {
 
 export function Homepage({
   backgroundColor = '#146C90',
-  shopName = 'Store',
   accentColor = '#ffffff',
   headingText: _headingText,
   subheadingText: _subheadingText,
 }: HomepageProps) {
-  // Initialize Lenis smooth scroll
-  useLenis();
+  // Lenis ref for GSAP integration
+  const lenisRef = useRef<LenisRef>(null);
+
+  // Sync Lenis with GSAP ScrollTrigger
+  useLenisGSAP(lenisRef);
 
   // Header tint controller
   const { setHeaderTint } = useHeaderTintControl();
@@ -157,32 +135,39 @@ export function Homepage({
   }, []);
 
   return (
-    <main
-      className="relative w-full overflow-x-hidden"
-      style={{ backgroundColor: backgroundColor }}
+    <ReactLenis
+      root
+      ref={lenisRef}
+      options={{
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        autoRaf: false,
+      }}
     >
-      {/* Global fixed 3D canvas - scroll synced camera */}
-      <GlobalCanvas />
+      <main
+        className="relative w-full overflow-x-hidden"
+        style={{ backgroundColor: backgroundColor }}
+      >
+        {/* Global fixed 3D canvas - scroll synced camera */}
+        <GlobalCanvas />
 
-      <NoiseOverlay />
-      <Hero />
-      <ServicesSection />
-      <IndustryDynamicsSection />
+        <NoiseOverlay />
+        <Hero />
+        <ServicesSection />
+        <IndustryDynamicsSection />
+        <IndustrySections />
 
-      {/* Additional scroll content for demo */}
-      <ScrollSections
-        backgroundColor={backgroundColor}
-        accentColor={accentColor}
-        setHeaderTint={setHeaderTint}
-      />
-
-      {/* Pre-footer with 3D floating packaging */}
-      <PreFooter
-        backgroundColor={backgroundColor}
-        accentColor={accentColor}
-        shopName={shopName}
-      />
-    </main>
+        {/* Additional scroll content for demo */}
+        <ScrollSections
+          backgroundColor={backgroundColor}
+          accentColor={accentColor}
+          setHeaderTint={setHeaderTint}
+        />
+      </main>
+    </ReactLenis>
   );
 }
 
@@ -347,315 +332,5 @@ function ScrollSections({
         </div>
       </section>
     </>
-  );
-}
-
-// ============================================
-// PRE-FOOTER 3D PACKAGING SCENE
-// ============================================
-
-// Floating 3D box/packaging component
-function PackagingBox({
-  position,
-  rotation,
-  scale = 1,
-  color = '#8a9ba8',
-}: {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale?: number;
-  color?: string;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    // Gentle floating animation
-    meshRef.current.rotation.x =
-      rotation[0] + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-    meshRef.current.rotation.y =
-      rotation[1] + state.clock.elapsedTime * 0.2;
-    meshRef.current.position.y =
-      position[1] + Math.sin(state.clock.elapsedTime * 0.8) * 0.15;
-  });
-
-  return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
-      <mesh ref={meshRef} position={position} scale={scale}>
-        <boxGeometry args={[1, 1.2, 0.8]} />
-        <meshStandardMaterial
-          color={color}
-          metalness={0.1}
-          roughness={0.6}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-// Tape roll packaging component
-function TapeRoll({
-  position,
-  rotation,
-  scale = 1,
-}: {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale?: number;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    meshRef.current.rotation.z =
-      rotation[2] + state.clock.elapsedTime * 0.3;
-    meshRef.current.position.y =
-      position[1] + Math.sin(state.clock.elapsedTime * 0.6 + 1) * 0.1;
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={0.4} floatIntensity={0.6}>
-      <mesh
-        ref={meshRef}
-        position={position}
-        rotation={rotation}
-        scale={scale}
-      >
-        <torusGeometry args={[0.5, 0.25, 16, 32]} />
-        <meshStandardMaterial
-          color="#b8c5d0"
-          metalness={0.2}
-          roughness={0.5}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-// Bubble wrap / cylinder packaging
-function BubbleWrapRoll({
-  position,
-  rotation,
-  scale = 1,
-}: {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale?: number;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    meshRef.current.rotation.x =
-      rotation[0] + state.clock.elapsedTime * 0.15;
-    meshRef.current.position.y =
-      position[1] +
-      Math.sin(state.clock.elapsedTime * 0.7 + 2) * 0.12;
-  });
-
-  return (
-    <Float speed={1.8} rotationIntensity={0.2} floatIntensity={0.4}>
-      <mesh
-        ref={meshRef}
-        position={position}
-        rotation={rotation}
-        scale={scale}
-      >
-        <cylinderGeometry args={[0.4, 0.4, 1.5, 32]} />
-        <meshStandardMaterial
-          color="#a0adb8"
-          metalness={0.05}
-          roughness={0.7}
-          transparent
-          opacity={0.9}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-// Pre-footer 3D scene
-function PreFooter3DScene() {
-  return (
-    <>
-      <Environment preset="city" />
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={0.8} />
-      <pointLight
-        position={[-5, 3, -5]}
-        intensity={0.4}
-        color="#4a90a4"
-      />
-
-      {/* Scattered packaging elements */}
-      {/* Left side */}
-      <PackagingBox
-        position={[-4, 1, -1]}
-        rotation={[0.3, 0.5, 0.1]}
-        scale={0.8}
-      />
-      <TapeRoll
-        position={[-3, -0.5, 0]}
-        rotation={[1.2, 0, 0.3]}
-        scale={0.6}
-      />
-      <BubbleWrapRoll
-        position={[-5, 0.5, -2]}
-        rotation={[0.5, 0, 1.5]}
-        scale={0.7}
-      />
-
-      {/* Right side */}
-      <PackagingBox
-        position={[4, 0.5, -1]}
-        rotation={[-0.2, -0.4, 0.15]}
-        scale={0.9}
-        color="#7a8b98"
-      />
-      <TapeRoll
-        position={[3.5, -0.8, 0.5]}
-        rotation={[0.8, 0.5, 0]}
-        scale={0.5}
-      />
-      <BubbleWrapRoll
-        position={[5, 1, -1.5]}
-        rotation={[0.3, 0.2, 0.8]}
-        scale={0.6}
-      />
-
-      {/* Top scattered */}
-      <PackagingBox
-        position={[-2, 2.5, -2]}
-        rotation={[0.5, 1, 0.3]}
-        scale={0.5}
-        color="#95a5b0"
-      />
-      <PackagingBox
-        position={[2.5, 2, -1.5]}
-        rotation={[-0.3, 0.8, -0.2]}
-        scale={0.6}
-      />
-      <TapeRoll
-        position={[0, 2.8, -1]}
-        rotation={[1.5, 0, 0.5]}
-        scale={0.4}
-      />
-
-      {/* Bottom scattered */}
-      <PackagingBox
-        position={[-1.5, -1.5, 0]}
-        rotation={[0.2, -0.3, 0.4]}
-        scale={0.7}
-      />
-      <BubbleWrapRoll
-        position={[1.5, -1.8, -0.5]}
-        rotation={[0.8, 0.3, 1.2]}
-        scale={0.5}
-      />
-    </>
-  );
-}
-
-// Pre-footer section component
-interface PreFooterProps {
-  backgroundColor: string;
-  accentColor: string;
-  shopName: string;
-}
-
-function PreFooter({ backgroundColor, accentColor }: PreFooterProps) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    // Logo entrance animation
-    gsap.from(logoRef.current, {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 70%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-  }, []);
-
-  return (
-    <section
-      ref={sectionRef}
-      style={{
-        position: 'relative',
-        width: '100%',
-        minHeight: '80vh',
-        background: backgroundColor,
-        overflow: 'hidden',
-      }}
-    >
-      {/* 3D Canvas with floating packaging */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-        }}
-      >
-        <Canvas
-          camera={{ position: [0, 0, 8], fov: 50 }}
-          gl={{ antialias: true, alpha: true }}
-          style={{ background: 'transparent' }}
-        >
-          <PreFooter3DScene />
-        </Canvas>
-      </div>
-
-      {/* Logo overlay */}
-      <div
-        ref={logoRef}
-        style={{
-          position: 'absolute',
-          bottom: '15%',
-          left: '5%',
-          zIndex: 10,
-          pointerEvents: 'none',
-        }}
-      >
-        {/* Logo text - you can replace this with an actual logo image */}
-        <div
-          style={{
-            color: accentColor,
-            fontFamily: 'system-ui, sans-serif',
-          }}
-        >
-          <h2
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 4rem)',
-              fontWeight: 700,
-              margin: 0,
-              lineHeight: 1,
-            }}
-          >
-            <span style={{ fontWeight: 300 }}>PLU</span>PACK
-            <sup
-              style={{ fontSize: '0.3em', verticalAlign: 'super' }}
-            >
-              ®
-            </sup>
-          </h2>
-          <p
-            style={{
-              fontSize: 'clamp(0.8rem, 2vw, 1.2rem)',
-              fontWeight: 400,
-              margin: 0,
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-            }}
-          >
-            EMBALAJES
-          </p>
-        </div>
-      </div>
-    </section>
   );
 }
