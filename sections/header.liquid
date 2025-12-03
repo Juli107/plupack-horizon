@@ -648,34 +648,29 @@
 {% endunless %}
 
 <style>
-  /* Header AZUL para páginas internas (siempre) */
+  /* MÁXIMA ESPECIFICIDAD: Header azul sólido */
   
-  #header-component.header--internal,
-  .header--internal .header__row,
-  .header--internal .header__row--top,
-  .header--internal .header__row--bottom,
-  .header--internal .header__row.color-scheme-1,
-  .header--internal [class*="color-"] {
-    --color-background: #2773A8 !important;
-    --color-background-rgb: 39, 115, 168 !important;
-    --header-bg-color: #2773A8 !important;
-    --color-foreground: #ffffff !important;
-    --color-foreground-rgb: 255, 255, 255 !important;
+  html body .header-section #header-component.header--internal .header__row--top.color-scheme-1,
+  html body .header-section #header-component.header--internal .header__row.color-scheme-1,
+  html body #header-component.header--internal .header__row--top,
+  html body #header-component.header--internal .header__row {
     background: #2773A8 !important;
     background-color: #2773A8 !important;
-    color: #ffffff !important;
+    --color-background: 39, 115, 168 !important;
+    --color-background-rgb: 39, 115, 168 !important;
   }
   
-  /* Asegurar que links e iconos sean blancos */
-  .header--internal a,
-  .header--internal button,
-  .header--internal svg {
-    color: #ffffff !important;
+  html body #header-component.header--internal {
+    background: #2773A8 !important;
+    background-color: #2773A8 !important;
   }
   
-  /* Borde sutil abajo */
-  .header--internal .header__row--top {
-    border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+  /* Texto blanco con especificidad alta */
+  html body #header-component.header--internal .header__row--top,
+  html body #header-component.header--internal .header__row--top * {
+    --color-foreground: 255, 255, 255 !important;
+    --color-foreground-rgb: 255, 255, 255 !important;
+    color: #ffffff !important;
   }
 </style>
 
