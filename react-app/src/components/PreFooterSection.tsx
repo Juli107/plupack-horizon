@@ -121,7 +121,7 @@ export function PreFooterSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden z-10"
+      className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden"
     >
       {/* Blur Overlay - sits above the 3D canvas (GlobalCanvas is z-10) */}
       <div

@@ -13,6 +13,7 @@ import { StockSection } from './StockSection';
 import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { PreFooterSection } from './PreFooterSection';
 import { GlobalCanvas } from './GlobalCanvas';
+import { LoadingScreen } from './LoadingScreen';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -138,6 +139,9 @@ export function Homepage({
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
         <GlobalCanvas />
+
+        {/* Loading Screen Overlay */}
+        <LoadingScreen />
 
         <NoiseOverlay />
         <Hero />
