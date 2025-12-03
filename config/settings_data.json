@@ -9,8 +9,8 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/plupack.svg",
-    "logo_inverse": "shopify://shop_images/plupack_blue.svg",
+    "logo": "shopify://shop_images/download.svg",
+    "logo_inverse": "shopify://shop_images/plupack.svg",
     "logo_height": 36,
     "logo_height_mobile": 28,
     "type_body_font": "open_sans_n4",

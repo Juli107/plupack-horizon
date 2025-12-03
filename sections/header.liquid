@@ -14,15 +14,12 @@
     assign search_style = 'modal'
   endif
 
-  if section.settings.enable_transparent_header_home and template.name == 'index'
+  assign transparent = nil
+  assign transparent_color_scheme = nil
+
+  if template.name == 'index' and section.settings.enable_transparent_header_home
     assign transparent = 'always'
     assign transparent_color_scheme = section.settings.home_color_scheme
-  elsif section.settings.enable_transparent_header_product and template.name == 'product'
-    assign transparent = 'always'
-    assign transparent_color_scheme = section.settings.product_color_scheme
-  elsif section.settings.enable_transparent_header_collection and template.name == 'collection'
-    assign transparent = 'always'
-    assign transparent_color_scheme = section.settings.collection_color_scheme
   endif
 
   if section.settings.enable_sticky_header == 'always'
@@ -31,9 +28,6 @@
     assign sticky = 'scroll-up'
   endif
 
-  if transparent and sticky
-    assign transparent = 'not-sticky'
-  endif
 
   if transparent
     if transparent_color_scheme == 'inverse'
@@ -155,6 +149,12 @@
   endif
 
   assign class = 'header'
+
+  if template.name == 'index'
+     assign class = class | append: ' header--home'
+  else
+    assign class = class | append: ' header--internal'
+  endif
 
   if transparent_color_scheme
     assign class = class | append: ' ' | append: transparent_color_scheme
@@ -641,7 +641,6 @@
     }
   }
 {% endstylesheet %}
-
 {% unless request.design_mode %}
   <script type="module">
     import { hydrate } from '@theme/section-hydration';
@@ -650,6 +649,33 @@
     hydrate('{{ section.id }}', url);
   </script>
 {% endunless %}
+
+<style>
+  /* FIX: Matar color-scheme-1 en header interno con scroll activo */
+  
+  .header--internal[data-sticky-state="active"] .color-scheme-1,
+  .header--internal[data-sticky-state="active"] .header__row.color-scheme-1,
+  .header--internal[data-sticky-state="active"] .header__row--top.color-scheme-1 {
+    --color-background: 255, 255, 255 !important;
+    --color-background-rgb: 255, 255, 255 !important;
+    --color-foreground: 26, 26, 26 !important;
+    --color-foreground-rgb: 26, 26, 26 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+  }
+  
+  /* Asegurar que el header-component padre tampoco tenga fondo azul */
+  #header-component.header--internal[data-sticky-state="active"] {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+  }
+  
+  /* Borde sutil */
+  .header--internal[data-sticky-state="active"] .header__row--top {
+    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+  }
+</style>
 
 {% schema %}
 {
