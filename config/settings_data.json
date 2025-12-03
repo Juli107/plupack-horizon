@@ -635,8 +635,6 @@
     }
   },
   "platform_customizations": {
-    "custom_css": [
-      "/* Forzar header BLANCO en TODAS las páginas que NO son Home */body:not(.template-index) #header-group .header__row,body:not(.template-index) #header-group .header__row--mobile {background-color: #ffffff !important; --header-bg-color: #ffffff !important;}"
-    ]
+    "custom_css": []
   }
 }
