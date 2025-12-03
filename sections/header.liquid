@@ -648,34 +648,29 @@
 {% endunless %}
 
 <style>
-  /* FIX: Matar color-scheme-1 en header interno con scroll activo */
-
-  .header--internal[data-sticky-state='active'] .color-scheme-1,
-  .header--internal[data-sticky-state='active'] .header__row.color-scheme-1,
-  .header--internal[data-sticky-state='active'] .header__row--top.color-scheme-1 {
-    --color-background: 255, 255, 255 !important;
-    --color-background-rgb: 255, 255, 255 !important;
-    --color-foreground: 26, 26, 26 !important;
-    --color-foreground-rgb: 26, 26, 26 !important;
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    color: #1a1a1a !important;
+  /* MÁXIMA ESPECIFICIDAD: Header azul sólido */
+  
+  html body .header-section #header-component.header--internal .header__row--top.color-scheme-1,
+  html body .header-section #header-component.header--internal .header__row.color-scheme-1,
+  html body #header-component.header--internal .header__row--top,
+  html body #header-component.header--internal .header__row {
+    background: #2773A8 !important;
+    background-color: #2773A8 !important;
+    --color-background: 39, 115, 168 !important;
+    --color-background-rgb: 39, 115, 168 !important;
   }
-
-  /* Asegurar que el header-component padre tampoco tenga fondo azul */
-  #header-component.header--internal[data-sticky-state='active'] {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
+  
+  html body #header-component.header--internal {
+    background: #2773A8 !important;
+    background-color: #2773A8 !important;
   }
-
-  /* Borde sutil */
-  .header--internal[data-sticky-state='active'] .header__row--top {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
-  }
-
-  /* Force header z-index */
-  .header-section {
-    z-index: 50 !important;
+  
+  /* Texto blanco con especificidad alta */
+  html body #header-component.header--internal .header__row--top,
+  html body #header-component.header--internal .header__row--top * {
+    --color-foreground: 255, 255, 255 !important;
+    --color-foreground-rgb: 255, 255, 255 !important;
+    color: #ffffff !important;
   }
 </style>
 
