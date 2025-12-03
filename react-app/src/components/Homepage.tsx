@@ -11,6 +11,7 @@ import { NoiseOverlay } from './NoiseOverlay';
 import { ServicesSection } from './ServicesSection';
 import { StockSection } from './StockSection';
 import { PurchaseProcessSection } from './PurchaseProcessSection';
+import { PreFooterSection } from './PreFooterSection';
 import { GlobalCanvas } from './GlobalCanvas';
 
 // Register GSAP plugins
@@ -145,6 +146,7 @@ export function Homepage({
         <IndustrySections />
         <StockSection />
         <PurchaseProcessSection />
+        <PreFooterSection />
       </main>
     </ReactLenis>
   );

@@ -13,7 +13,7 @@ export function GlobalCanvas() {
     <div className="fixed inset-0 z-10 pointer-events-none w-screen h-screen">
       <Canvas
         gl={{ antialias: true, alpha: true }}
-        className="bg-transparent"
+        className="bg-transparent pointer-events-none"
       >
         {/* Camera is controlled by ScrollCamera using keyframes */}
         <ScrollCamera />

@@ -117,6 +117,8 @@ export interface ShopifyAssets {
   institution1?: string;
   institution2?: string;
   institution3?: string;
+  logoInverse?: string | null;
+  logo?: string | null;
 }
 
 export interface ShopifyData {

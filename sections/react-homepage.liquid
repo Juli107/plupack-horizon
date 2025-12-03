@@ -40,7 +40,9 @@
       gastronomy3: {{ 'gastronomy-3.webp' | asset_url | json }},
       institution1: {{ 'institution-1.webp' | asset_url | json }},
       institution2: {{ 'institution-2.webp' | asset_url | json }},
-      institution3: {{ 'institution-3.webp' | asset_url | json }}
+      institution3: {{ 'institution-3.webp' | asset_url | json }},
+      logoInverse: {% if settings.logo_inverse %}{{ settings.logo_inverse | image_url: width: 600 | json }}{% else %}null{% endif %},
+      logo: {% if settings.logo %}{{ settings.logo | image_url: width: 600 | json }}{% else %}null{% endif %}
     },
 
     // Section settings (from schema below)
