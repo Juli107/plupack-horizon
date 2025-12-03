@@ -212,6 +212,24 @@
   };
 </script>
 
+{% comment %} 
+  Critical CSS for loading screen - prevents flash before React hydrates
+  This ensures the loading screen background is visible immediately
+{% endcomment %}
+<style>
+  .plupack-loading-screen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    z-index: 2147483647 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #146C90 !important;
+  }
+</style>
+
 {% comment %} Mount point for React app {% endcomment %}
 <div
   id="react-homepage"
