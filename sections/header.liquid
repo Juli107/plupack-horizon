@@ -651,20 +651,29 @@
 {% endunless %}
 
 <style>
-  /* PARCHE DE EMERGENCIA PARA HEADER */
-
-  /* 1. MATAR EL COLOR AZUL: Fuerza el fondo a BLANCO cuando haces scroll.
-      Si prefieres otro color (ej. negro), cambia #ffffff por #000000 */
-  .header[data-sticky-state="active"] .header__row {
-    background-color: #ffffff !important; 
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+  /* FIX: Matar color-scheme-1 en header interno con scroll activo */
+  
+  .header--internal[data-sticky-state="active"] .color-scheme-1,
+  .header--internal[data-sticky-state="active"] .header__row.color-scheme-1,
+  .header--internal[data-sticky-state="active"] .header__row--top.color-scheme-1 {
+    --color-background: 255, 255, 255 !important;
+    --color-background-rgb: 255, 255, 255 !important;
+    --color-foreground: 26, 26, 26 !important;
+    --color-foreground-rgb: 26, 26, 26 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
   }
-
-  /* 2. CONGELAR EL LOGO: Evita que el logo cambie al hacer scroll en el Home.
-      Fuerza a que se mantenga el "logo inverso" (el que sale al principio). */
-  .header[transparent][data-sticky-state="active"] {
-    --header-logo-display: none !important;
-    --header-logo-inverse-display: block !important;
+  
+  /* Asegurar que el header-component padre tampoco tenga fondo azul */
+  #header-component.header--internal[data-sticky-state="active"] {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+  }
+  
+  /* Borde sutil */
+  .header--internal[data-sticky-state="active"] .header__row--top {
+    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
   }
 </style>
 
