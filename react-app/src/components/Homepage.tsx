@@ -11,6 +11,7 @@ import { IndustryDynamicsSection } from './IndustryDynamicsSection';
 import { IndustrySections } from './IndustrySections';
 import { NoiseOverlay } from './NoiseOverlay';
 import { ServicesSection } from './ServicesSection';
+import { StockSection } from './StockSection';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -159,6 +160,7 @@ export function Homepage({
         <ServicesSection />
         <IndustryDynamicsSection />
         <IndustrySections />
+        <StockSection />
 
         {/* Additional scroll content for demo */}
         <ScrollSections
@@ -259,23 +261,6 @@ function ScrollSections({
 
   return (
     <>
-      <section
-        ref={section1Ref}
-        style={{
-          ...sectionStyle,
-          background: adjustColor(backgroundColor, -20),
-        }}
-      >
-        <div className="content" style={contentStyle}>
-          <h2 style={headingStyle}>Section One</h2>
-          <p style={{ fontSize: '1.2rem', opacity: 0.8 }}>
-            This content animates in as you scroll. Lenis provides
-            smooth scrolling, while GSAP ScrollTrigger handles the
-            reveal animations.
-          </p>
-        </div>
-      </section>
-
       <section
         ref={section2Ref}
         style={{

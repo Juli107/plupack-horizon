@@ -42,6 +42,33 @@
       subheadingText: {{ section.settings.subheading_text | json }}
     },
 
+    // Stock Section settings and images
+    stockSection: {
+      title: {{ section.settings.stock_section_title | json }},
+      buttonText: {{ section.settings.stock_section_button_text | json }},
+      buttonUrl: {{ section.settings.stock_section_button_url | json }},
+      productImages: [
+        {% if section.settings.stock_image_1 != blank %}
+          { src: {{ section.settings.stock_image_1 | image_url: width: 400 | json }}, alt: "Stock product 1" },
+        {% endif %}
+        {% if section.settings.stock_image_2 != blank %}
+          { src: {{ section.settings.stock_image_2 | image_url: width: 400 | json }}, alt: "Stock product 2" },
+        {% endif %}
+        {% if section.settings.stock_image_3 != blank %}
+          { src: {{ section.settings.stock_image_3 | image_url: width: 400 | json }}, alt: "Stock product 3" },
+        {% endif %}
+        {% if section.settings.stock_image_4 != blank %}
+          { src: {{ section.settings.stock_image_4 | image_url: width: 400 | json }}, alt: "Stock product 4" },
+        {% endif %}
+        {% if section.settings.stock_image_5 != blank %}
+          { src: {{ section.settings.stock_image_5 | image_url: width: 400 | json }}, alt: "Stock product 5" },
+        {% endif %}
+        {% if section.settings.stock_image_6 != blank %}
+          { src: {{ section.settings.stock_image_6 | image_url: width: 400 | json }}, alt: "Stock product 6" },
+        {% endif %}
+      ]
+    },
+
     // ============================================
     // THEME-WIDE SETTINGS (single source of truth)
     // These come from Theme Settings in Shopify Admin
@@ -236,6 +263,58 @@
     {
       "type": "header",
       "content": "Hero Content"
+    },
+    {
+      "type": "header",
+      "content": "Stock Section"
+    },
+    {
+      "type": "text",
+      "id": "stock_section_title",
+      "label": "Stock Section Title",
+      "default": "+170 PRODUCTOS EN STOCK PERMANENTE"
+    },
+    {
+      "type": "text",
+      "id": "stock_section_button_text",
+      "label": "Button Text",
+      "default": "Ver catálogo"
+    },
+    {
+      "type": "url",
+      "id": "stock_section_button_url",
+      "label": "Button URL",
+      "default": "/collections/all"
+    },
+    {
+      "type": "image_picker",
+      "id": "stock_image_1",
+      "label": "Stock Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "stock_image_2",
+      "label": "Stock Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "stock_image_3",
+      "label": "Stock Image 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "stock_image_4",
+      "label": "Stock Image 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "stock_image_5",
+      "label": "Stock Image 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "stock_image_6",
+      "label": "Stock Image 6"
     }
   ],
   "presets": [

@@ -1,7 +1,6 @@
 import { Environment } from '@react-three/drei';
 import { Carousel } from '../hero/Carousel';
 import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // ============================================
