@@ -212,35 +212,42 @@
   };
 </script>
 
-{% comment %} 
+{% comment %}
   Liquid Loading Screen - Shows IMMEDIATELY before React loads
   React will hide this once it mounts its own loading screen
 {% endcomment %}
-<div id="liquid-loading-screen" style="
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100dvh;
-  z-index: 2147483647;
-  margin: 0;
-  padding: 0;
-  background-color: #146C90;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-">
-  <div style="
-    position: absolute;
-    bottom: 32px;
-    left: 32px;
-    font-size: 128px;
-    font-weight: 300;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    color: #ffffff;
-    font-family: system-ui, -apple-system, sans-serif;
-  ">0%</div>
+<div
+  id="liquid-loading-screen"
+  style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 2147483647;
+    margin: 0;
+    padding: 0;
+    background-color: #146C90;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+  "
+>
+  <div
+    style="
+      position: absolute;
+      bottom: 32px;
+      left: 32px;
+      font-size: 128px;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+    "
+  >
+    0%
+  </div>
 </div>
 
 <style>
@@ -255,12 +262,12 @@
     margin: 0 !important;
     padding: 0 !important;
   }
-  
+
   /* Hide Liquid loading screen once React takes over */
   .react-loaded #liquid-loading-screen {
     display: none !important;
   }
-  
+
   @media (max-width: 768px) {
     #liquid-loading-screen > div {
       font-size: 64px !important;
