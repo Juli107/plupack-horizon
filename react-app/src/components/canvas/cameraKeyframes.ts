@@ -139,10 +139,22 @@ export const cameraKeyframes: CameraKeyframe[] = [
   },
 
   {
+    scrollPercent: 90,
+    position: [-6, 0, 10],
+    lookAt: [-6, 0, -5],
+    fov: 50,
+  },
+
+  {
+    scrollPercent: 98,
+    position: [-6, -14, 10],
+    lookAt: [-6, -16, -5],
+  },
+
+  {
     scrollPercent: 100,
-    position: [-6, -2, 10],
-    lookAt: [-6, -10, -5],
-    fov: 45,
+    position: [-6, -18, 10],
+    lookAt: [-6, -18, -5],
   },
 ];
 

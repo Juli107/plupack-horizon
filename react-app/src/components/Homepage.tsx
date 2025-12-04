@@ -4,15 +4,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LenisRef } from 'lenis/react';
 import { ReactLenis, useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
+import { GlobalCanvas } from './GlobalCanvas';
 import { Hero } from './hero/Hero';
 import { IndustryDynamicsSection } from './IndustryDynamicsSection';
 import { IndustrySections } from './IndustrySections';
 import { NoiseOverlay } from './NoiseOverlay';
+import { PreFooterSection } from './PreFooterSection';
+import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ServicesSection } from './ServicesSection';
 import { StockSection } from './StockSection';
-import { PurchaseProcessSection } from './PurchaseProcessSection';
-import { PreFooterSection } from './PreFooterSection';
-import { GlobalCanvas } from './GlobalCanvas';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -148,6 +148,7 @@ export function Homepage({
         <PurchaseProcessSection />
         <PreFooterSection />
       </main>
+      {/* <Footer /> */}
     </ReactLenis>
   );
 }

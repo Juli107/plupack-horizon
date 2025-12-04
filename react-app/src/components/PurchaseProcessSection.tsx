@@ -207,7 +207,7 @@ export function PurchaseProcessSection() {
   return (
     <div
       ref={containerRef}
-      className="relative py-28 md:py-40"
+      className="relative z-20 py-28 md:py-40"
       style={{ backgroundColor: '#E8ECF2' }}
     >
       <div className="w-full max-w-6xl mx-auto px-6 md:px-12">

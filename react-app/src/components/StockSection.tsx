@@ -353,7 +353,7 @@ export function StockSection({
   return (
     <div
       ref={containerRef}
-      className="relative"
+      className="relative z-20"
       style={{ backgroundColor: '#E8ECF2' }}
     >
       {/* Sticky container - sticks to top while scrolling through the section */}
