@@ -142,7 +142,7 @@
         ],
         "layout": "text",
         "section_width": "page-width",
-        "alignment": "center",
+        "alignment": "left",
         "image_position": "right",
         "color_scheme": "scheme-1",
         "padding-block-start": 40,
