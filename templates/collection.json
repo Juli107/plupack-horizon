@@ -137,9 +137,10 @@
       },
       "custom_css": [
         ".collection-links__count,.collection-links__image{display:none!important}",
-        ".collection-links__container{display:flex!important;flex-wrap:wrap;gap:8px 12px}",
-        ".collection-links__link{padding:6px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px}",
-        ".collection-links__link:hover,.collection-links__link[aria-current=\"true\"]{background:#2773A8;border-color:#2773A8;color:#fff}"
+        ".collection-links__container{display:flex!important;flex-wrap:wrap;gap:0 24px;border-bottom:1px solid #000;padding-bottom:12px}",
+        ".collection-links__link{padding:8px 0;font-size:14px;color:#666}",
+        ".collection-links__link:hover{color:#2773A8}",
+        ".collection-links__link[aria-current=\"true\"]{color:#2773A8;font-weight:600}"
       ],
       "name": "t:names.collection_links_text",
       "settings": {
