@@ -4296,3 +4296,15 @@ text-component {
     font-size: max(1rem, 100%);
   }
 }
+/* Botones más pequeños de altura */
+.add-to-cart-button,
+.shopify-payment-button__button {
+  height: auto !important;
+  min-height: auto !important;
+  padding: 6px 20px !important;
+  font-size: 12px !important;
+}
+
+.product-form-buttons {
+  --height-buy-buttons: auto !important;
+}
