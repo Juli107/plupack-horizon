@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { Homepage } from '@components/Homepage';
+import { LoadingScreen } from '@components/LoadingScreen';
 import { getShopifyData } from '../types/shopify';
 
 // Import Tailwind CSS v4 styles
@@ -10,14 +11,17 @@ const shopifyData = getShopifyData();
 
 function App() {
   return (
-    <Homepage
-      backgroundColor={
-        shopifyData.settings?.backgroundColor ?? '#146C90'
-      }
-      shopName={shopifyData.shop?.name ?? 'Store'}
-      headingText={shopifyData.settings?.headingText}
-      subheadingText={shopifyData.settings?.subheadingText}
-    />
+    <>
+      <LoadingScreen />
+      <Homepage
+        backgroundColor={
+          shopifyData.settings?.backgroundColor ?? '#146C90'
+        }
+        shopName={shopifyData.shop?.name ?? 'Store'}
+        headingText={shopifyData.settings?.headingText}
+        subheadingText={shopifyData.settings?.subheadingText}
+      />
+    </>
   );
 }
 

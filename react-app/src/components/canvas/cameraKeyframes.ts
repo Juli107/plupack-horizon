@@ -130,8 +130,19 @@ export const cameraKeyframes: CameraKeyframe[] = [
   // ============================================
   // TRANSITION TO FOOTER (75-100%)
   // ============================================
+
+  {
+    scrollPercent: 71,
+    position: [-8, -70, -8],
+    lookAt: [-8, -70, 0],
+    fov: 1,
+  },
+
   {
     scrollPercent: 100,
+    position: [-6, -2, 10],
+    lookAt: [-6, -10, -5],
+    fov: 45,
   },
 ];
 
