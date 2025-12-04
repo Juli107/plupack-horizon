@@ -135,6 +135,12 @@
           "block_order": []
         }
       },
+      "custom_css": [
+        ".collection-links__count,.collection-links__image{display:none!important}",
+        ".collection-links__container{display:flex!important;flex-wrap:wrap;gap:8px 12px}",
+        ".collection-links__link{padding:6px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px}",
+        ".collection-links__link:hover,.collection-links__link[aria-current=\"true\"]{background:#2773A8;border-color:#2773A8;color:#fff}"
+      ],
       "name": "t:names.collection_links_text",
       "settings": {
         "collection_list": [
