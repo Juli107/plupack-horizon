@@ -136,11 +136,11 @@
         }
       },
       "custom_css": [
-        ".collection-links__count,.collection-links__image{display:none!important}",
-        ".collection-links__container{display:flex!important;flex-wrap:wrap;gap:0 24px;border-bottom:1px solid #2773A8;padding-bottom:12px}",
-        ".collection-links__link{padding:8px 0;font-size:14px;color:#666!important}",
-        ".collection-links__link:hover{color:#333!important}",
-        ".collection-links__link[aria-current=\"true\"],.collection-links__link[aria-current=\"true\"]:hover{color:#2773A8!important;font-weight:600}"
+        ".collection-links__count,.collection-links__image {display: none !important;}",
+        ".collection-links__container {display: flex !important; flex-wrap: wrap; gap: 0 24px; border-bottom: 1px solid #2773a8; padding-bottom: 12px;}",
+        ".collection-links__link {padding: 8px 0; font-size: 14px; color: #666 !important;}",
+        ".collection-links__link:hover {color: #333 !important;}",
+        ".collection-links__link[aria-current=\"true\"],.collection-links__link[aria-current=\"true\"]:hover {color: #2773a8 !important; font-weight: 600;}"
       ],
       "name": "t:names.collection_links_text",
       "settings": {
@@ -175,8 +175,8 @@
             "show_filter_label": false,
             "enable_sorting": false,
             "enable_grid_density": false,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-1",
             "padding-block-start": 8,
             "padding-block-end": 8,
             "padding-inline-start": 0,
