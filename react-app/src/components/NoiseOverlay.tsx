@@ -18,7 +18,7 @@ export function NoiseOverlay() {
 
   return (
     <div
-      className="fixed inset-0 z-9 pointer-events-none opacity-8 bg-repeat"
+      className="fixed inset-0 z-50 pointer-events-none opacity-8 bg-repeat"
       style={{
         mixBlendMode: 'soft-light',
         backgroundImage: `url(${noiseUrl})`,

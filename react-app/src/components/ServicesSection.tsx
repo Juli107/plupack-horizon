@@ -157,8 +157,12 @@ export function ServicesSection() {
                   NO FRENE TU PRODUCCIÓN
                 </span>
               </h2>
-              <p className="services-reveal-text text-xl md:text-2xl mt-8 font-['Montserrat'] uppercase tracking-widest opacity-90">
-                Nosotros ofrecemos
+              <p className="services-reveal-text mt-8 text-lg md:text-xl opacity-90 max-w-3xl mx-auto font-['Open_Sans']">
+                Dejá de gestionar compras aisladas y empezá a confiar
+                en un sistema. Reemplazamos la incertidumbre de tener
+                mil proveedores por un abastecimiento integral,
+                pensado para cuidar tu rentabilidad y que tu línea no
+                pare nunca.
               </p>
             </div>
           </div>

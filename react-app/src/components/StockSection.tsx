@@ -363,6 +363,7 @@ export function StockSection({
         style={{ backgroundColor: '#E8ECF2' }}
       >
         {/* Product Images - positioned absolutely from center */}
+        {/* These images are shared with SustainabilityLoopSection */}
         {productImages
           .slice(0, positions.length)
           .map((image, index) => (
@@ -371,7 +372,8 @@ export function StockSection({
               ref={(el) => {
                 imagesRef.current[index] = el;
               }}
-              className="absolute will-change-transform"
+              data-stock-image={index}
+              className="absolute will-change-transform stock-floating-image"
               style={{
                 width: isMobile
                   ? 'clamp(50px, 18vw, 100px)'

@@ -88,10 +88,11 @@ export function Hero() {
               className="text-md leading-relaxed mb-4"
               style={{ fontFamily: getFontFamily('body') }}
             >
-              Plupack es una empresa que se adapta a las necesidades
-              de cada cliente, apoyando sus necesidades de insumos de
-              embalajes y descartables. A su vez, también podemos
-              proveer de insumos de limpieza, textiles y de librería.
+              En Plupack nos adaptamos a la realidad operativa de cada
+              cliente, resolviendo el abastecimiento de embalajes y
+              descartables. Además, complementamos tu pedido con
+              insumos de limpieza, textiles y librería para que no
+              tengas que buscar en otro lado.
             </p>
 
             {/* Buttons */}

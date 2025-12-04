@@ -8,11 +8,12 @@ import { GlobalCanvas } from './GlobalCanvas';
 import { Hero } from './hero/Hero';
 import { IndustryDynamicsSection } from './IndustryDynamicsSection';
 import { IndustrySections } from './IndustrySections';
+import { LogisticsMapSection } from './LogisticsMapSection';
 import { NoiseOverlay } from './NoiseOverlay';
 import { PreFooterSection } from './PreFooterSection';
 import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ServicesSection } from './ServicesSection';
-import { StockSection } from './StockSection';
+import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -142,13 +143,16 @@ export function Homepage({
         <NoiseOverlay />
         <Hero />
         <ServicesSection />
+        {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
+        <LogisticsMapSection />
         <IndustryDynamicsSection />
         <IndustrySections />
-        <StockSection />
+        {/* COMBINED: Stock + Sustainability - Images persist across both phases */}
+        <StockSustainabilityWrapper />
         <PurchaseProcessSection />
         <PreFooterSection />
       </main>
-      {/* <Footer /> */}
+      {/* <div className="h-[603.99px]">Footer</div> */}
     </ReactLenis>
   );
 }

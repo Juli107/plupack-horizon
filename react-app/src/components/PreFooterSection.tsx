@@ -163,13 +163,12 @@ export function PreFooterSection() {
             Ver catálogo
           </a>
 
-          {/* Outlined Button - Cotizar mayoreo */}
           <a
             href="/pages/cotizar"
             className="px-10 py-3 bg-transparent border border-white text-white rounded-full font-semibold hover:bg-white/10 transition-colors uppercase text-sm tracking-wider"
             style={{ fontFamily: getFontFamily('body') }}
           >
-            Cotizar mayoreo
+            Cotizar Mayorista
           </a>
         </div>
       </div>
