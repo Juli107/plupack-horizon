@@ -139,7 +139,10 @@
       "settings": {
         "collection_list": [
           "todos-los-productos",
-          "embalajes-y-proteccion"
+          "embalajes-y-proteccion",
+          "descartables-e-higiene",
+          "cintas-y-adhesivos",
+          "papel-y-envoltura"
         ],
         "layout": "text",
         "section_width": "page-width",
