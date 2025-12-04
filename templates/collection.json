@@ -138,7 +138,8 @@
       "name": "t:names.collection_links_text",
       "settings": {
         "collection_list": [
-          "todos-los-productos"
+          "todos-los-productos",
+          "embalajes-y-proteccion"
         ],
         "layout": "text",
         "section_width": "page-width",
