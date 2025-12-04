@@ -215,6 +215,7 @@
 {% comment %} 
   Liquid Loading Screen - Shows IMMEDIATELY before React loads
   React will hide this once it mounts its own loading screen
+  Only shows on first visit (sessionStorage tracks if already shown)
 {% endcomment %}
 <div id="liquid-loading-screen" style="
   position: fixed;
@@ -242,6 +243,16 @@
     font-family: system-ui, -apple-system, sans-serif;
   ">0%</div>
 </div>
+
+<script>
+  // Hide Liquid loading screen immediately if already shown this session
+  (function() {
+    if (sessionStorage.getItem('plupack-loading-shown') === 'true') {
+      var loader = document.getElementById('liquid-loading-screen');
+      if (loader) loader.style.display = 'none';
+    }
+  })();
+</script>
 
 <style>
   /* Critical CSS for React loading screen */
