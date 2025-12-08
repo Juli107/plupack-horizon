@@ -167,7 +167,7 @@
           "type": "filters",
           "static": true,
           "settings": {
-            "enable_filtering": true,
+            "enable_filtering": false,
             "filter_style": "horizontal",
             "filter_width": "centered",
             "text_label_case": "default",
@@ -326,7 +326,11 @@
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 32
-      }
+      },
+      "custom_css": [
+        ".products-count-wrapper {display: none !important;}",
+        ".sorting-filter {margin-left: auto !important;}"
+      ]
     }
   },
   "order": [
