@@ -679,6 +679,32 @@
   html body #header-component.header--internal .cart-bubble__text-count {
     color: #000F9F !important;
   }
+
+  /* Cart drawer: resetear colores a negro */
+  html body #header-component.header--internal .cart-drawer__dialog,
+  html body #header-component.header--internal .cart-drawer__dialog * {
+    color: #000000 !important;
+    --color-foreground: 0, 0, 0 !important;
+    --color-foreground-rgb: 0, 0, 0 !important;
+  }
+
+  /* Cart drawer: título "Carrito" en azul */
+  .cart-drawer__heading,
+  html body #header-component.header--internal .cart-drawer__heading {
+    color: #2773A8 !important;
+  }
+
+  /* Cart drawer: botón Pagar con letras blancas */
+  .cart__checkout-button,
+  html body #header-component.header--internal .cart__checkout-button {
+    color: #ffffff !important;
+  }
+
+  /* Cart drawer: botón Aplicar con letras blancas */
+  .cart-discount__button,
+  html body #header-component.header--internal .cart-discount__button {
+    color: #ffffff !important;
+  }
 </style>
 
 {% schema %}
