@@ -14,6 +14,13 @@
   endif
 
   assign active_collection = collection_list | find: 'id', collection.id | default: collection_list.first
+
+  assign visible_limit = 5
+  assign total_collections = collection_list.size
+  assign show_more_button = false
+  if total_collections > visible_limit
+    assign show_more_button = true
+  endif
 %}
 
 <script
@@ -21,6 +28,21 @@
   type="module"
   fetchpriority="low"
 ></script>
+
+{% if show_more_button %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-toggle-collection-links]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var container = btn.closest('[data-collection-links-container]');
+        if (container) {
+          container.classList.toggle('collection-links--expanded');
+        }
+      });
+    });
+  });
+</script>
+{% endif %}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
@@ -36,8 +58,9 @@
     {% endif %}
   >
     <div
-      class="collection-links__container"
+      class="collection-links__container{% if show_more_button %} collection-links__container--has-more{% endif %}"
       ref="container"
+      data-collection-links-container
     >
       {% for collection in collection_list limit: limit %}
         {% liquid
@@ -55,6 +78,12 @@
           current: current
         %}
       {% endfor %}
+      {% if show_more_button %}
+        <button class="collection-links__toggle" data-toggle-collection-links type="button">
+          <span class="collection-links__toggle-more">Ver más</span>
+          <span class="collection-links__toggle-less">Ver menos</span>
+        </button>
+      {% endif %}
     </div>
 
     {% case section.settings.layout %}
@@ -189,6 +218,42 @@
         max-width: 100%;
       }
     }
+  }
+
+  /* Ver más toggle functionality */
+  .collection-links__container--has-more > .collection-links__link:nth-child(n+6) {
+    display: none;
+  }
+
+  .collection-links__container--has-more.collection-links--expanded > .collection-links__link:nth-child(n+6) {
+    display: flex;
+  }
+
+  .collection-links__toggle {
+    background: transparent;
+    border: none;
+    color: #2773A8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    text-decoration: underline;
+  }
+
+  .collection-links__toggle:hover {
+    opacity: 0.8;
+  }
+
+  .collection-links__toggle-less {
+    display: none;
+  }
+
+  .collection-links--expanded .collection-links__toggle-more {
+    display: none;
+  }
+
+  .collection-links--expanded .collection-links__toggle-less {
+    display: inline;
   }
 {% endstylesheet %}
 
