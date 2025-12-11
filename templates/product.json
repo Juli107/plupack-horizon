@@ -45,7 +45,7 @@
           "static": true,
           "settings": {
             "width": "custom",
-            "custom_width": 100,
+            "custom_width": 75,
             "width_mobile": "fit-content",
             "custom_width_mobile": 100,
             "height": "fit",
