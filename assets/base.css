@@ -4320,6 +4320,12 @@ text-component {
   }
 }
 
+/* Label "Tamaño" en color azul primario */
+.product-information .variant-option--dropdowns > label {
+  color: #2773a8 !important;
+  font-weight: 700 !important;
+}
+
 /* ===========================================
    BOTONES DE PRODUCTO INDIVIDUAL - Ajuste simple
    (Solo aplica a página de producto, no a colecciones)
