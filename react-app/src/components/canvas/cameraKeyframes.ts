@@ -56,7 +56,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
     fov: 45,
   },
   {
-    scrollPercent: 15,
+    scrollPercent: 10,
     position: [0, -12, -10],
     lookAt: [0, -12, -10],
     fov: 45,

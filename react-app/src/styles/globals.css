@@ -49,6 +49,152 @@
   cursor: pointer;
 }
 
+/* ============================================
+   AWWWARDS-LEVEL MICRO-INTERACTIONS
+   ============================================ */
+
+/* Smooth hover transitions for all interactive elements */
+#react-homepage a,
+#react-homepage button {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              color 0.2s ease;
+}
+
+/* Text selection styling */
+#react-homepage ::selection {
+  background-color: rgba(94, 234, 212, 0.3);
+  color: inherit;
+}
+
+/* Focus states for accessibility */
+#react-homepage a:focus-visible,
+#react-homepage button:focus-visible {
+  outline: 2px solid #5EEAD4;
+  outline-offset: 4px;
+}
+
+/* Smooth scrollbar styling */
+#react-homepage {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(27, 75, 107, 0.3) transparent;
+}
+
+#react-homepage::-webkit-scrollbar {
+  width: 8px;
+}
+
+#react-homepage::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#react-homepage::-webkit-scrollbar-thumb {
+  background: rgba(27, 75, 107, 0.3);
+  border-radius: 4px;
+}
+
+#react-homepage::-webkit-scrollbar-thumb:hover {
+  background: rgba(27, 75, 107, 0.5);
+}
+
+/* Glassmorphism utility */
+.glass-effect {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* Magnetic button base styles */
+.magnetic-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.magnetic-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(94, 234, 212, 0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+  border-radius: 50%;
+}
+
+.magnetic-btn:hover::before {
+  width: 200%;
+  height: 200%;
+}
+
+/* Text reveal animation utility */
+@keyframes text-reveal {
+  from {
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    clip-path: polygon(0 0%, 100% 0%, 100% 100%, 0 100%);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-text-reveal {
+  animation: text-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Liquid fill animation utility */
+@keyframes liquid-fill {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+/* Pulse animation for map dots */
+@keyframes gentle-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-gentle {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+/* Float animation for products */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #1B4B6B 0%, #5EEAD4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* 
   Custom theme extensions can be added here.
   Example:

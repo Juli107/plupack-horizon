@@ -1,7 +1,55 @@
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
+import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
 
 export function Hero() {
   const { getFontFamily } = useShopifyTheme();
+  const solidTextRef = useRef<SVGTextElement>(null);
+  const [animationTriggered, setAnimationTriggered] = useState(false);
+
+  // Listen for loading screen completion and trigger fill animation
+  useEffect(() => {
+    if (animationTriggered) return;
+
+    const checkLoadingComplete = () => {
+      const loadingScreen = document.querySelector('.plupack-loading-screen');
+      return !loadingScreen;
+    };
+
+    const startAnimation = () => {
+      if (!solidTextRef.current) return;
+      
+      // Animate the solid text opacity from 0 to 1, filling in over the outline
+      gsap.fromTo(solidTextRef.current, 
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          delay: 0.3,
+        }
+      );
+    };
+
+    const checkInterval = setInterval(() => {
+      if (checkLoadingComplete()) {
+        clearInterval(checkInterval);
+        setAnimationTriggered(true);
+        setTimeout(startAnimation, 200);
+      }
+    }, 100);
+
+    const fallbackTimeout = setTimeout(() => {
+      clearInterval(checkInterval);
+      setAnimationTriggered(true);
+      startAnimation();
+    }, 3000);
+
+    return () => {
+      clearInterval(checkInterval);
+      clearTimeout(fallbackTimeout);
+    };
+  }, [animationTriggered]);
 
   return (
     <section className="relative w-full h-screen">
@@ -18,14 +66,16 @@ export function Hero() {
               <span className="-tracking-wide">PARA CADA</span>
               <br />
               <div className="relative inline-block">
-                <div className="opacity-0 font-extrabold">
+                {/* Invisible placeholder for sizing */}
+                <div className="opacity-0 font-extrabold tracking-wider">
                   DINÁMICA
                 </div>
 
                 <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
                   <defs>
+                    {/* Outline filter - creates the stroke effect */}
                     <filter
-                      id="outline-filter"
+                      id="outline-filter-hero"
                       x="-20%"
                       y="-20%"
                       width="140%"
@@ -52,6 +102,8 @@ export function Hero() {
                       />
                     </filter>
                   </defs>
+                  
+                  {/* Outline text - always visible */}
                   <text
                     x="0.05em"
                     y="0.9em"
@@ -59,8 +111,24 @@ export function Hero() {
                     style={{
                       fontFamily: getFontFamily('heading'),
                       fontSize: 'inherit',
-                      filter: 'url(#outline-filter)',
+                      filter: 'url(#outline-filter-hero)',
                       fill: 'white',
+                    }}
+                  >
+                    DINÁMICA
+                  </text>
+                  
+                  {/* Solid fill text - fades in on top of outline */}
+                  <text
+                    ref={solidTextRef}
+                    x="0.05em"
+                    y="0.9em"
+                    className="font-extrabold tracking-wider"
+                    style={{
+                      fontFamily: getFontFamily('heading'),
+                      fontSize: 'inherit',
+                      fill: 'white',
+                      opacity: 0,
                     }}
                   >
                     DINÁMICA
@@ -88,7 +156,7 @@ export function Hero() {
               className="text-md leading-relaxed mb-4"
               style={{ fontFamily: getFontFamily('body') }}
             >
-              En Plupack nos adaptamos a la realidad operativa de cada
+              En PLUPack nos adaptamos a la realidad operativa de cada
               cliente, resolviendo el abastecimiento de embalajes y
               descartables. Además, complementamos tu pedido con
               insumos de limpieza, textiles y librería para que no

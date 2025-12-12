@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -45,26 +45,41 @@ function interpolateColors(
 }
 
 // ============================================
-// OUTLINE TEXT COMPONENT
+// OUTLINE TEXT COMPONENT WITH KINETIC FILL
+// When in focus: outline fades to reveal solid text + scales up
+// When scrolling away: outline fades back in
 // ============================================
 interface OutlineTextProps {
   text: string;
   className?: string;
   strokeWidth?: number;
+  fillProgress?: number; // 0-1, controls opacity of outline (0=full outline, 1=solid)
 }
 
 function OutlineText({
   text,
   className = '',
   strokeWidth = 2,
+  fillProgress = 0,
 }: OutlineTextProps) {
   const { getFontFamily } = useShopifyTheme();
   const filterId = `outline-filter-${text
     .replace(/\s/g, '-')
     .toLowerCase()}-${Math.random().toString(36).substr(2, 9)}`;
 
+  // Scale transforms based on fill progress (subtle: 1 to 1.05)
+  const scale = 1 + fillProgress * 0.05;
+  // Solid text opacity: 0 when fillProgress is 0, 1 when fillProgress is 1
+  const solidOpacity = fillProgress;
+
   return (
-    <span className={`relative inline-block ${className}`}>
+    <span 
+      className={`relative inline-block ${className}`}
+      style={{
+        transform: `scale(${scale})`,
+        transition: 'transform 0.3s ease-out',
+      }}
+    >
       {/* Invisible text for sizing */}
       <span
         className="invisible font-bold tracking-tight"
@@ -73,7 +88,7 @@ function OutlineText({
         {text}
       </span>
 
-      {/* SVG outline text */}
+      {/* SVG text layers */}
       <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
         <defs>
           <filter
@@ -104,6 +119,8 @@ function OutlineText({
             />
           </filter>
         </defs>
+        
+        {/* Outline text - always visible */}
         <text
           x="0"
           y="1.3em"
@@ -113,6 +130,22 @@ function OutlineText({
             fontSize: 'inherit',
             filter: `url(#${filterId})`,
             fill: 'white',
+          }}
+        >
+          {text}
+        </text>
+        
+        {/* Solid fill text - fades in on top based on fillProgress */}
+        <text
+          x="0"
+          y="1.3em"
+          className="font-bold tracking-tight"
+          style={{
+            fontFamily: getFontFamily('heading'),
+            fontSize: 'inherit',
+            fill: 'white',
+            opacity: solidOpacity,
+            transition: 'opacity 0.3s ease-out',
           }}
         >
           {text}
@@ -140,6 +173,7 @@ function IndustrySection({
 }: IndustrySectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { getFontFamily } = useShopifyTheme();
+  const [fillProgress, setFillProgress] = useState(0);
 
   useGSAP(
     () => {
@@ -171,6 +205,24 @@ function IndustrySection({
           ease: 'power3.out',
         }
       );
+
+      // Kinetic typography: fill when in center focus
+      // Progress goes 0 -> 1 -> 0 as section scrolls through viewport center
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        scrub: 0.5,
+        onUpdate: (self) => {
+          // Create a bell curve: 0 at edges, 1 at center
+          const progress = self.progress;
+          // Use sine curve for smooth in/out: peaks at 0.5
+          const fillValue = Math.sin(progress * Math.PI);
+          setFillProgress(fillValue);
+        },
+        onLeave: () => setFillProgress(0),
+        onLeaveBack: () => setFillProgress(0),
+      });
     },
     { scope: sectionRef }
   );
@@ -192,6 +244,7 @@ function IndustrySection({
             text={title}
             className="block text-[clamp(3rem,15vw,11.2rem)]"
             strokeWidth={2}
+            fillProgress={fillProgress}
           />
         </h2>
       </div>

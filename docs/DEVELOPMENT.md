@@ -1,4 +1,4 @@
-# Plupack React Interactive Homepage Development Guide
+# PLUPack React Interactive Homepage Development Guide
 
 This guide explains how to develop the interactive homepage experience for Shopify using React Three Fiber (R3F), Drei, GSAP, and Lenis.
 

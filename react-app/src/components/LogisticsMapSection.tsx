@@ -49,6 +49,39 @@ const PULSE_NODES: PulseNode[] = [
   { index: 940, delay: 1.7 },
 ];
 
+// Generate static connecting lines between nearby dots
+function generateStaticLines(
+  circleData: { cx: number; cy: number }[],
+  linesGroup: SVGGElement
+) {
+  const MAX_DISTANCE = 20; // SVG units
+  const lines: string[] = [];
+  
+  // Sample every Nth circle to avoid too many lines
+  const sampledCircles = circleData.filter((_, i) => i % 3 === 0);
+  
+  for (let i = 0; i < sampledCircles.length; i++) {
+    const c1 = sampledCircles[i];
+    
+    // Find nearby circles
+    for (let j = i + 1; j < sampledCircles.length; j++) {
+      const c2 = sampledCircles[j];
+      const dx = c2.cx - c1.cx;
+      const dy = c2.cy - c1.cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      if (dist < MAX_DISTANCE && dist > 5) {
+        const opacity = 0.3 * (1 - dist / MAX_DISTANCE);
+        lines.push(
+          `<line x1="${c1.cx}" y1="${c1.cy}" x2="${c2.cx}" y2="${c2.cy}" stroke="rgba(94, 234, 212, ${opacity})" stroke-width="0.8"/>`
+        );
+      }
+    }
+  }
+  
+  linesGroup.innerHTML = lines.join('');
+}
+
 // ============================================
 // LOGISTICS MAP SECTION
 // "Satellite View" transition with Argentina map
@@ -57,8 +90,10 @@ export function LogisticsMapSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapWrapperRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const blurOverlayRef = useRef<HTMLDivElement>(null);
+  const linesGroupRef = useRef<SVGGElement | null>(null);
   const { getFontFamily } = useShopifyTheme();
   const [svgLoaded, setSvgLoaded] = useState(false);
   const animationInitialized = useRef(false);
@@ -75,16 +110,37 @@ export function LogisticsMapSection() {
       svg.style.width = '100%';
       svg.style.height = '100%';
 
-      // Style all circles to be white with low opacity (data-grid look)
+      // Style all circles and collect positions
       const circles = svg.querySelectorAll('circle, ellipse');
+      const circleData: { cx: number; cy: number }[] = [];
+      
       circles.forEach((circle) => {
-        (circle as SVGElement).style.fill =
-          'rgba(255, 255, 255, 0.08)';
-        (circle as SVGElement).style.stroke = 'none';
+        const svgCircle = circle as SVGCircleElement;
+        svgCircle.style.fill = 'rgba(255, 255, 255, 0.08)';
+        svgCircle.style.stroke = 'none';
+        
+        circleData.push({
+          cx: parseFloat(svgCircle.getAttribute('cx') || '0'),
+          cy: parseFloat(svgCircle.getAttribute('cy') || '0'),
+        });
       });
+      
+      // Create lines group (inserted first so lines appear behind circles)
+      const linesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      linesGroup.setAttribute('class', 'connecting-lines');
+      linesGroup.style.opacity = '0'; // Start hidden, reveal on scroll
+      svg.insertBefore(linesGroup, svg.firstChild);
+      linesGroupRef.current = linesGroup;
+      
+      // Generate static connecting lines
+      generateStaticLines(circleData, linesGroup);
 
       setSvgLoaded(true);
     }
+
+    return () => {
+      linesGroupRef.current = null;
+    };
   }, []);
 
   // Initialize GSAP animations after SVG is loaded
@@ -186,6 +242,19 @@ export function LogisticsMapSection() {
         },
         0.1
       );
+
+      // Reveal connecting lines
+      if (linesGroupRef.current) {
+        tl.to(
+          linesGroupRef.current,
+          {
+            opacity: 1,
+            duration: 0.4,
+            ease: 'power2.out',
+          },
+          0.2
+        );
+      }
 
       // Highlight pulse nodes with brighter fill
       if (pulseCircles.length > 0) {
@@ -362,7 +431,10 @@ export function LogisticsMapSection() {
         />
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div 
+          ref={mapWrapperRef}
+          className="absolute inset-0 flex items-center justify-center"
+        >
           <div
             ref={mapContainerRef}
             className="will-change-transform"

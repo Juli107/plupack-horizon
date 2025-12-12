@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect, useCallback, useState } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +31,82 @@ const services = [
       'Productos testeados bajo estándares estrictos. Y si algo surge, tenés un ejecutivo de cuenta asignado para resolverlo al instante.',
   },
 ];
+
+// Lightweight 3D Tilt Card - uses CSS transforms for performance
+function TiltCard({ service }: { service: typeof services[0] }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [transform, setTransform] = useState({ rotateX: 0, rotateY: 0 });
+  const lastUpdate = useRef(0);
+  
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Throttle to ~30fps for performance
+    const now = Date.now();
+    if (now - lastUpdate.current < 33) return;
+    lastUpdate.current = now;
+    
+    if (!cardRef.current) return;
+    
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Calculate rotation (max 8 degrees - reduced for subtlety)
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    
+    setTransform({ rotateX, rotateY });
+  }, []);
+  
+  const handleMouseLeave = useCallback(() => {
+    setTransform({ rotateX: 0, rotateY: 0 });
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="service-card w-[85vw] md:w-[600px] h-[450px] p-8 md:p-12 flex flex-col justify-between relative group shrink-0"
+      style={{ 
+        transformStyle: 'preserve-3d',
+        transform: `perspective(1000px) rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg)`,
+        transition: 'transform 0.15s ease-out',
+      }}
+    >
+      {/* Glassmorphism Background */}
+      <div 
+        className="absolute inset-0 rounded-xl overflow-hidden"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex justify-between items-start mb-6">
+          <span className="text-6xl font-light font-['Montserrat'] opacity-50">
+            {service.id}
+          </span>
+        </div>
+
+        <div className="mt-auto">
+          <h3 className="text-2xl md:text-3xl font-medium mb-4 font-['Montserrat'] leading-tight min-h-[90px] flex items-end">
+            {service.title}
+          </h3>
+          <p className="text-base md:text-lg font-['Open_Sans'] opacity-90 leading-relaxed min-h-40">
+            {service.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -170,31 +246,7 @@ export function ServicesSection() {
           {/* Cards Section */}
           <div className="flex items-center gap-8 px-8 shrink-0">
             {services.map((service) => (
-              <div
-                key={service.id}
-                className="service-card w-[85vw] md:w-[600px] h-[450px] p-8 md:p-12 flex flex-col justify-between relative group shrink-0"
-              >
-                {/* Glassmorphism Background */}
-                <div className="absolute inset-0 bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-sm transform transition-transform duration-500 group-hover:scale-[1.02]"></div>
-
-                {/* Content */}
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="text-6xl font-light font-['Montserrat'] opacity-50">
-                      {service.id}
-                    </span>
-                  </div>
-
-                  <div className="mt-auto">
-                    <h3 className="text-2xl md:text-3xl font-medium mb-4 font-['Montserrat'] leading-tight min-h-[90px] flex items-end">
-                      {service.title}
-                    </h3>
-                    <p className="text-base md:text-lg font-['Open_Sans'] opacity-90 leading-relaxed min-h-40">
-                      {service.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <TiltCard key={service.id} service={service} />
             ))}
             {/* End spacer to ensure last card is fully visible */}
             <div className="w-[20vw] shrink-0"></div>

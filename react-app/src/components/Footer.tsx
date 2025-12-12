@@ -78,7 +78,7 @@ export function Footer() {
           {logoUrl ? (
             <img
               src={logoUrl}
-              alt="Plupack Embalajes"
+              alt="PLUPack Embalajes"
               className="h-16 md:h-20 lg:h-24 w-auto"
             />
           ) : (

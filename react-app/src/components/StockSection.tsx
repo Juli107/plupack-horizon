@@ -2,11 +2,70 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from 'lenis/react';
-import { useRef, useMemo, useEffect, useState } from 'react';
+import { useRef, useMemo, useEffect, useState, useCallback } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// ============================================
+// MAGNETIC BUTTON COMPONENT (Lightweight CSS-based)
+// ============================================
+function MagneticButton({ 
+  href, 
+  children, 
+  fontFamily 
+}: { 
+  href: string; 
+  children: React.ReactNode;
+  fontFamily: string;
+}) {
+  const buttonRef = useRef<HTMLAnchorElement>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const lastUpdate = useRef(0);
+  
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Throttle to ~30fps
+    const now = Date.now();
+    if (now - lastUpdate.current < 33) return;
+    lastUpdate.current = now;
+    
+    if (!buttonRef.current) return;
+    
+    const rect = buttonRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.2;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.2;
+    
+    setOffset({ x, y });
+  }, []);
+  
+  const handleMouseLeave = useCallback(() => {
+    setOffset({ x: 0, y: 0 });
+  }, []);
+
+  return (
+    <a
+      ref={buttonRef}
+      href={href}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="inline-block px-10 py-4 rounded-full font-bold cursor-pointer"
+      style={{
+        fontFamily,
+        backgroundColor: 'white',
+        color: '#1B4B6B',
+        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
+        border: '2px solid rgba(27, 75, 107, 0.1)',
+        fontSize: '1.1rem',
+        letterSpacing: '0.05em',
+        transform: `translate(${offset.x}px, ${offset.y}px)`,
+        transition: offset.x === 0 ? 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'transform 0.1s ease-out',
+      }}
+    >
+      {children}
+    </a>
+  );
+}
 
 // ============================================
 // TYPES
@@ -438,19 +497,9 @@ export function StockSection({
               </span>
             </h2>
 
-            <a
-              href={buttonUrl}
-              className="inline-block px-8 py-3 bg-white rounded-full font-medium 
-                         transition-all duration-300 hover:scale-105 hover:shadow-xl"
-              style={{
-                fontFamily: getFontFamily('body'),
-                color: '#1B4B6B',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(27, 75, 107, 0.1)',
-              }}
-            >
+            <MagneticButton href={buttonUrl} fontFamily={getFontFamily('body')}>
               {buttonText}
-            </a>
+            </MagneticButton>
           </div>
         </div>
       </div>

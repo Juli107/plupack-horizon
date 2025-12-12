@@ -236,7 +236,7 @@ export function PurchaseProcessSection() {
                 className="font-bold select-none"
                 style={{
                   fontFamily: getFontFamily('heading'),
-                  color: 'rgba(27, 75, 107, 0.07)',
+                  color: 'rgba(27, 75, 107, 0.08)',
                   fontSize: 'clamp(10rem, 20vw, 16rem)',
                   lineHeight: 0.85,
                 }}
@@ -281,7 +281,7 @@ export function PurchaseProcessSection() {
                   ref={(el) => {
                     dotsRef.current[index] = el;
                   }}
-                  className="w-4 h-4 rounded-full flex-shrink-0"
+                  className="w-4 h-4 rounded-full shrink-0"
                   style={{
                     backgroundColor:
                       index === 0

@@ -1,4 +1,4 @@
-# Plupack Horizon - React 3D for Shopify
+# PLUPack Horizon - React 3D for Shopify
 
 A hybrid Shopify theme with React Three Fiber for 3D experiences.
 
