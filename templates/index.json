@@ -16,13 +16,7 @@
         "accent_color": "#ffffff",
         "stock_section_title": "+170 PRODUCTOS EN STOCK PERMANENTE",
         "stock_section_button_text": "Ver catálogo",
-        "stock_section_button_url": "shopify://collections/all",
-        "stock_image_1": "shopify://shop_images/ChatGPTImage31jul2025_14_11_22.png",
-        "stock_image_2": "shopify://shop_images/ChatGPTImage5ago2025_08_58_58.png",
-        "stock_image_3": "shopify://shop_images/ChatGPTImage31jul2025_10_12_55.png",
-        "stock_image_4": "shopify://shop_images/ChatGPTImage31jul2025_11_52_27.png",
-        "stock_image_5": "shopify://shop_images/ChatGPTImage31jul2025_14_49_16_1.png",
-        "stock_image_6": "shopify://shop_images/ChatGPTImage1ago2025_13_57_54.png"
+        "stock_section_button_url": "shopify://collections/all"
       }
     }
   },
