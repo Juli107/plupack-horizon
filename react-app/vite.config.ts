@@ -5,6 +5,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  base: './', // Use relative paths for assets
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -32,7 +33,8 @@ export default defineConfig({
           if (assetInfo.name?.endsWith('.css')) {
             return 'react-homepage.css';
           }
-          return 'react-assets/[name]-[hash][extname]';
+          // Flatten assets to avoid Shopify subfolder issues
+          return 'react-[name]-[hash][extname]';
         },
       },
     },

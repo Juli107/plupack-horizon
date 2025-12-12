@@ -7,7 +7,7 @@ Quick reference for the most important commands in this project.
 ### Start Dev Server (connects to specific theme)
 
 ```bash
-shopify theme dev --store=q0fmi9-16.myshopify.com --theme 146848972845
+shopify theme dev --store=q0fmi9-16.myshopify.com --theme 146951372845
 ```
 
 This syncs your local files to **plupack-horizon/main** and opens a preview at http://127.0.0.1:9292
@@ -16,23 +16,23 @@ This syncs your local files to **plupack-horizon/main** and opens a preview at h
 
 ```bash
 # Pull everything
-shopify theme pull --store=q0fmi9-16.myshopify.com --theme 146848972845
+shopify theme pull --store=q0fmi9-16.myshopify.com --theme 146951372845
 
 # Pull only settings (after making changes in Theme Editor)
-shopify theme pull --store=q0fmi9-16.myshopify.com --theme 146848972845 --only config/settings_data.json
+shopify theme pull --store=q0fmi9-16.myshopify.com --theme 146951372845 --only config/settings_data.json
 
 # Pull header settings specifically
-shopify theme pull --store=q0fmi9-16.myshopify.com --theme 146848972845 --only sections/header-group.json
+shopify theme pull --store=q0fmi9-16.myshopify.com --theme 146951372845 --only sections/header-group.json
 ```
 
 ### Push Theme to Shopify
 
 ```bash
 # Push all files
-shopify theme push --store=q0fmi9-16.myshopify.com --theme 146848972845
+shopify theme push --store=q0fmi9-16.myshopify.com --theme 146951372845
 
 # Push specific files only
-shopify theme push --store=q0fmi9-16.myshopify.com --theme 146848972845 --only assets/react-homepage.js
+shopify theme push --store=q0fmi9-16.myshopify.com --theme 146951372845 --only assets/react-homepage.js
 ```
 
 ### List All Themes

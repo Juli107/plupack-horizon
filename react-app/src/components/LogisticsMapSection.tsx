@@ -56,20 +56,20 @@ function generateStaticLines(
 ) {
   const MAX_DISTANCE = 20; // SVG units
   const lines: string[] = [];
-  
+
   // Sample every Nth circle to avoid too many lines
   const sampledCircles = circleData.filter((_, i) => i % 3 === 0);
-  
+
   for (let i = 0; i < sampledCircles.length; i++) {
     const c1 = sampledCircles[i];
-    
+
     // Find nearby circles
     for (let j = i + 1; j < sampledCircles.length; j++) {
       const c2 = sampledCircles[j];
       const dx = c2.cx - c1.cx;
       const dy = c2.cy - c1.cy;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (dist < MAX_DISTANCE && dist > 5) {
         const opacity = 0.3 * (1 - dist / MAX_DISTANCE);
         lines.push(
@@ -78,7 +78,7 @@ function generateStaticLines(
       }
     }
   }
-  
+
   linesGroup.innerHTML = lines.join('');
 }
 
@@ -113,25 +113,28 @@ export function LogisticsMapSection() {
       // Style all circles and collect positions
       const circles = svg.querySelectorAll('circle, ellipse');
       const circleData: { cx: number; cy: number }[] = [];
-      
+
       circles.forEach((circle) => {
         const svgCircle = circle as SVGCircleElement;
         svgCircle.style.fill = 'rgba(255, 255, 255, 0.08)';
         svgCircle.style.stroke = 'none';
-        
+
         circleData.push({
           cx: parseFloat(svgCircle.getAttribute('cx') || '0'),
           cy: parseFloat(svgCircle.getAttribute('cy') || '0'),
         });
       });
-      
+
       // Create lines group (inserted first so lines appear behind circles)
-      const linesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      const linesGroup = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'g'
+      );
       linesGroup.setAttribute('class', 'connecting-lines');
       linesGroup.style.opacity = '0'; // Start hidden, reveal on scroll
       svg.insertBefore(linesGroup, svg.firstChild);
       linesGroupRef.current = linesGroup;
-      
+
       // Generate static connecting lines
       generateStaticLines(circleData, linesGroup);
 
@@ -431,7 +434,7 @@ export function LogisticsMapSection() {
         />
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
-        <div 
+        <div
           ref={mapWrapperRef}
           className="absolute inset-0 flex items-center justify-center"
         >

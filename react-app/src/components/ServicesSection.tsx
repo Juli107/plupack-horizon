@@ -1,7 +1,12 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useLayoutEffect, useCallback, useState } from 'react';
+import {
+  useRef,
+  useLayoutEffect,
+  useCallback,
+  useState,
+} from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,32 +38,38 @@ const services = [
 ];
 
 // Lightweight 3D Tilt Card - uses CSS transforms for performance
-function TiltCard({ service }: { service: typeof services[0] }) {
+function TiltCard({ service }: { service: (typeof services)[0] }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState({ rotateX: 0, rotateY: 0 });
+  const [transform, setTransform] = useState({
+    rotateX: 0,
+    rotateY: 0,
+  });
   const lastUpdate = useRef(0);
-  
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    // Throttle to ~30fps for performance
-    const now = Date.now();
-    if (now - lastUpdate.current < 33) return;
-    lastUpdate.current = now;
-    
-    if (!cardRef.current) return;
-    
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    // Calculate rotation (max 8 degrees - reduced for subtlety)
-    const rotateX = ((y - centerY) / centerY) * -8;
-    const rotateY = ((x - centerX) / centerX) * 8;
-    
-    setTransform({ rotateX, rotateY });
-  }, []);
-  
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      // Throttle to ~30fps for performance
+      const now = Date.now();
+      if (now - lastUpdate.current < 33) return;
+      lastUpdate.current = now;
+
+      if (!cardRef.current) return;
+
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Calculate rotation (max 8 degrees - reduced for subtlety)
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+
+      setTransform({ rotateX, rotateY });
+    },
+    []
+  );
+
   const handleMouseLeave = useCallback(() => {
     setTransform({ rotateX: 0, rotateY: 0 });
   }, []);
@@ -69,17 +80,18 @@ function TiltCard({ service }: { service: typeof services[0] }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="service-card w-[85vw] md:w-[600px] h-[450px] p-8 md:p-12 flex flex-col justify-between relative group shrink-0"
-      style={{ 
+      style={{
         transformStyle: 'preserve-3d',
         transform: `perspective(1000px) rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg)`,
         transition: 'transform 0.15s ease-out',
       }}
     >
       {/* Glassmorphism Background */}
-      <div 
+      <div
         className="absolute inset-0 rounded-xl overflow-hidden"
-        style={{ 
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)',
+        style={{
+          background:
+            'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)',
           backdropFilter: 'blur(10px)',
           WebkitBackdropFilter: 'blur(10px)',
           border: '1px solid rgba(255,255,255,0.15)',

@@ -12,15 +12,18 @@ export function Hero() {
     if (animationTriggered) return;
 
     const checkLoadingComplete = () => {
-      const loadingScreen = document.querySelector('.plupack-loading-screen');
+      const loadingScreen = document.querySelector(
+        '.plupack-loading-screen'
+      );
       return !loadingScreen;
     };
 
     const startAnimation = () => {
       if (!solidTextRef.current) return;
-      
+
       // Animate the solid text opacity from 0 to 1, filling in over the outline
-      gsap.fromTo(solidTextRef.current, 
+      gsap.fromTo(
+        solidTextRef.current,
         { opacity: 0 },
         {
           opacity: 1,
@@ -102,12 +105,12 @@ export function Hero() {
                       />
                     </filter>
                   </defs>
-                  
+
                   {/* Outline text - always visible */}
                   <text
                     x="0.05em"
                     y="0.9em"
-                    className="font-extrabold tracking-wider"
+                    className="font-bold tracking-wider"
                     style={{
                       fontFamily: getFontFamily('heading'),
                       fontSize: 'inherit',
@@ -117,13 +120,13 @@ export function Hero() {
                   >
                     DINÁMICA
                   </text>
-                  
+
                   {/* Solid fill text - fades in on top of outline */}
                   <text
                     ref={solidTextRef}
                     x="0.05em"
                     y="0.9em"
-                    className="font-extrabold tracking-wider"
+                    className="font-bold tracking-wider"
                     style={{
                       fontFamily: getFontFamily('heading'),
                       fontSize: 'inherit',

@@ -73,7 +73,7 @@ function OutlineText({
   const solidOpacity = fillProgress;
 
   return (
-    <span 
+    <span
       className={`relative inline-block ${className}`}
       style={{
         transform: `scale(${scale})`,
@@ -119,7 +119,7 @@ function OutlineText({
             />
           </filter>
         </defs>
-        
+
         {/* Outline text - always visible */}
         <text
           x="0"
@@ -134,7 +134,7 @@ function OutlineText({
         >
           {text}
         </text>
-        
+
         {/* Solid fill text - fades in on top based on fillProgress */}
         <text
           x="0"

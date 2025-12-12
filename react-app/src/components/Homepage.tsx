@@ -14,6 +14,7 @@ import { PreFooterSection } from './PreFooterSection';
 import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
+import { LogoCarousel } from './LogoCarousel';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -142,6 +143,7 @@ export function Homepage({
 
         <NoiseOverlay />
         <Hero />
+        <LogoCarousel />
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
         <LogisticsMapSection />
