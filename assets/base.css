@@ -4392,18 +4392,7 @@ text-component {
   box-shadow: 0 0 0 1px #2773a8 !important;
 }
 
-/* Todos los campos alineados al mismo ancho */
-.contact-form__form-row {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 16px !important;
-  width: 100% !important;
-}
-
-.contact-form__form-row .contact-form__input {
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
-}
+/* Estilos de contact-form controlados desde snippets/contact-form.liquid */
 
 /* ===========================================
    MODAL DE BÚSQUEDA - Estilizado
