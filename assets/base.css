@@ -4392,6 +4392,19 @@ text-component {
   box-shadow: 0 0 0 1px #2773a8 !important;
 }
 
+/* Todos los campos alineados al mismo ancho */
+.contact-form__form-row {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.contact-form__form-row .contact-form__input {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+
 /* ===========================================
    MODAL DE BÚSQUEDA - Estilizado
    =========================================== */
@@ -4485,5 +4498,19 @@ html body #header-component .cart-drawer__dialog a.button.cart-items__empty-butt
 
 .product-badges__badge.color-scheme-3 {
   display: none !important;
+}
+
+/* ===========================================
+   BARRA BUSCADORA COLECCIÓN - Icono azul
+   =========================================== */
+
+.collection-search-button .svg-wrapper,
+.collection-search-button svg {
+  color: #2773a8 !important;
+  stroke: #2773a8 !important;
+}
+
+.collection-search-input {
+  border-width: 1px !important;
 }
 
