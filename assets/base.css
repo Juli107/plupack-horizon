@@ -4504,3 +4504,11 @@ html body #header-component .cart-drawer__dialog a.button.cart-items__empty-butt
   border-width: 1px !important;
 }
 
+/* ===========================================
+   OCULTAR BARRA BUSCADORA EN COLECCIÓN
+   =========================================== */
+
+.collection-search-form,
+.collection-search-form--mobile {
+  display: none !important;
+}
