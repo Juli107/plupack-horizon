@@ -4473,6 +4473,7 @@ html body #header-component .cart-drawer__dialog a.button.cart-items__empty-butt
   --button-background-color: #2773a8;
   background: #2773a8 !important;
   color: #ffffff !important;
+  border-radius: 10px !important;
 }
 
 html body #header-component .cart-drawer__dialog a.button.cart-items__empty-button:hover {
