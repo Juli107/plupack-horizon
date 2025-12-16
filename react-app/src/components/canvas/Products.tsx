@@ -1,0 +1,244 @@
+import { useMemo, useLayoutEffect, useState } from 'react';
+import {
+  useGLTF,
+  Instances,
+  Instance,
+  Center,
+} from '@react-three/drei';
+import * as THREE from 'three';
+import {
+  applyFrostedMaterial,
+  FROSTED_MATERIAL,
+} from './sharedMaterial';
+
+// Import Assets directly from src/assets/models
+import foodContainerUrl from '../../assets/models/food_container.glb';
+import tapeUrl from '../../assets/models/tape.glb';
+import paperRollsUrl from '../../assets/models/paper_rolls.glb';
+import detergentUrl from '../../assets/models/detergent.glb';
+import plasticWrapUrl from '../../assets/models/plastic_wrap.glb';
+import aluminumRollUrl from '../../assets/models/aluminum_roll.glb';
+import filmStretchUrl from '../../assets/models/film_stretch.glb';
+import plasticBagUrl from '../../assets/models/plastic_bag.glb';
+import bubbleWrapUrl from '../../assets/models/bubble_wrap.glb';
+import glovesUrl from '../../assets/models/gloves.glb';
+import cartonUrl from '../../assets/models/carton.glb';
+
+type GroupProps = any;
+
+// Map filenames (keys) to imported URL strings (values)
+const MODEL_URLS: Record<string, string> = {
+  'food_container.glb': foodContainerUrl,
+  'tape.glb': tapeUrl,
+  'paper_rolls.glb': paperRollsUrl,
+  'detergent.glb': detergentUrl,
+  'plastic_wrap.glb': plasticWrapUrl,
+  'aluminum_roll.glb': aluminumRollUrl,
+  'film_stretch.glb': filmStretchUrl,
+  'plastic_bag.glb': plasticBagUrl,
+  'bubble_wrap.glb': bubbleWrapUrl,
+  'gloves.glb': glovesUrl,
+  'carton.glb': cartonUrl,
+  'napkins.glb': '', // Procedural, no GLB
+};
+
+// Preload assets
+Object.values(MODEL_URLS).forEach((url) => {
+  if (url) useGLTF.preload(url);
+});
+
+// Helper to find the main mesh geometry and material for instancing
+function useMainMesh(url: string) {
+  const { scene } = useGLTF(url);
+  const [meshData, setMeshData] = useState<{
+    geometry: THREE.BufferGeometry;
+    material: THREE.Material;
+  } | null>(null);
+
+  useLayoutEffect(() => {
+    let foundGeometry: THREE.BufferGeometry | null = null;
+    let foundNormalMap: THREE.Texture | null = null;
+    let foundNormalScale: THREE.Vector2 | null = null;
+
+    scene.traverse((node: any) => {
+      if (node.isMesh && !foundGeometry) {
+        foundGeometry = node.geometry;
+        if (node.material.normalMap) {
+          foundNormalMap = node.material.normalMap;
+          foundNormalScale = node.material.normalScale;
+        }
+      }
+    });
+
+    if (foundGeometry) {
+      const mat = FROSTED_MATERIAL.clone();
+      if (foundNormalMap) {
+        mat.normalMap = foundNormalMap;
+        if (foundNormalScale) mat.normalScale.copy(foundNormalScale);
+      }
+      setMeshData({ geometry: foundGeometry, material: mat });
+    }
+  }, [scene]);
+
+  return meshData;
+}
+
+// FOOD CONTAINERS (Stack of 8)
+export function FoodContainerStack(props: GroupProps) {
+  // Use imported URL
+  const data = useMainMesh(MODEL_URLS['food_container.glb']);
+  if (!data) return null;
+
+  return (
+    <group {...props}>
+      <Center bottom>
+        <Instances
+          range={8}
+          geometry={data.geometry}
+          material={data.material}
+        >
+          <Instance position={[0, 0.06, 0]} />
+          <Instance position={[0, 0.04, 0]} />
+          <Instance position={[0, 0.02, 0]} />
+          <Instance position={[0, 0, 0]} />
+          <Instance position={[0, -0.02, 0]} />
+          <Instance position={[0, -0.04, 0]} />
+          <Instance position={[0, -0.06, 0]} />
+          <Instance position={[0, -0.08, 0]} />
+        </Instances>
+      </Center>
+    </group>
+  );
+}
+
+// TAPES (Group of 3)
+export function TapeStack(props: GroupProps) {
+  const data = useMainMesh(MODEL_URLS['tape.glb']);
+  if (!data) return null;
+  return (
+    <group {...props}>
+      <Center bottom>
+        <Instances
+          range={3}
+          geometry={data.geometry}
+          material={data.material}
+        >
+          <Instance
+            position={[-0.06, 0.05, -0.15]}
+            rotation={[0, 1, 0]}
+          />
+          <Instance position={[0, 0, 0]} />
+          <Instance
+            position={[-0.09, -0.1, -0.15]}
+            rotation={[0, 3, 0]}
+          />
+        </Instances>
+      </Center>
+    </group>
+  );
+}
+
+// PAPER ROLLS (Stack of 2)
+export function PaperRollStack(props: GroupProps) {
+  const data = useMainMesh(MODEL_URLS['paper_rolls.glb']);
+  if (!data) return null;
+
+  return (
+    <group {...props}>
+      <Center bottom>
+        <Instances
+          range={3}
+          geometry={data.geometry}
+          material={data.material}
+        >
+          {/* Two on bottom, touching */}
+          <Instance position={[0, 0, 0]} rotation={[0, 0, 0]} />
+          <Instance position={[0, -0.12, 0]} rotation={[0, 0, 0]} />
+        </Instances>
+      </Center>
+    </group>
+  );
+}
+
+// NAPKINS (Procedural)
+export function NapkinStack(props: GroupProps) {
+  // Reduced size significantly: 1 -> 0.2
+  const geometry = useMemo(
+    () => new THREE.BoxGeometry(0.2, 0.002, 0.2),
+    []
+  );
+
+  const count = 40;
+
+  return (
+    <group {...props}>
+      <Center bottom>
+        <Instances
+          range={count}
+          geometry={geometry}
+          material={FROSTED_MATERIAL}
+        >
+          {Array.from({ length: count }).map((_, i) => (
+            <Instance
+              key={i}
+              // Tighter stacking
+              position={[0, (i - count / 2) * 0.004, 0]}
+              rotation={[
+                Math.sin(i * 0.5) * 0.02, // Subtle irregularity
+                i * 0.05, // Slight fan
+                Math.cos(i * 0.3) * 0.02,
+              ]}
+            />
+          ))}
+        </Instances>
+      </Center>
+    </group>
+  );
+}
+
+// GENERIC SINGLE ITEM
+export function SingleProduct({
+  name,
+  ...props
+}: GroupProps & { name: string }) {
+  // Use imported URL via lookup
+  const url = MODEL_URLS[name];
+  // Fallback or error handling if needed, but for now strict lookup
+
+  const { scene } = useGLTF(url);
+  const cloned = useMemo(() => {
+    const c = scene.clone();
+    applyFrostedMaterial(c);
+    return c;
+  }, [scene]);
+
+  return (
+    <group {...props}>
+      <Center bottom>
+        <primitive object={cloned} />
+      </Center>
+    </group>
+  );
+}
+
+// COMPONENT MAPPING
+export const PRODUCT_COMPONENTS: Record<
+  string,
+  React.ComponentType<any>
+> = {
+  'food_container.glb': FoodContainerStack,
+  'tape.glb': TapeStack,
+  'paper_rolls.glb': PaperRollStack,
+  'napkins.glb': NapkinStack, // Mapped from the old filename to new component
+};
+
+export function RenderProduct({
+  name,
+  ...props
+}: GroupProps & { name: string }) {
+  const Component = PRODUCT_COMPONENTS[name];
+  if (Component) {
+    return <Component {...props} />;
+  }
+  return <SingleProduct name={name} {...props} />;
+}

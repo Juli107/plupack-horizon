@@ -188,7 +188,7 @@ export function LogisticsMapSection() {
       // SET INITIAL STATES
       // ============================================
       gsap.set(mapContainer, {
-        scale: 1.3,
+        scale: 1.2,
         opacity: 0,
         y: 100,
       });
@@ -443,7 +443,7 @@ export function LogisticsMapSection() {
             className="will-change-transform"
             style={{
               width: 'clamp(300px, 60vw, 600px)',
-              height: 'clamp(400px, 80vh, 800px)',
+              height: 'clamp(400px, 80vh, 700px)',
             }}
           />
         </div>

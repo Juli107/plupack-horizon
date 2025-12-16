@@ -5,6 +5,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  assetsInclude: ['**/*.glb'],
   base: './', // Use relative paths for assets
   resolve: {
     alias: {

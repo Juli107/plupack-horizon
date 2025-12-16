@@ -57,8 +57,8 @@ export const cameraKeyframes: CameraKeyframe[] = [
   },
   {
     scrollPercent: 7,
-    position: [0, -12, -10],
-    lookAt: [0, -12, -10],
+    position: [0, -20, -10],
+    lookAt: [0, -20, -10],
     fov: 45,
   },
 
@@ -69,8 +69,8 @@ export const cameraKeyframes: CameraKeyframe[] = [
   // Hold Camera movement
   {
     scrollPercent: 20,
-    position: [0, -30, 30],
-    lookAt: [0, -30, 30],
+    position: [0, -40, 30],
+    lookAt: [0, -40, 30],
   },
 
   {
@@ -101,11 +101,11 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Three-quarter rotation - Left side, near bottom
   {
-    scrollPercent: 62,
+    scrollPercent: 55,
     orbit: true,
-    orbitCenter: [0, -62, 0],
-    orbitAngle: Math.PI * 2.5, // 450 degrees - left side
-    orbitRadius: 8,
+    orbitCenter: [0, -64.5, 0],
+    orbitAngle: Math.PI * 3.5, // 450 degrees - left side
+    orbitRadius: 7,
     orbitHeight: 0,
   },
 
@@ -113,8 +113,8 @@ export const cameraKeyframes: CameraKeyframe[] = [
   {
     scrollPercent: 64,
     orbit: true,
-    orbitCenter: [0, -67, 0],
-    orbitAngle: Math.PI * 3, // 540 degrees - full rotation back to front
+    orbitCenter: [0, -77, 0],
+    orbitAngle: Math.PI * 6.5, // 540 degrees - full rotation back to front
     orbitRadius: 8,
     orbitHeight: 0,
   },

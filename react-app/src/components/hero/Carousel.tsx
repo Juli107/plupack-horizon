@@ -1,68 +1,31 @@
-import { useRef, useEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
+import { Center, Float } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
 import * as THREE from 'three';
+import { RenderProduct } from '../canvas/Products';
+
+const ITEMS = [
+  'food_container.glb',
+  'plastic_bag.glb',
+  'detergent.glb',
+  'paper_rolls.glb',
+  'aluminum_roll.glb',
+  'gloves.glb',
+  'tape.glb',
+  'film_stretch.glb',
+  'napkins.glb',
+];
 
 interface CarouselProps {
   radius?: number;
-  count?: number;
+  count?: number; // Ignored effectively as we use fixed items, or we can slice the array
 }
 
-export function Carousel({ radius = 6, count = 10 }: CarouselProps) {
+export function Carousel({ radius = 6 }: CarouselProps) {
   const groupRef = useRef<THREE.Group>(null);
 
   // Interaction state
-  const isDragging = useRef(false);
-  const previousX = useRef(0);
   const velocity = useRef(0.1); // Base rotation speed
-  const targetVelocity = useRef(0.1);
-
-  const { gl } = useThree();
-
-  useEffect(() => {
-    const canvas = gl.domElement;
-
-    const onPointerDown = (e: PointerEvent) => {
-      isDragging.current = true;
-      previousX.current = e.clientX;
-      canvas.setPointerCapture(e.pointerId);
-    };
-
-    const onPointerMove = (e: PointerEvent) => {
-      if (!isDragging.current) return;
-      const delta = e.clientX - previousX.current;
-      previousX.current = e.clientX;
-
-      // Update velocity based on drag
-      // Faster drag = higher velocity
-      velocity.current += delta * 0.005;
-      targetVelocity.current = velocity.current;
-    };
-
-    const onPointerUp = (e: PointerEvent) => {
-      isDragging.current = false;
-      canvas.releasePointerCapture(e.pointerId);
-      // Reset target to base speed, let velocity decay to it
-      targetVelocity.current = 0.1;
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      // Scroll boosts rotation
-      velocity.current += e.deltaY * 0.001;
-    };
-
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('wheel', onWheel); // Passive listener might be needed
-
-    return () => {
-      canvas.removeEventListener('pointerdown', onPointerDown);
-      canvas.removeEventListener('pointermove', onPointerMove);
-      canvas.removeEventListener('pointerup', onPointerUp);
-      canvas.removeEventListener('wheel', onWheel);
-    };
-  }, [gl]);
 
   useFrame((_state, delta) => {
     if (groupRef.current) {
@@ -80,22 +43,27 @@ export function Carousel({ radius = 6, count = 10 }: CarouselProps) {
   });
 
   // Create objects in a circle
-  const objects = Array.from({ length: count }, (_, i) => {
+  const objects = ITEMS.map((filename, i) => {
+    const count = ITEMS.length;
     const angle = (i / count) * Math.PI * 2;
     const x = Math.cos(angle) * radius;
     const y = Math.sin(angle) * radius;
 
     return (
       <group key={i} position={[x, y, 0]} rotation={[0, 0, angle]}>
-        <Float speed={2} rotationIntensity={0.2} floatIntensity={0.2}>
-          <mesh>
-            <boxGeometry args={[2, 2, 2]} />
-            <meshStandardMaterial
-              color="#E0E0E0"
-              roughness={0.4}
-              metalness={0.1}
-            />
-          </mesh>
+        <Float
+          speed={1.5}
+          rotationIntensity={0.05}
+          floatIntensity={0.2}
+          floatingRange={[-0.2, 0.2]}
+        >
+          <group>
+            <Center>
+              <group rotation={[0, 0, 0]}>
+                <RenderProduct name={filename} scale={10} />
+              </group>
+            </Center>
+          </group>
         </Float>
       </group>
     );
@@ -103,7 +71,7 @@ export function Carousel({ radius = 6, count = 10 }: CarouselProps) {
 
   return (
     // Tilt: Slight forward tilt (x-rotation)
-    <group rotation={[-0.2, 0, 0]}>
+    <group position={[0, -3.5, 0]} rotation={[0, 0, 0]}>
       <group ref={groupRef}>{objects}</group>
     </group>
   );

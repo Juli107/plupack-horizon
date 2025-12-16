@@ -15,6 +15,7 @@ import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
 import { LogoCarousel } from './LogoCarousel';
+import { ScrollDebugger } from './ScrollDebugger';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -140,6 +141,7 @@ export function Homepage({
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
         <GlobalCanvas />
+        <ScrollDebugger />
 
         <NoiseOverlay />
         <Hero />
@@ -154,7 +156,7 @@ export function Homepage({
         <PurchaseProcessSection />
         <PreFooterSection />
       </main>
-      {/* <div className="h-[603.99px]">Footer</div> */}
+      <div className="h-[603.99px]">Footer</div>
     </ReactLenis>
   );
 }
