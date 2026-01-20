@@ -82,7 +82,7 @@ export function LogoCarousel() {
 
       const container = containerRef.current;
       const images = Array.from(
-        container?.querySelectorAll('img') ?? []
+        container?.querySelectorAll('img') ?? [],
       );
       const onImgLoad = () => refresh();
       images.forEach((img) => {
@@ -100,7 +100,7 @@ export function LogoCarousel() {
         });
       };
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (
@@ -139,7 +139,7 @@ export function LogoCarousel() {
                   alt={logo.src
                     .replace('.png', '')
                     .replace(/-/g, ' ')}
-                  className="w-auto object-contain grayscale opacity-70 group-hover:opacity-100 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
+                  className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
                   style={{ height: `${(logo.scale || 1) * 10}rem` }}
                 />
               </div>
@@ -157,7 +157,7 @@ export function LogoCarousel() {
                 <img
                   src={getLogoSrc(logo.src)}
                   alt=""
-                  className="w-auto object-contain grayscale opacity-70 group-hover:opacity-100 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
+                  className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
                   style={{ height: `${(logo.scale || 1) * 10}rem` }}
                 />
               </div>

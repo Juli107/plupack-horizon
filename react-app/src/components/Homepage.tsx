@@ -31,7 +31,7 @@ type HeaderTint = 'light' | 'dark';
 function useHeaderTintControl() {
   useEffect(() => {
     const header = document.querySelector(
-      '#header-component'
+      '#header-component',
     ) as HTMLElement;
     if (!header) return;
 
@@ -42,7 +42,7 @@ function useHeaderTintControl() {
       // Cleanup: remove any added classes
       header.classList.remove(
         'header--tint-light',
-        'header--tint-dark'
+        'header--tint-dark',
       );
     };
   }, []);
@@ -156,7 +156,7 @@ export function Homepage({
         <PurchaseProcessSection />
         <PreFooterSection />
       </main>
-      <div className="h-[603.99px]">Footer</div>
+      {/* <div className="h-[603.99px]">Footer</div> */}
     </ReactLenis>
   );
 }

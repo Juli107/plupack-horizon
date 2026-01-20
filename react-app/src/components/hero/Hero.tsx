@@ -13,7 +13,7 @@ export function Hero() {
 
     const checkLoadingComplete = () => {
       const loadingScreen = document.querySelector(
-        '.plupack-loading-screen'
+        '.plupack-loading-screen',
       );
       return !loadingScreen;
     };
@@ -30,7 +30,7 @@ export function Hero() {
           duration: 1.2,
           ease: 'power3.out',
           delay: 0.3,
-        }
+        },
       );
     };
 
@@ -169,13 +169,13 @@ export function Hero() {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 w-full">
               <button
-                className="px-8 py-1 w-full bg-white text-[#0B6386] rounded-full font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide"
+                className="px-8 py-1 w-full bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide"
                 style={{ fontFamily: getFontFamily('body') }}
               >
                 Cotización Mayorista
               </button>
               <button
-                className="px-8 py-1 w-full bg-transparent border border-white text-white rounded-full font-bold hover:bg-white/10 transition-colors uppercase text-sm tracking-wide"
+                className="px-8 py-1 w-full bg-transparent border border-white text-white rounded-[10px] font-bold hover:bg-white/10 transition-colors uppercase text-sm tracking-wide"
                 style={{ fontFamily: getFontFamily('body') }}
               >
                 Ver catálogo
