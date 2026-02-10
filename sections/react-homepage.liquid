@@ -62,7 +62,12 @@
       rainImageCount: {{ section.settings.stock_rain_image_count | default: 24 | json }},
       // Deterministic image list: fill by catalog order, repeat if needed
       productImages: [
-        {%- assign all_products_array = collections.all.products -%}
+        {%- assign selected_collection_handle = section.settings.stock_source_collection -%}
+        {%- assign source_collection = collections[selected_collection_handle] -%}
+        {%- if source_collection == blank or source_collection.products_count == 0 -%}
+          {%- assign source_collection = collections.all -%}
+        {%- endif -%}
+        {%- assign all_products_array = source_collection.products -%}
         {%- assign max_images = section.settings.stock_rain_image_count | default: 24 -%}
         {%- assign shown_count = 0 -%}
         {%- assign first_item = true -%}
@@ -382,6 +387,11 @@
       "max": 42,
       "step": 1,
       "default": 24
+    },
+    {
+      "type": "collection",
+      "id": "stock_source_collection",
+      "label": "Stock image source collection"
     },
     {
       "type": "text",
