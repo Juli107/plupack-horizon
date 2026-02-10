@@ -59,34 +59,39 @@
       buttonText: {{ section.settings.stock_section_button_text | json }},
       buttonUrl: {{ section.settings.stock_section_button_url | json }},
       productCount: {{ section.settings.stock_product_count | default: 170 | json }},
-      // Fetch random products from all collections
+      rainImageCount: {{ section.settings.stock_rain_image_count | default: 24 | json }},
+      // Deterministic image list: fill by catalog order, repeat if needed
       productImages: [
         {%- assign all_products_array = collections.all.products -%}
-        {%- assign max_images = 15 -%}
+        {%- assign max_images = section.settings.stock_rain_image_count | default: 24 -%}
         {%- assign shown_count = 0 -%}
-        {%- assign now = 'now' | date: '%S' | plus: 0 -%}
-        {%- assign product_count = all_products_array.size -%}
-        {%- assign offset = now | modulo: product_count -%}
-        {%- for product in all_products_array limit: 50 offset: offset -%}
+        {%- assign first_item = true -%}
+        {%- for pass in (1..6) -%}
           {%- if shown_count >= max_images -%}
             {%- break -%}
           {%- endif -%}
-          {%- if product.featured_image != blank -%}
-            {%- assign shown_count = shown_count | plus: 1 -%}
-        { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }{% unless forloop.last and shown_count >= max_images %},{% endunless %}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- if shown_count < max_images -%}
-          {%- for product in all_products_array limit: max_images -%}
+          {%- for product in all_products_array -%}
             {%- if shown_count >= max_images -%}
               {%- break -%}
             {%- endif -%}
-            {%- if product.featured_image != blank -%}
+            {%- if product.images != blank -%}
+              {%- for product_image in product.images -%}
+                {%- if shown_count >= max_images -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- unless first_item -%},{%- endunless -%}
+                { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+                {%- assign first_item = false -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endfor -%}
+            {%- elsif product.featured_image != blank -%}
+              {%- unless first_item -%},{%- endunless -%}
+              { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+              {%- assign first_item = false -%}
               {%- assign shown_count = shown_count | plus: 1 -%}
-        { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }{% unless forloop.last and shown_count >= max_images %},{% endunless %}
             {%- endif -%}
           {%- endfor -%}
-        {%- endif -%}
+        {%- endfor -%}
       ]
     },
 
@@ -368,6 +373,15 @@
       "max": 500,
       "step": 10,
       "default": 170
+    },
+    {
+      "type": "range",
+      "id": "stock_rain_image_count",
+      "label": "Rain image count",
+      "min": 8,
+      "max": 42,
+      "step": 1,
+      "default": 24
     },
     {
       "type": "text",
