@@ -31,7 +31,18 @@
 
     // Asset URLs (for images loaded in React)
     assets: {
-      noiseTexture: {{ 'noise.webp' | asset_url | json }}
+      noiseTexture: {{ 'noise.webp' | asset_url | json }},
+      industry1: {{ 'industry-1.webp' | asset_url | json }},
+      industry2: {{ 'industry-2.webp' | asset_url | json }},
+      industry3: {{ 'industry-3.webp' | asset_url | json }},
+      gastronomy1: {{ 'gastronomy-1.webp' | asset_url | json }},
+      gastronomy2: {{ 'gastronomy-2.webp' | asset_url | json }},
+      gastronomy3: {{ 'gastronomy-3.webp' | asset_url | json }},
+      institution1: {{ 'institution-1.webp' | asset_url | json }},
+      institution2: {{ 'institution-2.webp' | asset_url | json }},
+      institution3: {{ 'institution-3.webp' | asset_url | json }},
+      logoInverse: {% if settings.logo_inverse %}{{ settings.logo_inverse | image_url: width: 600 | json }}{% else %}null{% endif %},
+      logo: {% if settings.logo %}{{ settings.logo | image_url: width: 600 | json }}{% else %}null{% endif %}
     },
 
     // Section settings (from schema below)
@@ -40,6 +51,85 @@
       accentColor: {{ section.settings.accent_color | json }},
       headingText: {{ section.settings.heading_text | json }},
       subheadingText: {{ section.settings.subheading_text | json }}
+    },
+
+    // Stock Section settings and images
+    stockSection: {
+      title: {{ section.settings.stock_section_title | json }},
+      buttonText: {{ section.settings.stock_section_button_text | json }},
+      buttonUrl: {{ section.settings.stock_section_button_url | json }},
+      productCount: {{ section.settings.stock_product_count | default: 170 | json }},
+      rainImageCount: {{ section.settings.stock_rain_image_count | default: 24 | json }},
+      // Deterministic image list from all available collections
+      productImages: [
+        {%- assign max_images = section.settings.stock_rain_image_count | default: 24 -%}
+        {%- assign shown_count = 0 -%}
+        {%- assign first_item = true -%}
+        {%- assign seen_product_ids = '|' -%}
+
+        {%- for collection in collections -%}
+          {%- if shown_count >= max_images -%}
+            {%- break -%}
+          {%- endif -%}
+          {%- for product in collection.products -%}
+            {%- if shown_count >= max_images -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- assign product_token = '|' | append: product.id | append: '|' -%}
+            {%- if seen_product_ids contains product_token -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+
+            {%- if product.images != blank -%}
+              {%- for product_image in product.images -%}
+                {%- if shown_count >= max_images -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- unless first_item -%},{%- endunless -%}
+                { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+                {%- assign first_item = false -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endfor -%}
+            {%- elsif product.featured_image != blank -%}
+              {%- unless first_item -%},{%- endunless -%}
+              { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+              {%- assign first_item = false -%}
+              {%- assign shown_count = shown_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {%- if shown_count < max_images -%}
+          {%- for product in collections.all.products -%}
+            {%- if shown_count >= max_images -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- assign product_token = '|' | append: product.id | append: '|' -%}
+            {%- if seen_product_ids contains product_token -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+
+            {%- if product.images != blank -%}
+              {%- for product_image in product.images -%}
+                {%- if shown_count >= max_images -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- unless first_item -%},{%- endunless -%}
+                { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+                {%- assign first_item = false -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endfor -%}
+            {%- elsif product.featured_image != blank -%}
+              {%- unless first_item -%},{%- endunless -%}
+              { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+              {%- assign first_item = false -%}
+              {%- assign shown_count = shown_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      ]
     },
 
     // ============================================
@@ -164,6 +254,71 @@
   };
 </script>
 
+{% comment %}
+  Liquid Loading Screen - Shows IMMEDIATELY before React loads
+  React will hide this once it mounts its own loading screen
+{% endcomment %}
+<div
+  id="liquid-loading-screen"
+  style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 2147483647;
+    margin: 0;
+    padding: 0;
+    background-color: #146C90;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+  "
+>
+  <div
+    style="
+      position: absolute;
+      bottom: 32px;
+      left: 32px;
+      font-size: 128px;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+    "
+  >
+    0%
+  </div>
+</div>
+
+<style>
+  /* Critical CSS for React loading screen */
+  .plupack-loading-screen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    z-index: 2147483647 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide Liquid loading screen once React takes over */
+  .react-loaded #liquid-loading-screen {
+    display: none !important;
+  }
+
+  @media (max-width: 768px) {
+    #liquid-loading-screen > div {
+      font-size: 64px !important;
+      bottom: 24px !important;
+      left: 24px !important;
+    }
+  }
+</style>
+
 {% comment %} Mount point for React app {% endcomment %}
 <div
   id="react-homepage"
@@ -236,6 +391,46 @@
     {
       "type": "header",
       "content": "Hero Content"
+    },
+    {
+      "type": "header",
+      "content": "Stock Section"
+    },
+    {
+      "type": "text",
+      "id": "stock_section_title",
+      "label": "Stock Section Title",
+      "default": "+170 PRODUCTOS EN STOCK PERMANENTE"
+    },
+    {
+      "type": "range",
+      "id": "stock_product_count",
+      "label": "Number displayed in title",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 170
+    },
+    {
+      "type": "range",
+      "id": "stock_rain_image_count",
+      "label": "Rain image count",
+      "min": 8,
+      "max": 42,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "stock_section_button_text",
+      "label": "Button Text",
+      "default": "Ver catálogo"
+    },
+    {
+      "type": "url",
+      "id": "stock_section_button_url",
+      "label": "Button URL",
+      "default": "/collections/all"
     }
   ],
   "presets": [

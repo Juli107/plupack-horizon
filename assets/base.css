@@ -2595,14 +2595,14 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   line-height: normal;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary-button-text);
+  color: #000F9F;
   padding-inline: var(--cart-padding);
 }
 
 .cart-bubble__background {
   position: absolute;
   inset: 0;
-  background-color: var(--color-primary-button-background);
+  background-color: #ffffff;
   border-radius: var(--style-border-radius-lg);
 }
 
@@ -4295,4 +4295,220 @@ text-component {
   .h6.h6 select {
     font-size: max(1rem, 100%);
   }
+}
+/* Botones más pequeños de altura */
+.add-to-cart-button,
+.shopify-payment-button__button {
+  height: auto !important;
+  min-height: auto !important;
+  padding: 6px 20px !important;
+  font-size: 12px !important;
+}
+
+.product-form-buttons {
+  --height-buy-buttons: auto !important;
+}
+
+/* ===========================================
+   PÁGINA DE PRODUCTO INDIVIDUAL - Ajustes
+   =========================================== */
+
+/* Imágenes más pequeñas - dar más espacio a los detalles */
+@media screen and (min-width: 750px) {
+  .product-information__grid.product-information--media-left {
+    grid-template-columns: 0.8fr 1fr !important;
+  }
+}
+
+/* Label "Tamaño" en color azul primario */
+.product-information .variant-option--dropdowns > label {
+  color: #2773a8 !important;
+  font-weight: 700 !important;
+}
+
+/* ===========================================
+   BOTONES DE PRODUCTO INDIVIDUAL - Ajuste simple
+   (Solo aplica a página de producto, no a colecciones)
+   =========================================== */
+
+/* Layout: cantidad y agregar en línea, comprar ahora abajo */
+.product-information .product-form-buttons {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+}
+
+/* Altura uniforme para los 3 elementos */
+.product-information .product-form-buttons .quantity-selector,
+.product-information .product-form-buttons .add-to-cart-button,
+.product-information .product-form-buttons .shopify-payment-button__button {
+  height: 44px !important;
+  border-radius: 8px !important;
+  font-size: 15px !important;
+}
+
+/* Selector de cantidad */
+.product-information .product-form-buttons .quantity-selector {
+  flex: 0 0 130px !important;
+}
+
+.product-information .product-form-buttons .quantity-selector input {
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
+
+/* Botón Agregar al carrito */
+.product-information .product-form-buttons .add-to-cart-button {
+  flex: 1 1 200px !important;
+  font-size: 15px !important;
+}
+
+/* Botón Comprar ahora - ancho completo */
+.product-information .product-form-buttons .accelerated-checkout-block {
+  flex: 1 0 100% !important;
+  margin-top: 8px !important;
+}
+
+/* Mobile: todo apilado */
+@media screen and (max-width: 749px) {
+  .product-information .product-form-buttons .quantity-selector {
+    flex: 1 0 100% !important;
+  }
+
+  .product-information .product-form-buttons .add-to-cart-button {
+    flex: 1 0 100% !important;
+  }
+}
+
+/* ===========================================
+   FORMULARIO DE CONTACTO - Quitar outline negro
+   =========================================== */
+
+/* Quitar el outline negro al enfocar inputs del formulario de contacto */
+.contact-form__input:focus,
+.contact-form__input:focus-visible {
+  outline: none !important;
+  border-color: #2773a8 !important;
+  box-shadow: 0 0 0 1px #2773a8 !important;
+}
+
+/* Estilos de contact-form controlados desde snippets/contact-form.liquid */
+
+/* ===========================================
+   MODAL DE BÚSQUEDA - Estilizado
+   =========================================== */
+
+/* Modal de búsqueda - borde azul */
+.search-modal__content {
+  border: 2px solid #2773a8 !important;
+}
+
+/* Contenedor del input de búsqueda */
+.predictive-search-form__header {
+  border: none !important;
+  border-bottom: 1px solid #2773a8 !important;
+  border-radius: 0 !important;
+  background-color: #ffffff !important;
+}
+
+/* Input de búsqueda */
+.search-input {
+  padding: 14px 16px 14px 48px !important;
+  font-size: 16px !important;
+}
+
+/* Icono de lupita dentro del input */
+.predictive-search__icon {
+  color: #2773a8 !important;
+}
+
+.predictive-search__icon svg {
+  stroke: #2773a8 !important;
+}
+
+/* Focus del input - sin outline negro */
+.predictive-search-form__header:focus-within {
+  border-color: #2773a8 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Ocultar botón "Borrar" */
+.predictive-search__reset-button {
+  display: none !important;
+}
+
+/* Quitar línea separadora vertical */
+.predictive-search-form__header::before,
+.predictive-search-form__header-inner::before {
+  display: none !important;
+}
+
+/* Títulos "Visto recientemente" y "Productos" */
+.predictive-search-results__title {
+  color: #2773a8 !important;
+  font-weight: 700 !important;
+  padding-top: 10px !important;
+  padding-bottom: 0 !important;
+}
+
+/* Botón "Ver todos los resultados" */
+.predictive-search__search-button {
+  background-color: #2773a8 !important;
+  border-color: #2773a8 !important;
+  color: #ffffff !important;
+}
+
+.predictive-search__search-button:hover {
+  background-color: #1e5f8a !important;
+  border-color: #1e5f8a !important;
+}
+
+/* ===========================================
+   CARRITO VACÍO - Botón "Seguir comprando"
+   =========================================== */
+
+html body #header-component .cart-drawer__dialog a.button.cart-items__empty-button {
+  --button-color: #ffffff;
+  --button-background-color: #2773a8;
+  background: #2773a8 !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+}
+
+html body #header-component .cart-drawer__dialog a.button.cart-items__empty-button:hover {
+  --button-background-color: #1e5f8a;
+  background: #1e5f8a !important;
+  color: #ffffff !important;
+}
+
+/* ===========================================
+   OCULTAR PILL "AGOTADO" EN CARDS
+   =========================================== */
+
+.product-badges__badge.color-scheme-3 {
+  display: none !important;
+}
+
+/* ===========================================
+   BARRA BUSCADORA COLECCIÓN - Icono azul
+   =========================================== */
+
+.collection-search-button .svg-wrapper,
+.collection-search-button svg {
+  color: #2773a8 !important;
+  stroke: #2773a8 !important;
+}
+
+.collection-search-input {
+  border-width: 1px !important;
+}
+
+/* ===========================================
+   OCULTAR BARRA BUSCADORA EN COLECCIÓN
+   =========================================== */
+
+.collection-search-form,
+.collection-search-form--mobile {
+  display: none !important;
 }

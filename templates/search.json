@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "search": {
       "type": "search-header",
@@ -22,7 +23,7 @@
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
-            "color": "",
+            "color": "#2773A8",
             "text": "",
             "read_only": true,
             "alignment": "left",
@@ -33,19 +34,12 @@
             "padding-inline-end": 0
           },
           "blocks": {}
-        },
-        "search": {
-          "type": "_search-input",
-          "static": true,
-          "settings": {
-            "width": "custom",
-            "custom_width": 50,
-            "inherit_color_scheme": true,
-            "color_scheme": ""
-          },
-          "blocks": {}
         }
       },
+      "custom_css": [
+        ".search-page__header h3 {font-weight: 700 !important;}",
+        ".search-page-input__parent {display: none !important;}"
+      ],
       "settings": {
         "alignment": "flex-start",
         "color_scheme": "scheme-1",
@@ -60,14 +54,14 @@
           "type": "filters",
           "static": true,
           "settings": {
-            "enable_filtering": true,
+            "enable_filtering": false,
             "filter_style": "horizontal",
             "filter_width": "centered",
             "text_label_case": "default",
             "show_swatch_label": false,
             "show_filter_label": false,
             "enable_sorting": true,
-            "enable_grid_density": true,
+            "enable_grid_density": false,
             "inherit_color_scheme": true,
             "color_scheme": "",
             "padding-block-start": 8,
@@ -91,7 +85,7 @@
             "border_opacity": 100,
             "border_radius": 0,
             "padding-block-start": 0,
-            "padding-block-end": 0,
+            "padding-block-end": 17,
             "padding-inline-start": 0,
             "padding-inline-end": 0
           },
@@ -100,7 +94,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "adapt",
+                "image_ratio": "portrait",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -153,21 +147,63 @@
                 "letter_spacing": "normal",
                 "case": "none",
                 "color": "var(--color-foreground)",
+                "padding-block-start": 5,
+                "padding-block-end": 10,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "buy_buttons": {
+              "type": "buy-buttons",
+              "name": "t:names.product_buy_buttons",
+              "settings": {
+                "stacking": false,
+                "show_pickup_availability": true,
+                "gift_card_form": true,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
-              "blocks": {}
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button-secondary"
+                  },
+                  "blocks": {}
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                }
+              },
+              "block_order": []
             }
           },
           "block_order": [
             "product_card_gallery_cFExAi",
             "product_title_j7qXTx",
-            "price_fYkUgG"
+            "price_fYkUgG",
+            "buy_buttons"
           ]
         }
       },
+      "custom_css": [
+        ".products-count-wrapper {display: none !important;}",
+        ".sorting-filter {margin-left: auto !important;}"
+      ],
       "settings": {
         "layout_type": "grid",
         "product_card_size": "medium",
@@ -179,13 +215,73 @@
         "padding-inline-start": 0,
         "padding-inline-end": 0,
         "color_scheme": "scheme-1",
-        "padding-block-start": 40,
+        "padding-block-start": 0,
         "padding-block-end": 40
+      }
+    },
+    "collection_links": {
+      "type": "collection-links",
+      "blocks": {
+        "link": {
+          "type": "_collection-link",
+          "static": true,
+          "settings": {
+            "show_count": true
+          },
+          "blocks": {
+            "title": {
+              "type": "_inline-collection-title",
+              "name": "t:names.title",
+              "static": true,
+              "settings": {
+                "font": "var(--font-body--family)",
+                "weight": "400",
+                "line_height": "tight",
+                "letter_spacing": "tight",
+                "case": "none"
+              },
+              "blocks": {}
+            },
+            "image": {
+              "type": "_image",
+              "static": true,
+              "settings": {
+                "height": "medium",
+                "ratio": "portrait",
+                "border_radius": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "custom_css": [
+        ".collection-links__count,.collection-links__image {display: none !important;}",
+        ".collection-links__container {display: flex !important; flex-wrap: wrap; gap: 0 24px; border-bottom: 1px solid #2773a8; padding-bottom: 12px;}",
+        ".collection-links__link {padding: 8px 0; font-size: 14px; color: #666 !important;}",
+        ".collection-links__link:hover {color: #333 !important;}",
+        ".collection-links__link[aria-current=\"true\"],.collection-links__link[aria-current=\"true\"]:hover {color: #2773a8 !important; font-weight: 600;}"
+      ],
+      "name": "t:names.collection_links_text",
+      "settings": {
+        "collection_list": [
+          "todos-los-productos",
+          "embalajes-y-proteccion",
+          "descartables-e-higiene",
+          "cintas-y-adhesivos",
+          "papel-y-envoltura"
+        ],
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 28,
+        "padding-block-end": 23
       }
     }
   },
   "order": [
     "search",
+    "collection_links",
     "main"
   ]
 }

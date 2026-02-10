@@ -13,6 +13,90 @@
   fetchpriority="low"
 ></script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchContainers = document.querySelectorAll('[data-collection-search]');
+
+    searchContainers.forEach(function(container) {
+      const input = container.querySelector('[data-search-input]');
+      const button = container.querySelector('[data-search-button]');
+      const dropdown = container.querySelector('[data-search-dropdown]');
+      let debounceTimer;
+
+      function performSearch() {
+        const query = input.value.trim();
+        if (query) {
+          window.location.href = '/search?q=' + encodeURIComponent(query) + '&options[prefix]=last';
+        }
+      }
+
+      function fetchSuggestions(query) {
+        if (!query || query.length < 2) {
+          dropdown.hidden = true;
+          return;
+        }
+
+        fetch('/search/suggest.json?q=' + encodeURIComponent(query) + '&resources[type]=product&resources[limit]=5')
+          .then(response => response.json())
+          .then(data => {
+            const products = data.resources?.results?.products || [];
+            if (products.length === 0) {
+              dropdown.hidden = true;
+              return;
+            }
+
+            dropdown.innerHTML = products.map(product => `
+              <a href="${product.url}" class="collection-search-item">
+                ${product.image ? `<img src="${product.image}" alt="${product.title}" class="collection-search-item__image">` : ''}
+                <div class="collection-search-item__info">
+                  <div class="collection-search-item__title">${product.title}</div>
+                  <div class="collection-search-item__price">${product.price}</div>
+                </div>
+              </a>
+            `).join('');
+            dropdown.hidden = false;
+          })
+          .catch(() => {
+            dropdown.hidden = true;
+          });
+      }
+
+      if (button) {
+        button.addEventListener('click', performSearch);
+      }
+
+      if (input) {
+        input.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch();
+          }
+        });
+
+        input.addEventListener('input', function() {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            fetchSuggestions(input.value.trim());
+          }, 300);
+        });
+
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            dropdown.hidden = true;
+          }
+        });
+      }
+
+      // Cerrar dropdown al hacer clic fuera
+      document.addEventListener('click', function(e) {
+        if (!container.contains(e.target)) {
+          dropdown.hidden = true;
+        }
+      });
+    });
+  });
+</script>
+
 {%- liquid
   assign block_settings = block.settings
   assign products_count = results_size
@@ -86,6 +170,23 @@
         <span title="{{ 'content.product_count' | t }}">
           {{- 'content.item_count' | t: count: products_count -}}
         </span>
+      </div>
+
+      <div class="collection-search-form" data-collection-search>
+        <input
+          type="search"
+          class="collection-search-input"
+          placeholder="{{ 'content.search_input_placeholder' | t }}"
+          value="{{ search.terms | escape }}"
+          data-search-input
+          autocomplete="off"
+        >
+        <button type="button" class="collection-search-button" aria-label="{{ 'content.search' | t }}" data-search-button>
+          <span class="svg-wrapper">
+            {{ 'icon-search.svg' | inline_asset_content }}
+          </span>
+        </button>
+        <div class="collection-search-dropdown" data-search-dropdown hidden></div>
       </div>
 
       {% if block_settings.enable_sorting %}
@@ -226,6 +327,23 @@
                 </span>
               </div>
 
+              <div class="collection-search-form" data-collection-search>
+                <input
+                  type="search"
+                  class="collection-search-input"
+                  placeholder="{{ 'content.search_input_placeholder' | t }}"
+                  value="{{ search.terms | escape }}"
+                  data-search-input
+                  autocomplete="off"
+                >
+                <button type="button" class="collection-search-button" aria-label="{{ 'content.search' | t }}" data-search-button>
+                  <span class="svg-wrapper">
+                    {{ 'icon-search.svg' | inline_asset_content }}
+                  </span>
+                </button>
+                <div class="collection-search-dropdown" data-search-dropdown hidden></div>
+              </div>
+
               {% if block_settings.enable_sorting %}
                 {% render 'sorting',
                   results: results,
@@ -290,6 +408,23 @@
     {% endif %}
 
     <div class="facets-mobile-wrapper facets-controls-wrapper">
+      <div class="collection-search-form collection-search-form--mobile" data-collection-search>
+        <input
+          type="search"
+          class="collection-search-input"
+          placeholder="{{ 'content.search_input_placeholder' | t }}"
+          value="{{ search.terms | escape }}"
+          data-search-input
+          autocomplete="off"
+        >
+        <button type="button" class="collection-search-button" aria-label="{{ 'content.search' | t }}" data-search-button>
+          <span class="svg-wrapper">
+            {{ 'icon-search.svg' | inline_asset_content }}
+          </span>
+        </button>
+        <div class="collection-search-dropdown" data-search-dropdown hidden></div>
+      </div>
+
       {% if block_settings.enable_filtering == false and block_settings.enable_sorting %}
         <facets-form-component
           section-id="{{ section.id }}"
@@ -1055,6 +1190,137 @@
     @media screen and (min-width: 750px) {
       z-index: var(--facets-open-z-index);
     }
+  }
+
+  /* Collection search bar */
+  .collection-search-form {
+    display: none;
+    position: relative;
+
+    @media screen and (min-width: 750px) {
+      display: flex;
+      align-items: center;
+      gap: var(--gap-xs);
+      height: var(--minimum-touch-target);
+    }
+  }
+
+  .collection-search-form--mobile {
+    display: flex;
+    flex: 1;
+    position: relative;
+
+    @media screen and (min-width: 750px) {
+      display: none;
+    }
+  }
+
+  .collection-search-input {
+    border: 2px solid #2773A8;
+    border-radius: var(--style-border-radius-inputs);
+    padding: var(--padding-xs) var(--padding-sm);
+    background: var(--color-input-background);
+    color: var(--color-foreground);
+    font-size: var(--font-paragraph--size);
+    min-width: 300px;
+    height: 100%;
+  }
+
+  .collection-search-form--mobile .collection-search-input {
+    flex: 1;
+    min-width: auto;
+  }
+
+  .collection-search-input::placeholder {
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .collection-search-input:focus {
+    outline: none;
+  }
+
+  .collection-search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: var(--padding-xs);
+    cursor: pointer;
+    color: var(--color-foreground);
+  }
+
+  .collection-search-button:hover {
+    opacity: 0.7;
+  }
+
+  .collection-search-button .svg-wrapper {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+  }
+
+  /* Collection search dropdown */
+  .collection-search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-background);
+    border: var(--style-border-width-inputs) solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: var(--gap-xs);
+  }
+
+  .collection-search-dropdown[hidden] {
+    display: none;
+  }
+
+  .collection-search-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm);
+    text-decoration: none;
+    color: var(--color-foreground);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .collection-search-item:last-child {
+    border-bottom: none;
+  }
+
+  .collection-search-item:hover {
+    background: rgb(var(--color-foreground-rgb) / 0.05);
+  }
+
+  .collection-search-item__image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .collection-search-item__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .collection-search-item__title {
+    font-size: var(--font-size--sm);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .collection-search-item__price {
+    font-size: var(--font-size--xs);
+    color: rgb(var(--color-foreground-rgb) / 0.7);
   }
 {% endstylesheet %}
 

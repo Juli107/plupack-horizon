@@ -1,196 +1,275 @@
-
-
 {% liquid
   assign collection_list = section.settings.collection_list
+  assign visible_count = section.settings.visible_count
 
   if collection_list == blank
-    assign limit = 4
-
-    for i in (1..4)
+    assign limit = visible_count | plus: 4
+    for i in (1..limit)
       assign collection_list = collection_list | append: ', '
     endfor
-
     assign collection_list = collection_list | split: ','
   endif
 
   assign active_collection = collection_list | find: 'id', collection.id | default: collection_list.first
+  assign total_collections = collection_list.size
+  assign show_more_button = false
+  
+  if total_collections > visible_count
+    assign show_more_button = true
+  endif
 %}
 
-<script
-  src="{{ 'collection-links.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
+{%- style -%}
+  /* Base Layout */
+  .section-collection-links {
+    position: relative;
+    z-index: 20;
+    overflow: visible !important; /* Prevent clipping */
+  }
+
+  .collection-links__wrapper {
+    position: relative;
+    max-width: 100%;
+  }
+
+  /* Top Bar */
+  .collection-links__top-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 24px;
+    align-items: center;
+    border-bottom: 1px solid #2773a8;
+    padding-bottom: 12px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+  }
+  
+  .collection-links__top-bar::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+  }
+
+  /* Ensure items in top bar don't shrink/wrap weirdly */
+  .collection-links__top-bar .collection-links__link-wrapper {
+    flex-shrink: 0;
+  }
+
+  /* Links Styling (Migrated) */
+  .collection-links__link {
+    white-space: nowrap;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .collection-links__link:hover {
+    color: #333;
+  }
+
+  .collection-links__link[aria-current="true"] {
+    color: #2773a8;
+    font-weight: 600;
+  }
+
+  /* Hide parts as requested */
+  .collection-links__count,
+  .collection-links__image {
+    display: none !important;
+  }
+
+  /* View More Button */
+  .collection-links__toggle {
+    background: transparent;
+    border: none;
+    color: #2773A8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    text-decoration: underline;
+    white-space: nowrap;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  
+  .collection-links__toggle:hover {
+    opacity: 0.8;
+  }
+
+  /* Dropdown Panel */
+  .collection-links__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    padding: 24px;
+    z-index: 100;
+    margin-top: -1px;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .collection-links__dropdown[hidden] {
+    display: none;
+  }
+
+  /* Grid Layout */
+  .collection-links__dropdown-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); /* Mobile default */
+    gap: 16px;
+  }
+
+  @media (min-width: 480px) {
+    .collection-links__dropdown-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .collection-links__dropdown-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .collection-links__dropdown-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+{%- endstyle -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
-  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  class="section section-collection-links section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
   style="{% render 'spacing-style', settings: section.settings %}"
   data-testid="collection-links-{{ section.id }}"
 >
-  <collection-links-component
-    layout="{{ section.settings.layout }}"
-    alignment="{{ section.settings.alignment }}"
-    {% if section.settings.image_position == 'left' %}
-      reverse
-    {% endif %}
-  >
-    <div
-      class="collection-links__container"
-      ref="container"
-    >
-      {% for collection in collection_list limit: limit %}
+  <div class="collection-links__wrapper">
+    <!-- Top Bar -->
+    <div class="collection-links__top-bar" role="list" data-top-bar>
+       {% for collection in collection_list limit: visible_count %}
         {% liquid
           assign current = false
-
           if collection.id == active_collection.id
             assign current = true
           endif
         %}
-        {% content_for 'block',
-          type: '_collection-link',
-          id: 'link',
-          closest.collection: collection,
-          index: forloop.index0,
-          current: current
-        %}
-      {% endfor %}
-    </div>
-
-    {% case section.settings.layout %}
-      {% when 'spotlight' %}
-        {% capture slides %}
-          {% for collection in collection_list limit: limit %}
-          {% liquid
-            assign current = false
-
-            if collection.id == active_collection.id
-              assign current = true
-            endif
-          %}
-
-          {% capture slide %}
-            {% # theme-check-disable UniqueStaticBlockId %}
+        <div class="collection-links__link-wrapper" role="listitem">
             {% content_for 'block',
               type: '_collection-link',
               id: 'link',
               closest.collection: collection,
               index: forloop.index0,
-              current: current,
-              image_only: true
+              current: current
             %}
-            {% # theme-check-enable UniqueStaticBlockId %}
-          {% endcapture %}
+        </div>
+       {% endfor %}
 
-          {% render 'slideshow-slide', children: slide, index: forloop.index0 %}
-        {% endfor %}
-      {% endcapture %}
+       {% if show_more_button %}
+        <button 
+            type="button"
+            class="collection-links__toggle" 
+            id="CollectionLinksToggle-{{ section.id }}"
+            aria-expanded="false" 
+            aria-controls="CollectionLinksDropdown-{{ section.id }}"
+            data-collection-links-toggle
+        >
+            <span class="collection-links__toggle-text">Ver más</span>
+        </button>
+       {% endif %}
+    </div>
 
-        {% render 'slideshow',
-          slides: slides,
-          slide_count: collection_list.size,
-          class: 'collection-links__images',
-          ref: 'slideshow'
-        %}
-    {% endcase %}
-  </collection-links-component>
+    <!-- Mega Dropdown -->
+    {% if show_more_button %}
+      <div 
+        id="CollectionLinksDropdown-{{ section.id }}" 
+        class="collection-links__dropdown" 
+        hidden
+      >
+        <div class="collection-links__dropdown-grid" role="list">
+           {% for collection in collection_list offset: visible_count %}
+            {% liquid
+              assign current = false
+              if collection.id == active_collection.id
+                assign current = true
+              endif
+            %}
+            <div class="collection-links__link-wrapper" role="listitem">
+                {% content_for 'block',
+                  type: '_collection-link',
+                  id: 'link',
+                  closest.collection: collection,
+                  index: forloop.index0,
+                  current: current
+                %}
+            </div>
+           {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
 </div>
 
-{% # theme-check-disable ValidBlockTarget %}
-{% stylesheet %}
-  collection-links-component {
-    --alignment: flex-start;
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.getElementById('CollectionLinksToggle-{{ section.id }}');
+    const dropdown = document.getElementById('CollectionLinksDropdown-{{ section.id }}');
+    const toggleText = toggleBtn ? toggleBtn.querySelector('.collection-links__toggle-text') : null;
 
-    display: grid;
-    align-items: center;
-    grid-gap: var(--gap-3xl);
+    if (!toggleBtn || !dropdown) return;
 
-    &:has([ratio='portrait']) {
-      --template-column-ratio: 0.8fr;
+    function openDropdown() {
+      dropdown.hidden = false;
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      if (toggleText) toggleText.textContent = 'Ver menos';
     }
 
-    &:has([ratio='square']) {
-      --template-column-ratio: 1fr;
+    function closeDropdown() {
+      dropdown.hidden = true;
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      if (toggleText) toggleText.textContent = 'Ver más';
     }
 
-    &:has([ratio='landscape']) {
-      --template-column-ratio: 1.4fr;
-    }
-
-    &[alignment='center'] {
-      --alignment: center;
-
-      .text-block {
-        text-align: center;
+    // Toggle Click
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) {
+        closeDropdown();
+      } else {
+        openDropdown();
       }
-    }
+    });
 
-    &[alignment='right'] {
-      --alignment: flex-end;
-
-      .text-block {
-        text-align: right;
+    // Close on ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && toggleBtn.getAttribute('aria-expanded') === 'true') {
+        closeDropdown();
+        toggleBtn.focus(); // Return focus to toggle
       }
-    }
+    });
 
-    &[layout='spotlight'] {
-      position: relative;
-      grid-template-columns: 1fr var(--template-column-ratio);
-      grid-template-areas: 'text image';
-
-      @media (min-width: 749px) {
-        &[reverse] {
-          grid-template-areas: 'image text';
-          grid-template-columns: var(--template-column-ratio) 1fr;
+    // Close on Outside Click
+    document.addEventListener('click', function(e) {
+      if (toggleBtn.getAttribute('aria-expanded') === 'true') {
+        if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+            closeDropdown();
         }
       }
-
-      .collection-links__container {
-        align-items: var(--alignment);
-      }
-
-      @media (max-width: 749px) {
-        grid-template-columns: 1fr;
-        grid-template-areas: 'text' 'image';
-        grid-gap: var(--gap-2xl);
-
-        .collection-links__container {
-          gap: clamp(var(--gap-xs), 1vw, var(--gap-xl)) var(--gap-2xl);
-          justify-content: var(--alignment);
-        }
-      }
-    }
-
-    &[layout='text'] {
-      grid-gap: 0;
-      grid-template-areas: 'text';
-
-      .collection-links__container {
-        gap: clamp(var(--gap-xs), 1vw, var(--gap-xl)) var(--gap-2xl);
-        flex-wrap: wrap;
-        flex-direction: row;
-        justify-content: var(--alignment);
-      }
-    }
-  }
-
-  .collection-links__container {
-    display: flex;
-    gap: var(--gap-md);
-    flex-direction: column;
-  }
-
-  .collection-links__images {
-    overflow: hidden;
-    grid-area: image;
-
-    @media (max-width: 749px) {
-      image-block {
-        max-width: 100%;
-      }
-    }
-  }
-{% endstylesheet %}
+    });
+  });
+</script>
 
 {% schema %}
 {
@@ -200,82 +279,38 @@
   },
   "settings": [
     {
+       "type": "range",
+       "id": "visible_count",
+       "label": "Top bar items count",
+       "min": 3,
+       "max": 12,
+       "step": 1,
+       "default": 6
+    },
+    {
       "type": "collection_list",
       "id": "collection_list",
       "label": "t:settings.collection_list"
     },
     {
-      "type": "header",
-      "content": "t:content.layout"
+        "type": "header",
+        "content": "t:content.layout"
     },
     {
-      "type": "select",
-      "id": "layout",
-      "label": "t:settings.layout",
-      "options": [
-        {
-          "value": "spotlight",
-          "label": "t:options.spotlight"
-        },
-        {
-          "value": "text",
-          "label": "t:options.text"
-        }
-      ],
-      "default": "spotlight"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "page-width"
-    },
-    {
-      "type": "select",
-      "id": "alignment",
-      "label": "t:settings.alignment",
-      "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
-      ],
-      "default": "left"
-    },
-    {
-      "type": "select",
-      "id": "image_position",
-      "label": "t:settings.image_position",
-      "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
-      ],
-      "default": "right",
-      "visible_if": "{{ section.settings.layout == \"spotlight\" }}"
+        "type": "select",
+        "id": "section_width",
+        "label": "t:settings.width",
+        "options": [
+          {
+            "value": "page-width",
+            "label": "t:options.page"
+          },
+          {
+            "value": "full-width",
+            "label": "t:options.full"
+          }
+        ],
+        "default": "page-width"
     },
     {
       "type": "color_scheme",
@@ -324,45 +359,6 @@
               "settings": {
                 "font": "var(--font-subheading--family)"
               }
-            },
-            "image": {
-              "type": "_image",
-              "static": true,
-              "settings": {
-                "height": "large",
-                "ratio": "square"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "t:names.collection_links_text",
-      "category": "t:categories.collections",
-      "settings": {
-        "layout": "text",
-        "alignment": "center"
-      },
-      "blocks": {
-        "link": {
-          "type": "_collection-link",
-          "static": true,
-          "blocks": {
-            "title": {
-              "type": "_inline-collection-title",
-              "name": "t:names.title",
-              "static": true,
-              "settings": {
-                "font": "var(--font-subheading--family)"
-              }
-            },
-            "image": {
-              "type": "_image",
-              "static": true,
-              "settings": {
-                "height": "medium"
-              }
             }
           }
         }
@@ -371,4 +367,3 @@
   ]
 }
 {% endschema %}
-{% # theme-check-enable ValidBlockTarget %}
