@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-02-10T17:28:26.978Z",
+  "sourceDir": "src/assets/models/originals",
+  "outputDir": "src/assets/models/optimized",
+  "totals": {
+    "beforeBytes": 3631024,
+    "afterBytes": 2207132,
+    "reductionPercent": 39.21
+  },
+  "files": [
+    {
+      "file": "aluminum_roll.glb",
+      "strategy": "meshopt + webp",
+      "before": 523220,
+      "after": 251884,
+      "reductionPercent": 51.86
+    },
+    {
+      "file": "bubble_wrap.glb",
+      "strategy": "meshopt + webp (kept original; optimized was larger)",
+      "before": 128916,
+      "after": 128916,
+      "reductionPercent": 0
+    },
+    {
+      "file": "carton.glb",
+      "strategy": "meshopt + webp",
+      "before": 390092,
+      "after": 200988,
+      "reductionPercent": 48.48
+    },
+    {
+      "file": "detergent.glb",
+      "strategy": "meshopt + webp (kept original; optimized was larger)",
+      "before": 107964,
+      "after": 107964,
+      "reductionPercent": 0
+    },
+    {
+      "file": "film_stretch.glb",
+      "strategy": "meshopt + webp",
+      "before": 605904,
+      "after": 322640,
+      "reductionPercent": 46.75
+    },
+    {
+      "file": "food_container.glb",
+      "strategy": "meshopt + webp",
+      "before": 417500,
+      "after": 249300,
+      "reductionPercent": 40.29
+    },
+    {
+      "file": "gloves.glb",
+      "strategy": "meshopt + webp (kept original; optimized was larger)",
+      "before": 154788,
+      "after": 154788,
+      "reductionPercent": 0
+    },
+    {
+      "file": "industry_wrap.glb",
+      "strategy": "meshopt + webp",
+      "before": 76804,
+      "after": 75132,
+      "reductionPercent": 2.18
+    },
+    {
+      "file": "napkins.glb",
+      "strategy": "meshopt + webp (kept original; optimized was larger)",
+      "before": 129536,
+      "after": 129536,
+      "reductionPercent": 0
+    },
+    {
+      "file": "paper_rolls.glb",
+      "strategy": "meshopt + webp",
+      "before": 591836,
+      "after": 284916,
+      "reductionPercent": 51.86
+    },
+    {
+      "file": "plastic_bag.glb",
+      "strategy": "meshopt + webp",
+      "before": 321608,
+      "after": 158616,
+      "reductionPercent": 50.68
+    },
+    {
+      "file": "plastic_wrap.glb",
+      "strategy": "meshopt + webp",
+      "before": 127368,
+      "after": 86964,
+      "reductionPercent": 31.72
+    },
+    {
+      "file": "tape.glb",
+      "strategy": "meshopt + webp (kept original; optimized was larger)",
+      "before": 55488,
+      "after": 55488,
+      "reductionPercent": 0
+    }
+  ]
+}

@@ -141,7 +141,7 @@ export function Homepage({
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
         <GlobalCanvas />
-        <ScrollDebugger />
+        {import.meta.env.DEV ? <ScrollDebugger /> : null}
 
         <NoiseOverlay />
         <Hero />

@@ -2,9 +2,7 @@ import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useGLTF } from '@react-three/drei';
 import { RenderProduct } from './Products';
-import industryWrapUrl from '../../assets/models/industry_wrap.glb';
-
-useGLTF.preload(industryWrapUrl);
+import { industryWrapUrl } from './industryAssets';
 
 // Helper types for individual item configuration
 type ItemConfig = {

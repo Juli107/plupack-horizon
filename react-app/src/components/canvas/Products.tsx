@@ -1,4 +1,4 @@
-import { useMemo, useLayoutEffect, useState } from 'react';
+import { useMemo } from 'react';
 import {
   useGLTF,
   Instances,
@@ -11,20 +11,21 @@ import {
   FROSTED_MATERIAL,
 } from './sharedMaterial';
 
-// Import Assets directly from src/assets/models
-import foodContainerUrl from '../../assets/models/food_container.glb';
-import tapeUrl from '../../assets/models/tape.glb';
-import paperRollsUrl from '../../assets/models/paper_rolls.glb';
-import detergentUrl from '../../assets/models/detergent.glb';
-import plasticWrapUrl from '../../assets/models/plastic_wrap.glb';
-import aluminumRollUrl from '../../assets/models/aluminum_roll.glb';
-import filmStretchUrl from '../../assets/models/film_stretch.glb';
-import plasticBagUrl from '../../assets/models/plastic_bag.glb';
-import bubbleWrapUrl from '../../assets/models/bubble_wrap.glb';
-import glovesUrl from '../../assets/models/gloves.glb';
-import cartonUrl from '../../assets/models/carton.glb';
+// Import optimized assets directly from src/assets/models/optimized
+import foodContainerUrl from '../../assets/models/optimized/food_container.glb';
+import tapeUrl from '../../assets/models/optimized/tape.glb';
+import paperRollsUrl from '../../assets/models/optimized/paper_rolls.glb';
+import detergentUrl from '../../assets/models/optimized/detergent.glb';
+import plasticWrapUrl from '../../assets/models/optimized/plastic_wrap.glb';
+import aluminumRollUrl from '../../assets/models/optimized/aluminum_roll.glb';
+import filmStretchUrl from '../../assets/models/optimized/film_stretch.glb';
+import plasticBagUrl from '../../assets/models/optimized/plastic_bag.glb';
+import bubbleWrapUrl from '../../assets/models/optimized/bubble_wrap.glb';
+import glovesUrl from '../../assets/models/optimized/gloves.glb';
+import cartonUrl from '../../assets/models/optimized/carton.glb';
 
 type GroupProps = any;
+const MATERIAL_CACHE = new Map<string, THREE.Material>();
 
 // Map filenames (keys) to imported URL strings (values)
 const MODEL_URLS: Record<string, string> = {
@@ -42,45 +43,59 @@ const MODEL_URLS: Record<string, string> = {
   'napkins.glb': '', // Procedural, no GLB
 };
 
-// Preload assets
-Object.values(MODEL_URLS).forEach((url) => {
-  if (url) useGLTF.preload(url);
-});
+export function preloadModels(names: string[]) {
+  for (const name of names) {
+    const url = MODEL_URLS[name];
+    if (url) {
+      useGLTF.preload(url);
+    }
+  }
+}
 
 // Helper to find the main mesh geometry and material for instancing
 function useMainMesh(url: string) {
   const { scene } = useGLTF(url);
-  const [meshData, setMeshData] = useState<{
-    geometry: THREE.BufferGeometry;
-    material: THREE.Material;
-  } | null>(null);
-
-  useLayoutEffect(() => {
+  return useMemo(() => {
     let foundGeometry: THREE.BufferGeometry | null = null;
     let foundNormalMap: THREE.Texture | null = null;
     let foundNormalScale: THREE.Vector2 | null = null;
+    let largestVertexCount = -1;
 
     scene.traverse((node: any) => {
-      if (node.isMesh && !foundGeometry) {
+      if (node.isMesh && node.geometry) {
+        const vertexCount =
+          node.geometry.attributes?.position?.count ?? 0;
+        if (vertexCount <= largestVertexCount) {
+          return;
+        }
+
+        largestVertexCount = vertexCount;
         foundGeometry = node.geometry;
         if (node.material.normalMap) {
           foundNormalMap = node.material.normalMap;
           foundNormalScale = node.material.normalScale;
+        } else {
+          foundNormalMap = null;
+          foundNormalScale = null;
         }
       }
     });
 
-    if (foundGeometry) {
+    if (!foundGeometry) return null;
+
+    let material = MATERIAL_CACHE.get(url);
+    if (!material) {
       const mat = FROSTED_MATERIAL.clone();
       if (foundNormalMap) {
         mat.normalMap = foundNormalMap;
         if (foundNormalScale) mat.normalScale.copy(foundNormalScale);
       }
-      setMeshData({ geometry: foundGeometry, material: mat });
+      material = mat;
+      MATERIAL_CACHE.set(url, material);
     }
-  }, [scene]);
 
-  return meshData;
+    return { geometry: foundGeometry, material };
+  }, [scene, url]);
 }
 
 // FOOD CONTAINERS (Stack of 8)
@@ -96,6 +111,7 @@ export function FoodContainerStack(props: GroupProps) {
           range={8}
           geometry={data.geometry}
           material={data.material}
+          scale={0.1}
         >
           <Instance position={[0, 0.06, 0]} />
           <Instance position={[0, 0.04, 0]} />
@@ -150,6 +166,7 @@ export function PaperRollStack(props: GroupProps) {
           range={3}
           geometry={data.geometry}
           material={data.material}
+          scale={0.1}
         >
           {/* Two on bottom, touching */}
           <Instance position={[0, 0, 0]} rotation={[0, 0, 0]} />
@@ -165,7 +182,7 @@ export function NapkinStack(props: GroupProps) {
   // Reduced size significantly: 1 -> 0.2
   const geometry = useMemo(
     () => new THREE.BoxGeometry(0.2, 0.002, 0.2),
-    []
+    [],
   );
 
   const count = 40;
@@ -229,7 +246,7 @@ export const PRODUCT_COMPONENTS: Record<
   'food_container.glb': FoodContainerStack,
   'tape.glb': TapeStack,
   'paper_rolls.glb': PaperRollStack,
-  'napkins.glb': NapkinStack, // Mapped from the old filename to new component
+  'napkins.glb': NapkinStack,
 };
 
 export function RenderProduct({

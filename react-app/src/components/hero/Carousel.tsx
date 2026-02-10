@@ -1,10 +1,10 @@
 import { Center, Float } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RenderProduct } from '../canvas/Products';
 
-const ITEMS = [
+export const CAROUSEL_ITEMS = [
   'food_container.glb',
   'plastic_bag.glb',
   'detergent.glb',
@@ -23,9 +23,44 @@ interface CarouselProps {
 
 export function Carousel({ radius = 6 }: CarouselProps) {
   const groupRef = useRef<THREE.Group>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] =
+    useState(false);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    const reducedMotionQuery = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    );
+
+    const update = () => {
+      setIsMobile(mobileQuery.matches);
+      setPrefersReducedMotion(reducedMotionQuery.matches);
+    };
+
+    update();
+    mobileQuery.addEventListener('change', update);
+    reducedMotionQuery.addEventListener('change', update);
+
+    return () => {
+      mobileQuery.removeEventListener('change', update);
+      reducedMotionQuery.removeEventListener('change', update);
+    };
+  }, []);
+
+  const animationConfig = useMemo(
+    () => ({
+      baseVelocity: prefersReducedMotion ? 0 : isMobile ? 0.06 : 0.1,
+      floatSpeed: isMobile ? 1 : 1.5,
+      rotationIntensity: isMobile ? 0.03 : 0.05,
+      floatIntensity: isMobile ? 0.12 : 0.2,
+      floatingRange: isMobile ? ([-0.12, 0.12] as [number, number]) : ([-0.2, 0.2] as [number, number]),
+    }),
+    [isMobile, prefersReducedMotion]
+  );
 
   // Interaction state
-  const velocity = useRef(0.1); // Base rotation speed
+  const velocity = useRef(animationConfig.baseVelocity);
 
   useFrame((_state, delta) => {
     if (groupRef.current) {
@@ -33,7 +68,7 @@ export function Carousel({ radius = 6 }: CarouselProps) {
       // Lerp velocity
       velocity.current = THREE.MathUtils.lerp(
         velocity.current,
-        0.1,
+        animationConfig.baseVelocity,
         delta * 2
       );
 
@@ -43,8 +78,8 @@ export function Carousel({ radius = 6 }: CarouselProps) {
   });
 
   // Create objects in a circle
-  const objects = ITEMS.map((filename, i) => {
-    const count = ITEMS.length;
+  const objects = CAROUSEL_ITEMS.map((filename, i) => {
+    const count = CAROUSEL_ITEMS.length;
     const angle = (i / count) * Math.PI * 2;
     const x = Math.cos(angle) * radius;
     const y = Math.sin(angle) * radius;
@@ -52,10 +87,10 @@ export function Carousel({ radius = 6 }: CarouselProps) {
     return (
       <group key={i} position={[x, y, 0]} rotation={[0, 0, angle]}>
         <Float
-          speed={1.5}
-          rotationIntensity={0.05}
-          floatIntensity={0.2}
-          floatingRange={[-0.2, 0.2]}
+          speed={animationConfig.floatSpeed}
+          rotationIntensity={animationConfig.rotationIntensity}
+          floatIntensity={animationConfig.floatIntensity}
+          floatingRange={animationConfig.floatingRange}
         >
           <group>
             <Center>

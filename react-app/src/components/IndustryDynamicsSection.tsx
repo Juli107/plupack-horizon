@@ -102,8 +102,8 @@ export function IndustryDynamicsSection() {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: row,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
+            start: 'top 95%',
+            toggleActions: 'play none none none',
           },
         });
 
@@ -113,7 +113,7 @@ export function IndustryDynamicsSection() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.8,
+            duration: 0.65,
             ease: 'power3.out',
             stagger: 0.1,
           }
@@ -125,11 +125,11 @@ export function IndustryDynamicsSection() {
             { opacity: 0 },
             {
               opacity: 1,
-              duration: 0.8,
+              duration: 0.45,
               ease: 'power2.out',
-              stagger: 0.15,
+              stagger: 0.08,
             },
-            '-=0.5'
+            '-=0.35'
           );
 
           // Parallax effect

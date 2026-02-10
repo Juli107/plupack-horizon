@@ -24,39 +24,56 @@ interface ImagePosition {
   layer: 1 | 2 | 3;
 }
 
-// ============================================
-// FIXED POSITIONS FOR IMAGES
-// ============================================
-const DESKTOP_POSITIONS: ImagePosition[] = [
-  { x: -42, y: -35, rotate: -8, scale: 0.85, layer: 2 },
-  { x: -25, y: -38, rotate: 5, scale: 0.9, layer: 3 },
-  { x: -5, y: -42, rotate: -3, scale: 0.75, layer: 1 },
-  { x: 15, y: -40, rotate: 6, scale: 0.85, layer: 2 },
-  { x: 38, y: -36, rotate: -5, scale: 0.9, layer: 3 },
-  { x: -45, y: -10, rotate: -12, scale: 1, layer: 3 },
-  { x: -48, y: 18, rotate: 8, scale: 0.8, layer: 1 },
-  { x: 42, y: -8, rotate: 10, scale: 0.95, layer: 3 },
-  { x: 45, y: 15, rotate: -6, scale: 0.85, layer: 2 },
-  { x: 48, y: 35, rotate: 4, scale: 0.75, layer: 1 },
-  { x: -38, y: 38, rotate: 6, scale: 0.9, layer: 2 },
-  { x: -15, y: 42, rotate: -8, scale: 0.85, layer: 3 },
-  { x: 8, y: 40, rotate: 5, scale: 0.8, layer: 2 },
-  { x: 28, y: 38, rotate: -4, scale: 0.9, layer: 3 },
-  { x: 45, y: 42, rotate: 7, scale: 0.75, layer: 1 },
-];
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
-const MOBILE_POSITIONS: ImagePosition[] = [
-  { x: -35, y: -38, rotate: -8, scale: 0.8, layer: 2 },
-  { x: 0, y: -42, rotate: 5, scale: 0.75, layer: 1 },
-  { x: 35, y: -38, rotate: -5, scale: 0.85, layer: 3 },
-  { x: -40, y: -5, rotate: -10, scale: 0.9, layer: 3 },
-  { x: -42, y: 25, rotate: 6, scale: 0.75, layer: 1 },
-  { x: 40, y: 0, rotate: 8, scale: 0.85, layer: 2 },
-  { x: 42, y: 28, rotate: -6, scale: 0.8, layer: 3 },
-  { x: -32, y: 40, rotate: 5, scale: 0.85, layer: 2 },
-  { x: 5, y: 42, rotate: -7, scale: 0.9, layer: 3 },
-  { x: 35, y: 38, rotate: 4, scale: 0.75, layer: 1 },
-];
+const seeded = (seed: number) => {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+function generateRainPositions(
+  count: number,
+  isMobile: boolean
+): ImagePosition[] {
+  const maxVisible = isMobile ? 24 : 42;
+  const total = Math.min(count, maxVisible);
+  if (total <= 0) return [];
+
+  return Array.from({ length: total }, (_, index) => {
+    const angle = seeded(index + 2000) * Math.PI * 2;
+
+    const radiusX = (isMobile ? 30 : 36) + seeded(index + 2100) * (isMobile ? 14 : 20);
+    const radiusY = (isMobile ? 24 : 28) + seeded(index + 2200) * (isMobile ? 14 : 18);
+
+    let baseX = Math.cos(angle) * radiusX;
+    let baseY = Math.sin(angle) * radiusY;
+
+    const jitterX = (seeded(index + 1) - 0.5) * (isMobile ? 9 : 7);
+    const jitterY = (seeded(index + 101) - 0.5) * (isMobile ? 7 : 6);
+    const depthRand = seeded(index + 500);
+
+    const layer: 1 | 2 | 3 =
+      depthRand > 0.68 ? 3 : depthRand > 0.34 ? 2 : 1;
+
+    const scaleBase = layer === 3 ? 0.92 : layer === 2 ? 0.82 : 0.72;
+    const scale = scaleBase + seeded(index + 800) * 0.12;
+
+    // Keep center relatively clear so text remains readable.
+    if (Math.abs(baseX) < 18 && Math.abs(baseY) < 14) {
+      baseX *= 1.6;
+      baseY *= 1.6;
+    }
+
+    return {
+      x: clamp(baseX + jitterX, -49, 49),
+      y: clamp(baseY + jitterY, -48, 46),
+      rotate: Math.round((seeded(index + 1200) - 0.5) * 24),
+      scale,
+      layer,
+    };
+  });
+}
 
 function getRandomBgColor(index: number): string {
   const colors = [
@@ -202,15 +219,30 @@ export function StockSustainabilityWrapper() {
   const stockData = (shopifyData as any).stockSection ?? {};
   const productImages: ProductImage[] = stockData.productImages ?? [];
   const productCount = stockData.productCount ?? 170;
+  const rainImageCount = stockData.rainImageCount ?? 24;
   const buttonText = stockData.buttonText ?? 'Ver catálogo';
   const buttonUrl = stockData.buttonUrl ?? '/collections/all';
 
   const positions = useMemo(() => {
-    const basePositions = isMobile
-      ? MOBILE_POSITIONS
-      : DESKTOP_POSITIONS;
-    return basePositions.slice(0, productImages.length);
-  }, [isMobile, productImages.length]);
+    return generateRainPositions(
+      Math.min(productImages.length, rainImageCount),
+      isMobile
+    );
+  }, [isMobile, productImages.length, rainImageCount]);
+
+  const imageSize = useMemo(() => {
+    const dense = positions.length > (isMobile ? 10 : 16);
+
+    if (isMobile) {
+      return dense
+        ? 'clamp(42px, 12vw, 74px)'
+        : 'clamp(50px, 18vw, 100px)';
+    }
+
+    return dense
+      ? 'clamp(56px, 7vw, 96px)'
+      : 'clamp(80px, 12vw, 150px)';
+  }, [isMobile, positions.length]);
 
   // Count-up animation
   useEffect(() => {
@@ -664,7 +696,7 @@ export function StockSustainabilityWrapper() {
     },
     {
       scope: wrapperRef,
-      dependencies: [productImages, positions, isMobile],
+      dependencies: [productImages, positions, isMobile, imageSize],
     }
   );
 
@@ -694,9 +726,7 @@ export function StockSustainabilityWrapper() {
                 style={{
                   left: '50%',
                   top: '50%',
-                  width: isMobile
-                    ? 'clamp(50px, 18vw, 100px)'
-                    : 'clamp(80px, 12vw, 150px)',
+                  width: imageSize,
                   ...getLayerStyles(index),
                 }}
               >

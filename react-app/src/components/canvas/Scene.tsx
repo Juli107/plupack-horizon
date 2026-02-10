@@ -1,6 +1,16 @@
 import { Environment } from '@react-three/drei';
-import { Carousel } from '../hero/Carousel';
+import { useEffect, useState } from 'react';
+import { CAROUSEL_ITEMS, Carousel } from '../hero/Carousel';
+import {
+  INDUSTRY_ITEM_NAMES,
+  preloadIndustryWrapModel,
+} from './industryAssets';
 import { IndustryCylinder } from './IndustryCylinder';
+import { preloadModels } from './Products';
+
+const cityEnvironment = import('@pmndrs/assets/hdri/city.exr').then(
+  (module) => module.default as string
+);
 
 // ============================================
 // GLOBAL 3D SCENE
@@ -9,9 +19,34 @@ import { IndustryCylinder } from './IndustryCylinder';
 // Camera scrolls through them based on page scroll
 
 export function Scene() {
+  const [environmentFile, setEnvironmentFile] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    preloadModels(CAROUSEL_ITEMS);
+
+    const preloadTimeoutId = window.setTimeout(() => {
+      preloadIndustryWrapModel();
+      preloadModels(INDUSTRY_ITEM_NAMES);
+    }, 1200);
+
+    let mounted = true;
+    cityEnvironment.then((file) => {
+      if (mounted) {
+        setEnvironmentFile(file);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      window.clearTimeout(preloadTimeoutId);
+    };
+  }, []);
+
   return (
     <>
-      <Environment preset="city" />
+      {environmentFile ? <Environment files={environmentFile} /> : null}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
 

@@ -77,10 +77,11 @@ export const cameraKeyframes: CameraKeyframe[] = [
     scrollPercent: 30,
     position: [0, -50, 0],
     lookAt: [0, -50, 0],
+    fov: 85,
   },
 
   {
-    scrollPercent: 40,
+    scrollPercent: 46,
     position: [0, -50, 0],
     lookAt: [0, -50, 0],
   },
@@ -91,40 +92,44 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Start - Front view, top of rod
   {
-    scrollPercent: 50,
+    scrollPercent: 47,
     orbit: true,
-    orbitCenter: [0, -58, 0],
+    orbitCenter: [0, -57.8, 0],
     orbitAngle: Math.PI,
     orbitRadius: 8,
     orbitHeight: 0,
+    fov: 45,
   },
 
   // Three-quarter rotation - Left side, near bottom
   {
     scrollPercent: 55,
     orbit: true,
-    orbitCenter: [0, -64.5, 0],
-    orbitAngle: Math.PI * 3.5, // 450 degrees - left side
-    orbitRadius: 7,
+    orbitCenter: [0, -63.8, 0],
+    orbitAngle: Math.PI * 1.75,
+    orbitRadius: 8,
     orbitHeight: 0,
+    fov: 45,
   },
 
   // Full rotation - Back at front, bottom of rod
   {
     scrollPercent: 64,
     orbit: true,
-    orbitCenter: [0, -77, 0],
-    orbitAngle: Math.PI * 6.5, // 540 degrees - full rotation back to front
+    orbitCenter: [0, -80.8, 0],
+    orbitAngle: Math.PI * 3,
     orbitRadius: 8,
     orbitHeight: 0,
+    fov: 45,
   },
 
   // End of rotation
   {
-    scrollPercent: 66,
+    scrollPercent: 76,
     orbit: false,
-    position: [0, -70, -8],
-    lookAt: [0, -70, 0],
+    position: [0, -67.8, -8],
+    lookAt: [0, -67.8, 0],
+    fov: 45,
   },
 
   // ============================================
@@ -132,17 +137,17 @@ export const cameraKeyframes: CameraKeyframe[] = [
   // ============================================
 
   {
-    scrollPercent: 73,
+    scrollPercent: 78,
     position: [-8, -70, -8],
     lookAt: [-8, -70, 0],
-    fov: 1,
+    fov: 45,
   },
 
   {
     scrollPercent: 80,
     position: [-6, 20, 10],
     lookAt: [-6, 20, -5],
-    fov: 50,
+    fov: 45,
   },
 
   {
@@ -153,8 +158,8 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   {
     scrollPercent: 100,
-    position: [-6, -18, 10],
-    lookAt: [-6, -18, -5],
+    position: [-6, -30, 10],
+    lookAt: [-6, -30, -5],
   },
 ];
 
@@ -182,7 +187,7 @@ export function calculateOrbitPosition(
   center: [number, number, number],
   angle: number,
   radius: number,
-  height: number
+  height: number,
 ): THREE.Vector3 {
   const x = center[0] + Math.sin(angle) * radius;
   const y = center[1] + height;
@@ -190,101 +195,85 @@ export function calculateOrbitPosition(
   return new THREE.Vector3(x, y, z);
 }
 
-/**
- * Resolve inherited properties from previous keyframes
- * If a property is not set, it inherits from the most recent keyframe that has it
- */
-function resolveKeyframeValues(
-  keyframe: CameraKeyframe,
-  allKeyframes: CameraKeyframe[]
-): CameraKeyframe & { position: [number, number, number] } {
-  const sorted = [...allKeyframes].sort(
-    (a, b) => a.scrollPercent - b.scrollPercent
-  );
-  const currentIndex = sorted.findIndex(
-    (k) => k.scrollPercent === keyframe.scrollPercent
+type ResolvedKeyframe = CameraKeyframe & {
+  position: [number, number, number];
+  fov: number;
+};
+
+const RESOLVED_KEYFRAMES: ResolvedKeyframe[] = (() => {
+  const sorted = [...cameraKeyframes].sort(
+    (a, b) => a.scrollPercent - b.scrollPercent,
   );
 
-  // Find inherited values by looking at previous keyframes
-  let position = keyframe.position;
-  let fov = keyframe.fov;
-  let rotation = keyframe.rotation;
-  let lookAt = keyframe.lookAt;
-  let orbit = keyframe.orbit;
-  let orbitCenter = keyframe.orbitCenter;
-  let orbitAngle = keyframe.orbitAngle;
-  let orbitRadius = keyframe.orbitRadius;
-  let orbitHeight = keyframe.orbitHeight;
-  let orbitTilt = keyframe.orbitTilt;
+  let inheritedPosition = DEFAULTS.position;
+  let inheritedFov = DEFAULTS.fov;
+  let inheritedRotation: [number, number, number] | undefined =
+    DEFAULTS.rotation;
+  let inheritedLookAt: [number, number, number] | undefined =
+    DEFAULTS.lookAt;
+  let inheritedOrbit: boolean | undefined = undefined;
+  let inheritedOrbitCenter: [number, number, number] | undefined =
+    DEFAULTS.orbitCenter;
+  let inheritedOrbitAngle: number | undefined = DEFAULTS.orbitAngle;
+  let inheritedOrbitRadius: number | undefined = DEFAULTS.orbitRadius;
+  let inheritedOrbitHeight: number | undefined = DEFAULTS.orbitHeight;
+  let inheritedOrbitTilt: number | undefined = DEFAULTS.orbitTilt;
 
-  // Look backwards through keyframes to find inherited values
-  for (let i = currentIndex - 1; i >= 0; i--) {
-    const prev = sorted[i];
-    if (position === undefined && prev.position !== undefined) {
-      position = prev.position;
-    }
-    if (fov === undefined && prev.fov !== undefined) {
-      fov = prev.fov;
-    }
-    if (rotation === undefined && prev.rotation !== undefined) {
-      rotation = prev.rotation;
-    }
-    if (lookAt === undefined && prev.lookAt !== undefined) {
-      lookAt = prev.lookAt;
-    }
-    if (orbit === undefined && prev.orbit !== undefined) {
-      orbit = prev.orbit;
-    }
-    if (orbitCenter === undefined && prev.orbitCenter !== undefined) {
-      orbitCenter = prev.orbitCenter;
-    }
-    if (orbitAngle === undefined && prev.orbitAngle !== undefined) {
-      orbitAngle = prev.orbitAngle;
-    }
-    if (orbitRadius === undefined && prev.orbitRadius !== undefined) {
-      orbitRadius = prev.orbitRadius;
-    }
-    if (orbitHeight === undefined && prev.orbitHeight !== undefined) {
-      orbitHeight = prev.orbitHeight;
-    }
-    if (orbitTilt === undefined && prev.orbitTilt !== undefined) {
-      orbitTilt = prev.orbitTilt;
-    }
-  }
+  return sorted.map((keyframe) => {
+    inheritedPosition = keyframe.position ?? inheritedPosition;
+    inheritedFov = keyframe.fov ?? inheritedFov;
+    inheritedRotation = keyframe.rotation ?? inheritedRotation;
+    inheritedLookAt = keyframe.lookAt ?? inheritedLookAt;
+    inheritedOrbit = keyframe.orbit ?? inheritedOrbit;
+    inheritedOrbitCenter =
+      keyframe.orbitCenter ?? inheritedOrbitCenter;
+    inheritedOrbitAngle = keyframe.orbitAngle ?? inheritedOrbitAngle;
+    inheritedOrbitRadius =
+      keyframe.orbitRadius ?? inheritedOrbitRadius;
+    inheritedOrbitHeight =
+      keyframe.orbitHeight ?? inheritedOrbitHeight;
+    inheritedOrbitTilt = keyframe.orbitTilt ?? inheritedOrbitTilt;
 
-  return {
-    ...keyframe,
-    position: position ?? DEFAULTS.position,
-    fov: fov ?? DEFAULTS.fov,
-    rotation,
-    lookAt,
-    orbit,
-    orbitCenter,
-    orbitAngle,
-    orbitRadius,
-    orbitHeight,
-    orbitTilt,
-  };
-}
+    return {
+      ...keyframe,
+      position: inheritedPosition,
+      fov: inheritedFov,
+      rotation: inheritedRotation,
+      lookAt: inheritedLookAt,
+      orbit: inheritedOrbit,
+      orbitCenter: inheritedOrbitCenter,
+      orbitAngle: inheritedOrbitAngle,
+      orbitRadius: inheritedOrbitRadius,
+      orbitHeight: inheritedOrbitHeight,
+      orbitTilt: inheritedOrbitTilt,
+    };
+  });
+})();
 
 /**
  * Find the two keyframes that surround the current scroll percentage
  */
 export function findSurroundingKeyframes(
   scrollPercent: number,
-  keyframes: CameraKeyframe[]
+  keyframes: CameraKeyframe[],
 ): {
-  from: CameraKeyframe & { position: [number, number, number] };
-  to: CameraKeyframe & { position: [number, number, number] };
+  from: ResolvedKeyframe;
+  to: ResolvedKeyframe;
   t: number;
 } {
   // Clamp scroll percent
   const clampedPercent = Math.max(0, Math.min(100, scrollPercent));
 
-  // Sort keyframes by scroll percent (should already be sorted, but just in case)
-  const sorted = [...keyframes].sort(
-    (a, b) => a.scrollPercent - b.scrollPercent
-  );
+  const sorted =
+    keyframes === cameraKeyframes
+      ? RESOLVED_KEYFRAMES
+      : ([...keyframes]
+          .sort((a, b) => a.scrollPercent - b.scrollPercent)
+          .map((k) => ({
+            ...k,
+            position: k.position ?? DEFAULTS.position,
+            fov: k.fov ?? DEFAULTS.fov,
+          })) as ResolvedKeyframe[]);
 
   // Find surrounding keyframes
   let fromIndex = 0;
@@ -312,11 +301,7 @@ export function findSurroundingKeyframes(
       (to.scrollPercent - from.scrollPercent);
   }
 
-  // Resolve inherited values for both keyframes
-  const resolvedFrom = resolveKeyframeValues(from, keyframes);
-  const resolvedTo = resolveKeyframeValues(to, keyframes);
-
-  return { from: resolvedFrom, to: resolvedTo, t };
+  return { from, to, t };
 }
 
 /**
@@ -324,9 +309,9 @@ export function findSurroundingKeyframes(
  * Note: from and to should be resolved keyframes with position guaranteed
  */
 export function interpolateKeyframes(
-  from: CameraKeyframe & { position: [number, number, number] },
-  to: CameraKeyframe & { position: [number, number, number] },
-  t: number
+  from: ResolvedKeyframe,
+  to: ResolvedKeyframe,
+  t: number,
 ): {
   position: THREE.Vector3;
   rotation: THREE.Euler | null;
@@ -363,7 +348,7 @@ export function interpolateKeyframes(
     return new THREE.Vector3(
       center[0],
       center[1] + Math.sin(tilt) * radius,
-      center[2]
+      center[2],
     );
   };
 
@@ -384,7 +369,7 @@ export function interpolateKeyframes(
       THREE.MathUtils.lerp(fromCenter[1], toCenter[1], easedT),
       THREE.MathUtils.lerp(fromCenter[2], toCenter[2], easedT),
     ];
-    const angle = THREE.MathUtils.lerp(fromAngle, toAngle, easedT);
+    const angle = THREE.MathUtils.lerp(fromAngle, toAngle, t);
     const radius = THREE.MathUtils.lerp(fromRadius, toRadius, easedT);
     const height = THREE.MathUtils.lerp(fromHeight, toHeight, easedT);
 
@@ -399,7 +384,7 @@ export function interpolateKeyframes(
     lookAt = new THREE.Vector3(
       center[0],
       center[1] + Math.sin(tilt) * radius,
-      center[2]
+      center[2],
     );
   } else if (fromOrbit && !toOrbit) {
     // Transitioning FROM orbit TO regular position
@@ -409,7 +394,7 @@ export function interpolateKeyframes(
     position = new THREE.Vector3(
       THREE.MathUtils.lerp(fromPos.x, toPos.x, easedT),
       THREE.MathUtils.lerp(fromPos.y, toPos.y, easedT),
-      THREE.MathUtils.lerp(fromPos.z, toPos.z, easedT)
+      THREE.MathUtils.lerp(fromPos.z, toPos.z, easedT),
     );
 
     // Interpolate lookAt from orbit center to target lookAt
@@ -419,7 +404,7 @@ export function interpolateKeyframes(
       lookAt = new THREE.Vector3(
         THREE.MathUtils.lerp(fromLookAt.x, toLookAt.x, easedT),
         THREE.MathUtils.lerp(fromLookAt.y, toLookAt.y, easedT),
-        THREE.MathUtils.lerp(fromLookAt.z, toLookAt.z, easedT)
+        THREE.MathUtils.lerp(fromLookAt.z, toLookAt.z, easedT),
       );
     } else {
       lookAt = fromLookAt;
@@ -432,7 +417,7 @@ export function interpolateKeyframes(
     position = new THREE.Vector3(
       THREE.MathUtils.lerp(fromPos.x, toPos.x, easedT),
       THREE.MathUtils.lerp(fromPos.y, toPos.y, easedT),
-      THREE.MathUtils.lerp(fromPos.z, toPos.z, easedT)
+      THREE.MathUtils.lerp(fromPos.z, toPos.z, easedT),
     );
 
     // Interpolate lookAt from source lookAt to orbit center
@@ -442,7 +427,7 @@ export function interpolateKeyframes(
       lookAt = new THREE.Vector3(
         THREE.MathUtils.lerp(fromLookAt.x, toLookAt.x, easedT),
         THREE.MathUtils.lerp(fromLookAt.y, toLookAt.y, easedT),
-        THREE.MathUtils.lerp(fromLookAt.z, toLookAt.z, easedT)
+        THREE.MathUtils.lerp(fromLookAt.z, toLookAt.z, easedT),
       );
     } else {
       lookAt = toLookAt;
@@ -452,7 +437,7 @@ export function interpolateKeyframes(
     position = new THREE.Vector3(
       THREE.MathUtils.lerp(from.position[0], to.position[0], easedT),
       THREE.MathUtils.lerp(from.position[1], to.position[1], easedT),
-      THREE.MathUtils.lerp(from.position[2], to.position[2], easedT)
+      THREE.MathUtils.lerp(from.position[2], to.position[2], easedT),
     );
 
     // Interpolate lookAt if both have it
@@ -460,7 +445,7 @@ export function interpolateKeyframes(
       lookAt = new THREE.Vector3(
         THREE.MathUtils.lerp(from.lookAt[0], to.lookAt[0], easedT),
         THREE.MathUtils.lerp(from.lookAt[1], to.lookAt[1], easedT),
-        THREE.MathUtils.lerp(from.lookAt[2], to.lookAt[2], easedT)
+        THREE.MathUtils.lerp(from.lookAt[2], to.lookAt[2], easedT),
       );
     } else if (from.lookAt) {
       lookAt = new THREE.Vector3(...from.lookAt);
@@ -475,7 +460,7 @@ export function interpolateKeyframes(
     rotation = new THREE.Euler(
       THREE.MathUtils.lerp(from.rotation[0], to.rotation[0], easedT),
       THREE.MathUtils.lerp(from.rotation[1], to.rotation[1], easedT),
-      THREE.MathUtils.lerp(from.rotation[2], to.rotation[2], easedT)
+      THREE.MathUtils.lerp(from.rotation[2], to.rotation[2], easedT),
     );
   } else if (!lookAt && from.rotation) {
     rotation = new THREE.Euler(...from.rotation);

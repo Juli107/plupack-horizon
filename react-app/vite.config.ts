@@ -1,16 +1,18 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
+
+const ROOT = process.cwd();
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
-  assetsInclude: ['**/*.glb'],
+  assetsInclude: ['**/*.glb', '**/*.hdr', '**/*.exr'],
   base: './', // Use relative paths for assets
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
-      '@components': resolve(__dirname, './src/components'),
+      '@': resolve(ROOT, 'src'),
+      '@components': resolve(ROOT, 'src/components'),
     },
   },
   build: {
@@ -20,7 +22,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         'react-homepage': resolve(
-          __dirname,
+          ROOT,
           'src/entries/homepage.tsx'
         ),
         // Add more entry points as needed:

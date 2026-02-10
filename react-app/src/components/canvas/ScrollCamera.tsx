@@ -17,6 +17,12 @@ import {
 // Uses Lenis scroll values for smooth syncing
 
 const LERP_FACTOR = 0.08;
+const FOV_EPSILON = 0.02;
+const FOV_DAMPING = 24;
+const FOV_MAX_SPEED = 90;
+const INDUSTRY_SCROLL_START = 48;
+const INDUSTRY_SCROLL_END = 74;
+const INDUSTRY_MIN_CAMERA_TARGET_DISTANCE = 8;
 
 export function ScrollCamera() {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
@@ -35,6 +41,7 @@ export function ScrollCamera() {
   );
   const targetRotation = useRef<THREE.Euler | null>(null);
   const targetFov = useRef(45);
+  const scrollPercentRef = useRef(0);
 
   // Track if we're using lookAt or rotation
   const useLookAtRef = useRef(true);
@@ -50,6 +57,7 @@ export function ScrollCamera() {
   useLenis((lenis) => {
     // Get scroll progress (0 to 100 percent) from Lenis
     const scrollPercent = lenis.progress * 100;
+    scrollPercentRef.current = scrollPercent;
 
     // console.log('Scroll Percent:', scrollPercent);
 
@@ -59,6 +67,26 @@ export function ScrollCamera() {
       cameraKeyframes
     );
     const interpolated = interpolateKeyframes(from, to, t);
+
+    // Prevent brief "zoom-in" feeling in industries by keeping
+    // a minimum camera-to-target distance during that section.
+    if (
+      scrollPercent >= INDUSTRY_SCROLL_START &&
+      scrollPercent <= INDUSTRY_SCROLL_END &&
+      interpolated.lookAt
+    ) {
+      const offset = interpolated.position.clone().sub(interpolated.lookAt);
+      const distance = offset.length();
+
+      if (distance < INDUSTRY_MIN_CAMERA_TARGET_DISTANCE) {
+        if (distance > 1e-4) {
+          offset.setLength(INDUSTRY_MIN_CAMERA_TARGET_DISTANCE);
+        } else {
+          offset.set(0, 0, INDUSTRY_MIN_CAMERA_TARGET_DISTANCE);
+        }
+        interpolated.position.copy(interpolated.lookAt.clone().add(offset));
+      }
+    }
 
     // Set target values
     targetPosition.current.copy(interpolated.position);
@@ -76,7 +104,7 @@ export function ScrollCamera() {
     }
   });
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!cameraRef.current) return;
 
     // Lerp position
@@ -108,14 +136,21 @@ export function ScrollCamera() {
       cameraRef.current.rotation.copy(currentRotation.current);
     }
 
-    // Lerp FOV
-    currentFov.current = THREE.MathUtils.lerp(
-      currentFov.current,
-      targetFov.current,
-      LERP_FACTOR
-    );
-    cameraRef.current.fov = currentFov.current;
-    cameraRef.current.updateProjectionMatrix();
+    // Damped + rate-limited FOV keeps zoom transitions snappy
+    // while preventing sudden lens spikes during aggressive scroll bursts.
+    const dampFactor = 1 - Math.exp(-FOV_DAMPING * delta);
+    const desiredStep = (targetFov.current - currentFov.current) * dampFactor;
+    const maxStep = FOV_MAX_SPEED * delta;
+    const clampedStep = THREE.MathUtils.clamp(desiredStep, -maxStep, maxStep);
+    currentFov.current += clampedStep;
+
+    if (
+      Math.abs(cameraRef.current.fov - currentFov.current) >
+      FOV_EPSILON
+    ) {
+      cameraRef.current.fov = currentFov.current;
+      cameraRef.current.updateProjectionMatrix();
+    }
   });
 
   return (

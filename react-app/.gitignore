@@ -31,3 +31,6 @@ pnpm-debug.log*
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Source 3D models (kept locally, not committed)
+src/assets/models/originals/

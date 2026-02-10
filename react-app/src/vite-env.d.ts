@@ -15,6 +15,16 @@ declare module '*.hdr' {
   export default src;
 }
 
+declare module '*.exr' {
+  const src: string;
+  export default src;
+}
+
+declare module '@pmndrs/assets/hdri/*.exr' {
+  const src: string;
+  export default src;
+}
+
 declare module '*.svg?raw' {
   const content: string;
   export default content;
