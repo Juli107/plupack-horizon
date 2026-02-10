@@ -1,5 +1,3 @@
-
-
 {% liquid
   assign order = 'logo,menu,localization,search,mobile_search,actions'
 
@@ -14,25 +12,18 @@
     assign search_style = 'modal'
   endif
 
-  if section.settings.enable_transparent_header_home and template.name == 'index'
+  assign transparent = null
+  assign transparent_color_scheme = null
+
+  if template.name == 'index' and section.settings.enable_transparent_header_home
     assign transparent = 'always'
     assign transparent_color_scheme = section.settings.home_color_scheme
-  elsif section.settings.enable_transparent_header_product and template.name == 'product'
-    assign transparent = 'always'
-    assign transparent_color_scheme = section.settings.product_color_scheme
-  elsif section.settings.enable_transparent_header_collection and template.name == 'collection'
-    assign transparent = 'always'
-    assign transparent_color_scheme = section.settings.collection_color_scheme
   endif
 
   if section.settings.enable_sticky_header == 'always'
     assign sticky = 'always'
   elsif section.settings.enable_sticky_header == 'scroll-up'
     assign sticky = 'scroll-up'
-  endif
-
-  if transparent and sticky
-    assign transparent = 'not-sticky'
   endif
 
   if transparent
@@ -155,6 +146,12 @@
   endif
 
   assign class = 'header'
+
+  if template.name == 'index'
+    assign class = class | append: ' header--home'
+  else
+    assign class = class | append: ' header--internal'
+  endif
 
   if transparent_color_scheme
     assign class = class | append: ' ' | append: transparent_color_scheme
@@ -641,7 +638,6 @@
     }
   }
 {% endstylesheet %}
-
 {% unless request.design_mode %}
   <script type="module">
     import { hydrate } from '@theme/section-hydration';
@@ -650,6 +646,98 @@
     hydrate('{{ section.id }}', url);
   </script>
 {% endunless %}
+
+<style>
+  /* MÁXIMA ESPECIFICIDAD: Header azul sólido */
+  
+  html body .header-section #header-component.header--internal .header__row--top.color-scheme-1,
+  html body .header-section #header-component.header--internal .header__row.color-scheme-1,
+  html body #header-component.header--internal .header__row--top,
+  html body #header-component.header--internal .header__row {
+    background: #2773A8 !important;
+    background-color: #2773A8 !important;
+    --color-background: 39, 115, 168 !important;
+    --color-background-rgb: 39, 115, 168 !important;
+  }
+  
+  html body #header-component.header--internal {
+    background: #2773A8 !important;
+    background-color: #2773A8 !important;
+  }
+  
+  /* Texto blanco con especificidad alta */
+  html body #header-component.header--internal .header__row--top,
+  html body #header-component.header--internal .header__row--top * {
+    --color-foreground: 255, 255, 255 !important;
+    --color-foreground-rgb: 255, 255, 255 !important;
+    color: #ffffff !important;
+  }
+
+  /* Cart bubble: número azul sobre círculo blanco */
+  html body #header-component.header--internal .cart-bubble,
+  html body #header-component.header--internal .cart-bubble__text,
+  html body #header-component.header--internal .cart-bubble__text-count {
+    color: #000F9F !important;
+  }
+
+  /* Cart drawer: resetear colores a negro */
+  html body #header-component.header--internal .cart-drawer__dialog,
+  html body #header-component.header--internal .cart-drawer__dialog * {
+    color: #000000 !important;
+    --color-foreground: 0, 0, 0 !important;
+    --color-foreground-rgb: 0, 0, 0 !important;
+  }
+
+  /* Cart drawer: título "Carrito" en azul */
+  .cart-drawer__heading,
+  html body #header-component.header--internal .cart-drawer__heading {
+    color: #2773A8 !important;
+  }
+
+  /* Cart drawer: botón Pagar con letras blancas */
+  .cart__checkout-button,
+  html body #header-component.header--internal .cart__checkout-button {
+    color: #ffffff !important;
+  }
+
+  /* Cart drawer: botón Aplicar con letras blancas */
+  .cart-discount__button,
+  html body #header-component.header--internal .cart-discount__button {
+    color: #ffffff !important;
+  }
+
+  /* Account drawer/popover: texto negro */
+  .account-drawer__dialog,
+  .account-drawer__dialog *,
+  .account-popover__panel,
+  .account-popover__panel *,
+  html body #header-component.header--internal .account-drawer__dialog,
+  html body #header-component.header--internal .account-drawer__dialog *,
+  html body #header-component.header--internal .account-popover__panel,
+  html body #header-component.header--internal .account-popover__panel * {
+    color: #000000 !important;
+  }
+
+  /* Account: botón Iniciar sesión con letras blancas */
+  .account-actions__sign-ins a.account-actions__link,
+  .account-actions__sign-ins a.account-actions__link span,
+  html body #header-component.header--internal .account-actions__sign-ins a.account-actions__link,
+  html body #header-component.header--internal .account-actions__sign-ins a.account-actions__link span {
+    color: #ffffff !important;
+  }
+
+  /* Account: iconos en azul */
+  .account-drawer__dialog .account-actions__icon,
+  .account-drawer__dialog .account-actions__icon *,
+  .account-popover__panel .account-actions__icon,
+  .account-popover__panel .account-actions__icon *,
+  html body #header-component.header--internal .account-drawer__dialog .account-actions__icon,
+  html body #header-component.header--internal .account-drawer__dialog .account-actions__icon *,
+  html body #header-component.header--internal .account-popover__panel .account-actions__icon,
+  html body #header-component.header--internal .account-popover__panel .account-actions__icon * {
+    color: #2773A8 !important;
+  }
+</style>
 
 {% schema %}
 {
