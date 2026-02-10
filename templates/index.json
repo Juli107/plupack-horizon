@@ -13,7 +13,10 @@
       "type": "react-homepage",
       "settings": {
         "background_color": "#146c90",
-        "accent_color": "#ffffff"
+        "accent_color": "#ffffff",
+        "stock_section_title": "+170 PRODUCTOS EN STOCK PERMANENTE",
+        "stock_section_button_text": "Ver catálogo",
+        "stock_section_button_url": "shopify://collections/all"
       }
     }
   },
