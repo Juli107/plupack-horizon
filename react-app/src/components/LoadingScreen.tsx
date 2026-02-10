@@ -148,7 +148,7 @@ export function LoadingScreen() {
       {/* Phase 1: Loading progress */}
       {phase === 'loading' && (
         <>
-          {/* Blue background with white text - shrinks from top */}
+          {/* Blue background with white text - shrinks from bottom */}
           <div
             style={{
               position: 'absolute',
@@ -157,7 +157,7 @@ export function LoadingScreen() {
               right: 0,
               bottom: 0,
               backgroundColor: '#146C90',
-              clipPath: `inset(${progress}% 0 0 0)`,
+              clipPath: `inset(0 0 ${progress}% 0)`,
             }}
           >
             <div className="plupack-loading-text plupack-loading-text--white">
@@ -165,7 +165,7 @@ export function LoadingScreen() {
             </div>
           </div>
 
-          {/* White area revealed from top with blue text */}
+          {/* White area revealed from bottom with blue text */}
           <div
             style={{
               position: 'absolute',
@@ -174,7 +174,7 @@ export function LoadingScreen() {
               right: 0,
               bottom: 0,
               backgroundColor: '#ffffff',
-              clipPath: `inset(0 0 ${100 - progress}% 0)`,
+              clipPath: `inset(${100 - progress}% 0 0 0)`,
             }}
           >
             <div className="plupack-loading-text plupack-loading-text--blue">
