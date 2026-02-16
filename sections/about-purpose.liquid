@@ -69,14 +69,11 @@
 
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const sectionTop = rect.top + scrollY;
-      const sectionCenter = sectionTop + rect.height * 0.5;
-      const viewportCenter = scrollY + viewportHeight * 0.5;
-      const distance = sectionCenter - viewportCenter;
-      const maxDistance = (viewportHeight + rect.height) * 0.5;
-      const normalized = Math.max(-1, Math.min(1, distance / maxDistance));
-      const maxOffset = window.innerWidth < 990 ? 24 : 42;
-      const offset = normalized * maxOffset;
+      const travel = viewportHeight + rect.height;
+      const progressRaw = (viewportHeight - rect.top) / travel;
+      const progress = Math.max(0, Math.min(1, progressRaw));
+      const maxOffset = window.innerWidth < 990 ? 44 : 92;
+      const offset = (progress - 0.5) * maxOffset * 2;
 
       image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
       ticking = false;
@@ -203,7 +200,7 @@
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
     filter: saturate(0.74) contrast(0.94) brightness(0.96);
-    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.1);
+    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.18);
     will-change: transform;
   }
 
