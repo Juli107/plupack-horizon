@@ -135,7 +135,7 @@
     position: relative;
     background: var(--about-bg);
     color: var(--about-text);
-    padding: clamp(3.2rem, 6vh, 4.8rem) clamp(1rem, 2vw, 1.5rem) clamp(3.2rem, 6vh, 4.4rem);
+    padding: clamp(4.4rem, 7.5vh, 6rem) clamp(1rem, 2vw, 1.5rem) clamp(3.2rem, 6vh, 4.4rem);
   }
 
   .about-purpose::after {
@@ -144,6 +144,7 @@
     inset: 0 0 auto;
     height: clamp(56px, 7vw, 110px);
     pointer-events: none;
+    z-index: 1;
     background: linear-gradient(180deg, rgba(20, 108, 144, 0.06) 0%, rgba(20, 108, 144, 0) 100%);
   }
 
@@ -152,16 +153,18 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    z-index: 0;
     background-image: url("{{ 'noise.webp' | asset_url }}");
     background-repeat: repeat;
-    opacity: 0.08;
-    mix-blend-mode: soft-light;
+    background-size: 240px 240px;
+    opacity: 0.16;
+    mix-blend-mode: multiply;
   }
 
   .about-purpose__inner,
   .about-purpose__image-wrap {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: min(1600px, 100%);
     margin-inline: auto;
   }
@@ -253,7 +256,7 @@
 
   @media (max-width: 989px) {
     .about-purpose {
-      padding-top: clamp(2.4rem, 5vh, 3.2rem);
+      padding-top: clamp(3.1rem, 6vh, 3.9rem);
     }
 
     .about-purpose__inner {
