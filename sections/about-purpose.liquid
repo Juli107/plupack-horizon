@@ -40,6 +40,48 @@
   </div>
 </section>
 
+{% javascript %}
+  (() => {
+    const section = document.getElementById('about-purpose-{{ section.id }}');
+    if (!section || section.dataset.parallaxInitialized === 'true') return;
+
+    const image = section.querySelector('.about-purpose__image');
+    if (!image) return;
+
+    section.dataset.parallaxInitialized = 'true';
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      image.style.setProperty('--parallax-y', '0px');
+      return;
+    }
+
+    let ticking = false;
+
+    const updateParallax = () => {
+      const rect = section.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const rawProgress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+      const progress = Math.max(0, Math.min(1, rawProgress));
+      const maxOffset = window.innerWidth < 990 ? 16 : 28;
+      const offset = (progress - 0.5) * maxOffset * 2;
+
+      image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
+      ticking = false;
+    };
+
+    const requestTick = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(updateParallax);
+    };
+
+    updateParallax();
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', requestTick);
+  })();
+{% endjavascript %}
+
 {% stylesheet %}
   .about-purpose {
     position: relative;
@@ -105,7 +147,6 @@
   }
 
   .about-purpose__image-wrap {
-    border-radius: clamp(10px, 1.3vw, 16px);
     overflow: hidden;
     isolation: isolate;
   }
@@ -127,6 +168,8 @@
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
     filter: saturate(0.74) contrast(0.94) brightness(0.96);
+    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.06);
+    will-change: transform;
   }
 
   .about-purpose [data-reveal] {
