@@ -135,7 +135,16 @@
     position: relative;
     background: var(--about-bg);
     color: var(--about-text);
-    padding: clamp(5rem, 9vh, 7.2rem) clamp(1rem, 2vw, 1.5rem) clamp(3.2rem, 6vh, 4.4rem);
+    padding: clamp(3.2rem, 6vh, 4.8rem) clamp(1rem, 2vw, 1.5rem) clamp(3.2rem, 6vh, 4.4rem);
+  }
+
+  .about-purpose::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: clamp(56px, 7vw, 110px);
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(20, 108, 144, 0.06) 0%, rgba(20, 108, 144, 0) 100%);
   }
 
   .about-purpose::before {
@@ -180,7 +189,7 @@
   .about-purpose__content {
     margin-top: clamp(0.3rem, 0.9vw, 1rem);
     display: grid;
-    gap: 1rem;
+    gap: 1.35rem;
     max-width: 600px;
     justify-self: end;
     font-family: var(--font-body--family), sans-serif;
@@ -244,7 +253,7 @@
 
   @media (max-width: 989px) {
     .about-purpose {
-      padding-top: clamp(3.4rem, 8vh, 4.4rem);
+      padding-top: clamp(2.4rem, 5vh, 3.2rem);
     }
 
     .about-purpose__inner {
