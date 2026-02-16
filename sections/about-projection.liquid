@@ -22,17 +22,6 @@
     padding: clamp(2rem, 4vh, 3rem) clamp(0.6rem, 1.2vw, 1rem) clamp(2.4rem, 5vh, 3.4rem);
   }
 
-  .about-projection::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: url("{{ 'noise.webp' | asset_url }}");
-    background-repeat: repeat;
-    opacity: 0.07;
-    mix-blend-mode: soft-light;
-  }
-
   .about-projection__inner {
     position: relative;
     z-index: 1;

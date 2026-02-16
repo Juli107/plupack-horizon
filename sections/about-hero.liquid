@@ -6,6 +6,46 @@
     --about-text: {{ section.settings.text_color }};
   "
 >
+  <div class="about-global-noise" aria-hidden="true"></div>
+
+  <div class="about-hero__orbit about-hero__orbit--left" aria-hidden="true">
+    <svg viewBox="0 0 600 600" class="about-hero__orbit-svg" focusable="false">
+      <circle cx="300" cy="300" r="300" class="about-hero__orbit-stroke" />
+      <circle cx="300" cy="300" r="252" class="about-hero__orbit-stroke" />
+      <g class="about-hero__orbit-rotor">
+        <circle cx="300" cy="300" r="130" class="about-hero__orbit-inner" />
+        <circle cx="300" cy="300" r="88" class="about-hero__orbit-inner-faint" />
+        <line x1="300" y1="300" x2="300" y2="212" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="300" y2="388" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="212" y2="300" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="388" y2="300" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="238" y2="238" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="362" y2="362" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="238" y2="362" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="362" y2="238" class="about-hero__orbit-line" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="about-hero__orbit about-hero__orbit--right" aria-hidden="true">
+    <svg viewBox="0 0 600 600" class="about-hero__orbit-svg" focusable="false">
+      <circle cx="300" cy="300" r="300" class="about-hero__orbit-stroke" />
+      <circle cx="300" cy="300" r="252" class="about-hero__orbit-stroke" />
+      <g class="about-hero__orbit-rotor about-hero__orbit-rotor--reverse">
+        <circle cx="300" cy="300" r="130" class="about-hero__orbit-inner" />
+        <circle cx="300" cy="300" r="88" class="about-hero__orbit-inner-faint" />
+        <line x1="300" y1="300" x2="300" y2="212" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="300" y2="388" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="212" y2="300" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="388" y2="300" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="238" y2="238" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="362" y2="362" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="238" y2="362" class="about-hero__orbit-line" />
+        <line x1="300" y1="300" x2="362" y2="238" class="about-hero__orbit-line" />
+      </g>
+    </svg>
+  </div>
+
   <div class="about-hero__inner">
     <div class="about-hero__intro">
       <p class="about-hero__eyebrow" data-reveal style="--reveal-delay: 0.05s;">{{ section.settings.eyebrow }}</p>
@@ -31,6 +71,18 @@
 </section>
 
 {% stylesheet %}
+  .about-global-noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background-image: url("{{ 'noise.webp' | asset_url }}");
+    background-repeat: repeat;
+    background-size: 220px 220px;
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+  }
+
   .about-hero {
     position: relative;
     background: var(--about-bg);
@@ -38,23 +90,81 @@
     overflow: clip;
   }
 
-  .about-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: url("{{ 'noise.webp' | asset_url }}");
-    background-repeat: repeat;
-    opacity: 0.1;
-    mix-blend-mode: soft-light;
-  }
-
   .about-hero__inner {
     position: relative;
     z-index: 1;
     max-width: min(1400px, 100%);
     margin: 0 auto;
-    padding: clamp(6.4rem, 11vh, 9rem) clamp(1.5rem, 4vw, 4rem) clamp(4.5rem, 9vh, 7rem);
+    padding: clamp(3.4rem, 8vh, 7rem) clamp(1.5rem, 4vw, 4rem) clamp(4.5rem, 9vh, 7rem);
+  }
+
+  .about-hero__orbit {
+    display: none;
+    position: absolute;
+    width: clamp(600px, 42vw, 860px);
+    aspect-ratio: 1;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.9;
+    clip-path: inset(0 0 50% 0);
+  }
+
+  .about-hero__orbit--left {
+    left: clamp(-430px, -23vw, -300px);
+    bottom: clamp(-250px, -13vw, -145px);
+  }
+
+  .about-hero__orbit--right {
+    right: clamp(-430px, -23vw, -300px);
+    bottom: clamp(-250px, -13vw, -145px);
+  }
+
+  .about-hero__orbit-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .about-hero__orbit-stroke,
+  .about-hero__orbit-inner,
+  .about-hero__orbit-inner-faint,
+  .about-hero__orbit-line {
+    fill: none;
+    stroke: rgba(20, 108, 144, 0.56);
+    stroke-width: 1.1;
+  }
+
+  .about-hero__orbit-inner {
+    stroke: rgba(20, 108, 144, 0.4);
+  }
+
+  .about-hero__orbit-inner-faint {
+    stroke: rgba(20, 108, 144, 0.26);
+  }
+
+  .about-hero__orbit-line {
+    stroke-linecap: round;
+    stroke: rgba(20, 108, 144, 0.62);
+    stroke-width: 1.25;
+  }
+
+  .about-hero__orbit-rotor {
+    transform-origin: 300px 300px;
+    animation: about-hero-orbit-spin 20s linear infinite;
+  }
+
+  .about-hero__orbit-rotor--reverse {
+    animation-direction: reverse;
+    animation-duration: 24s;
+  }
+
+  @keyframes about-hero-orbit-spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .about-hero__intro {
@@ -103,10 +213,7 @@
   .about-hero__copy p {
     margin: 0;
     max-width: 500px;
-<<<<<<< HEAD
     margin-inline: auto;
-=======
->>>>>>> f8f27c438c428a1e8d32a880e63ed4eb1c94587c
   }
 
   .about-hero__values {
@@ -191,7 +298,15 @@
     }
   }
 
+  @media (min-width: 990px) {
+    .about-hero__orbit {
+      display: block;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .about-hero__orbit-rotor,
+    .about-hero__orbit-rotor--reverse,
     .about-hero [data-reveal] {
       opacity: 1;
       transform: none;
