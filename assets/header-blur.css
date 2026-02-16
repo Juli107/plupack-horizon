@@ -17,12 +17,20 @@
 /* Sticky state - glass effect with blur (white with low opacity) */
 .header[sticky][data-sticky-state='active'] .header__row,
 .header[transparent][data-sticky-state='active'] .header__row {
-  --header-bg-color: rgba(255, 255, 255, 0.15);
-  background-color: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(27, 75, 107, 0.1);
-  transition: background-color 0.3s ease, backdrop-filter 0.3s ease, color 0.3s ease;
+  background: rgba(255, 255, 255, 0.15) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+
+/* Apply glass to parent header element as well */
+.header[sticky][data-sticky-state='active'],
+.header[transparent][data-sticky-state='active'] {
+  background: transparent !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
 }
 
 /* Ensure white text on transparent/glass background */
