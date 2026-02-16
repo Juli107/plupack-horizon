@@ -70,17 +70,6 @@
     overflow: clip;
   }
 
-  .about-future::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: url("{{ 'noise.webp' | asset_url }}");
-    background-repeat: repeat;
-    opacity: 0.09;
-    mix-blend-mode: soft-light;
-  }
-
   .about-future__inner {
     position: relative;
     z-index: 1;
