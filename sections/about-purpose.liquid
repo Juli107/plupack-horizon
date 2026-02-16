@@ -57,14 +57,26 @@
     }
 
     let ticking = false;
+    let inView = false;
+    let scrollY = window.scrollY || window.pageYOffset;
+    let rafId = 0;
 
     const updateParallax = () => {
+      if (!inView) {
+        ticking = false;
+        return;
+      }
+
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const rawProgress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
-      const progress = Math.max(0, Math.min(1, rawProgress));
-      const maxOffset = window.innerWidth < 990 ? 16 : 28;
-      const offset = (progress - 0.5) * maxOffset * 2;
+      const sectionTop = rect.top + scrollY;
+      const sectionCenter = sectionTop + rect.height * 0.5;
+      const viewportCenter = scrollY + viewportHeight * 0.5;
+      const distance = sectionCenter - viewportCenter;
+      const maxDistance = (viewportHeight + rect.height) * 0.5;
+      const normalized = Math.max(-1, Math.min(1, distance / maxDistance));
+      const maxOffset = window.innerWidth < 990 ? 24 : 42;
+      const offset = normalized * maxOffset;
 
       image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
       ticking = false;
@@ -73,12 +85,35 @@
     const requestTick = () => {
       if (ticking) return;
       ticking = true;
-      window.requestAnimationFrame(updateParallax);
+      rafId = window.requestAnimationFrame(updateParallax);
     };
 
+    const onScroll = () => {
+      scrollY = window.scrollY || window.pageYOffset;
+      requestTick();
+    };
+
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          inView = entry.isIntersecting;
+          if (inView) requestTick();
+        });
+      },
+      { threshold: 0, rootMargin: '120px 0px 120px 0px' },
+    );
+
+    visibilityObserver.observe(section);
     updateParallax();
-    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', requestTick);
+
+    section.addEventListener('shopify:section:unload', () => {
+      visibilityObserver.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', requestTick);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    });
   })();
 {% endjavascript %}
 
@@ -168,7 +203,7 @@
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
     filter: saturate(0.74) contrast(0.94) brightness(0.96);
-    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.06);
+    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.1);
     will-change: transform;
   }
 
