@@ -1,0 +1,421 @@
+<section
+  id="about-future-{{ section.id }}"
+  class="about-future"
+  style="
+    --future-bg: {{ section.settings.background_color }};
+    --future-text: {{ section.settings.text_color }};
+  "
+>
+  <div class="about-future__inner">
+    <header class="about-future__header" data-reveal style="--reveal-delay: 0.04s;">
+      <p class="about-future__eyebrow">Plan de largo plazo</p>
+      <p class="about-future__lead">{{ section.settings.paragraph_1 }}</p>
+    </header>
+
+    <div class="about-future__layout">
+      <aside class="about-future__rail" data-reveal style="--reveal-delay: 0.1s;">
+        <h2 class="about-future__title">{{ section.settings.heading }}</h2>
+        <p class="about-future__rail-copy">Cinco ejes operativos guian la expansion de la marca con una ejecucion medible y consistente.</p>
+      </aside>
+
+      <ol class="about-future__axes" role="list">
+        <li class="about-future__axis" data-reveal style="--reveal-delay: 0.16s;">
+          <span class="about-future__index">01</span>
+          <div class="about-future__axis-body">
+            <h3>{{ section.settings.axis_1_title }}</h3>
+            <p>{{ section.settings.axis_1_text }}</p>
+          </div>
+        </li>
+
+        <li class="about-future__axis" data-reveal style="--reveal-delay: 0.22s;">
+          <span class="about-future__index">02</span>
+          <div class="about-future__axis-body">
+            <h3>{{ section.settings.axis_2_title }}</h3>
+            <p>{{ section.settings.axis_2_text }}</p>
+          </div>
+        </li>
+
+        <li class="about-future__axis" data-reveal style="--reveal-delay: 0.28s;">
+          <span class="about-future__index">03</span>
+          <div class="about-future__axis-body">
+            <h3>{{ section.settings.axis_3_title }}</h3>
+            <p>{{ section.settings.axis_3_text }}</p>
+          </div>
+        </li>
+
+        <li class="about-future__axis" data-reveal style="--reveal-delay: 0.34s;">
+          <span class="about-future__index">04</span>
+          <div class="about-future__axis-body">
+            <h3>{{ section.settings.axis_4_title }}</h3>
+            <p>{{ section.settings.axis_4_text }}</p>
+          </div>
+        </li>
+
+        <li class="about-future__axis" data-reveal style="--reveal-delay: 0.4s;">
+          <span class="about-future__index">05</span>
+          <div class="about-future__axis-body">
+            <h3>{{ section.settings.axis_5_title }}</h3>
+            <p>{{ section.settings.axis_5_text }}</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-future {
+    position: relative;
+    overflow: clip;
+    padding: clamp(4.6rem, 10vh, 8rem) clamp(1rem, 2vw, 1.7rem) clamp(4.8rem, 10vh, 8.2rem);
+    background:
+      radial-gradient(120% 120% at 82% 12%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 56%),
+      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 94%, black 6%) 0%, var(--future-bg) 100%);
+    color: var(--future-text);
+    isolation: isolate;
+  }
+
+  .about-future::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(90deg, rgba(234, 244, 250, 0.05) 1px, transparent 1px);
+    background-size: 96px 96px;
+    opacity: 0.12;
+    z-index: 0;
+  }
+
+  .about-future__inner {
+    position: relative;
+    z-index: 1;
+    max-width: min(1550px, 100%);
+    margin-inline: auto;
+    display: grid;
+    gap: clamp(2rem, 3vw, 3rem);
+  }
+
+  .about-future__header {
+    display: grid;
+    grid-template-columns: minmax(0, 280px) minmax(0, 760px);
+    justify-content: space-between;
+    gap: clamp(1rem, 2.4vw, 2.6rem);
+    align-items: start;
+  }
+
+  .about-future__eyebrow {
+    margin: 0;
+    font-family: var(--font-accent--family), 'Roboto Mono', monospace;
+    font-size: clamp(0.72rem, 0.84vw, 0.92rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(234, 244, 250, 0.82);
+  }
+
+  .about-future__lead {
+    margin: 0;
+    max-width: 52ch;
+    justify-self: end;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: clamp(1rem, 1.28vw, 1.5rem);
+    line-height: 1.45;
+    color: rgba(234, 244, 250, 0.92);
+    font-weight: 420;
+    text-wrap: pretty;
+  }
+
+  .about-future__layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.42fr) minmax(0, 1fr);
+    gap: clamp(1.2rem, 3vw, 3.8rem);
+    align-items: start;
+  }
+
+  .about-future__rail {
+    position: sticky;
+    top: clamp(88px, 14vh, 140px);
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .about-future__title {
+    margin: 0;
+    font-family: var(--font-heading--family), sans-serif;
+    text-transform: uppercase;
+    font-size: clamp(2.8rem, 7.4vw, 8.2rem);
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+    font-weight: 500;
+    color: #eaf4fa;
+  }
+
+  .about-future__rail-copy {
+    margin: 0;
+    max-width: 26ch;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: clamp(0.9rem, 0.98vw, 1.08rem);
+    line-height: 1.42;
+    color: rgba(234, 244, 250, 0.72);
+  }
+
+  .about-future__axes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.82rem;
+  }
+
+  .about-future__axis {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(48px, 70px) minmax(0, 1fr);
+    gap: clamp(0.95rem, 1.8vw, 1.6rem);
+    align-items: start;
+    min-height: clamp(118px, 12vw, 154px);
+    padding: clamp(1rem, 1.7vw, 1.5rem) clamp(1rem, 1.8vw, 1.6rem);
+    border: 1px solid rgba(234, 244, 250, 0.22);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%),
+      rgba(8, 54, 76, 0.24);
+  }
+
+  .about-future__axis::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: rgba(234, 244, 250, 0.38);
+  }
+
+  .about-future__index {
+    margin-top: 0.18rem;
+    font-family: var(--font-accent--family), 'Roboto Mono', monospace;
+    font-size: clamp(0.76rem, 0.9vw, 0.95rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(234, 244, 250, 0.56);
+  }
+
+  .about-future__axis-body h3 {
+    margin: 0;
+    max-width: 28ch;
+    font-family: var(--font-heading--family), sans-serif;
+    font-size: clamp(1.16rem, 1.5vw, 1.9rem);
+    line-height: 1.12;
+    letter-spacing: 0.004em;
+    color: #eaf4fa;
+    font-weight: 500;
+  }
+
+  .about-future__axis-body p {
+    margin: 0.45rem 0 0;
+    max-width: 66ch;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: clamp(0.95rem, 1.05vw, 1.18rem);
+    line-height: 1.48;
+    color: rgba(234, 244, 250, 0.83);
+    font-weight: 410;
+    text-wrap: pretty;
+  }
+
+  .about-future [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    animation: about-future-reveal 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--reveal-delay, 0s);
+  }
+
+  @keyframes about-future-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 24px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (max-width: 989px) {
+    .about-future {
+      padding-top: clamp(3.4rem, 8vh, 4.4rem);
+      padding-bottom: clamp(3.6rem, 8vh, 4.8rem);
+    }
+
+    .about-future::before {
+      background-size: 56px 56px;
+      opacity: 0.08;
+    }
+
+    .about-future__header {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    .about-future__lead {
+      justify-self: start;
+      max-width: 100%;
+      font-size: clamp(1rem, 4.4vw, 1.2rem);
+      line-height: 1.44;
+    }
+
+    .about-future__layout {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .about-future__rail {
+      position: static;
+      gap: 0.85rem;
+    }
+
+    .about-future__title {
+      font-size: clamp(2.2rem, 13vw, 3.8rem);
+      line-height: 0.95;
+    }
+
+    .about-future__rail-copy {
+      max-width: 100%;
+      font-size: clamp(0.95rem, 4vw, 1.05rem);
+    }
+
+    .about-future__axis {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+      min-height: 0;
+      padding: 1rem 1rem 1.1rem;
+    }
+
+    .about-future__axis::before {
+      width: 100%;
+      height: 1px;
+      inset: 0 0 auto 0;
+    }
+
+    .about-future__index {
+      margin-top: 0;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+    }
+
+    .about-future__axis-body h3 {
+      font-size: clamp(1.06rem, 5.2vw, 1.3rem);
+      line-height: 1.2;
+    }
+
+    .about-future__axis-body p {
+      font-size: clamp(0.93rem, 3.9vw, 1.03rem);
+      line-height: 1.45;
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-future [data-reveal] {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Future",
+  "tag": "section",
+  "class": "about-future-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#146C90"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#EAF4FA"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Futuro"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_1",
+      "label": "Intro paragraph",
+      "default": "Queremos consolidarnos como una de las marcas de embalaje mas modernas y confiables de Argentina. Nuestra proyeccion se sostiene en cinco ejes concretos."
+    },
+    {
+      "type": "text",
+      "id": "axis_1_title",
+      "label": "Axis 1 title",
+      "default": "Expansion nacional"
+    },
+    {
+      "type": "textarea",
+      "id": "axis_1_text",
+      "label": "Axis 1 description",
+      "default": "Presencia operativa en todas las provincias con cobertura logistica eficiente."
+    },
+    {
+      "type": "text",
+      "id": "axis_2_title",
+      "label": "Axis 2 title",
+      "default": "Fortalecimiento estructural"
+    },
+    {
+      "type": "textarea",
+      "id": "axis_2_text",
+      "label": "Axis 2 description",
+      "default": "Optimizacion de procesos internos y mejora continua en tiempos de entrega."
+    },
+    {
+      "type": "text",
+      "id": "axis_3_title",
+      "label": "Axis 3 title",
+      "default": "Ampliacion de catalogo"
+    },
+    {
+      "type": "textarea",
+      "id": "axis_3_text",
+      "label": "Axis 3 description",
+      "default": "Desarrollo de nuevas lineas segun demanda real del mercado."
+    },
+    {
+      "type": "text",
+      "id": "axis_4_title",
+      "label": "Axis 4 title",
+      "default": "Sustentabilidad aplicada"
+    },
+    {
+      "type": "textarea",
+      "id": "axis_4_text",
+      "label": "Axis 4 description",
+      "default": "Incorporacion progresiva de materiales reciclables y biodegradables donde aporten valor operativo."
+    },
+    {
+      "type": "text",
+      "id": "axis_5_title",
+      "label": "Axis 5 title",
+      "default": "Relaciones a largo plazo"
+    },
+    {
+      "type": "textarea",
+      "id": "axis_5_text",
+      "label": "Axis 5 description",
+      "default": "Acuerdos estables con clientes estrategicos basados en previsibilidad y cumplimiento."
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Future"
+    }
+  ]
+}
+{% endschema %}
