@@ -1,0 +1,35 @@
+<div class="about-noise-overlay" aria-hidden="true"></div>
+
+{% stylesheet %}
+  .about-noise-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background-image: url("{{ 'noise.webp' | asset_url }}");
+    background-repeat: repeat;
+    background-size: 220px 220px;
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-noise-overlay {
+      opacity: 0.075;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Noise Overlay",
+  "tag": "div",
+  "class": "about-noise-overlay-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "About Noise Overlay"
+    }
+  ]
+}
+{% endschema %}
