@@ -195,7 +195,7 @@
   }
 
   .about-purpose__image-wrap {
-    max-width: min(1442px, 100%);
+    max-width: min(1024px, 100%);
     overflow: hidden;
     isolation: isolate;
   }
@@ -216,8 +216,9 @@
     width: 100%;
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
-    filter: saturate(0.74) contrast(0.94) brightness(0.96);
-    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.24);
+    object-position: 50% 12%;
+    filter: saturate(0.9) contrast(0.98) brightness(0.98);
+    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.12);
     will-change: transform;
   }
 
