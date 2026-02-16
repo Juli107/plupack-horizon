@@ -19,15 +19,16 @@
 .header[transparent][data-sticky-state='active'] .header__row {
   --header-bg-color: rgba(255, 255, 255, 0.15);
   background-color: rgba(255, 255, 255, 0.15) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
+  backdrop-filter: blur(20px) saturate(120%) !important;
   border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
   transition: background-color 0.15s ease !important;
 }
 
 /* Blue tint state - for gray sections like stock */
 .header--tint-blue[sticky][data-sticky-state='active'] .header__row,
-.header--tint-blue[transparent][data-sticky-state='active'] .header__row {
+.header--tint-blue[transparent][data-sticky-state='active']
+  .header__row {
   --header-bg-color: rgba(20, 108, 144, 0.95);
   background-color: rgba(20, 108, 144, 0.95) !important;
   -webkit-backdrop-filter: blur(20px) !important;
@@ -46,7 +47,8 @@
 
 /* Blue tint state - for gray sections like stock */
 .header--tint-blue[sticky][data-sticky-state='active'] .header__row,
-.header--tint-blue[transparent][data-sticky-state='active'] .header__row {
+.header--tint-blue[transparent][data-sticky-state='active']
+  .header__row {
   background: rgba(20, 108, 144, 0.95) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
@@ -152,7 +154,9 @@
 .header .header-logo a,
 .header .header-actions__action svg,
 .header .search-action svg {
-  transition: color 0.3s ease, stroke 0.3s ease;
+  transition:
+    color 0.3s ease,
+    stroke 0.3s ease;
 }
 
 /* When sticky is active with dark tint, adjust blur background */
