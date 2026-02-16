@@ -6,6 +6,44 @@
     --about-text: {{ section.settings.text_color }};
   "
 >
+  <div class="about-hero__orbit about-hero__orbit--left" aria-hidden="true">
+    <svg viewBox="0 0 600 600" class="about-hero__orbit-svg" focusable="false">
+      <circle cx="300" cy="300" r="300" class="about-hero__orbit-stroke" />
+      <circle cx="300" cy="300" r="252" class="about-hero__orbit-stroke" />
+      <g class="about-hero__orbit-rotor">
+        <circle cx="300" cy="300" r="130" class="about-hero__orbit-inner" />
+        <circle cx="300" cy="300" r="88" class="about-hero__orbit-inner-faint" />
+        <line x1="300" y1="186" x2="300" y2="244" class="about-hero__orbit-line" />
+        <line x1="300" y1="356" x2="300" y2="414" class="about-hero__orbit-line" />
+        <line x1="186" y1="300" x2="244" y2="300" class="about-hero__orbit-line" />
+        <line x1="356" y1="300" x2="414" y2="300" class="about-hero__orbit-line" />
+        <line x1="224" y1="224" x2="264" y2="264" class="about-hero__orbit-line" />
+        <line x1="336" y1="336" x2="376" y2="376" class="about-hero__orbit-line" />
+        <line x1="224" y1="376" x2="264" y2="336" class="about-hero__orbit-line" />
+        <line x1="336" y1="264" x2="376" y2="224" class="about-hero__orbit-line" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="about-hero__orbit about-hero__orbit--right" aria-hidden="true">
+    <svg viewBox="0 0 600 600" class="about-hero__orbit-svg" focusable="false">
+      <circle cx="300" cy="300" r="300" class="about-hero__orbit-stroke" />
+      <circle cx="300" cy="300" r="252" class="about-hero__orbit-stroke" />
+      <g class="about-hero__orbit-rotor about-hero__orbit-rotor--reverse">
+        <circle cx="300" cy="300" r="130" class="about-hero__orbit-inner" />
+        <circle cx="300" cy="300" r="88" class="about-hero__orbit-inner-faint" />
+        <line x1="300" y1="186" x2="300" y2="244" class="about-hero__orbit-line" />
+        <line x1="300" y1="356" x2="300" y2="414" class="about-hero__orbit-line" />
+        <line x1="186" y1="300" x2="244" y2="300" class="about-hero__orbit-line" />
+        <line x1="356" y1="300" x2="414" y2="300" class="about-hero__orbit-line" />
+        <line x1="224" y1="224" x2="264" y2="264" class="about-hero__orbit-line" />
+        <line x1="336" y1="336" x2="376" y2="376" class="about-hero__orbit-line" />
+        <line x1="224" y1="376" x2="264" y2="336" class="about-hero__orbit-line" />
+        <line x1="336" y1="264" x2="376" y2="224" class="about-hero__orbit-line" />
+      </g>
+    </svg>
+  </div>
+
   <div class="about-hero__inner">
     <div class="about-hero__intro">
       <p class="about-hero__eyebrow" data-reveal style="--reveal-delay: 0.05s;">{{ section.settings.eyebrow }}</p>
@@ -57,6 +95,73 @@
     padding: clamp(6.4rem, 11vh, 9rem) clamp(1.5rem, 4vw, 4rem) clamp(4.5rem, 9vh, 7rem);
   }
 
+  .about-hero__orbit {
+    display: none;
+    position: absolute;
+    width: clamp(600px, 42vw, 860px);
+    aspect-ratio: 1;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.9;
+  }
+
+  .about-hero__orbit--left {
+    left: clamp(-430px, -23vw, -300px);
+    bottom: clamp(-380px, -20vw, -250px);
+  }
+
+  .about-hero__orbit--right {
+    right: clamp(-430px, -23vw, -300px);
+    bottom: clamp(-380px, -20vw, -250px);
+  }
+
+  .about-hero__orbit-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .about-hero__orbit-stroke,
+  .about-hero__orbit-inner,
+  .about-hero__orbit-inner-faint,
+  .about-hero__orbit-line {
+    fill: none;
+    stroke: rgba(20, 108, 144, 0.56);
+    stroke-width: 2;
+  }
+
+  .about-hero__orbit-inner {
+    stroke: rgba(20, 108, 144, 0.4);
+  }
+
+  .about-hero__orbit-inner-faint {
+    stroke: rgba(20, 108, 144, 0.26);
+  }
+
+  .about-hero__orbit-line {
+    stroke-linecap: round;
+    stroke: rgba(20, 108, 144, 0.62);
+  }
+
+  .about-hero__orbit-rotor {
+    transform-origin: 300px 300px;
+    animation: about-hero-orbit-spin 20s linear infinite;
+  }
+
+  .about-hero__orbit-rotor--reverse {
+    animation-direction: reverse;
+    animation-duration: 24s;
+  }
+
+  @keyframes about-hero-orbit-spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   .about-hero__intro {
     max-width: 1200px;
     margin: 0 auto;
@@ -103,10 +208,7 @@
   .about-hero__copy p {
     margin: 0;
     max-width: 500px;
-<<<<<<< HEAD
     margin-inline: auto;
-=======
->>>>>>> f8f27c438c428a1e8d32a880e63ed4eb1c94587c
   }
 
   .about-hero__values {
@@ -191,7 +293,15 @@
     }
   }
 
+  @media (min-width: 990px) {
+    .about-hero__orbit {
+      display: block;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .about-hero__orbit-rotor,
+    .about-hero__orbit-rotor--reverse,
     .about-hero [data-reveal] {
       opacity: 1;
       transform: none;
