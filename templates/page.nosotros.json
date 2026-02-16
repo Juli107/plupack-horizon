@@ -55,11 +55,21 @@
         "axis_5_title": "Relaciones a largo plazo",
         "axis_5_text": "Acuerdos estables con clientes estratégicos basados en previsibilidad y cumplimiento."
       }
+    },
+    "about_projection": {
+      "type": "about-projection",
+      "settings": {
+        "background_color": "#dde6ed",
+        "text_color": "#146c90",
+        "heading": "Proyección y crecimiento",
+        "paragraph": "Trabajamos para expandir nuestra presencia en todas las provincias, mejorar la estructura logística y convertirnos en la elección preferida de papeleras, empresas de catering, industrias y comercios. Al mismo tiempo, optimizamos procesos y desarrollamos nuevas líneas de productos para operar de forma más eficiente, con un enfoque ambiental responsable y medible."
+      }
     }
   },
   "order": [
     "about_hero",
     "about_purpose",
-    "about_future"
+    "about_future",
+    "about_projection"
   ]
 }
