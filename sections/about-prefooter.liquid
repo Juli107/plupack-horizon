@@ -1,0 +1,308 @@
+<section
+  id="about-prefooter-{{ section.id }}"
+  class="about-prefooter"
+  style="
+    --prefooter-bg-start: {{ section.settings.background_start }};
+    --prefooter-bg-end: {{ section.settings.background_end }};
+    --prefooter-text: {{ section.settings.text_color }};
+  "
+>
+  <div class="about-prefooter__orb about-prefooter__orb--one" aria-hidden="true"></div>
+  <div class="about-prefooter__orb about-prefooter__orb--two" aria-hidden="true"></div>
+
+  <div class="about-prefooter__inner">
+    <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
+      <span>{{ section.settings.heading_line_1 }}</span>
+      <span class="about-prefooter__outline">{{ section.settings.heading_line_2 }}</span>
+    </h2>
+
+    <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
+      <a href="{{ section.settings.primary_cta_url }}" class="about-prefooter__btn about-prefooter__btn--solid">
+        {{ section.settings.primary_cta_label }}
+      </a>
+      <a href="{{ section.settings.secondary_cta_url }}" class="about-prefooter__btn about-prefooter__btn--ghost">
+        {{ section.settings.secondary_cta_label }}
+      </a>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-prefooter {
+    position: relative;
+    overflow: clip;
+    display: grid;
+    place-items: center;
+    min-height: clamp(420px, 62vh, 700px);
+    padding: clamp(3rem, 8vh, 6rem) 1rem;
+    background: linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
+    color: var(--prefooter-text);
+    isolation: isolate;
+  }
+
+  .about-prefooter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("{{ 'noise.webp' | asset_url }}");
+    background-repeat: repeat;
+    opacity: 0.11;
+    mix-blend-mode: soft-light;
+    z-index: 0;
+  }
+
+  .about-prefooter__orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(18px);
+    opacity: 0.25;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .about-prefooter__orb--one {
+    width: clamp(180px, 30vw, 420px);
+    height: clamp(180px, 30vw, 420px);
+    top: -12%;
+    right: -8%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0.04) 72%);
+    animation: prefooter-float-a 13s ease-in-out infinite;
+  }
+
+  .about-prefooter__orb--two {
+    width: clamp(150px, 24vw, 320px);
+    height: clamp(150px, 24vw, 320px);
+    bottom: -14%;
+    left: -6%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.04) 72%);
+    animation: prefooter-float-b 12s ease-in-out infinite;
+  }
+
+  .about-prefooter__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: min(1300px, 100%);
+    margin-inline: auto;
+    text-align: center;
+    display: grid;
+    gap: clamp(1.4rem, 2.5vw, 2.4rem);
+    justify-items: center;
+  }
+
+  .about-prefooter__title {
+    margin: 0;
+    display: grid;
+    gap: clamp(0.35rem, 1vw, 0.8rem);
+    font-family: var(--font-heading--family), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.92;
+    font-weight: 500;
+  }
+
+  .about-prefooter__title span {
+    font-size: clamp(2.5rem, 9.2vw, 8rem);
+  }
+
+  .about-prefooter__outline {
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(234, 244, 250, 0.92);
+    text-stroke: 2px rgba(234, 244, 250, 0.92);
+  }
+
+  .about-prefooter__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+  }
+
+  .about-prefooter__btn {
+    min-width: 190px;
+    min-height: 48px;
+    padding: 0.72rem 1.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(234, 244, 250, 0.75);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: transform 220ms ease, background-color 220ms ease, color 220ms ease;
+  }
+
+  .about-prefooter__btn--solid {
+    background: #ffffff;
+    color: #0b6386;
+    border-color: #ffffff;
+  }
+
+  .about-prefooter__btn--ghost {
+    background: transparent;
+    color: #eaf4fa;
+  }
+
+  .about-prefooter__btn:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 3px;
+  }
+
+  .about-prefooter__btn:active {
+    transform: translateY(1px);
+  }
+
+  .about-prefooter [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    animation: prefooter-reveal 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--reveal-delay, 0s);
+  }
+
+  @keyframes prefooter-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes prefooter-float-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+      transform: translate3d(-24px, 16px, 0);
+    }
+  }
+
+  @keyframes prefooter-float-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+      transform: translate3d(20px, -14px, 0);
+    }
+  }
+
+  @media (max-width: 989px) {
+    .about-prefooter {
+      min-height: clamp(360px, 56vh, 540px);
+      padding-top: clamp(2.6rem, 7vh, 4.2rem);
+      padding-bottom: clamp(2.6rem, 7vh, 4.2rem);
+    }
+
+    .about-prefooter__title {
+      line-height: 0.96;
+    }
+
+    .about-prefooter__title span {
+      font-size: clamp(2rem, 13vw, 3.6rem);
+    }
+
+    .about-prefooter__outline {
+      -webkit-text-stroke-width: 1.4px;
+      text-stroke-width: 1.4px;
+    }
+
+    .about-prefooter__btn {
+      width: min(320px, 100%);
+      min-width: 0;
+      font-size: 0.84rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-prefooter__orb,
+    .about-prefooter [data-reveal] {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .about-prefooter__btn {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Prefooter",
+  "tag": "section",
+  "class": "about-prefooter-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_start",
+      "label": "Background start",
+      "default": "#1E4377"
+    },
+    {
+      "type": "color",
+      "id": "background_end",
+      "label": "Background end",
+      "default": "#143059"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#EAF4FA"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Heading line 1",
+      "default": "Embalajes"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "Heading line 2",
+      "default": "Sin límites"
+    },
+    {
+      "type": "text",
+      "id": "primary_cta_label",
+      "label": "Primary button label",
+      "default": "Cotizar mayorista"
+    },
+    {
+      "type": "url",
+      "id": "primary_cta_url",
+      "label": "Primary button URL"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_label",
+      "label": "Secondary button label",
+      "default": "Ver catálogo"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_url",
+      "label": "Secondary button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Prefooter"
+    }
+  ]
+}
+{% endschema %}
