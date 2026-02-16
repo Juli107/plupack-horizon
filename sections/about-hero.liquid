@@ -41,6 +41,13 @@
     const revealItems = section.querySelectorAll('[data-reveal]');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    section.classList.add('is-animating');
+
+    if (!('IntersectionObserver' in window)) {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+      return;
+    }
+
     if (prefersReducedMotion) {
       revealItems.forEach((item) => item.classList.add('is-visible'));
       return;
@@ -102,7 +109,7 @@
 
   .about-hero__eyebrow {
     margin: 0 0 clamp(1.5rem, 2.2vw, 2.5rem);
-    font-family: var(--font-body--family), sans-serif;
+    font-family: var(--font-accent--family), 'Roboto Mono', monospace;
     font-size: clamp(0.72rem, 0.8vw, 0.95rem);
     letter-spacing: 0.4em;
     text-transform: uppercase;
@@ -156,7 +163,7 @@
   }
 
   .about-hero__values span {
-    font-family: var(--font-body--family), sans-serif;
+    font-family: var(--font-accent--family), 'Roboto Mono', monospace;
     font-size: clamp(0.72rem, 1vw, 1.08rem);
     text-transform: uppercase;
     letter-spacing: 0.32em;
@@ -166,6 +173,11 @@
   }
 
   .about-hero [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .about-hero.is-animating [data-reveal] {
     opacity: 0;
     transform: translate3d(0, 26px, 0);
     transition-property: opacity, transform;
@@ -174,7 +186,7 @@
     will-change: opacity, transform;
   }
 
-  .about-hero [data-reveal].is-visible {
+  .about-hero.is-animating [data-reveal].is-visible {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
