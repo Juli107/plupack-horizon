@@ -15,18 +15,28 @@
 }
 
 /* Sticky state - glass effect with blur (white with low opacity) */
-.header[sticky][data-sticky-state='active'] .header__row,
-.header[transparent][data-sticky-state='active'] .header__row {
+.header[sticky][data-sticky-state='active'],
+.header[transparent][data-sticky-state='active'] {
   background-color: rgba(
     255,
     255,
     255,
-    0.25
+    0.15
   );
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(27, 75, 107, 0.1);
   transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.header[sticky][data-sticky-state='active'] .header__row,
+.header[transparent][data-sticky-state='active'] .header__row {
+  background-color: transparent;
 }
 
 /* Ensure white text on transparent/glass background */
