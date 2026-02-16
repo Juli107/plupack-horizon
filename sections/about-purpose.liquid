@@ -45,7 +45,7 @@
     position: relative;
     background: var(--about-bg);
     color: var(--about-text);
-    padding: clamp(3.8rem, 7vh, 6rem) clamp(1rem, 2vw, 1.5rem) clamp(3rem, 6vh, 4.2rem);
+    padding: clamp(5rem, 9vh, 7.2rem) clamp(1rem, 2vw, 1.5rem) clamp(3.2rem, 6vh, 4.4rem);
   }
 
   .about-purpose::before {
@@ -72,30 +72,32 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 5rem);
     align-items: start;
-    margin-bottom: clamp(2rem, 5vw, 4rem);
+    margin-bottom: clamp(2.2rem, 4.5vw, 3.6rem);
     padding-inline: clamp(0.4rem, 1.4vw, 1.5rem);
   }
 
   .about-purpose__title {
     margin: 0;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(2rem, 4.1vw, 5.2rem);
+    font-size: clamp(2.2rem, 4.3vw, 5.4rem);
     line-height: 0.96;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.005em;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 560;
+    max-width: 0.9em;
   }
 
   .about-purpose__content {
     margin-top: clamp(0.3rem, 0.9vw, 1rem);
     display: grid;
     gap: 1rem;
-    max-width: 760px;
+    max-width: 680px;
     justify-self: end;
     font-family: var(--font-body--family), sans-serif;
-    font-size: clamp(1rem, 1.15vw, 1.45rem);
-    line-height: 1.45;
-    font-weight: 430;
+    font-size: clamp(0.98rem, 1.03vw, 1.24rem);
+    line-height: 1.52;
+    font-weight: 420;
+    color: rgba(20, 108, 144, 0.9);
   }
 
   .about-purpose__content p {
@@ -105,6 +107,18 @@
   .about-purpose__image-wrap {
     border-radius: clamp(10px, 1.3vw, 16px);
     overflow: hidden;
+    isolation: isolate;
+  }
+
+  .about-purpose__image-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(221, 230, 237, 0.06) 0%, rgba(221, 230, 237, 0.22) 100%),
+      rgba(20, 108, 144, 0.08);
+    mix-blend-mode: multiply;
   }
 
   .about-purpose__image {
@@ -112,6 +126,7 @@
     width: 100%;
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
+    filter: saturate(0.74) contrast(0.94) brightness(0.96);
   }
 
   .about-purpose [data-reveal] {
@@ -136,7 +151,7 @@
 
   @media (max-width: 989px) {
     .about-purpose {
-      padding-top: clamp(2.8rem, 8vh, 4rem);
+      padding-top: clamp(3.4rem, 8vh, 4.4rem);
     }
 
     .about-purpose__inner {
@@ -149,6 +164,7 @@
     .about-purpose__title {
       font-size: clamp(1.9rem, 10vw, 3.1rem);
       line-height: 0.98;
+      max-width: none;
     }
 
     .about-purpose__content {
