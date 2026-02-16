@@ -18,7 +18,7 @@
 .header--tint-blue[sticky][data-sticky-state='active'] .header__row,
 .header--tint-blue[transparent][data-sticky-state='active']
   .header__row {
-  background: rgba(20, 108, 144, 0.45) !important;
+  background: rgba(20, 108, 144, 0.75) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
   transition: background 0.15s ease !important;
