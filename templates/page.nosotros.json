@@ -24,9 +24,42 @@
         "value_2": "entrega eficiente",
         "value_3": "asesoría cercana"
       }
+    },
+    "about_purpose": {
+      "type": "about-purpose",
+      "settings": {
+        "background_color": "#dde6ed",
+        "text_color": "#146c90",
+        "heading": "Nuestro propósito",
+        "paragraph_1": "Simplificar la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable. Menos fricción, menos vueltas, más continuidad operativa.",
+        "paragraph_2": "No buscamos ser un proveedor más. Buscamos ser el punto de referencia al que volvés porque responde, cumple y sostiene acuerdos en el tiempo.",
+        "image": "",
+        "image_alt": "Equipo de trabajo en laboratorio"
+      }
+    },
+    "about_future": {
+      "type": "about-future",
+      "settings": {
+        "background_color": "#146c90",
+        "text_color": "#eaf4fa",
+        "heading": "Futuro",
+        "paragraph_1": "Queremos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
+        "axis_1_title": "Expansión nacional",
+        "axis_1_text": "Presencia operativa en todas las provincias con cobertura logística eficiente.",
+        "axis_2_title": "Fortalecimiento estructural",
+        "axis_2_text": "Optimización de procesos internos y mejora continua en tiempos de entrega.",
+        "axis_3_title": "Ampliación de catálogo",
+        "axis_3_text": "Desarrollo de nuevas líneas según demanda real del mercado.",
+        "axis_4_title": "Sustentabilidad aplicada",
+        "axis_4_text": "Incorporación progresiva de materiales reciclables y biodegradables donde aporten valor operativo.",
+        "axis_5_title": "Relaciones a largo plazo",
+        "axis_5_text": "Acuerdos estables con clientes estratégicos basados en previsibilidad y cumplimiento."
+      }
     }
   },
   "order": [
-    "about_hero"
+    "about_hero",
+    "about_purpose",
+    "about_future"
   ]
 }
