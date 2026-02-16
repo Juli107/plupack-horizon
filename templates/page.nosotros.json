@@ -64,12 +64,27 @@
         "heading": "Proyección y crecimiento",
         "paragraph": "Trabajamos para expandir nuestra presencia en todas las provincias, mejorar la estructura logística y convertirnos en la elección preferida de papeleras, empresas de catering, industrias y comercios. Al mismo tiempo, optimizamos procesos y desarrollamos nuevas líneas de productos para operar de forma más eficiente, con un enfoque ambiental responsable y medible."
       }
+    },
+    "about_prefooter": {
+      "type": "about-prefooter",
+      "settings": {
+        "background_start": "#1e4377",
+        "background_end": "#143059",
+        "text_color": "#eaf4fa",
+        "heading_line_1": "Embalajes",
+        "heading_line_2": "Sin límites",
+        "primary_cta_label": "Cotizar mayorista",
+        "primary_cta_url": "/pages/cotizar",
+        "secondary_cta_label": "Ver catálogo",
+        "secondary_cta_url": "/collections/all"
+      }
     }
   },
   "order": [
     "about_hero",
     "about_purpose",
     "about_future",
-    "about_projection"
+    "about_projection",
+    "about_prefooter"
   ]
 }
