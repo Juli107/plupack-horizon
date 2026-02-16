@@ -31,88 +31,104 @@
       }}
     {% else %}
       <img
-        src="{{ 'industry-1.webp' | asset_url }}"
+        src="{{ 'purpose.webp' | asset_url }}"
         alt="{{ section.settings.image_alt | escape }}"
         class="about-purpose__image"
         loading="lazy"
+        width="1024"
+        height="1536"
       >
     {% endif %}
   </div>
 </section>
 
-{% javascript %}
+<script>
   (() => {
-    const section = document.getElementById('about-purpose-{{ section.id }}');
-    if (!section || section.dataset.parallaxInitialized === 'true') return;
+    const sectionId = 'about-purpose-{{ section.id }}';
 
-    const image = section.querySelector('.about-purpose__image');
-    if (!image) return;
+    const initPurposeParallax = () => {
+      const section = document.getElementById(sectionId);
+      if (!section || section.dataset.parallaxInitialized === 'true') return;
 
-    section.dataset.parallaxInitialized = 'true';
+      const image = section.querySelector('.about-purpose__image');
+      if (!image) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      image.style.setProperty('--parallax-y', '0px');
-      return;
-    }
+      section.dataset.parallaxInitialized = 'true';
 
-    let ticking = false;
-    let inView = false;
-    let scrollY = window.scrollY || window.pageYOffset;
-    let rafId = 0;
-
-    const updateParallax = () => {
-      if (!inView) {
-        ticking = false;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        image.style.setProperty('--parallax-y', '0px');
         return;
       }
 
-      const rect = section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const travel = viewportHeight + rect.height;
-      const progressRaw = (viewportHeight - rect.top) / travel;
-      const progress = Math.max(0, Math.min(1, progressRaw));
-      const maxOffset = window.innerWidth < 990 ? 44 : 92;
-      const offset = (progress - 0.5) * maxOffset * 2;
+      let ticking = false;
+      let inView = false;
+      let rafId = 0;
 
-      image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
-      ticking = false;
-    };
+      const updateParallax = () => {
+        if (!inView) {
+          ticking = false;
+          return;
+        }
 
-    const requestTick = () => {
-      if (ticking) return;
-      ticking = true;
-      rafId = window.requestAnimationFrame(updateParallax);
-    };
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const travel = viewportHeight + rect.height;
+        const progressRaw = (viewportHeight - rect.top) / travel;
+        const progress = Math.max(0, Math.min(1, progressRaw));
+        const maxOffset = window.innerWidth < 990 ? 56 : 124;
+        const offset = (progress - 0.5) * maxOffset * 2;
 
-    const onScroll = () => {
-      scrollY = window.scrollY || window.pageYOffset;
+        image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
+        ticking = false;
+      };
+
+      const requestTick = () => {
+        if (ticking) return;
+        ticking = true;
+        rafId = window.requestAnimationFrame(updateParallax);
+      };
+
+      const onScroll = () => {
+        requestTick();
+      };
+
+      const visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            inView = entry.isIntersecting;
+            if (inView) requestTick();
+          });
+        },
+        { threshold: 0, rootMargin: '160px 0px 160px 0px' },
+      );
+
+      visibilityObserver.observe(section);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', requestTick);
       requestTick();
+
+      section.addEventListener('shopify:section:unload', () => {
+        visibilityObserver.disconnect();
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', requestTick);
+        if (rafId) window.cancelAnimationFrame(rafId);
+      });
     };
 
-    const visibilityObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          inView = entry.isIntersecting;
-          if (inView) requestTick();
-        });
-      },
-      { threshold: 0, rootMargin: '120px 0px 120px 0px' },
-    );
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPurposeParallax, { once: true });
+    } else {
+      initPurposeParallax();
+    }
 
-    visibilityObserver.observe(section);
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', requestTick);
-
-    section.addEventListener('shopify:section:unload', () => {
-      visibilityObserver.disconnect();
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', requestTick);
-      if (rafId) window.cancelAnimationFrame(rafId);
+    document.addEventListener('shopify:section:load', (event) => {
+      if (event.target && event.target.id === sectionId) {
+        initPurposeParallax();
+      }
     });
   })();
-{% endjavascript %}
+</script>
 
 {% stylesheet %}
   .about-purpose {
@@ -179,6 +195,7 @@
   }
 
   .about-purpose__image-wrap {
+    max-width: min(1024px, 100%);
     overflow: hidden;
     isolation: isolate;
   }
@@ -200,7 +217,7 @@
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
     filter: saturate(0.74) contrast(0.94) brightness(0.96);
-    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.18);
+    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.24);
     will-change: transform;
   }
 
