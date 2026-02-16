@@ -64,9 +64,10 @@
 
 {% stylesheet %}
   .about-future {
+    --future-section-space: clamp(6.4rem, 10vh, 8rem);
     position: relative;
     overflow: clip;
-    padding: clamp(4.6rem, 10vh, 8rem) clamp(1rem, 2vw, 1.7rem) clamp(4.8rem, 10vh, 8.2rem);
+    padding: var(--future-section-space) clamp(1.6rem, 3.4vw, 3.2rem) clamp(4.8rem, 10vh, 8.2rem);
     background:
       radial-gradient(120% 120% at 82% 12%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 56%),
       linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 94%, black 6%) 0%, var(--future-bg) 100%);
@@ -80,7 +81,7 @@
     max-width: min(1550px, 100%);
     margin-inline: auto;
     display: grid;
-    gap: clamp(4.6rem, 8vh, 7.4rem);
+    gap: var(--future-section-space);
   }
 
   .about-future__header {
@@ -119,7 +120,7 @@
     font-size: clamp(2.4rem, 5.8vw, 6.2rem);
     line-height: 0.9;
     letter-spacing: 0.01em;
-    font-weight: 500;
+    font-weight: 600;
     color: #eaf4fa;
   }
 
@@ -139,7 +140,7 @@
     display: grid;
     gap: 0;
     border-top: 1px solid rgba(234, 244, 250, 0.28);
-    max-width: min(50rem, 100%);
+    max-width: min(40rem, 100%);
     width: 100%;
     justify-self: end;
   }
