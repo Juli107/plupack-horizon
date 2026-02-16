@@ -148,19 +148,6 @@
     background: linear-gradient(180deg, rgba(20, 108, 144, 0.06) 0%, rgba(20, 108, 144, 0) 100%);
   }
 
-  .about-purpose::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image: url("{{ 'noise.webp' | asset_url }}");
-    background-repeat: repeat;
-    background-size: 240px 240px;
-    opacity: 0.16;
-    mix-blend-mode: multiply;
-  }
-
   .about-purpose__inner,
   .about-purpose__image-wrap {
     position: relative;
