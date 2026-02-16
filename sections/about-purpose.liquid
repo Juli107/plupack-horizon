@@ -76,7 +76,7 @@
         const travel = viewportHeight + rect.height;
         const progressRaw = (viewportHeight - rect.top) / travel;
         const progress = Math.max(0, Math.min(1, progressRaw));
-        const maxOffset = window.innerWidth < 990 ? 30 : 54;
+        const maxOffset = window.innerWidth < 990 ? 56 : 124;
         const offset = (progress - 0.5) * maxOffset * 2;
 
         image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
