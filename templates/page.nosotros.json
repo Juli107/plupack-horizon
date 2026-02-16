@@ -1,0 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "about_hero": {
+      "type": "about-hero",
+      "settings": {
+        "background_color": "#dde6ed",
+        "text_color": "#146c90",
+        "eyebrow": "Sobre nosotros",
+        "heading_line_1": "Soluciones",
+        "heading_line_2": "integrales en",
+        "heading_line_3": "embalaje",
+        "paragraph_1": "Somos una empresa argentina que fabrica y distribuye insumos de embalaje para industria, gastronomía y salud. Operamos con lógica de abastecimiento, no de catálogo: centralizamos productos, coordinamos entregas y sostenemos el suministro para que tu operación no se frene.",
+        "paragraph_2": "Trabajamos con estándares claros de calidad, cumplimiento y atención directa. Si hay un problema, se resuelve. Si hay una necesidad recurrente, se anticipa.",
+        "value_1": "calidad garantizada",
+        "value_2": "entrega eficiente",
+        "value_3": "asesoría cercana"
+      }
+    }
+  },
+  "order": [
+    "about_hero"
+  ]
+}
