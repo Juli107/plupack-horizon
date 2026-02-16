@@ -730,9 +730,9 @@ export function StockSustainabilityWrapper() {
                   ...getLayerStyles(index),
                 }}
               >
-                <div
-                  className="relative w-full aspect-square rounded-lg overflow-hidden"
-                  style={{
+              <div
+                className="relative w-full aspect-square overflow-hidden"
+                style={{
                     backgroundColor: getRandomBgColor(index),
                     boxShadow:
                       positions[index]?.layer === 3
@@ -805,7 +805,7 @@ export function StockSustainabilityWrapper() {
             </h2>
             <a
               href={buttonUrl}
-              className="inline-block px-8 py-3 bg-white rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="inline-block px-8 py-3 bg-white rounded-[10px] font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{
                 fontFamily: getFontFamily('body'),
                 color: '#1B4B6B',

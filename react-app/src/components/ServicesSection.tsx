@@ -88,7 +88,7 @@ function TiltCard({ service }: { service: (typeof services)[0] }) {
     >
       {/* Glassmorphism Background */}
       <div
-        className="absolute inset-0 rounded-xl overflow-hidden"
+        className="absolute inset-0 overflow-hidden"
         style={{
           background:
             'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)',

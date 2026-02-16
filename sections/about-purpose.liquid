@@ -1,0 +1,245 @@
+<section
+  id="about-purpose-{{ section.id }}"
+  class="about-purpose"
+  style="
+    --about-bg: {{ section.settings.background_color }};
+    --about-text: {{ section.settings.text_color }};
+  "
+>
+  <div class="about-purpose__inner">
+    <h2 class="about-purpose__title" data-reveal style="--reveal-delay: 0.04s;">
+      {{ section.settings.heading }}
+    </h2>
+
+    <div class="about-purpose__content" data-reveal style="--reveal-delay: 0.14s;">
+      <p>{{ section.settings.paragraph_1 }}</p>
+      <p>{{ section.settings.paragraph_2 }}</p>
+    </div>
+  </div>
+
+  <div class="about-purpose__image-wrap" data-reveal style="--reveal-delay: 0.24s;">
+    {% if section.settings.image != blank %}
+      {{
+        section.settings.image
+        | image_url: width: 2200
+        | image_tag:
+          class: 'about-purpose__image',
+          loading: 'lazy',
+          widths: '750, 1100, 1500, 1800, 2200',
+          sizes: '(min-width: 1200px) 100vw, 100vw',
+          alt: section.settings.image_alt
+      }}
+    {% else %}
+      <img
+        src="{{ 'industry-1.webp' | asset_url }}"
+        alt="{{ section.settings.image_alt | escape }}"
+        class="about-purpose__image"
+        loading="lazy"
+      >
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-purpose {
+    position: relative;
+    background: var(--about-bg);
+    color: var(--about-text);
+    padding: clamp(5rem, 9vh, 7.2rem) clamp(1rem, 2vw, 1.5rem) clamp(3.2rem, 6vh, 4.4rem);
+  }
+
+  .about-purpose::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("{{ 'noise.webp' | asset_url }}");
+    background-repeat: repeat;
+    opacity: 0.08;
+    mix-blend-mode: soft-light;
+  }
+
+  .about-purpose__inner,
+  .about-purpose__image-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: min(1600px, 100%);
+    margin-inline: auto;
+  }
+
+  .about-purpose__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 5rem);
+    align-items: start;
+    margin-bottom: clamp(2.2rem, 4.5vw, 3.6rem);
+    padding-inline: clamp(0.4rem, 1.4vw, 1.5rem);
+  }
+
+  .about-purpose__title {
+    margin: 0;
+    font-family: var(--font-heading--family), sans-serif;
+    font-size: clamp(2.1rem, 4.1vw, 5rem);
+    line-height: 0.96;
+    letter-spacing: 0.012em;
+    text-transform: uppercase;
+    font-weight: 470;
+    max-width: 14ch;
+  }
+
+  .about-purpose__content {
+    margin-top: clamp(0.3rem, 0.9vw, 1rem);
+    display: grid;
+    gap: 1rem;
+    max-width: 680px;
+    justify-self: end;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: clamp(0.98rem, 1.03vw, 1.24rem);
+    line-height: 1.52;
+    font-weight: 420;
+    color: rgba(20, 108, 144, 0.9);
+  }
+
+  .about-purpose__content p {
+    margin: 0;
+  }
+
+  .about-purpose__image-wrap {
+    border-radius: clamp(10px, 1.3vw, 16px);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .about-purpose__image-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(221, 230, 237, 0.06) 0%, rgba(221, 230, 237, 0.22) 100%),
+      rgba(20, 108, 144, 0.08);
+    mix-blend-mode: multiply;
+  }
+
+  .about-purpose__image {
+    display: block;
+    width: 100%;
+    height: clamp(260px, 38vw, 760px);
+    object-fit: cover;
+    filter: saturate(0.74) contrast(0.94) brightness(0.96);
+  }
+
+  .about-purpose [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    animation: about-purpose-reveal 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--reveal-delay, 0s);
+    will-change: opacity, transform;
+  }
+
+  @keyframes about-purpose-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (max-width: 989px) {
+    .about-purpose {
+      padding-top: clamp(3.4rem, 8vh, 4.4rem);
+    }
+
+    .about-purpose__inner {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+      margin-bottom: clamp(1.4rem, 4vw, 2.2rem);
+      padding-inline: 0;
+    }
+
+    .about-purpose__title {
+      font-size: clamp(1.9rem, 10vw, 3.1rem);
+      line-height: 0.98;
+      max-width: none;
+    }
+
+    .about-purpose__content {
+      justify-self: start;
+      max-width: 100%;
+      font-size: clamp(0.98rem, 3.8vw, 1.15rem);
+      line-height: 1.46;
+    }
+
+    .about-purpose__image {
+      height: clamp(220px, 58vw, 460px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-purpose [data-reveal] {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Purpose",
+  "tag": "section",
+  "class": "about-purpose-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#DDE6ED"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#146C90"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Nuestro propósito"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_1",
+      "label": "Paragraph 1",
+      "default": "Simplificar la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable. Menos fricción, menos vueltas, más continuidad operativa."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_2",
+      "label": "Paragraph 2",
+      "default": "No buscamos ser un proveedor más. Buscamos ser el punto de referencia al que volvés porque responde, cumple y sostiene acuerdos en el tiempo."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt",
+      "default": "Equipo de trabajo en laboratorio"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Purpose"
+    }
+  ]
+}
+{% endschema %}

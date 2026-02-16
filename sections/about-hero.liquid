@@ -8,64 +8,27 @@
 >
   <div class="about-hero__inner">
     <div class="about-hero__intro">
-      <p class="about-hero__eyebrow" data-reveal data-delay="0.05">{{ section.settings.eyebrow }}</p>
+      <p class="about-hero__eyebrow" data-reveal style="--reveal-delay: 0.05s;">{{ section.settings.eyebrow }}</p>
 
-      <h1 class="about-hero__heading" data-reveal data-delay="0.12">
+      <h1 class="about-hero__heading" data-reveal style="--reveal-delay: 0.12s;">
         <span>{{ section.settings.heading_line_1 }}</span>
         <span>{{ section.settings.heading_line_2 }}</span>
         <span>{{ section.settings.heading_line_3 }}</span>
       </h1>
 
-      <div class="about-hero__copy" data-reveal data-delay="0.2">
+      <div class="about-hero__copy" data-reveal style="--reveal-delay: 0.22s;">
         <p>{{ section.settings.paragraph_1 }}</p>
         <p>{{ section.settings.paragraph_2 }}</p>
       </div>
     </div>
   </div>
 
-  <div class="about-hero__values" data-reveal data-delay="0.3">
+  <div class="about-hero__values" data-reveal style="--reveal-delay: 0.34s;">
     <span>{{ section.settings.value_1 }}</span>
     <span>{{ section.settings.value_2 }}</span>
     <span>{{ section.settings.value_3 }}</span>
   </div>
 </section>
-
-{% javascript %}
-  (() => {
-    const sectionId = 'about-hero-{{ section.id }}';
-    const section = document.getElementById(sectionId);
-
-    if (!section || section.dataset.initialized === 'true') return;
-    section.dataset.initialized = 'true';
-
-    const revealItems = section.querySelectorAll('[data-reveal]');
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion) {
-      revealItems.forEach((item) => item.classList.add('is-visible'));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          const delay = entry.target.dataset.delay || '0';
-          entry.target.style.transitionDelay = `${delay}s`;
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.12,
-        rootMargin: '0px 0px -8% 0px',
-      },
-    );
-
-    revealItems.forEach((item) => observer.observe(item));
-  })();
-{% endjavascript %}
 
 {% stylesheet %}
   .about-hero {
@@ -91,7 +54,7 @@
     z-index: 1;
     max-width: min(1400px, 100%);
     margin: 0 auto;
-    padding: clamp(7.5rem, 14vh, 12rem) clamp(1.5rem, 4vw, 4rem) clamp(5rem, 12vh, 9rem);
+    padding: clamp(6.4rem, 11vh, 9rem) clamp(1.5rem, 4vw, 4rem) clamp(4.5rem, 9vh, 7rem);
   }
 
   .about-hero__intro {
@@ -102,7 +65,7 @@
 
   .about-hero__eyebrow {
     margin: 0 0 clamp(1.5rem, 2.2vw, 2.5rem);
-    font-family: var(--font-body--family), sans-serif;
+    font-family: var(--font-accent--family), 'Roboto Mono', monospace;
     font-size: clamp(0.72rem, 0.8vw, 0.95rem);
     letter-spacing: 0.4em;
     text-transform: uppercase;
@@ -123,7 +86,7 @@
 
   .about-hero__heading span {
     display: block;
-    font-size: clamp(2.7rem, 9.1vw, 9.2rem);
+    font-size: clamp(2.5rem, 7.2vw, 7rem);
   }
 
   .about-hero__copy {
@@ -132,7 +95,7 @@
     display: grid;
     gap: 1.2rem;
     font-family: var(--font-body--family), sans-serif;
-    font-size: clamp(1.06rem, 1.55vw, 2rem);
+    font-size: clamp(1rem, 1.2vw, 1.45rem);
     line-height: 1.45;
     font-weight: 430;
   }
@@ -144,8 +107,8 @@
   .about-hero__values {
     position: relative;
     z-index: 1;
-    border-top: 1px solid rgba(20, 108, 144, 0.35);
-    border-bottom: 1px solid rgba(20, 108, 144, 0.35);
+    border-top: 1px solid rgba(20, 108, 144, 0.22);
+    border-bottom: 1px solid rgba(20, 108, 144, 0.22);
     min-height: clamp(4.6rem, 6.7vw, 6.3rem);
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -156,27 +119,34 @@
   }
 
   .about-hero__values span {
-    font-family: var(--font-body--family), sans-serif;
-    font-size: clamp(0.72rem, 1vw, 1.08rem);
+    font-family: var(--font-accent--family), 'Roboto Mono', monospace;
+    font-size: clamp(0.78rem, 0.96vw, 1.04rem);
     text-transform: uppercase;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.29em;
     font-weight: 600;
+    color: rgba(20, 108, 144, 0.92);
     text-align: center;
     line-height: 1.2;
   }
 
   .about-hero [data-reveal] {
     opacity: 0;
-    transform: translate3d(0, 26px, 0);
-    transition-property: opacity, transform;
-    transition-duration: 700ms;
-    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translate3d(0, 20px, 0);
+    animation: about-hero-reveal 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--reveal-delay, 0s);
     will-change: opacity, transform;
   }
 
-  .about-hero [data-reveal].is-visible {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+  @keyframes about-hero-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
   }
 
   @media (max-width: 989px) {
@@ -206,8 +176,9 @@
       min-height: 3.9rem;
       display: grid;
       place-items: center;
-      border-bottom: 1px solid rgba(20, 108, 144, 0.3);
-      letter-spacing: 0.24em;
+      border-bottom: 1px solid rgba(20, 108, 144, 0.2);
+      letter-spacing: 0.22em;
+      font-size: clamp(0.78rem, 3.7vw, 0.92rem);
     }
 
     .about-hero__values span:last-child {
@@ -219,7 +190,7 @@
     .about-hero [data-reveal] {
       opacity: 1;
       transform: none;
-      transition: none;
+      animation: none;
     }
   }
 {% endstylesheet %}
