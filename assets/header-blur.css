@@ -17,13 +17,23 @@
 /* Sticky state - glass effect with blur (white with low opacity) */
 .header[sticky][data-sticky-state='active'] .header__row,
 .header[transparent][data-sticky-state='active'] .header__row {
-  background: rgba(255, 255, 255, 0.15) !important;
+  --header-bg-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.15) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  transition: background 0.15s ease !important;
+  transition: background-color 0.15s ease !important;
+}
+
+/* Blue tint state - for gray sections like stock */
+.header--tint-blue[sticky][data-sticky-state='active'] .header__row,
+.header--tint-blue[transparent][data-sticky-state='active'] .header__row {
+  --header-bg-color: rgba(20, 108, 144, 0.95);
+  background-color: rgba(20, 108, 144, 0.95) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
+  transition: background-color 0.15s ease !important;
 }
 
 /* Apply glass to parent header element as well */
