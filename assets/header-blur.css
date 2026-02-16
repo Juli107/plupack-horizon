@@ -18,19 +18,29 @@
 .header[sticky][data-sticky-state='active'] .header__row,
 .header[transparent][data-sticky-state='active'] .header__row {
   background: rgba(255, 255, 255, 0.15) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  transition: background 0.15s ease !important;
 }
 
 /* Apply glass to parent header element as well */
 .header[sticky][data-sticky-state='active'],
 .header[transparent][data-sticky-state='active'] {
   background: transparent !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* Blue tint state - for gray sections like stock */
+.header--tint-blue[sticky][data-sticky-state='active'] .header__row,
+.header--tint-blue[transparent][data-sticky-state='active'] .header__row {
+  background: rgba(20, 108, 144, 0.95) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  transition: background 0.15s ease !important;
 }
 
 /* Ensure white text on transparent/glass background */
