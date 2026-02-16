@@ -703,7 +703,7 @@ export function StockSustainabilityWrapper() {
   return (
     <div
       ref={wrapperRef}
-      className="relative z-20"
+      className="stock-sustainability-trigger relative z-20"
       style={{ height: '450vh' }} // 150vh Stock + 300vh Sustainability
     >
       {/* FIXED IMAGE LAYER - Spans entire wrapper */}

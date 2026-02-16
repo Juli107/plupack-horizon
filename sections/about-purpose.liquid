@@ -31,14 +31,104 @@
       }}
     {% else %}
       <img
-        src="{{ 'industry-1.webp' | asset_url }}"
+        src="{{ 'purpose.webp' | asset_url }}"
         alt="{{ section.settings.image_alt | escape }}"
         class="about-purpose__image"
         loading="lazy"
+        width="2352"
+        height="3527"
       >
     {% endif %}
   </div>
 </section>
+
+<script>
+  (() => {
+    const sectionId = 'about-purpose-{{ section.id }}';
+
+    const initPurposeParallax = () => {
+      const section = document.getElementById(sectionId);
+      if (!section || section.dataset.parallaxInitialized === 'true') return;
+
+      const image = section.querySelector('.about-purpose__image');
+      if (!image) return;
+
+      section.dataset.parallaxInitialized = 'true';
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        image.style.setProperty('--parallax-y', '0px');
+        return;
+      }
+
+      let ticking = false;
+      let inView = false;
+      let rafId = 0;
+
+      const updateParallax = () => {
+        if (!inView) {
+          ticking = false;
+          return;
+        }
+
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const travel = viewportHeight + rect.height;
+        const progressRaw = (viewportHeight - rect.top) / travel;
+        const progress = Math.max(0, Math.min(1, progressRaw));
+        const maxOffset = window.innerWidth < 990 ? 56 : 124;
+        const offset = (progress - 0.5) * maxOffset * 2;
+
+        image.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
+        ticking = false;
+      };
+
+      const requestTick = () => {
+        if (ticking) return;
+        ticking = true;
+        rafId = window.requestAnimationFrame(updateParallax);
+      };
+
+      const onScroll = () => {
+        requestTick();
+      };
+
+      const visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            inView = entry.isIntersecting;
+            if (inView) requestTick();
+          });
+        },
+        { threshold: 0, rootMargin: '160px 0px 160px 0px' },
+      );
+
+      visibilityObserver.observe(section);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', requestTick);
+      requestTick();
+
+      section.addEventListener('shopify:section:unload', () => {
+        visibilityObserver.disconnect();
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', requestTick);
+        if (rafId) window.cancelAnimationFrame(rafId);
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPurposeParallax, { once: true });
+    } else {
+      initPurposeParallax();
+    }
+
+    document.addEventListener('shopify:section:load', (event) => {
+      if (event.target && event.target.id === sectionId) {
+        initPurposeParallax();
+      }
+    });
+  })();
+</script>
 
 {% stylesheet %}
   .about-purpose {
@@ -91,10 +181,10 @@
     margin-top: clamp(0.3rem, 0.9vw, 1rem);
     display: grid;
     gap: 1rem;
-    max-width: 680px;
+    max-width: 600px;
     justify-self: end;
     font-family: var(--font-body--family), sans-serif;
-    font-size: clamp(0.98rem, 1.03vw, 1.24rem);
+    font-size: clamp(1.08rem, 1.18vw, 1.38rem);
     line-height: 1.52;
     font-weight: 420;
     color: rgba(20, 108, 144, 0.9);
@@ -105,7 +195,7 @@
   }
 
   .about-purpose__image-wrap {
-    border-radius: clamp(10px, 1.3vw, 16px);
+    max-width: min(1442px, 100%);
     overflow: hidden;
     isolation: isolate;
   }
@@ -126,7 +216,10 @@
     width: 100%;
     height: clamp(260px, 38vw, 760px);
     object-fit: cover;
-    filter: saturate(0.74) contrast(0.94) brightness(0.96);
+    object-position: 50% 10%;
+    filter: none;
+    transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.12);
+    will-change: transform;
   }
 
   .about-purpose [data-reveal] {

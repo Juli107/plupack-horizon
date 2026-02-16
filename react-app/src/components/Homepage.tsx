@@ -26,7 +26,7 @@ gsap.registerPlugin(ScrollTrigger);
 // This hook communicates with the Liquid header to change its tint
 // based on which section the user is viewing
 
-type HeaderTint = 'light' | 'dark';
+type HeaderTint = 'light' | 'dark' | 'blue';
 
 function useHeaderTintControl() {
   useEffect(() => {
@@ -52,12 +52,18 @@ function useHeaderTintControl() {
     const header = document.querySelector('#header-component');
     if (!header) return;
 
+    header.classList.remove(
+      'header--tint-light',
+      'header--tint-dark',
+      'header--tint-blue',
+    );
+
     if (tint === 'dark') {
       header.classList.add('header--tint-dark');
-      header.classList.remove('header--tint-light');
+    } else if (tint === 'blue') {
+      header.classList.add('header--tint-blue');
     } else {
       header.classList.add('header--tint-light');
-      header.classList.remove('header--tint-dark');
     }
   };
 
@@ -117,6 +123,50 @@ export function Homepage({
 
   useGSAP(() => {
     setHeaderTint('light');
+
+    // Initial state check - set based on current scroll position
+    const stockTrigger = document.querySelector(
+      '.stock-sustainability-trigger',
+    );
+    const preFooterTrigger = document.querySelector(
+      '.pre-footer-trigger',
+    );
+
+    if (stockTrigger && preFooterTrigger) {
+      const stockRect = stockTrigger.getBoundingClientRect();
+      const preFooterRect = preFooterTrigger.getBoundingClientRect();
+      const viewportCenter = window.scrollY + window.innerHeight / 2;
+
+      // Convert to document-relative positions
+      const stockTop = stockRect.top + window.scrollY;
+      const preFooterBottom = preFooterRect.bottom + window.scrollY;
+
+      if (
+        viewportCenter >= stockTop &&
+        viewportCenter < preFooterBottom
+      ) {
+        setHeaderTint('blue');
+      } else {
+        setHeaderTint('light');
+      }
+    }
+
+    // Change to blue when entering StockSustainabilityWrapper
+    ScrollTrigger.create({
+      trigger: '.stock-sustainability-trigger',
+      start: 'top center',
+      onEnter: () => setHeaderTint('blue'),
+      onEnterBack: () => setHeaderTint('blue'),
+      onLeaveBack: () => setHeaderTint('light'),
+    });
+
+    // Back to light when PreFooter section is almost fully visible
+    ScrollTrigger.create({
+      trigger: '.pre-footer-trigger',
+      start: 'bottom 90%',
+      onEnter: () => setHeaderTint('light'),
+      onLeaveBack: () => setHeaderTint('blue'),
+    });
   }, []);
 
   return (
