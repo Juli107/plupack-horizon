@@ -5,19 +5,15 @@
   class="about-prefooter"
   style="
     --prefooter-bg-start: {{ section.settings.background_start }};
-    --prefooter-bg-end: {{ section.settings.background_end }};
     --prefooter-text: {{ section.settings.text_color }};
   "
 >
-  <div class="about-prefooter__overlay" aria-hidden="true"></div>
   <div class="about-prefooter__orbital" aria-hidden="true">
     <span class="about-prefooter__bubble about-prefooter__bubble--a"></span>
     <span class="about-prefooter__bubble about-prefooter__bubble--b"></span>
     <span class="about-prefooter__bubble about-prefooter__bubble--c"></span>
     <span class="about-prefooter__bubble about-prefooter__bubble--d"></span>
   </div>
-  <div class="about-prefooter__grain" aria-hidden="true"></div>
-  <div class="about-prefooter__ambient-glow" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
@@ -68,31 +64,19 @@
     width: 100%;
     min-height: 90vh;
     padding: 5rem 1.5rem;
-    background:
-      radial-gradient(88% 112% at 50% 8%, rgba(183, 239, 255, 0.24) 0%, rgba(30, 67, 119, 0) 54%),
-      linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
+    background: var(--prefooter-bg-start);
     isolation: isolate;
-  }
-
-  .about-prefooter__overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-color: rgba(20, 108, 144, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
   }
 
   .about-prefooter__orbital {
     position: absolute;
-    top: -10%;
-    right: -4%;
-    width: clamp(220px, 24vw, 360px);
-    height: clamp(220px, 24vw, 360px);
+    top: -22%;
+    right: -12%;
+    width: clamp(440px, 42vw, 680px);
+    height: clamp(440px, 42vw, 680px);
     z-index: 0;
     pointer-events: none;
-    opacity: 0.88;
+    opacity: 0.7;
     animation: prefooter-orbital-spin 20s linear infinite;
     transform-origin: center;
   }
@@ -101,23 +85,23 @@
     position: absolute;
     border-radius: 999px;
     background: radial-gradient(circle, rgba(225, 245, 255, 0.78) 0%, rgba(225, 245, 255, 0) 74%);
-    filter: blur(18px);
+    filter: blur(14px);
     mix-blend-mode: screen;
   }
 
   .about-prefooter__bubble--a {
     top: 16%;
     left: 50%;
-    width: clamp(84px, 9vw, 130px);
-    height: clamp(84px, 9vw, 130px);
+    width: clamp(96px, 9vw, 148px);
+    height: clamp(96px, 9vw, 148px);
     transform: translateX(-50%);
   }
 
   .about-prefooter__bubble--b {
     top: 50%;
     right: 10%;
-    width: clamp(72px, 8vw, 112px);
-    height: clamp(72px, 8vw, 112px);
+    width: clamp(84px, 8vw, 132px);
+    height: clamp(84px, 8vw, 132px);
     transform: translateY(-50%);
     opacity: 0.86;
   }
@@ -125,8 +109,8 @@
   .about-prefooter__bubble--c {
     bottom: 14%;
     left: 52%;
-    width: clamp(66px, 7vw, 102px);
-    height: clamp(66px, 7vw, 102px);
+    width: clamp(76px, 7vw, 120px);
+    height: clamp(76px, 7vw, 120px);
     transform: translateX(-50%);
     opacity: 0.8;
   }
@@ -134,39 +118,10 @@
   .about-prefooter__bubble--d {
     top: 50%;
     left: 10%;
-    width: clamp(58px, 6vw, 90px);
-    height: clamp(58px, 6vw, 90px);
+    width: clamp(68px, 6vw, 106px);
+    height: clamp(68px, 6vw, 106px);
     transform: translateY(-50%);
     opacity: 0.76;
-  }
-
-  .about-prefooter__grain {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.16;
-    background-image:
-      radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.22) 0, rgba(255, 255, 255, 0) 22%),
-      radial-gradient(circle at 76% 18%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0) 20%),
-      radial-gradient(circle at 36% 68%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0) 18%),
-      radial-gradient(circle at 84% 80%, rgba(255, 255, 255, 0.16) 0, rgba(255, 255, 255, 0) 24%);
-    mix-blend-mode: screen;
-  }
-
-  .about-prefooter__ambient-glow {
-    position: absolute;
-    border-radius: 999px;
-    right: 9%;
-    bottom: 12%;
-    width: clamp(90px, 10vw, 150px);
-    height: clamp(90px, 10vw, 150px);
-    z-index: 0;
-    pointer-events: none;
-    filter: blur(22px);
-    opacity: 0.42;
-    background: radial-gradient(circle, rgba(232, 248, 255, 0.78) 0%, rgba(232, 248, 255, 0) 72%);
-    animation: prefooter-glow-drift 12s ease-in-out infinite;
   }
 
   .about-prefooter__inner {
@@ -320,17 +275,6 @@
     }
   }
 
-  @keyframes prefooter-glow-drift {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-
-    50% {
-      transform: translate3d(10px, -12px, 0) scale(1.06);
-    }
-  }
-
   @media (max-width: 989px) {
     .about-prefooter {
       min-height: 72vh;
@@ -339,11 +283,11 @@
     }
 
     .about-prefooter__orbital {
-      top: -14%;
-      right: -18%;
-      width: clamp(170px, 35vw, 260px);
-      height: clamp(170px, 35vw, 260px);
-      opacity: 0.7;
+      top: -18%;
+      right: -34%;
+      width: clamp(260px, 62vw, 420px);
+      height: clamp(260px, 62vw, 420px);
+      opacity: 0.62;
     }
 
     .about-prefooter__title {
@@ -369,7 +313,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .about-prefooter__orbital,
-    .about-prefooter__ambient-glow,
     .about-prefooter [data-reveal] {
       animation: none;
       opacity: 1;
@@ -392,13 +335,13 @@
       "type": "color",
       "id": "background_start",
       "label": "Background start",
-      "default": "#1A94BE"
+      "default": "#136B8F"
     },
     {
       "type": "color",
       "id": "background_end",
       "label": "Background end",
-      "default": "#0F6D96"
+      "default": "#136B8F"
     },
     {
       "type": "color",

@@ -59,8 +59,8 @@
     "about_prefooter": {
       "type": "about-prefooter",
       "settings": {
-        "background_start": "#1a94be",
-        "background_end": "#0f6d96",
+        "background_start": "#136b8f",
+        "background_end": "#136b8f",
         "text_color": "#eaf4fa",
         "heading_line_1": "Embalajes",
         "heading_line_2": "SIN LÍMITES",
