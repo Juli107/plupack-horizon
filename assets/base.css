@@ -4394,17 +4394,6 @@ text-component {
 
 /* Estilos de contact-form controlados desde snippets/contact-form.liquid */
 
-.contact-page-title {
-  margin: 0;
-  font-family: var(--font-heading--family), sans-serif;
-  font-size: clamp(2.5rem, 7.2vw, 7rem);
-  font-weight: 500;
-  line-height: 0.92;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: #146c90;
-}
-
 @media screen and (min-width: 990px) {
   .template-page .shopify-section:has(.contact-form) .section-content-wrapper.layout-panel-flex--row > .group-block > .group-block-content {
     padding-inline: clamp(1rem, 2.2vw, 2.2rem);
