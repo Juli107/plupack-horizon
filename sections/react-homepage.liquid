@@ -132,6 +132,29 @@
       ]
     },
 
+    productsShowcase: {
+      title: {{ section.settings.products_showcase_title | json }},
+      buttonText: {{ section.settings.products_showcase_button_text | json }},
+      buttonUrl: {{ section.settings.products_showcase_button_url | json }},
+      maxProducts: {{ section.settings.products_showcase_limit | default: 8 | json }}
+    },
+
+    products: [
+      {%- assign showcase_limit = section.settings.products_showcase_limit | default: 8 -%}
+      {%- assign is_first_product = true -%}
+      {%- for product in collections.all.products limit: showcase_limit -%}
+        {%- unless is_first_product -%},{%- endunless -%}
+        {
+          title: {{ product.title | json }},
+          handle: {{ product.handle | json }},
+          url: {{ product.url | json }},
+          image: {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
+          price: {{ product.price | money | json }}
+        }
+        {%- assign is_first_product = false -%}
+      {%- endfor -%}
+    ],
+
     // ============================================
     // THEME-WIDE SETTINGS (single source of truth)
     // These come from Theme Settings in Shopify Admin
@@ -429,6 +452,37 @@
     {
       "type": "url",
       "id": "stock_section_button_url",
+      "label": "Button URL",
+      "default": "/collections/all"
+    },
+    {
+      "type": "header",
+      "content": "Products Showcase Section"
+    },
+    {
+      "type": "text",
+      "id": "products_showcase_title",
+      "label": "Title",
+      "default": "Explora productos para tu operacion"
+    },
+    {
+      "type": "range",
+      "id": "products_showcase_limit",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "products_showcase_button_text",
+      "label": "Button text",
+      "default": "Ver mas"
+    },
+    {
+      "type": "url",
+      "id": "products_showcase_button_url",
       "label": "Button URL",
       "default": "/collections/all"
     }
