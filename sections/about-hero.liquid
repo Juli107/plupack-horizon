@@ -57,7 +57,9 @@
       <h1 class="about-hero__heading" data-reveal style="--reveal-delay: 0.12s;">
         <span>{{ section.settings.heading_line_1 }}</span>
         <span>{{ section.settings.heading_line_2 }}</span>
-        <span>{{ section.settings.heading_line_3 }}</span>
+        <span class="about-hero__heading-highlight" data-text="{{ section.settings.heading_line_3 | escape }}">
+          <span class="about-hero__heading-highlight-fill">{{ section.settings.heading_line_3 }}</span>
+        </span>
       </h1>
 
       <div class="about-hero__copy" data-reveal style="--reveal-delay: 0.22s;">
@@ -203,6 +205,44 @@
     font-size: clamp(2.5rem, 7.2vw, 7rem);
   }
 
+  .about-hero__heading-highlight {
+    position: relative;
+    display: inline-block;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .about-hero__heading-highlight::before {
+    content: attr(data-text);
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 2.2px var(--about-text);
+    text-shadow:
+      1px 0 0 var(--about-text),
+      -1px 0 0 var(--about-text),
+      0 1px 0 var(--about-text),
+      0 -1px 0 var(--about-text);
+  }
+
+  .about-hero__heading-highlight-fill {
+    position: absolute;
+    inset: 0;
+    color: var(--about-text);
+    opacity: 0;
+    animation: about-hero-heading-fill 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.95s;
+  }
+
+  @keyframes about-hero-heading-fill {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
   .about-hero__copy {
     max-width: min(900px, 90%);
     margin: clamp(3rem, 5vw, 5.2rem) auto 0;
@@ -314,6 +354,11 @@
     .about-hero [data-reveal] {
       opacity: 1;
       transform: none;
+      animation: none;
+    }
+
+    .about-hero__heading-highlight-fill {
+      opacity: 1;
       animation: none;
     }
   }
