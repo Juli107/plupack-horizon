@@ -1,3 +1,5 @@
+<div class="about-global-noise" aria-hidden="true"></div>
+
 <section
   id="about-hero-{{ section.id }}"
   class="about-hero"
@@ -6,8 +8,6 @@
     --about-text: {{ section.settings.text_color }};
   "
 >
-  <div class="about-global-noise" aria-hidden="true"></div>
-
   <div class="about-hero__orbit about-hero__orbit--left" aria-hidden="true">
     <svg viewBox="0 0 600 600" class="about-hero__orbit-svg" focusable="false">
       <circle cx="300" cy="300" r="300" class="about-hero__orbit-stroke" />
@@ -75,12 +75,12 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 3;
+    z-index: 40;
     background-image: url("{{ 'noise.webp' | asset_url }}");
     background-repeat: repeat;
-    background-size: 220px 220px;
-    opacity: 0.09;
-    mix-blend-mode: multiply;
+    background-size: 240px 240px;
+    opacity: 0.08;
+    mix-blend-mode: soft-light;
   }
 
   .about-hero {
