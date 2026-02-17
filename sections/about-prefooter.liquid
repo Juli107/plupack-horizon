@@ -8,6 +8,10 @@
   "
 >
   <div class="about-prefooter__overlay" aria-hidden="true"></div>
+  <div class="about-prefooter__grain" aria-hidden="true"></div>
+  <div class="about-prefooter__glow about-prefooter__glow--one" aria-hidden="true"></div>
+  <div class="about-prefooter__glow about-prefooter__glow--two" aria-hidden="true"></div>
+  <div class="about-prefooter__glow about-prefooter__glow--three" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
@@ -43,7 +47,9 @@
     width: 100%;
     min-height: 90vh;
     padding: 5rem 1.5rem;
-    background: linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
+    background:
+      radial-gradient(90% 120% at 50% 15%, rgba(43, 150, 196, 0.24) 0%, rgba(30, 67, 119, 0) 55%),
+      linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
     isolation: isolate;
   }
 
@@ -52,9 +58,56 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-color: rgba(30, 67, 119, 0.25);
+    background-color: rgba(30, 67, 119, 0.16);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+  }
+
+  .about-prefooter__grain {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    background-image:
+      radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.22) 0, rgba(255, 255, 255, 0) 22%),
+      radial-gradient(circle at 76% 18%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0) 20%),
+      radial-gradient(circle at 36% 68%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0) 18%),
+      radial-gradient(circle at 84% 80%, rgba(255, 255, 255, 0.16) 0, rgba(255, 255, 255, 0) 24%);
+    mix-blend-mode: screen;
+  }
+
+  .about-prefooter__glow {
+    position: absolute;
+    border-radius: 999px;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(22px);
+    opacity: 0.56;
+    background: radial-gradient(circle, rgba(232, 248, 255, 0.8) 0%, rgba(232, 248, 255, 0) 72%);
+  }
+
+  .about-prefooter__glow--one {
+    width: clamp(120px, 17vw, 260px);
+    height: clamp(120px, 17vw, 260px);
+    top: 22%;
+    left: 40%;
+  }
+
+  .about-prefooter__glow--two {
+    width: clamp(100px, 15vw, 210px);
+    height: clamp(100px, 15vw, 210px);
+    top: 44%;
+    left: 22%;
+    opacity: 0.48;
+  }
+
+  .about-prefooter__glow--three {
+    width: clamp(110px, 16vw, 230px);
+    height: clamp(110px, 16vw, 230px);
+    right: 10%;
+    bottom: 16%;
+    opacity: 0.46;
   }
 
   .about-prefooter__inner {
@@ -78,10 +131,10 @@
     align-items: center;
     justify-content: center;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(3rem, 9vw, 116px);
+    font-size: clamp(3rem, 8vw, 118px);
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 0.95;
+    line-height: 0.94;
     font-weight: 500;
   }
 
@@ -92,8 +145,9 @@
 
   .about-prefooter__outline {
     color: transparent;
-    -webkit-text-stroke: 2.8px #ffffff;
-    text-stroke: 2.8px #ffffff;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.92);
+    text-stroke: 2px rgba(255, 255, 255, 0.92);
     paint-order: stroke fill;
   }
 
@@ -192,8 +246,8 @@
     }
 
     .about-prefooter__outline {
-      -webkit-text-stroke-width: 2px;
-      text-stroke-width: 2px;
+      -webkit-text-stroke-width: 1.5px;
+      text-stroke-width: 1.5px;
     }
 
     .about-prefooter__btn {
@@ -209,6 +263,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .about-prefooter__glow,
     .about-prefooter [data-reveal] {
       animation: none;
       opacity: 1;
