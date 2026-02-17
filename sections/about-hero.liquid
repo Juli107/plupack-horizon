@@ -281,11 +281,15 @@
     font-family: var(--font-heading--family), sans-serif;
     font-size: inherit;
     font-weight: 500;
+    font-variation-settings: 'wght' 550;
     letter-spacing: 0.04em;
     fill: currentColor;
   }
 
   .about-hero__heading-line-fill {
+    stroke: currentColor;
+    stroke-width: 0.35px;
+    paint-order: stroke fill;
     opacity: 0;
     animation: about-hero-heading-fill 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: 0.9s;
