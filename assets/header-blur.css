@@ -134,6 +134,18 @@
   stroke: #ffffff !important;
 }
 
+.header--tint-blue .menu-list__link,
+.header--tint-blue .header-actions__action,
+.header--tint-blue .search-action,
+.header--tint-blue .header-logo a {
+  color: #ffffff !important;
+}
+
+.header--tint-blue .header-actions__action svg,
+.header--tint-blue .search-action svg {
+  stroke: #ffffff !important;
+}
+
 /* Dark tint - dark text for light backgrounds */
 .header--tint-dark .menu-list__link,
 .header--tint-dark .header-actions__action,
