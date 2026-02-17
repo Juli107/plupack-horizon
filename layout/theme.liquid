@@ -27,14 +27,6 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
-    <style>
-      body.page-bg-soft {
-        --color-background: #f2f7fa;
-        --color-background-rgb: 242, 247, 250;
-        background: #f2f7fa;
-      }
-    </style>
-
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
     {% endif %}
