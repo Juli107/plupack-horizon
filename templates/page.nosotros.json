@@ -12,7 +12,7 @@
     "about_hero": {
       "type": "about-hero",
       "settings": {
-        "background_color": "#dde6ed",
+        "background_color": "#ecf2f6",
         "text_color": "#146c90",
         "eyebrow": "Sobre nosotros",
         "heading_line_1": "Soluciones",
@@ -28,7 +28,7 @@
     "about_purpose": {
       "type": "about-purpose",
       "settings": {
-        "background_color": "#dde6ed",
+        "background_color": "#ecf2f6",
         "text_color": "#146c90",
         "heading": "Nuestro propósito",
         "paragraph_1": "Simplificar la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable. Menos fricción, menos vueltas, más continuidad operativa.",
