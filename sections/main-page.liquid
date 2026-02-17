@@ -13,7 +13,6 @@
     style="
       {% render 'layout-panel-style', settings: section.settings %}
       {% render 'spacing-style', settings: section.settings %}
-      {% if request.page_type == 'page' and template.suffix == 'contact' %}min-height: 100vh;{% endif %}
     "
   >
     {% content_for 'blocks' %}
