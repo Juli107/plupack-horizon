@@ -24,7 +24,7 @@
       <span>{{ section.settings.heading_line_1 }}</span>
       <span class="about-prefooter__outline-wrap">
         <span class="about-prefooter__outline-sizer" aria-hidden="true">{{ heading_line_2_upcase }}</span>
-        <svg class="about-prefooter__outline-svg" viewBox="0 0 1000 160" preserveAspectRatio="xMinYMid meet" aria-hidden="true" focusable="false">
+        <svg class="about-prefooter__outline-svg" aria-hidden="true" focusable="false">
           <defs>
             <filter id="prefooter-outline-{{ section.id }}" x="-20%" y="-20%" width="140%" height="140%">
               <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="2.8" />
@@ -33,7 +33,7 @@
               <feComposite in="COLOR" in2="OUTLINE" operator="in" result="FINAL" />
             </filter>
           </defs>
-          <text class="about-prefooter__outline-text" x="0" y="125" style="filter: url(#prefooter-outline-{{ section.id }});">
+          <text class="about-prefooter__outline-text" x="0" y="0.85em" style="filter: url(#prefooter-outline-{{ section.id }});">
             {{ heading_line_2_upcase }}
           </text>
         </svg>
@@ -205,6 +205,8 @@
   .about-prefooter__outline-wrap {
     position: relative;
     display: inline-block;
+    font-size: inherit;
+    line-height: inherit;
   }
 
   .about-prefooter__outline-sizer {
@@ -223,7 +225,7 @@
 
   .about-prefooter__outline-text {
     font-family: var(--font-heading--family), sans-serif;
-    font-size: 150px;
+    font-size: inherit;
     font-weight: 500;
     letter-spacing: -0.02em;
     text-transform: uppercase;
@@ -351,10 +353,6 @@
 
     .about-prefooter__title span {
       font-size: inherit;
-    }
-
-    .about-prefooter__outline-text {
-      font-size: 140px;
     }
 
     .about-prefooter__btn {
