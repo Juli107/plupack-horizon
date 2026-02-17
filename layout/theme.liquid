@@ -27,6 +27,14 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
+    <style>
+      body.page-bg-soft {
+        --color-background: #f2f7fa;
+        --color-background-rgb: 242, 247, 250;
+        background: #f2f7fa;
+      }
+    </style>
+
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
     {% endif %}
@@ -34,7 +42,7 @@
     {{ content_for_header }}
   </head>
 
-  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}{% unless request.page_type == 'index' or request.path contains '/pages/nosotros' %} page-bg-soft{% endunless %}">
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
       {% sections 'header-group' %}
