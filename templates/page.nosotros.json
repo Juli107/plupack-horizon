@@ -40,10 +40,10 @@
     "about_future": {
       "type": "about-future",
       "settings": {
-        "background_color": "#146c90",
-        "text_color": "#eaf4fa",
+        "background_color": "#dde6ec",
+        "text_color": "#146c90",
         "heading": "Futuro",
-        "paragraph_1": "Queremos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
+        "paragraph_1": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
         "axis_1_title": "Expansión nacional",
         "axis_1_text": "Presencia operativa en todas las provincias con cobertura logística eficiente.",
         "axis_2_title": "Fortalecimiento estructural",
@@ -56,24 +56,15 @@
         "axis_5_text": "Acuerdos estables con clientes estratégicos basados en previsibilidad y cumplimiento."
       }
     },
-    "about_projection": {
-      "type": "about-projection",
-      "settings": {
-        "background_color": "#dde6ed",
-        "text_color": "#146c90",
-        "heading": "Proyección y crecimiento",
-        "paragraph": "Trabajamos para expandir nuestra presencia en todas las provincias, mejorar la estructura logística y convertirnos en la elección preferida de papeleras, empresas de catering, industrias y comercios. Al mismo tiempo, optimizamos procesos y desarrollamos nuevas líneas de productos para operar de forma más eficiente, con un enfoque ambiental responsable y medible."
-      }
-    },
     "about_prefooter": {
       "type": "about-prefooter",
       "settings": {
-        "background_start": "#1e4377",
-        "background_end": "#143059",
+        "background_start": "#136b8f",
+        "background_end": "#136b8f",
         "text_color": "#eaf4fa",
         "heading_line_1": "Embalajes",
-        "heading_line_2": "Sin límites",
-        "primary_cta_label": "Cotizar mayorista",
+        "heading_line_2": "SIN LÍMITES",
+        "primary_cta_label": "Cotizar Mayorista",
         "primary_cta_url": "/pages/cotizar",
         "secondary_cta_label": "Ver catálogo",
         "secondary_cta_url": "/collections/all"
@@ -84,7 +75,6 @@
     "about_hero",
     "about_purpose",
     "about_future",
-    "about_projection",
     "about_prefooter"
   ]
 }

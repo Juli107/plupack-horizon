@@ -69,8 +69,8 @@
     overflow: clip;
     padding: var(--future-section-space) clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
     background:
-      radial-gradient(120% 120% at 82% 12%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 56%),
-      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 94%, black 6%) 0%, var(--future-bg) 100%);
+      radial-gradient(120% 120% at 82% 12%, color-mix(in srgb, var(--future-text) 12%, transparent) 0%, transparent 56%),
+      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 96%, white 4%) 0%, var(--future-bg) 100%);
     color: var(--future-text);
     isolation: isolate;
   }
@@ -95,7 +95,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(1.65rem, 2.8vw, 2.9rem);
     line-height: 1.24;
-    color: rgba(234, 244, 250, 0.95);
+    color: color-mix(in srgb, var(--future-text) 95%, transparent);
     font-weight: 430;
     text-wrap: pretty;
   }
@@ -121,7 +121,7 @@
     line-height: 0.9;
     letter-spacing: 0.01em;
     font-weight: 600;
-    color: #eaf4fa;
+    color: var(--future-text);
   }
 
   .about-future__rail-copy {
@@ -130,7 +130,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(0.9rem, 0.98vw, 1.08rem);
     line-height: 1.42;
-    color: rgba(234, 244, 250, 0.72);
+    color: color-mix(in srgb, var(--future-text) 72%, transparent);
   }
 
   .about-future__axes {
@@ -139,7 +139,7 @@
     padding: 0;
     display: grid;
     gap: 0;
-    border-top: 1px solid rgba(234, 244, 250, 0.28);
+    border-top: 1px solid color-mix(in srgb, var(--future-text) 28%, transparent);
     max-width: min(40rem, 100%);
     width: 100%;
     justify-self: end;
@@ -152,7 +152,7 @@
     align-items: start;
     min-height: 0;
     padding: clamp(1.35rem, 2.1vw, 1.9rem) 0;
-    border-bottom: 1px solid rgba(234, 244, 250, 0.24);
+    border-bottom: 1px solid color-mix(in srgb, var(--future-text) 24%, transparent);
   }
 
   .about-future__index {
@@ -161,7 +161,7 @@
     font-size: clamp(0.76rem, 0.9vw, 0.95rem);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(234, 244, 250, 0.56);
+    color: color-mix(in srgb, var(--future-text) 56%, transparent);
   }
 
   .about-future__axis-body h3 {
@@ -171,7 +171,7 @@
     font-size: clamp(1.16rem, 1.5vw, 1.9rem);
     line-height: 1.12;
     letter-spacing: 0.004em;
-    color: #eaf4fa;
+    color: var(--future-text);
     font-weight: 500;
   }
 
@@ -181,7 +181,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(0.95rem, 1.05vw, 1.18rem);
     line-height: 1.48;
-    color: rgba(234, 244, 250, 0.83);
+    color: color-mix(in srgb, var(--future-text) 83%, transparent);
     font-weight: 410;
     text-wrap: pretty;
   }
@@ -293,13 +293,13 @@
       "type": "color",
       "id": "background_color",
       "label": "Background color",
-      "default": "#146C90"
+      "default": "#DDE6EC"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text color",
-      "default": "#EAF4FA"
+      "default": "#146C90"
     },
     {
       "type": "text",
