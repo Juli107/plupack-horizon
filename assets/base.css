@@ -4394,6 +4394,17 @@ text-component {
 
 /* Estilos de contact-form controlados desde snippets/contact-form.liquid */
 
+.template-page .shopify-section:has(.contact-form) .text-block--info_heading h1 {
+  margin: 0;
+  font-family: var(--font-heading--family), sans-serif;
+  font-size: clamp(2.5rem, 7.2vw, 7rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.92;
+  color: #146c90;
+}
+
 @media screen and (min-width: 990px) {
   .template-page .shopify-section:has(.contact-form) .section-content-wrapper.layout-panel-flex--row {
     gap: clamp(4.5rem, 8vw, 9rem) !important;
@@ -4403,16 +4414,6 @@ text-component {
     padding-inline: clamp(2.4rem, 5vw, 6rem);
   }
 
-  .template-page .shopify-section:has(.contact-form) .text-block--info_heading h1 {
-    margin: 0;
-    font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(2.5rem, 7.2vw, 7rem);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-    line-height: 0.92;
-    color: #146c90;
-  }
 }
 
 .template-page .shopify-section:has(.contact-form) .text-block--info_copy,
