@@ -7,8 +7,7 @@
     --prefooter-text: {{ section.settings.text_color }};
   "
 >
-  <div class="about-prefooter__orb about-prefooter__orb--one" aria-hidden="true"></div>
-  <div class="about-prefooter__orb about-prefooter__orb--two" aria-hidden="true"></div>
+  <div class="about-prefooter__overlay" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
@@ -17,10 +16,16 @@
     </h2>
 
     <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
-      <a href="{{ section.settings.primary_cta_url }}" class="about-prefooter__btn about-prefooter__btn--solid">
+      <a
+        href="{{ section.settings.primary_cta_url | default: '/pages/cotizar' }}"
+        class="about-prefooter__btn about-prefooter__btn--solid"
+      >
         {{ section.settings.primary_cta_label }}
       </a>
-      <a href="{{ section.settings.secondary_cta_url }}" class="about-prefooter__btn about-prefooter__btn--ghost">
+      <a
+        href="{{ section.settings.secondary_cta_url | default: '/collections/all' }}"
+        class="about-prefooter__btn about-prefooter__btn--ghost"
+      >
         {{ section.settings.secondary_cta_label }}
       </a>
     </div>
@@ -30,100 +35,95 @@
 {% stylesheet %}
   .about-prefooter {
     position: relative;
-    overflow: clip;
-    display: grid;
-    place-items: center;
-    min-height: clamp(420px, 62vh, 700px);
-    padding: clamp(3rem, 8vh, 6rem) 1rem;
+    z-index: 20;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 90vh;
+    padding: 5rem 1.5rem;
     background: linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
-    color: var(--prefooter-text);
     isolation: isolate;
   }
 
-  .about-prefooter__orb {
+  .about-prefooter__overlay {
     position: absolute;
-    border-radius: 999px;
-    filter: blur(18px);
-    opacity: 0.25;
+    inset: 0;
     z-index: 0;
     pointer-events: none;
-  }
-
-  .about-prefooter__orb--one {
-    width: clamp(180px, 30vw, 420px);
-    height: clamp(180px, 30vw, 420px);
-    top: -12%;
-    right: -8%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0.04) 72%);
-    animation: prefooter-float-a 13s ease-in-out infinite;
-  }
-
-  .about-prefooter__orb--two {
-    width: clamp(150px, 24vw, 320px);
-    height: clamp(150px, 24vw, 320px);
-    bottom: -14%;
-    left: -6%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.04) 72%);
-    animation: prefooter-float-b 12s ease-in-out infinite;
+    background-color: rgba(30, 67, 119, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .about-prefooter__inner {
     position: relative;
     z-index: 1;
-    width: 100%;
-    max-width: min(1300px, 100%);
-    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    display: grid;
-    gap: clamp(1.4rem, 2.5vw, 2.4rem);
-    justify-items: center;
+    width: 100%;
+    max-width: 1300px;
+    color: var(--prefooter-text);
   }
 
   .about-prefooter__title {
     margin: 0;
-    display: grid;
-    gap: clamp(0.35rem, 1vw, 0.8rem);
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-family: var(--font-heading--family), sans-serif;
+    font-size: clamp(3rem, 9vw, 116px);
     text-transform: uppercase;
-    letter-spacing: 0.01em;
-    line-height: 0.92;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
     font-weight: 500;
   }
 
   .about-prefooter__title span {
-    font-size: clamp(2.5rem, 9.2vw, 8rem);
+    display: block;
+    color: #ffffff;
   }
 
   .about-prefooter__outline {
     color: transparent;
-    -webkit-text-stroke: 2px rgba(234, 244, 250, 0.92);
-    text-stroke: 2px rgba(234, 244, 250, 0.92);
+    -webkit-text-stroke: 2.8px #ffffff;
+    text-stroke: 2.8px #ffffff;
+    paint-order: stroke fill;
   }
 
   .about-prefooter__actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
+    flex-direction: column;
+    gap: 1rem;
     justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
   }
 
   .about-prefooter__btn {
-    min-width: 190px;
+    min-width: 220px;
     min-height: 48px;
-    padding: 0.72rem 1.6rem;
-    border-radius: 999px;
-    border: 1px solid rgba(234, 244, 250, 0.75);
+    padding: 0.75rem 2.5rem;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.08em;
     font-family: var(--font-body--family), sans-serif;
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    transition: transform 220ms ease, background-color 220ms ease, color 220ms ease;
+    line-height: 1;
+    transition: background-color 220ms ease, color 220ms ease;
   }
 
   .about-prefooter__btn--solid {
@@ -134,7 +134,17 @@
 
   .about-prefooter__btn--ghost {
     background: transparent;
-    color: #eaf4fa;
+    color: #ffffff;
+  }
+
+  .about-prefooter__btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  .about-prefooter__btn--solid:hover {
+    background: #f4f7f9;
+    color: #0b6386;
   }
 
   .about-prefooter__btn:focus-visible {
@@ -165,57 +175,40 @@
     }
   }
 
-  @keyframes prefooter-float-a {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0);
-    }
-
-    50% {
-      transform: translate3d(-24px, 16px, 0);
-    }
-  }
-
-  @keyframes prefooter-float-b {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0);
-    }
-
-    50% {
-      transform: translate3d(20px, -14px, 0);
-    }
-  }
-
   @media (max-width: 989px) {
     .about-prefooter {
-      min-height: clamp(360px, 56vh, 540px);
-      padding-top: clamp(2.6rem, 7vh, 4.2rem);
-      padding-bottom: clamp(2.6rem, 7vh, 4.2rem);
+      min-height: 72vh;
+      padding-top: 4rem;
+      padding-bottom: 4rem;
     }
 
     .about-prefooter__title {
-      line-height: 0.96;
+      font-size: clamp(3rem, 13vw, 4.75rem);
+      line-height: 0.95;
     }
 
     .about-prefooter__title span {
-      font-size: clamp(2rem, 13vw, 3.6rem);
+      font-size: inherit;
     }
 
     .about-prefooter__outline {
-      -webkit-text-stroke-width: 1.4px;
-      text-stroke-width: 1.4px;
+      -webkit-text-stroke-width: 2px;
+      text-stroke-width: 2px;
     }
 
     .about-prefooter__btn {
-      width: min(320px, 100%);
+      width: min(340px, 100%);
       min-width: 0;
-      font-size: 0.84rem;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .about-prefooter__actions {
+      flex-direction: row;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-prefooter__orb,
     .about-prefooter [data-reveal] {
       animation: none;
       opacity: 1;
@@ -262,13 +255,13 @@
       "type": "text",
       "id": "heading_line_2",
       "label": "Heading line 2",
-      "default": "Sin límites"
+      "default": "SIN LÍMITES"
     },
     {
       "type": "text",
       "id": "primary_cta_label",
       "label": "Primary button label",
-      "default": "Cotizar mayorista"
+      "default": "Cotizar Mayorista"
     },
     {
       "type": "url",
