@@ -3,22 +3,9 @@
   assign menu_content_type = block_settings.menu_style | default: 'text'
   assign image_border_radius = block_settings.image_border_radius
   assign color_scheme_classes = ''
-  assign has_nosotros_link = false
-  assign is_nosotros_active = false
   assign color_scheme_setting_id = 'color_scheme_' | append: section.settings.menu_row
   assign current_color_scheme = block_settings.color_scheme
   assign parent_color_scheme = section.settings[color_scheme_setting_id]
-
-  if request.path contains '/pages/nosotros'
-    assign is_nosotros_active = true
-  endif
-
-  for link in block_settings.menu.links
-    if link.url contains '/pages/nosotros'
-      assign has_nosotros_link = true
-      break
-    endif
-  endfor
 
   if parent_color_scheme.id != current_color_scheme.id
     assign color_scheme_classes = ' color-' | append: current_color_scheme
@@ -80,25 +67,6 @@
       {%- endif -%}
     </li>
   {% endfor %}
-  {% unless has_nosotros_link %}
-    <li
-      role="presentation"
-      class="menu-list__list-item"
-      on:focus="/activate"
-      on:blur="/deactivate"
-      on:pointerenter="/activate"
-      on:pointerleave="/deactivate"
-    >
-      <a
-        href="/pages/nosotros"
-        data-skip-node-update="true"
-        class="menu-list__link{% if is_nosotros_active %} menu-list__link--active{% endif %}"
-        ref="menuitem"
-      >
-        <span class="menu-list__link-title">Nosotros</span>
-      </a>
-    </li>
-  {% endunless %}
   <li
     class="menu-list__list-item"
     role="presentation"

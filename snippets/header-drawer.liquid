@@ -15,25 +15,12 @@
   assign block_settings = block.settings
   assign max_featured_items = 4
   assign image_border_radius = block_settings.image_border_radius
-  assign has_nosotros_link = false
-  assign is_nosotros_active = false
 
   if block_settings.menu_style == 'featured_collections'
     assign ratio = block_settings.featured_collections_aspect_ratio
   elsif block_settings.menu_style == 'featured_products'
     assign ratio = block_settings.featured_products_aspect_ratio
   endif
-
-  if request.path contains '/pages/nosotros'
-    assign is_nosotros_active = true
-  endif
-
-  for link in linklist.links
-    if link.url contains '/pages/nosotros'
-      assign has_nosotros_link = true
-      break
-    endif
-  endfor
 
   ##
   # We only eager load heavy elements of the page when rendering this template
@@ -570,23 +557,6 @@
               </li>
             {%- endfor -%}
           {% endif %}
-          {% unless has_nosotros_link %}
-            {% assign animation_index = animation_index | plus: 1 %}
-            <li
-              class="menu-drawer__list-item{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"
-              style="--menu-drawer-animation-index: {{ animation_index }};"
-            >
-              <a
-                href="/pages/nosotros"
-                class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if is_nosotros_active %} menu-drawer__menu-item--active{% endif %}"
-                {% if is_nosotros_active %}
-                  aria-current="page"
-                {% endif %}
-              >
-                <span class="menu-drawer__menu-item-text wrap-text">Nosotros</span>
-              </a>
-            </li>
-          {% endunless %}
         </ul>
       </nav>
       <div
