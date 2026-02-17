@@ -64,10 +64,8 @@
         "text_color": "#eaf4fa",
         "heading_line_1": "Embalajes",
         "heading_line_2": "SIN LÍMITES",
-        "primary_cta_label": "Cotizar Mayorista",
-        "primary_cta_url": "/pages/cotizar",
-        "secondary_cta_label": "Ver Productos",
-        "secondary_cta_url": "/collections/all"
+        "primary_cta_label": "VER PRODUCTOS",
+        "primary_cta_url": "/collections/all",
       }
     }
   },
