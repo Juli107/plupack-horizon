@@ -1,4 +1,8 @@
-<div class="about-global-noise" aria-hidden="true"></div>
+<div
+  class="about-global-noise"
+  aria-hidden="true"
+  style="--about-noise-texture: url('{{ 'noise.webp' | asset_url }}');"
+></div>
 
 <section
   id="about-hero-{{ section.id }}"
@@ -76,7 +80,7 @@
     inset: 0;
     pointer-events: none;
     z-index: 40;
-    background-image: url("{{ 'noise.webp' | asset_url }}");
+    background-image: var(--about-noise-texture);
     background-repeat: repeat;
     background-size: 240px 240px;
     opacity: 0.08;
