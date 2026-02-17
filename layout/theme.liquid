@@ -61,6 +61,7 @@
       id="MainContent"
       class="content-for-layout"
       role="main"
+      style="{% if request.page_type == 'collection' or request.page_type == 'product' or request.page_type == 'page' and template.suffix == 'contact' %}min-height: 100vh;{% endif %}"
       data-page-transition-enabled="{{ settings.page_transition_enabled }}"
       data-product-transition="{{ settings.transition_to_main_product }}"
       data-template="{{ template }}"
