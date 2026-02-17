@@ -144,6 +144,7 @@
       ],
       "name": "t:names.collection_links_text",
       "settings": {
+        "visible_count": 6,
         "collection_list": [
           "todos-los-productos",
           "embalajes-y-proteccion",
