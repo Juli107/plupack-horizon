@@ -69,19 +69,14 @@
                 width="140%"
                 height="140%"
               >
-                <feGaussianBlur
-                  in="SourceAlpha"
-                  stdDeviation="0.45"
-                  result="SOFT_ALPHA"
-                />
                 <feMorphology
-                  in="SOFT_ALPHA"
+                  in="SourceAlpha"
                   result="DILATED"
                   operator="dilate"
                   radius="2.4"
                 />
                 <feMorphology
-                  in="SOFT_ALPHA"
+                  in="SourceAlpha"
                   result="ERODED"
                   operator="erode"
                   radius="1.1"
