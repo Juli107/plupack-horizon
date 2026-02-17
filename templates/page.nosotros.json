@@ -56,23 +56,6 @@
         "axis_5_text": "Acuerdos estables con clientes estratégicos basados en previsibilidad y cumplimiento."
       }
     },
-    "about_projection": {
-      "type": "about-projection",
-      "settings": {
-        "background_color": "#dde6ed",
-        "text_color": "#146c90",
-        "heading": "Proyección y crecimiento",
-        "claim": "Nuestra expansión no es solo territorial. Es estructural.",
-        "pillar_1_title": "Expansión operativa",
-        "pillar_1_text": "Ampliamos presencia en todas las provincias para garantizar cobertura nacional sostenida y tiempos de entrega competitivos.",
-        "pillar_2_title": "Infraestructura y logística",
-        "pillar_2_text": "Fortalecemos nuestra estructura logística para mejorar previsibilidad, trazabilidad y eficiencia en cada pedido.",
-        "pillar_3_title": "Desarrollo de producto",
-        "pillar_3_text": "Incorporamos nuevas líneas según demanda real del mercado, ampliando el catálogo sin perder foco operativo.",
-        "pillar_4_title": "Sustentabilidad aplicada",
-        "pillar_4_text": "Avanzamos hacia procesos más eficientes y materiales responsables, con impacto medible y criterios técnicos claros."
-      }
-    },
     "about_prefooter": {
       "type": "about-prefooter",
       "settings": {
@@ -92,7 +75,6 @@
     "about_hero",
     "about_purpose",
     "about_future",
-    "about_projection",
     "about_prefooter"
   ]
 }
