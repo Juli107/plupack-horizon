@@ -4397,11 +4397,13 @@ text-component {
 main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child h1 {
   margin: 0;
   font-family: var(--font-heading--family), sans-serif;
-  font-size: clamp(2.5rem, 7.2vw, 7rem) !important;
+  font-size: clamp(2rem, 5.6vw, 5.4rem) !important;
   font-weight: 500 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.01em;
   line-height: 0.92;
+  white-space: nowrap;
+  text-wrap: nowrap;
   color: #146c90 !important;
 }
 
@@ -4434,8 +4436,10 @@ main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row >
 
 @media screen and (max-width: 989px) {
   main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child h1 {
-    font-size: clamp(2.5rem, 9vw, 4.5rem) !important;
+    font-size: clamp(2.1rem, 10vw, 4.1rem) !important;
     line-height: 0.95;
+    white-space: normal;
+    text-wrap: balance;
   }
 
   main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child p {
