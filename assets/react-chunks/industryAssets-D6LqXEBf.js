@@ -1,0 +1,1 @@
+import{i as r}from"./industry_wrap-B8X2zjP3.js";import{d as o}from"./r3f-vendor-DhW1fiGJ.js";import"./react-vendor-Ci-0umXS.js";function d(){o.preload(r)}export{r as industryWrapUrl,d as preloadIndustryWrapModel};

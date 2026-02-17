@@ -1,5 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+
+const CANVAS_READY_EVENT = 'plupack:canvas-ready';
+const CANVAS_READY_TIMEOUT_MS = 5000;
 
 // Immediately inject critical CSS
 if (typeof document !== 'undefined') {
@@ -76,7 +79,8 @@ export function LoadingScreen() {
   );
   const [progress, setProgress] = useState(0);
   const [revealProgress, setRevealProgress] = useState(0);
-  const hasStartedRef = useRef(false);
+  const [isProgressComplete, setIsProgressComplete] = useState(false);
+  const [isCanvasReady, setIsCanvasReady] = useState(false);
 
   // Hide Liquid loading screen and mark as React loaded
   useEffect(() => {
@@ -93,9 +97,6 @@ export function LoadingScreen() {
 
   // Phase 1: Animate progress from 0 to 100 - step by step
   useEffect(() => {
-    if (hasStartedRef.current) return;
-    hasStartedRef.current = true;
-
     const duration = 1000; // Total time for 0-100
     const stepTime = duration / 100; // Time per number (10ms each)
     let currentProgress = 0;
@@ -106,14 +107,52 @@ export function LoadingScreen() {
 
       if (currentProgress >= 100) {
         clearInterval(interval);
-        setTimeout(() => {
-          setPhase('reveal');
-        }, 300);
+        setIsProgressComplete(true);
       }
     }, stepTime);
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const markCanvasReady = () => {
+      setIsCanvasReady(true);
+    };
+
+    if (window.__PLUPACK_CANVAS_READY__) {
+      markCanvasReady();
+      return;
+    }
+
+    window.addEventListener(CANVAS_READY_EVENT, markCanvasReady);
+    const timeoutId = window.setTimeout(
+      markCanvasReady,
+      CANVAS_READY_TIMEOUT_MS
+    );
+
+    return () => {
+      window.removeEventListener(CANVAS_READY_EVENT, markCanvasReady);
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      phase === 'loading' &&
+      isProgressComplete &&
+      isCanvasReady
+    ) {
+      const revealDelayId = window.setTimeout(() => {
+        setPhase('reveal');
+      }, 300);
+
+      return () => {
+        window.clearTimeout(revealDelayId);
+      };
+    }
+
+    return;
+  }, [isCanvasReady, isProgressComplete, phase]);
 
   // Phase 2: Ripple reveal animation
   useEffect(() => {

@@ -30,7 +30,7 @@ export default defineConfig({
       },
       output: {
         entryFileNames: '[name].js',
-        chunkFileNames: 'react-chunks/[name]-[hash].js',
+        chunkFileNames: 'react-chunk-[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           // Output CSS with predictable name for Shopify
           if (assetInfo.name?.endsWith('.css')) {

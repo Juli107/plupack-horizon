@@ -1,0 +1,1 @@
+import{i as r}from"./react-chunk-industry_wrap-CRW__zM6.js";import{d as o}from"./react-chunk-r3f-vendor-DX0xulBt.js";import"./react-chunk-react-vendor-C1bt4yP9.js";function d(){o.preload(r)}export{r as industryWrapUrl,d as preloadIndustryWrapModel};

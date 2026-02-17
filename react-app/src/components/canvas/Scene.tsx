@@ -1,12 +1,31 @@
 import { Environment } from '@react-three/drei';
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { CAROUSEL_ITEMS, Carousel } from '../hero/Carousel';
-import {
-  INDUSTRY_ITEM_NAMES,
-  preloadIndustryWrapModel,
-} from './industryAssets';
-import { IndustryCylinder } from './IndustryCylinder';
 import { preloadModels } from './Products';
+
+const INDUSTRY_ITEM_NAMES = [
+  'film_stretch.glb',
+  'tape.glb',
+  'carton.glb',
+  'bubble_wrap.glb',
+  'aluminum_roll.glb',
+  'food_container.glb',
+  'plastic_bag.glb',
+  'plastic_wrap.glb',
+  'paper_rolls.glb',
+  'napkins.glb',
+  'gloves.glb',
+  'detergent.glb',
+];
+
+const INDUSTRY_PRELOAD_SCROLL_THRESHOLD = 0.42;
+const CANVAS_READY_EVENT = 'plupack:canvas-ready';
+
+const IndustryCylinder = lazy(() =>
+  import('./IndustryCylinder').then((module) => ({
+    default: module.IndustryCylinder,
+  })),
+);
 
 const cityEnvironment = import('@pmndrs/assets/hdri/city.exr').then(
   (module) => module.default as string
@@ -22,14 +41,51 @@ export function Scene() {
   const [environmentFile, setEnvironmentFile] = useState<string | null>(
     null
   );
+  const [shouldRenderIndustryCylinder, setShouldRenderIndustryCylinder] =
+    useState(false);
+  const hasEnabledIndustryRef = useRef(false);
+  const hasSignaledCanvasReadyRef = useRef(false);
 
   useEffect(() => {
     preloadModels(CAROUSEL_ITEMS);
 
-    const preloadTimeoutId = window.setTimeout(() => {
+    const enableIndustryAssets = async () => {
+      if (hasEnabledIndustryRef.current) {
+        return;
+      }
+
+      hasEnabledIndustryRef.current = true;
+      setShouldRenderIndustryCylinder(true);
+
+      const { preloadIndustryWrapModel } = await import(
+        './industryAssets'
+      );
       preloadIndustryWrapModel();
       preloadModels(INDUSTRY_ITEM_NAMES);
-    }, 1200);
+    };
+
+    const maybeEnableIndustryAssets = () => {
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      if (scrollableHeight <= 0) {
+        return;
+      }
+
+      const scrollProgress = window.scrollY / scrollableHeight;
+      if (scrollProgress >= INDUSTRY_PRELOAD_SCROLL_THRESHOLD) {
+        void enableIndustryAssets();
+      }
+    };
+
+    const preloadTimeoutId = window.setTimeout(() => {
+      void enableIndustryAssets();
+    }, 3500);
+
+    window.addEventListener('scroll', maybeEnableIndustryAssets, {
+      passive: true,
+    });
+    maybeEnableIndustryAssets();
 
     let mounted = true;
     cityEnvironment.then((file) => {
@@ -41,8 +97,19 @@ export function Scene() {
     return () => {
       mounted = false;
       window.clearTimeout(preloadTimeoutId);
+      window.removeEventListener('scroll', maybeEnableIndustryAssets);
     };
   }, []);
+
+  useEffect(() => {
+    if (!environmentFile || hasSignaledCanvasReadyRef.current) {
+      return;
+    }
+
+    hasSignaledCanvasReadyRef.current = true;
+    window.__PLUPACK_CANVAS_READY__ = true;
+    window.dispatchEvent(new Event(CANVAS_READY_EVENT));
+  }, [environmentFile]);
 
   return (
     <>
@@ -68,9 +135,13 @@ export function Scene() {
         <Carousel radius={11} />
       </group>
 
-      <group position={[0, -67.8, 0]}>
-        <IndustryCylinder />
-      </group>
+      {shouldRenderIndustryCylinder ? (
+        <group position={[0, -67.8, 0]}>
+          <Suspense fallback={null}>
+            <IndustryCylinder />
+          </Suspense>
+        </group>
+      ) : null}
     </>
   );
 }

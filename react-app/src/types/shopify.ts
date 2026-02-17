@@ -155,6 +155,7 @@ export interface ShopifyData {
 declare global {
   interface Window {
     SHOPIFY_DATA?: ShopifyData;
+    __PLUPACK_CANVAS_READY__?: boolean;
   }
 }
 

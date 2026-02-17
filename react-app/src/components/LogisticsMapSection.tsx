@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
-import argentinaSvgRaw from '@/assets/argentina.svg?raw';
+import argentinaSvgUrl from '@/assets/argentina.svg?url';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -102,46 +102,68 @@ export function LogisticsMapSection() {
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Inject the pre-bundled SVG
-    mapContainerRef.current.innerHTML = argentinaSvgRaw;
-    const svg = mapContainerRef.current.querySelector('svg');
+    let isMounted = true;
 
-    if (svg) {
-      svg.style.width = '100%';
-      svg.style.height = '100%';
+    const loadSvg = async () => {
+      try {
+        const response = await fetch(argentinaSvgUrl);
+        if (!response.ok || !mapContainerRef.current || !isMounted) {
+          return;
+        }
 
-      // Style all circles and collect positions
-      const circles = svg.querySelectorAll('circle, ellipse');
-      const circleData: { cx: number; cy: number }[] = [];
+        const svgMarkup = await response.text();
+        if (!mapContainerRef.current || !isMounted) {
+          return;
+        }
 
-      circles.forEach((circle) => {
-        const svgCircle = circle as SVGCircleElement;
-        svgCircle.style.fill = 'rgba(255, 255, 255, 0.08)';
-        svgCircle.style.stroke = 'none';
+        mapContainerRef.current.innerHTML = svgMarkup;
+        const svg = mapContainerRef.current.querySelector('svg');
 
-        circleData.push({
-          cx: parseFloat(svgCircle.getAttribute('cx') || '0'),
-          cy: parseFloat(svgCircle.getAttribute('cy') || '0'),
+        if (!svg) {
+          return;
+        }
+
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+
+        // Style all circles and collect positions
+        const circles = svg.querySelectorAll('circle, ellipse');
+        const circleData: { cx: number; cy: number }[] = [];
+
+        circles.forEach((circle) => {
+          const svgCircle = circle as SVGCircleElement;
+          svgCircle.style.fill = 'rgba(255, 255, 255, 0.08)';
+          svgCircle.style.stroke = 'none';
+
+          circleData.push({
+            cx: parseFloat(svgCircle.getAttribute('cx') || '0'),
+            cy: parseFloat(svgCircle.getAttribute('cy') || '0'),
+          });
         });
-      });
 
-      // Create lines group (inserted first so lines appear behind circles)
-      const linesGroup = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'g'
-      );
-      linesGroup.setAttribute('class', 'connecting-lines');
-      linesGroup.style.opacity = '0'; // Start hidden, reveal on scroll
-      svg.insertBefore(linesGroup, svg.firstChild);
-      linesGroupRef.current = linesGroup;
+        // Create lines group (inserted first so lines appear behind circles)
+        const linesGroup = document.createElementNS(
+          'http://www.w3.org/2000/svg',
+          'g'
+        );
+        linesGroup.setAttribute('class', 'connecting-lines');
+        linesGroup.style.opacity = '0'; // Start hidden, reveal on scroll
+        svg.insertBefore(linesGroup, svg.firstChild);
+        linesGroupRef.current = linesGroup;
 
-      // Generate static connecting lines
-      generateStaticLines(circleData, linesGroup);
+        // Generate static connecting lines
+        generateStaticLines(circleData, linesGroup);
 
-      setSvgLoaded(true);
-    }
+        setSvgLoaded(true);
+      } catch {
+        // Keep section inert if SVG fails to load
+      }
+    };
+
+    void loadSvg();
 
     return () => {
+      isMounted = false;
       linesGroupRef.current = null;
     };
   }, []);
