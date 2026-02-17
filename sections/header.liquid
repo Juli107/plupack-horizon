@@ -648,21 +648,26 @@
 {% endunless %}
 
 <style>
-  /* MÁXIMA ESPECIFICIDAD: Header azul sólido */
+  /* MÁXIMA ESPECIFICIDAD: Header azul blur (solo páginas internas) */
   
   html body .header-section #header-component.header--internal .header__row--top.color-scheme-1,
   html body .header-section #header-component.header--internal .header__row.color-scheme-1,
   html body #header-component.header--internal .header__row--top,
   html body #header-component.header--internal .header__row {
-    background: #2773A8 !important;
-    background-color: #2773A8 !important;
+    background: rgba(20, 108, 144, 0.82) !important;
+    background-color: rgba(20, 108, 144, 0.82) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+    backdrop-filter: blur(20px) saturate(140%) !important;
+    border-bottom: 1px solid rgba(27, 75, 107, 0.18) !important;
     --color-background: 39, 115, 168 !important;
     --color-background-rgb: 39, 115, 168 !important;
   }
   
   html body #header-component.header--internal {
-    background: #2773A8 !important;
-    background-color: #2773A8 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+    backdrop-filter: blur(20px) saturate(140%) !important;
   }
   
   /* Texto blanco con especificidad alta */
