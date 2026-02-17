@@ -220,7 +220,7 @@ export function StockSustainabilityWrapper() {
   const productImages: ProductImage[] = stockData.productImages ?? [];
   const productCount = stockData.productCount ?? 170;
   const rainImageCount = stockData.rainImageCount ?? 24;
-  const buttonText = stockData.buttonText ?? 'Ver catálogo';
+  const buttonText = stockData.buttonText ?? 'Ver productos';
   const buttonUrl = stockData.buttonUrl ?? '/collections/all';
 
   const positions = useMemo(() => {
@@ -805,12 +805,11 @@ export function StockSustainabilityWrapper() {
             </h2>
             <a
               href={buttonUrl}
-              className="inline-block px-8 py-3 bg-white rounded-[10px] font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="inline-block px-8 py-3 rounded-[10px] font-medium transition-all duration-300 hover:scale-105"
               style={{
                 fontFamily: getFontFamily('body'),
-                color: '#1B4B6B',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(27, 75, 107, 0.1)',
+                backgroundColor: '#2873A8',
+                color: 'white',
               }}
             >
               {buttonText}

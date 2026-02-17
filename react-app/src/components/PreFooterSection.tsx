@@ -154,21 +154,12 @@ export function PreFooterSection() {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          {/* Filled Button - Ver catálogo */}
           <a
-            href="/pages/cotizar"
+            href="/collections/all"
             className="px-10 py-3 bg-white text-[#0B6386] rounded-[10px] font-semibold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wider"
             style={{ fontFamily: getFontFamily('body') }}
           >
-            Cotizar Mayorista
-          </a>
-
-          <a
-            href="/collections/all"
-            className="px-10 py-3 bg-transparent border border-white text-white rounded-[10px] font-semibold hover:bg-white/10 transition-colors uppercase text-sm tracking-wider"
-            style={{ fontFamily: getFontFamily('body') }}
-          >
-            Ver catálogo
+            Ver productos
           </a>
         </div>
       </div>

@@ -88,11 +88,17 @@ export function Hero() {
                         in="SourceAlpha"
                         result="DILATED"
                         operator="dilate"
-                        radius="2.8"
+                        radius="2.4"
+                      />
+                      <feMorphology
+                        in="SourceAlpha"
+                        result="ERODED"
+                        operator="erode"
+                        radius="1.1"
                       />
                       <feComposite
                         in="DILATED"
-                        in2="SourceAlpha"
+                        in2="ERODED"
                         operator="out"
                         result="OUTLINE"
                       />
@@ -114,8 +120,11 @@ export function Hero() {
                     style={{
                       fontFamily: getFontFamily('heading'),
                       fontSize: 'inherit',
+                      fontWeight: 500,
+                      fontVariationSettings: '"wght" 530',
                       filter: 'url(#outline-filter-hero)',
                       fill: 'white',
+                      textRendering: 'geometricPrecision',
                     }}
                   >
                     DINÁMICA
@@ -130,8 +139,11 @@ export function Hero() {
                     style={{
                       fontFamily: getFontFamily('heading'),
                       fontSize: 'inherit',
+                      fontWeight: 500,
+                      fontVariationSettings: '"wght" 530',
                       fill: 'white',
                       opacity: 0,
+                      textRendering: 'geometricPrecision',
                     }}
                   >
                     DINÁMICA
@@ -169,16 +181,10 @@ export function Hero() {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 w-full">
               <button
-                className="px-8 py-1 w-full bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide"
+                className="px-8 py-1 w-full bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
                 style={{ fontFamily: getFontFamily('body') }}
               >
-                Cotización Mayorista
-              </button>
-              <button
-                className="px-8 py-1 w-full bg-transparent border border-white text-white rounded-[10px] font-bold hover:bg-white/10 transition-colors uppercase text-sm tracking-wide"
-                style={{ fontFamily: getFontFamily('body') }}
-              >
-                Ver catálogo
+                Ver productos
               </button>
             </div>
           </div>

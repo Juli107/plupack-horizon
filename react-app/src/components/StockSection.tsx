@@ -185,7 +185,7 @@ export function StockSection({
   const productImages: ProductImage[] = stockData.productImages ?? [];
   const productCount = stockData.productCount ?? 170;
   const buttonText =
-    propButtonText ?? stockData.buttonText ?? 'Ver catálogo';
+    propButtonText ?? stockData.buttonText ?? 'Ver productos';
   const buttonUrl =
     propButtonUrl ?? stockData.buttonUrl ?? '/collections/all';
 
