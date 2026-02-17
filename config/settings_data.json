@@ -678,8 +678,6 @@
     }
   },
   "platform_customizations": {
-    "custom_css": [
-      "button.button {font-weight: bold;}"
-    ]
+    "custom_css": []
   }
 }
