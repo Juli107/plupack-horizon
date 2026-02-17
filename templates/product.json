@@ -111,7 +111,7 @@
                   "type": "text",
                   "name": "Product title",
                   "settings": {
-                    "text": "<h2><strong>{{ closest.product.title }}</strong></h2>",
+                    "text": "<h2>{{ closest.product.title }}</h2>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
