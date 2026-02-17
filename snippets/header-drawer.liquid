@@ -116,7 +116,10 @@
             {% assign first_accordion_open = false %}
             {% assign animation_index = 0 %}
             {%- for link in linklist.links -%}
-              {% if has_nosotros_link == false and nosotros_inserted == false and link.url contains '/pages/contacto' %}
+              {% if link.url contains '/pages/nosotros' %}
+                {% continue %}
+              {% endif %}
+              {% if nosotros_inserted == false and link.url contains '/pages/contacto' %}
                 {% assign animation_index = animation_index | plus: 1 %}
                 <li
                   class="menu-drawer__list-item{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"
@@ -280,7 +283,10 @@
             {%- endcomment -%}
             {% assign animation_index = 0 %}
             {%- for link in linklist.links -%}
-              {% if has_nosotros_link == false and nosotros_inserted == false and link.url contains '/pages/contacto' %}
+              {% if link.url contains '/pages/nosotros' %}
+                {% continue %}
+              {% endif %}
+              {% if nosotros_inserted == false and link.url contains '/pages/contacto' %}
                 {% assign animation_index = animation_index | plus: 1 %}
                 <li
                   class="menu-drawer__list-item{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"
@@ -607,7 +613,7 @@
               </li>
             {%- endfor -%}
           {% endif %}
-          {% if has_nosotros_link == false and nosotros_inserted == false %}
+          {% if nosotros_inserted == false %}
             {% assign animation_index = animation_index | plus: 1 %}
             <li
               class="menu-drawer__list-item{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"

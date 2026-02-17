@@ -39,7 +39,30 @@
 
 {% capture children %}
   {% for link in block_settings.menu.links %}
+    {% if link.url contains '/pages/nosotros' %}
+      {% continue %}
+    {% endif %}
     {% if has_nosotros_link == false and nosotros_inserted == false and link.url contains '/pages/contacto' %}
+      <li
+        role="presentation"
+        class="menu-list__list-item"
+        on:focus="/activate"
+        on:blur="/deactivate"
+        on:pointerenter="/activate"
+        on:pointerleave="/deactivate"
+      >
+        <a
+          href="/pages/nosotros"
+          data-skip-node-update="true"
+          class="menu-list__link{% if is_nosotros_active %} menu-list__link--active{% endif %}"
+          ref="menuitem"
+        >
+          <span class="menu-list__link-title">Nosotros</span>
+        </a>
+      </li>
+      {% assign nosotros_inserted = true %}
+    {% endif %}
+    {% if has_nosotros_link and nosotros_inserted == false and link.url contains '/pages/contacto' %}
       <li
         role="presentation"
         class="menu-list__list-item"
@@ -101,7 +124,7 @@
       {%- endif -%}
     </li>
   {% endfor %}
-  {% if has_nosotros_link == false and nosotros_inserted == false %}
+  {% if nosotros_inserted == false %}
     <li
       role="presentation"
       class="menu-list__list-item"
