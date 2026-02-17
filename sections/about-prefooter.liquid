@@ -8,6 +8,7 @@
   "
 >
   <div class="about-prefooter__overlay" aria-hidden="true"></div>
+  <div class="about-prefooter__blob-carousel" aria-hidden="true"></div>
   <div class="about-prefooter__grain" aria-hidden="true"></div>
   <div class="about-prefooter__glow about-prefooter__glow--one" aria-hidden="true"></div>
   <div class="about-prefooter__glow about-prefooter__glow--two" aria-hidden="true"></div>
@@ -48,7 +49,7 @@
     min-height: 90vh;
     padding: 5rem 1.5rem;
     background:
-      radial-gradient(90% 120% at 50% 15%, rgba(43, 150, 196, 0.24) 0%, rgba(30, 67, 119, 0) 55%),
+      radial-gradient(90% 120% at 50% 15%, rgba(154, 227, 255, 0.22) 0%, rgba(30, 67, 119, 0) 56%),
       linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
     isolation: isolate;
   }
@@ -58,9 +59,29 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-color: rgba(30, 67, 119, 0.16);
+    background-color: rgba(18, 89, 124, 0.12);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+  }
+
+  .about-prefooter__blob-carousel {
+    position: absolute;
+    inset: -8% -28%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.58;
+    filter: blur(12px);
+    mix-blend-mode: screen;
+    background-image:
+      radial-gradient(circle at 8% 40%, rgba(222, 246, 255, 0.7) 0, rgba(222, 246, 255, 0) 13%),
+      radial-gradient(circle at 30% 24%, rgba(222, 246, 255, 0.56) 0, rgba(222, 246, 255, 0) 10%),
+      radial-gradient(circle at 52% 56%, rgba(222, 246, 255, 0.62) 0, rgba(222, 246, 255, 0) 12%),
+      radial-gradient(circle at 76% 34%, rgba(222, 246, 255, 0.55) 0, rgba(222, 246, 255, 0) 11%),
+      radial-gradient(circle at 94% 70%, rgba(222, 246, 255, 0.64) 0, rgba(222, 246, 255, 0) 14%),
+      radial-gradient(circle at 116% 44%, rgba(222, 246, 255, 0.58) 0, rgba(222, 246, 255, 0) 12%);
+    background-size: 220% 100%;
+    background-position: 0% 50%;
+    animation: prefooter-blob-carousel 28s linear infinite;
   }
 
   .about-prefooter__grain {
@@ -85,6 +106,7 @@
     filter: blur(22px);
     opacity: 0.56;
     background: radial-gradient(circle, rgba(232, 248, 255, 0.8) 0%, rgba(232, 248, 255, 0) 72%);
+    animation: prefooter-glow-drift 13s ease-in-out infinite;
   }
 
   .about-prefooter__glow--one {
@@ -100,6 +122,8 @@
     top: 44%;
     left: 22%;
     opacity: 0.48;
+    animation-duration: 17s;
+    animation-delay: -4s;
   }
 
   .about-prefooter__glow--three {
@@ -108,6 +132,8 @@
     right: 10%;
     bottom: 16%;
     opacity: 0.46;
+    animation-duration: 15s;
+    animation-delay: -8s;
   }
 
   .about-prefooter__inner {
@@ -229,11 +255,39 @@
     }
   }
 
+  @keyframes prefooter-blob-carousel {
+    0% {
+      transform: translate3d(0, 0, 0);
+      background-position: 0% 50%;
+    }
+
+    100% {
+      transform: translate3d(-10%, 0, 0);
+      background-position: -140% 50%;
+    }
+  }
+
+  @keyframes prefooter-glow-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    50% {
+      transform: translate3d(10px, -12px, 0) scale(1.08);
+    }
+  }
+
   @media (max-width: 989px) {
     .about-prefooter {
       min-height: 72vh;
       padding-top: 4rem;
       padding-bottom: 4rem;
+    }
+
+    .about-prefooter__blob-carousel {
+      inset: -8% -44%;
+      opacity: 0.52;
     }
 
     .about-prefooter__title {
@@ -263,6 +317,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .about-prefooter__blob-carousel,
     .about-prefooter__glow,
     .about-prefooter [data-reveal] {
       animation: none;
@@ -286,13 +341,13 @@
       "type": "color",
       "id": "background_start",
       "label": "Background start",
-      "default": "#1E4377"
+      "default": "#1791BE"
     },
     {
       "type": "color",
       "id": "background_end",
       "label": "Background end",
-      "default": "#143059"
+      "default": "#0B6386"
     },
     {
       "type": "color",
