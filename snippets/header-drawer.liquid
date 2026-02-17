@@ -15,7 +15,6 @@
   assign block_settings = block.settings
   assign max_featured_items = 4
   assign image_border_radius = block_settings.image_border_radius
-  assign has_nosotros_link = false
   assign nosotros_inserted = false
   assign is_nosotros_active = false
 
@@ -28,13 +27,6 @@
   if request.path contains '/pages/nosotros'
     assign is_nosotros_active = true
   endif
-
-  for link in linklist.links
-    if link.url contains '/pages/nosotros'
-      assign has_nosotros_link = true
-      break
-    endif
-  endfor
 
   ##
   # We only eager load heavy elements of the page when rendering this template
