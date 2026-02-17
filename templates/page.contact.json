@@ -117,7 +117,7 @@
             "info_copy": {
               "type": "text",
               "settings": {
-                "text": "<p>Estamos aqui para ayudarte. Si tienes preguntas sobre nuestros productos o pedidos, completá el formulario y te responderemos lo antes posible.</p>",
+                "text": "<p>Estamos aqui para ayudarte. Si tienes preguntas sobre nuestros productos o pedidos, completa el formulario y te responderemos lo antes posible.</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
