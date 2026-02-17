@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const CANVAS_READY_EVENT = 'plupack:canvas-ready';
-const CANVAS_READY_TIMEOUT_MS = 5000;
 
 // Immediately inject critical CSS
 if (typeof document !== 'undefined') {
@@ -83,7 +82,7 @@ export function LoadingScreen() {
   const [isCanvasReady, setIsCanvasReady] = useState(false);
 
   // Hide Liquid loading screen and mark as React loaded
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Hide the Liquid loading screen immediately
     const liquidLoader = document.getElementById(
       'liquid-loading-screen'
@@ -125,14 +124,9 @@ export function LoadingScreen() {
     }
 
     window.addEventListener(CANVAS_READY_EVENT, markCanvasReady);
-    const timeoutId = window.setTimeout(
-      markCanvasReady,
-      CANVAS_READY_TIMEOUT_MS
-    );
 
     return () => {
       window.removeEventListener(CANVAS_READY_EVENT, markCanvasReady);
-      window.clearTimeout(timeoutId);
     };
   }, []);
 

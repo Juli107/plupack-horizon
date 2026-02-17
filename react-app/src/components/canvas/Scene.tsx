@@ -19,7 +19,6 @@ const INDUSTRY_ITEM_NAMES = [
 ];
 
 const INDUSTRY_PRELOAD_SCROLL_THRESHOLD = 0.42;
-const CANVAS_READY_EVENT = 'plupack:canvas-ready';
 
 const IndustryCylinder = lazy(() =>
   import('./IndustryCylinder').then((module) => ({
@@ -44,7 +43,6 @@ export function Scene() {
   const [shouldRenderIndustryCylinder, setShouldRenderIndustryCylinder] =
     useState(false);
   const hasEnabledIndustryRef = useRef(false);
-  const hasSignaledCanvasReadyRef = useRef(false);
 
   useEffect(() => {
     preloadModels(CAROUSEL_ITEMS);
@@ -100,16 +98,6 @@ export function Scene() {
       window.removeEventListener('scroll', maybeEnableIndustryAssets);
     };
   }, []);
-
-  useEffect(() => {
-    if (!environmentFile || hasSignaledCanvasReadyRef.current) {
-      return;
-    }
-
-    hasSignaledCanvasReadyRef.current = true;
-    window.__PLUPACK_CANVAS_READY__ = true;
-    window.dispatchEvent(new Event(CANVAS_READY_EVENT));
-  }, [environmentFile]);
 
   return (
     <>

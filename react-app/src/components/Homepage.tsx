@@ -7,8 +7,11 @@ import { Suspense, lazy, useEffect, useRef } from 'react';
 import { GlobalCanvas } from './GlobalCanvas';
 import { Hero } from './hero/Hero';
 import { NoiseOverlay } from './NoiseOverlay';
+import { PreFooterSection } from './PreFooterSection';
 import { ProductsShowcaseSection } from './ProductsShowcaseSection';
+import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ServicesSection } from './ServicesSection';
+import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
 import { LogoCarousel } from './LogoCarousel';
 import { ScrollDebugger } from './ScrollDebugger';
 
@@ -27,24 +30,6 @@ const IndustryDynamicsSection = lazy(() =>
 const IndustrySections = lazy(() =>
   import('./IndustrySections').then((module) => ({
     default: module.IndustrySections,
-  })),
-);
-
-const StockSustainabilityWrapper = lazy(() =>
-  import('./StockSustainabilityWrapper').then((module) => ({
-    default: module.StockSustainabilityWrapper,
-  })),
-);
-
-const PurchaseProcessSection = lazy(() =>
-  import('./PurchaseProcessSection').then((module) => ({
-    default: module.PurchaseProcessSection,
-  })),
-);
-
-const PreFooterSection = lazy(() =>
-  import('./PreFooterSection').then((module) => ({
-    default: module.PreFooterSection,
   })),
 );
 
@@ -249,15 +234,9 @@ export function Homepage({
           <IndustrySections />
         </Suspense>
         {/* COMBINED: Stock + Sustainability - Images persist across both phases */}
-        <Suspense fallback={<SectionFallback className="min-h-screen" />}>
-          <StockSustainabilityWrapper />
-        </Suspense>
-        <Suspense fallback={<SectionFallback className="min-h-screen" />}>
-          <PurchaseProcessSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback className="min-h-screen" />}>
-          <PreFooterSection />
-        </Suspense>
+        <StockSustainabilityWrapper />
+        <PurchaseProcessSection />
+        <PreFooterSection />
       </main>
       {/* <div className="h-[603.99px]">Footer</div> */}
     </ReactLenis>

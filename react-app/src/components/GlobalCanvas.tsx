@@ -4,6 +4,8 @@ import { PerformanceMonitor } from '@react-three/drei';
 import { ScrollCamera } from './canvas/ScrollCamera';
 import { Scene } from './canvas/Scene';
 
+const CANVAS_READY_EVENT = 'plupack:canvas-ready';
+
 // ============================================
 // GLOBAL CANVAS COMPONENT
 // ============================================
@@ -38,6 +40,14 @@ export function GlobalCanvas() {
       <Canvas
         dpr={dpr}
         performance={{ min: 0.6 }}
+        onCreated={() => {
+          if (window.__PLUPACK_CANVAS_READY__) {
+            return;
+          }
+
+          window.__PLUPACK_CANVAS_READY__ = true;
+          window.dispatchEvent(new Event(CANVAS_READY_EVENT));
+        }}
         gl={{
           antialias: !isMobile,
           alpha: true,
