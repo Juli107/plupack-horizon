@@ -111,7 +111,6 @@ export function FoodContainerStack(props: GroupProps) {
           range={8}
           geometry={data.geometry}
           material={data.material}
-          scale={0.1}
         >
           <Instance position={[0, 0.06, 0]} />
           <Instance position={[0, 0.04, 0]} />
@@ -166,7 +165,6 @@ export function PaperRollStack(props: GroupProps) {
           range={3}
           geometry={data.geometry}
           material={data.material}
-          scale={0.1}
         >
           {/* Two on bottom, touching */}
           <Instance position={[0, 0, 0]} rotation={[0, 0, 0]} />

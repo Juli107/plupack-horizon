@@ -9,6 +9,10 @@ const MODELS_ROOT = path.join(ROOT, 'src/assets/models');
 const ORIGINALS_DIR = path.join(MODELS_ROOT, 'originals');
 const OPTIMIZED_DIR = path.join(MODELS_ROOT, 'optimized');
 const REPORT_PATH = path.join(MODELS_ROOT, 'optimization-report.json');
+const PRESERVE_TRANSFORM_FILES = new Set([
+  'paper_rolls.glb',
+  'food_container.glb',
+]);
 
 const args = new Set(process.argv.slice(2));
 const inspectOnly = args.has('--inspect');
@@ -113,6 +117,23 @@ async function optimize() {
     const output = path.join(OPTIMIZED_DIR, fileName);
 
     console.log(`Optimizing ${fileName} ...`);
+
+    if (PRESERVE_TRANSFORM_FILES.has(fileName)) {
+      runGltfTransform(['copy', input, output]);
+      const before = await fileSizeSafe(input);
+      const after = await fileSizeSafe(output);
+      rows.push({
+        file: fileName,
+        strategy: 'copy (preserve transform/origin)',
+        before,
+        after,
+        reductionPercent:
+          before > 0
+            ? Number((((before - after) / before) * 100).toFixed(2))
+            : 0,
+      });
+      continue;
+    }
 
     let strategy = 'meshopt + webp';
     try {

@@ -5,8 +5,6 @@ import * as THREE from 'three';
 import { RenderProduct } from '../canvas/Products';
 
 export const CAROUSEL_ITEMS = [
-  'food_container.glb',
-  'plastic_bag.glb',
   'detergent.glb',
   'paper_rolls.glb',
   'aluminum_roll.glb',
@@ -14,11 +12,13 @@ export const CAROUSEL_ITEMS = [
   'tape.glb',
   'film_stretch.glb',
   'napkins.glb',
+  'food_container.glb',
+  'plastic_bag.glb',
 ];
 
 interface CarouselProps {
   radius?: number;
-  count?: number; // Ignored effectively as we use fixed items, or we can slice the array
+  count?: number;
 }
 
 export function Carousel({ radius = 6 }: CarouselProps) {
@@ -30,7 +30,7 @@ export function Carousel({ radius = 6 }: CarouselProps) {
   useEffect(() => {
     const mobileQuery = window.matchMedia('(max-width: 768px)');
     const reducedMotionQuery = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
+      '(prefers-reduced-motion: reduce)',
     );
 
     const update = () => {
@@ -54,9 +54,11 @@ export function Carousel({ radius = 6 }: CarouselProps) {
       floatSpeed: isMobile ? 1 : 1.5,
       rotationIntensity: isMobile ? 0.03 : 0.05,
       floatIntensity: isMobile ? 0.12 : 0.2,
-      floatingRange: isMobile ? ([-0.12, 0.12] as [number, number]) : ([-0.2, 0.2] as [number, number]),
+      floatingRange: isMobile
+        ? ([-0.12, 0.12] as [number, number])
+        : ([-0.2, 0.2] as [number, number]),
     }),
-    [isMobile, prefersReducedMotion]
+    [isMobile, prefersReducedMotion],
   );
 
   // Interaction state
@@ -69,7 +71,7 @@ export function Carousel({ radius = 6 }: CarouselProps) {
       velocity.current = THREE.MathUtils.lerp(
         velocity.current,
         animationConfig.baseVelocity,
-        delta * 2
+        delta * 2,
       );
 
       // Apply rotation

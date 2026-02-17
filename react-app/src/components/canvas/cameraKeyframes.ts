@@ -92,7 +92,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Start - Front view, top of rod
   {
-    scrollPercent: 47,
+    scrollPercent: 51,
     orbit: true,
     orbitCenter: [0, -57.8, 0],
     orbitAngle: Math.PI,
@@ -103,7 +103,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Three-quarter rotation - Left side, near bottom
   {
-    scrollPercent: 55,
+    scrollPercent: 54,
     orbit: true,
     orbitCenter: [0, -63.8, 0],
     orbitAngle: Math.PI * 1.75,
@@ -114,7 +114,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Full rotation - Back at front, bottom of rod
   {
-    scrollPercent: 64,
+    scrollPercent: 70,
     orbit: true,
     orbitCenter: [0, -80.8, 0],
     orbitAngle: Math.PI * 3,
