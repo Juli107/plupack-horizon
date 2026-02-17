@@ -69,7 +69,6 @@ export function LogoCarousel() {
         ease: 'none',
         duration: 40,
         repeat: -1,
-        invalidateOnRefresh: true,
       });
 
       const refresh = () => {

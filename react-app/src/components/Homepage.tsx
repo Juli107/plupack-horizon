@@ -3,9 +3,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LenisRef } from 'lenis/react';
 import { ReactLenis, useLenis } from 'lenis/react';
-import { Suspense, lazy, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { GlobalCanvas } from './GlobalCanvas';
 import { Hero } from './hero/Hero';
+import { IndustryDynamicsSection } from './IndustryDynamicsSection';
+import { IndustrySections } from './IndustrySections';
+import { LogisticsMapSection } from './LogisticsMapSection';
 import { NoiseOverlay } from './NoiseOverlay';
 import { PreFooterSection } from './PreFooterSection';
 import { ProductsShowcaseSection } from './ProductsShowcaseSection';
@@ -14,24 +17,6 @@ import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
 import { LogoCarousel } from './LogoCarousel';
 import { ScrollDebugger } from './ScrollDebugger';
-
-const LogisticsMapSection = lazy(() =>
-  import('./LogisticsMapSection').then((module) => ({
-    default: module.LogisticsMapSection,
-  })),
-);
-
-const IndustryDynamicsSection = lazy(() =>
-  import('./IndustryDynamicsSection').then((module) => ({
-    default: module.IndustryDynamicsSection,
-  })),
-);
-
-const IndustrySections = lazy(() =>
-  import('./IndustrySections').then((module) => ({
-    default: module.IndustrySections,
-  })),
-);
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -110,10 +95,6 @@ function useLenisGSAP(lenisRef: React.RefObject<LenisRef | null>) {
   useLenis(() => {
     ScrollTrigger.update();
   });
-}
-
-function SectionFallback({ className }: { className: string }) {
-  return <div aria-hidden="true" className={className} />;
 }
 
 // ============================================
@@ -222,17 +203,11 @@ export function Homepage({
         <LogoCarousel />
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
-        <Suspense fallback={<SectionFallback className="h-[200vh]" />}>
-          <LogisticsMapSection />
-        </Suspense>
+        <LogisticsMapSection />
         {/* <div className="h-[875.24px]">Products</div> */}
         <ProductsShowcaseSection />
-        <Suspense fallback={<SectionFallback className="min-h-screen" />}>
-          <IndustryDynamicsSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback className="min-h-screen" />}>
-          <IndustrySections />
-        </Suspense>
+        <IndustryDynamicsSection />
+        <IndustrySections />
         {/* COMBINED: Stock + Sustainability - Images persist across both phases */}
         <StockSustainabilityWrapper />
         <PurchaseProcessSection />
