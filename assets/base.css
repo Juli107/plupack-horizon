@@ -4394,58 +4394,51 @@ text-component {
 
 /* Estilos de contact-form controlados desde snippets/contact-form.liquid */
 
-main[data-template*='page.contact'] .text-block--info_heading h1 {
+main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child h1 {
   margin: 0;
   font-family: var(--font-heading--family), sans-serif;
   font-size: clamp(2.5rem, 7.2vw, 7rem) !important;
   font-weight: 500 !important;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
   letter-spacing: 0.01em;
   line-height: 0.92;
-  color: #146c90;
+  color: #146c90 !important;
 }
 
 @media screen and (min-width: 990px) {
-  main[data-template*='page.contact'] .section-content-wrapper.layout-panel-flex--row {
-    gap: clamp(6rem, 11vw, 12rem) !important;
+  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row {
+    gap: clamp(2rem, 5vw, 4rem) !important;
   }
 
-  main[data-template*='page.contact'] .section-content-wrapper.layout-panel-flex--row > .group-block > .group-block-content {
-    padding-inline: clamp(3rem, 7vw, 9rem);
+  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block > .group-block-content {
+    padding-inline: clamp(1.2rem, 3vw, 2.5rem);
   }
 
 }
 
-main[data-template*='page.contact'] .text-block--info_copy,
-main[data-template*='page.contact'] .text-block--info_copy > * {
+main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child > .group-block-content {
+  color: rgba(20, 108, 144, 0.92);
+}
+
+main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child p {
   font-family: var(--font-body--family), sans-serif;
   font-size: clamp(1rem, 1.2vw, 1.45rem);
   line-height: 1.45;
   font-weight: 430;
-  color: rgba(20, 108, 144, 0.92);
+  color: rgba(20, 108, 144, 0.92) !important;
 }
 
-main[data-template*='page.contact'] .text-block--info_copy,
-main[data-template*='page.contact'] .text-block--info_phone,
-main[data-template*='page.contact'] .text-block--info_hours,
-main[data-template*='page.contact'] .text-block--info_address {
-  color: rgba(20, 108, 144, 0.92);
-}
-
-main[data-template*='page.contact'] .text-block--info_phone strong,
-main[data-template*='page.contact'] .text-block--info_hours strong,
-main[data-template*='page.contact'] .text-block--info_address strong {
-  color: #1f4f68;
+main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child strong {
+  color: #1f4f68 !important;
 }
 
 @media screen and (max-width: 989px) {
-  main[data-template*='page.contact'] .text-block--info_heading h1 {
+  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child h1 {
     font-size: clamp(2.5rem, 9vw, 4.5rem) !important;
     line-height: 0.95;
   }
 
-  main[data-template*='page.contact'] .text-block--info_copy,
-  main[data-template*='page.contact'] .text-block--info_copy > * {
+  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child p {
     font-size: clamp(1rem, 2.2vw, 1.35rem);
     line-height: 1.42;
   }
