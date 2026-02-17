@@ -4395,8 +4395,37 @@ text-component {
 /* Estilos de contact-form controlados desde snippets/contact-form.liquid */
 
 @media screen and (min-width: 990px) {
+  .template-page .shopify-section:has(.contact-form) .section-content-wrapper.layout-panel-flex--row {
+    gap: clamp(4.5rem, 8vw, 9rem) !important;
+  }
+
   .template-page .shopify-section:has(.contact-form) .section-content-wrapper.layout-panel-flex--row > .group-block > .group-block-content {
-    padding-inline: clamp(1rem, 2.2vw, 2.2rem);
+    padding-inline: clamp(2.4rem, 5vw, 6rem);
+  }
+
+  .template-page .shopify-section:has(.contact-form) .text-block--info_heading h1 {
+    margin: 0;
+    font-family: var(--font-heading--family), sans-serif;
+    font-size: clamp(2.5rem, 7.2vw, 7rem);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.92;
+    color: #146c90;
+  }
+}
+
+.template-page .shopify-section:has(.contact-form) .text-block--info_copy,
+.template-page .shopify-section:has(.contact-form) .text-block--info_phone,
+.template-page .shopify-section:has(.contact-form) .text-block--info_hours,
+.template-page .shopify-section:has(.contact-form) .text-block--info_address {
+  color: rgba(20, 108, 144, 0.92);
+}
+
+@media screen and (max-width: 989px) {
+  .template-page .shopify-section:has(.contact-form) .text-block--info_heading h1 {
+    font-size: clamp(2.2rem, 11vw, 3.6rem);
+    line-height: 0.95;
   }
 }
 
