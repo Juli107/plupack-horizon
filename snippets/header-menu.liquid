@@ -4,6 +4,7 @@
   assign image_border_radius = block_settings.image_border_radius
   assign color_scheme_classes = ''
   assign has_nosotros_link = false
+  assign nosotros_inserted = false
   assign is_nosotros_active = false
   assign color_scheme_setting_id = 'color_scheme_' | append: section.settings.menu_row
   assign current_color_scheme = block_settings.color_scheme
@@ -38,6 +39,26 @@
 
 {% capture children %}
   {% for link in block_settings.menu.links %}
+    {% if has_nosotros_link == false and nosotros_inserted == false and link.url contains '/pages/contacto' %}
+      <li
+        role="presentation"
+        class="menu-list__list-item"
+        on:focus="/activate"
+        on:blur="/deactivate"
+        on:pointerenter="/activate"
+        on:pointerleave="/deactivate"
+      >
+        <a
+          href="/pages/nosotros"
+          data-skip-node-update="true"
+          class="menu-list__link{% if is_nosotros_active %} menu-list__link--active{% endif %}"
+          ref="menuitem"
+        >
+          <span class="menu-list__link-title">Nosotros</span>
+        </a>
+      </li>
+      {% assign nosotros_inserted = true %}
+    {% endif %}
     <li
       role="presentation"
       class="menu-list__list-item"
@@ -80,7 +101,7 @@
       {%- endif -%}
     </li>
   {% endfor %}
-  {% unless has_nosotros_link %}
+  {% if has_nosotros_link == false and nosotros_inserted == false %}
     <li
       role="presentation"
       class="menu-list__list-item"
@@ -98,7 +119,7 @@
         <span class="menu-list__link-title">Nosotros</span>
       </a>
     </li>
-  {% endunless %}
+  {% endif %}
   <li
     class="menu-list__list-item"
     role="presentation"
