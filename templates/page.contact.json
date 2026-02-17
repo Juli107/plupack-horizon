@@ -38,6 +38,32 @@
           },
           "blocks": {}
         },
+        "intro": {
+          "type": "text",
+          "name": "Introduccion",
+          "settings": {
+            "text": "<p>Estamos aqui para ayudarte. Si tienes preguntas sobre nuestros productos, pedidos o necesitas asesoria para tu negocio, completá el formulario y te responderemos lo antes posible.</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
         "content": {
           "type": "text",
           "name": "t:names.content",
@@ -67,6 +93,7 @@
       },
       "block_order": [
         "title",
+        "intro",
         "content"
       ],
       "settings": {
