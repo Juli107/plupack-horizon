@@ -3,15 +3,9 @@
   assign menu_content_type = block_settings.menu_style | default: 'text'
   assign image_border_radius = block_settings.image_border_radius
   assign color_scheme_classes = ''
-  assign nosotros_inserted = false
-  assign is_nosotros_active = false
   assign color_scheme_setting_id = 'color_scheme_' | append: section.settings.menu_row
   assign current_color_scheme = block_settings.color_scheme
   assign parent_color_scheme = section.settings[color_scheme_setting_id]
-
-  if request.path contains '/pages/nosotros'
-    assign is_nosotros_active = true
-  endif
 
   if parent_color_scheme.id != current_color_scheme.id
     assign color_scheme_classes = ' color-' | append: current_color_scheme
@@ -31,29 +25,6 @@
 
 {% capture children %}
   {% for link in block_settings.menu.links %}
-    {% if link.url contains '/pages/nosotros' %}
-      {% continue %}
-    {% endif %}
-    {% if nosotros_inserted == false and link.url contains '/pages/contacto' %}
-      <li
-        role="presentation"
-        class="menu-list__list-item"
-        on:focus="/activate"
-        on:blur="/deactivate"
-        on:pointerenter="/activate"
-        on:pointerleave="/deactivate"
-      >
-        <a
-          href="/pages/nosotros"
-          data-skip-node-update="true"
-          class="menu-list__link{% if is_nosotros_active %} menu-list__link--active{% endif %}"
-          ref="menuitem"
-        >
-          <span class="menu-list__link-title">Nosotros</span>
-        </a>
-      </li>
-      {% assign nosotros_inserted = true %}
-    {% endif %}
     <li
       role="presentation"
       class="menu-list__list-item"
@@ -96,25 +67,6 @@
       {%- endif -%}
     </li>
   {% endfor %}
-  {% if nosotros_inserted == false %}
-    <li
-      role="presentation"
-      class="menu-list__list-item"
-      on:focus="/activate"
-      on:blur="/deactivate"
-      on:pointerenter="/activate"
-      on:pointerleave="/deactivate"
-    >
-      <a
-        href="/pages/nosotros"
-        data-skip-node-update="true"
-        class="menu-list__link{% if is_nosotros_active %} menu-list__link--active{% endif %}"
-        ref="menuitem"
-      >
-        <span class="menu-list__link-title">Nosotros</span>
-      </a>
-    </li>
-  {% endif %}
   <li
     class="menu-list__list-item"
     role="presentation"
