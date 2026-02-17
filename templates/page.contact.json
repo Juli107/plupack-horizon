@@ -42,6 +42,9 @@
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -51,7 +54,7 @@
             "info_heading": {
               "type": "text",
               "settings": {
-                "text": "<h1><strong>{{ closest.page.title }}</strong></h1>",
+                "text": "<h1>{{ closest.page.title }}</h1>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -212,6 +215,9 @@
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
