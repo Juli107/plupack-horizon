@@ -4,7 +4,10 @@
   Gradient background from #1E4377 to #143059
 {% endcomment %}
 
-<footer class="footer-custom">
+<footer
+  class="footer-custom{% if template.name != 'index' and template.suffix != 'nosotros' %} footer-custom--with-noise{% endif %}"
+  style="--footer-noise-texture: url('{{ 'noise.webp' | asset_url }}');"
+>
   {%- liquid
     # Use inverse logo if available, fallback to regular logo
     if settings.logo_inverse != blank
@@ -161,6 +164,24 @@
     width: 100%;
     background: linear-gradient(to bottom, #1e4377, #143059);
     color: white;
+  }
+
+  .footer-custom--with-noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: var(--footer-noise-texture);
+    background-repeat: repeat;
+    background-size: auto;
+    opacity: 0.05;
+    mix-blend-mode: soft-light;
+  }
+
+  .footer-custom--with-noise > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* Logo Section */
