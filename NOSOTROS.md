@@ -8,7 +8,7 @@
 
 ## Lineamientos de diseño acordados
 
-- Fondo claro principal: `#DDE6ED`.
+- Fondo claro principal: `#ecf2f6`.
 - Color tipográfico principal: `#146C90`.
 - Conservar textura de noise usada en Home.
 - Motion sutil y accesible (`prefers-reduced-motion`), sin dependencias pesadas.

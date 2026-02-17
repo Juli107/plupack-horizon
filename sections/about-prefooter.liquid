@@ -38,16 +38,10 @@
 
     <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
       <a
-        href="{{ section.settings.primary_cta_url | default: '/pages/cotizar' }}"
+        href="{{ section.settings.primary_cta_url | default: '/collections/all' }}"
         class="about-prefooter__btn about-prefooter__btn--solid"
       >
         {{ section.settings.primary_cta_label }}
-      </a>
-      <a
-        href="{{ section.settings.secondary_cta_url | default: '/collections/all' }}"
-        class="about-prefooter__btn about-prefooter__btn--ghost"
-      >
-        {{ section.settings.secondary_cta_label }}
       </a>
     </div>
   </div>
@@ -365,23 +359,12 @@
       "type": "text",
       "id": "primary_cta_label",
       "label": "Primary button label",
-      "default": "Cotizar Mayorista"
+      "default": "VER PRODUCTOS"
     },
     {
       "type": "url",
       "id": "primary_cta_url",
       "label": "Primary button URL"
-    },
-    {
-      "type": "text",
-      "id": "secondary_cta_label",
-      "label": "Secondary button label",
-      "default": "Ver catálogo"
-    },
-    {
-      "type": "url",
-      "id": "secondary_cta_url",
-      "label": "Secondary button URL"
     }
   ],
   "presets": [
