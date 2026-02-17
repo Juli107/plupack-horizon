@@ -4416,31 +4416,6 @@ main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row >
     padding-inline: clamp(1.2rem, 3vw, 2.5rem);
   }
 
-  main[data-template*='contact'] .section.section--page-width {
-    min-height: calc(100svh - var(--header-group-height, 0px));
-  }
-
-  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row {
-    min-height: calc(100svh - var(--header-group-height, 0px) - clamp(5rem, 9vh, 8rem));
-    align-items: stretch !important;
-  }
-
-  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child,
-  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child > .group-block-content {
-    height: 100%;
-  }
-
-  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child > .group-block-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child .text-block--info_phone {
-    margin-top: auto;
-    padding-top: clamp(1.5rem, 4vh, 3.5rem);
-  }
-
 }
 
 main[data-template*='contact'] .section-content-wrapper.layout-panel-flex--row > .group-block:first-child > .group-block-content {
