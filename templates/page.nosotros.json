@@ -62,7 +62,15 @@
         "background_color": "#dde6ed",
         "text_color": "#146c90",
         "heading": "Proyección y crecimiento",
-        "paragraph": "Trabajamos para expandir nuestra presencia en todas las provincias, mejorar la estructura logística y convertirnos en la elección preferida de papeleras, empresas de catering, industrias y comercios. Al mismo tiempo, optimizamos procesos y desarrollamos nuevas líneas de productos para operar de forma más eficiente, con un enfoque ambiental responsable y medible."
+        "claim": "Nuestra expansión no es solo territorial. Es estructural.",
+        "pillar_1_title": "Expansión operativa",
+        "pillar_1_text": "Ampliamos presencia en todas las provincias para garantizar cobertura nacional sostenida y tiempos de entrega competitivos.",
+        "pillar_2_title": "Infraestructura y logística",
+        "pillar_2_text": "Fortalecemos nuestra estructura logística para mejorar previsibilidad, trazabilidad y eficiencia en cada pedido.",
+        "pillar_3_title": "Desarrollo de producto",
+        "pillar_3_text": "Incorporamos nuevas líneas según demanda real del mercado, ampliando el catálogo sin perder foco operativo.",
+        "pillar_4_title": "Sustentabilidad aplicada",
+        "pillar_4_text": "Avanzamos hacia procesos más eficientes y materiales responsables, con impacto medible y criterios técnicos claros."
       }
     },
     "about_prefooter": {
