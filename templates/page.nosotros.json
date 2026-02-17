@@ -59,12 +59,12 @@
     "about_prefooter": {
       "type": "about-prefooter",
       "settings": {
-        "background_start": "#1e4377",
-        "background_end": "#143059",
+        "background_start": "#1a94be",
+        "background_end": "#0f6d96",
         "text_color": "#eaf4fa",
         "heading_line_1": "Embalajes",
-        "heading_line_2": "Sin límites",
-        "primary_cta_label": "Cotizar mayorista",
+        "heading_line_2": "SIN LÍMITES",
+        "primary_cta_label": "Cotizar Mayorista",
         "primary_cta_url": "/pages/cotizar",
         "secondary_cta_label": "Ver catálogo",
         "secondary_cta_url": "/collections/all"

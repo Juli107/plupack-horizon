@@ -1,3 +1,5 @@
+{% assign heading_line_2_upcase = section.settings.heading_line_2 | upcase %}
+
 <section
   id="about-prefooter-{{ section.id }}"
   class="about-prefooter"
@@ -8,16 +10,34 @@
   "
 >
   <div class="about-prefooter__overlay" aria-hidden="true"></div>
-  <div class="about-prefooter__blob-carousel" aria-hidden="true"></div>
+  <div class="about-prefooter__orbital" aria-hidden="true">
+    <span class="about-prefooter__bubble about-prefooter__bubble--a"></span>
+    <span class="about-prefooter__bubble about-prefooter__bubble--b"></span>
+    <span class="about-prefooter__bubble about-prefooter__bubble--c"></span>
+    <span class="about-prefooter__bubble about-prefooter__bubble--d"></span>
+  </div>
   <div class="about-prefooter__grain" aria-hidden="true"></div>
-  <div class="about-prefooter__glow about-prefooter__glow--one" aria-hidden="true"></div>
-  <div class="about-prefooter__glow about-prefooter__glow--two" aria-hidden="true"></div>
-  <div class="about-prefooter__glow about-prefooter__glow--three" aria-hidden="true"></div>
+  <div class="about-prefooter__ambient-glow" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
       <span>{{ section.settings.heading_line_1 }}</span>
-      <span class="about-prefooter__outline">{{ section.settings.heading_line_2 }}</span>
+      <span class="about-prefooter__outline-wrap">
+        <span class="about-prefooter__outline-sizer" aria-hidden="true">{{ heading_line_2_upcase }}</span>
+        <svg class="about-prefooter__outline-svg" viewBox="0 0 1000 160" preserveAspectRatio="xMinYMid meet" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id="prefooter-outline-{{ section.id }}" x="-20%" y="-20%" width="140%" height="140%">
+              <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="2.8" />
+              <feComposite in="DILATED" in2="SourceAlpha" operator="out" result="OUTLINE" />
+              <feFlood flood-color="rgba(234, 244, 250, 0.96)" result="COLOR" />
+              <feComposite in="COLOR" in2="OUTLINE" operator="in" result="FINAL" />
+            </filter>
+          </defs>
+          <text class="about-prefooter__outline-text" x="0" y="125" style="filter: url(#prefooter-outline-{{ section.id }});">
+            {{ heading_line_2_upcase }}
+          </text>
+        </svg>
+      </span>
     </h2>
 
     <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
@@ -49,7 +69,7 @@
     min-height: 90vh;
     padding: 5rem 1.5rem;
     background:
-      radial-gradient(90% 120% at 50% 15%, rgba(154, 227, 255, 0.22) 0%, rgba(30, 67, 119, 0) 56%),
+      radial-gradient(88% 112% at 50% 8%, rgba(183, 239, 255, 0.24) 0%, rgba(30, 67, 119, 0) 54%),
       linear-gradient(165deg, var(--prefooter-bg-start) 0%, var(--prefooter-bg-end) 100%);
     isolation: isolate;
   }
@@ -59,29 +79,65 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-color: rgba(18, 89, 124, 0.12);
+    background-color: rgba(20, 108, 144, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
 
-  .about-prefooter__blob-carousel {
+  .about-prefooter__orbital {
     position: absolute;
-    inset: -8% -28%;
+    top: -10%;
+    right: -4%;
+    width: clamp(220px, 24vw, 360px);
+    height: clamp(220px, 24vw, 360px);
     z-index: 0;
     pointer-events: none;
-    opacity: 0.58;
-    filter: blur(12px);
+    opacity: 0.88;
+    animation: prefooter-orbital-spin 20s linear infinite;
+    transform-origin: center;
+  }
+
+  .about-prefooter__bubble {
+    position: absolute;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(225, 245, 255, 0.78) 0%, rgba(225, 245, 255, 0) 74%);
+    filter: blur(18px);
     mix-blend-mode: screen;
-    background-image:
-      radial-gradient(circle at 8% 40%, rgba(222, 246, 255, 0.7) 0, rgba(222, 246, 255, 0) 13%),
-      radial-gradient(circle at 30% 24%, rgba(222, 246, 255, 0.56) 0, rgba(222, 246, 255, 0) 10%),
-      radial-gradient(circle at 52% 56%, rgba(222, 246, 255, 0.62) 0, rgba(222, 246, 255, 0) 12%),
-      radial-gradient(circle at 76% 34%, rgba(222, 246, 255, 0.55) 0, rgba(222, 246, 255, 0) 11%),
-      radial-gradient(circle at 94% 70%, rgba(222, 246, 255, 0.64) 0, rgba(222, 246, 255, 0) 14%),
-      radial-gradient(circle at 116% 44%, rgba(222, 246, 255, 0.58) 0, rgba(222, 246, 255, 0) 12%);
-    background-size: 220% 100%;
-    background-position: 0% 50%;
-    animation: prefooter-blob-carousel 28s linear infinite;
+  }
+
+  .about-prefooter__bubble--a {
+    top: 16%;
+    left: 50%;
+    width: clamp(84px, 9vw, 130px);
+    height: clamp(84px, 9vw, 130px);
+    transform: translateX(-50%);
+  }
+
+  .about-prefooter__bubble--b {
+    top: 50%;
+    right: 10%;
+    width: clamp(72px, 8vw, 112px);
+    height: clamp(72px, 8vw, 112px);
+    transform: translateY(-50%);
+    opacity: 0.86;
+  }
+
+  .about-prefooter__bubble--c {
+    bottom: 14%;
+    left: 52%;
+    width: clamp(66px, 7vw, 102px);
+    height: clamp(66px, 7vw, 102px);
+    transform: translateX(-50%);
+    opacity: 0.8;
+  }
+
+  .about-prefooter__bubble--d {
+    top: 50%;
+    left: 10%;
+    width: clamp(58px, 6vw, 90px);
+    height: clamp(58px, 6vw, 90px);
+    transform: translateY(-50%);
+    opacity: 0.76;
   }
 
   .about-prefooter__grain {
@@ -98,42 +154,19 @@
     mix-blend-mode: screen;
   }
 
-  .about-prefooter__glow {
+  .about-prefooter__ambient-glow {
     position: absolute;
     border-radius: 999px;
+    right: 9%;
+    bottom: 12%;
+    width: clamp(90px, 10vw, 150px);
+    height: clamp(90px, 10vw, 150px);
     z-index: 0;
     pointer-events: none;
     filter: blur(22px);
-    opacity: 0.56;
-    background: radial-gradient(circle, rgba(232, 248, 255, 0.8) 0%, rgba(232, 248, 255, 0) 72%);
-    animation: prefooter-glow-drift 13s ease-in-out infinite;
-  }
-
-  .about-prefooter__glow--one {
-    width: clamp(120px, 17vw, 260px);
-    height: clamp(120px, 17vw, 260px);
-    top: 22%;
-    left: 40%;
-  }
-
-  .about-prefooter__glow--two {
-    width: clamp(100px, 15vw, 210px);
-    height: clamp(100px, 15vw, 210px);
-    top: 44%;
-    left: 22%;
-    opacity: 0.48;
-    animation-duration: 17s;
-    animation-delay: -4s;
-  }
-
-  .about-prefooter__glow--three {
-    width: clamp(110px, 16vw, 230px);
-    height: clamp(110px, 16vw, 230px);
-    right: 10%;
-    bottom: 16%;
-    opacity: 0.46;
-    animation-duration: 15s;
-    animation-delay: -8s;
+    opacity: 0.42;
+    background: radial-gradient(circle, rgba(232, 248, 255, 0.78) 0%, rgba(232, 248, 255, 0) 72%);
+    animation: prefooter-glow-drift 12s ease-in-out infinite;
   }
 
   .about-prefooter__inner {
@@ -169,12 +202,32 @@
     color: #ffffff;
   }
 
-  .about-prefooter__outline {
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.92);
-    text-stroke: 2px rgba(255, 255, 255, 0.92);
-    paint-order: stroke fill;
+  .about-prefooter__outline-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .about-prefooter__outline-sizer {
+    visibility: hidden;
+    display: inline-block;
+  }
+
+  .about-prefooter__outline-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .about-prefooter__outline-text {
+    font-family: var(--font-heading--family), sans-serif;
+    font-size: 150px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    fill: #ffffff;
   }
 
   .about-prefooter__actions {
@@ -255,15 +308,13 @@
     }
   }
 
-  @keyframes prefooter-blob-carousel {
+  @keyframes prefooter-orbital-spin {
     0% {
-      transform: translate3d(0, 0, 0);
-      background-position: 0% 50%;
+      transform: rotate(0deg);
     }
 
     100% {
-      transform: translate3d(-10%, 0, 0);
-      background-position: -140% 50%;
+      transform: rotate(360deg);
     }
   }
 
@@ -274,7 +325,7 @@
     }
 
     50% {
-      transform: translate3d(10px, -12px, 0) scale(1.08);
+      transform: translate3d(10px, -12px, 0) scale(1.06);
     }
   }
 
@@ -285,9 +336,12 @@
       padding-bottom: 4rem;
     }
 
-    .about-prefooter__blob-carousel {
-      inset: -8% -44%;
-      opacity: 0.52;
+    .about-prefooter__orbital {
+      top: -14%;
+      right: -18%;
+      width: clamp(170px, 35vw, 260px);
+      height: clamp(170px, 35vw, 260px);
+      opacity: 0.7;
     }
 
     .about-prefooter__title {
@@ -299,9 +353,8 @@
       font-size: inherit;
     }
 
-    .about-prefooter__outline {
-      -webkit-text-stroke-width: 1.5px;
-      text-stroke-width: 1.5px;
+    .about-prefooter__outline-text {
+      font-size: 140px;
     }
 
     .about-prefooter__btn {
@@ -317,8 +370,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-prefooter__blob-carousel,
-    .about-prefooter__glow,
+    .about-prefooter__orbital,
+    .about-prefooter__ambient-glow,
     .about-prefooter [data-reveal] {
       animation: none;
       opacity: 1;
@@ -341,13 +394,13 @@
       "type": "color",
       "id": "background_start",
       "label": "Background start",
-      "default": "#1791BE"
+      "default": "#1A94BE"
     },
     {
       "type": "color",
       "id": "background_end",
       "label": "Background end",
-      "default": "#0B6386"
+      "default": "#0F6D96"
     },
     {
       "type": "color",
