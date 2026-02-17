@@ -51,11 +51,11 @@
             "info_heading": {
               "type": "text",
               "settings": {
-                "text": "<h3>Informacion de contacto</h3>",
+                "text": "<h1><strong>{{ closest.page.title }}</strong></h1>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "h3",
+                "type_preset": "h1",
                 "font": "var(--font-primary--family)",
                 "font_size": "",
                 "line_height": "normal",
@@ -67,7 +67,7 @@
                 "background_color": "#00000026",
                 "corner_radius": 0,
                 "padding-block-start": 0,
-                "padding-block-end": 0,
+                "padding-block-end": 8,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
@@ -218,31 +218,6 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "form_title": {
-              "type": "text",
-              "settings": {
-                "text": "<h1><strong>{{ closest.page.title }}</strong></h1>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h1",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "#146C90",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 8,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
             "contact_form_UwiCkQ": {
               "type": "contact-form",
               "settings": {
@@ -276,7 +251,6 @@
             }
           },
           "block_order": [
-            "form_title",
             "contact_form_UwiCkQ"
           ]
         }
