@@ -121,6 +121,21 @@ export interface ShopifyAssets {
   logo?: string | null;
 }
 
+export interface ShopifyHomepageProduct {
+  title: string;
+  handle: string;
+  url: string;
+  image: string | null;
+  price: string;
+}
+
+export interface ShopifyProductsShowcase {
+  title: string;
+  buttonText: string;
+  buttonUrl: string;
+  maxProducts: number;
+}
+
 export interface ShopifyData {
   shop?: ShopifyShop;
   assets?: ShopifyAssets;
@@ -131,6 +146,8 @@ export interface ShopifyData {
   customer?: ShopifyCustomer;
   cart?: ShopifyCart;
   routes?: ShopifyRoutes;
+  products?: ShopifyHomepageProduct[];
+  productsShowcase?: ShopifyProductsShowcase;
   sectionId?: string;
 }
 

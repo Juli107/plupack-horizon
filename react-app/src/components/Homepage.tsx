@@ -11,6 +11,7 @@ import { IndustrySections } from './IndustrySections';
 import { LogisticsMapSection } from './LogisticsMapSection';
 import { NoiseOverlay } from './NoiseOverlay';
 import { PreFooterSection } from './PreFooterSection';
+import { ProductsShowcaseSection } from './ProductsShowcaseSection';
 import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
@@ -179,6 +180,10 @@ export function Homepage({
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
+        prevent: (node) =>
+          node instanceof HTMLElement
+            ? node.closest('[data-lenis-prevent]') !== null
+            : false,
         autoRaf: false,
       }}
     >
@@ -199,6 +204,7 @@ export function Homepage({
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
         <LogisticsMapSection />
+        <ProductsShowcaseSection />
         <IndustryDynamicsSection />
         <IndustrySections />
         {/* COMBINED: Stock + Sustainability - Images persist across both phases */}

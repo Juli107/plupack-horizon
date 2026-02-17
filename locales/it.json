@@ -21,7 +21,7 @@
     "contact_form": {
       "name": "Nome",
       "email": "Email",
-      "phone": "Telefono",
+      "phone": "Teléfono",
       "comment": "Commento",
       "post_success": "Grazie per averci contattato. Risponderemo il prima possibile.",
       "error_heading": "Correggi gli errori seguenti:"
