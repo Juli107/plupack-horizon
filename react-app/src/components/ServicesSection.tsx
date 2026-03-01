@@ -13,27 +13,27 @@ gsap.registerPlugin(ScrollTrigger);
 const services = [
   {
     id: '01',
-    title: 'UN SOLO PROVEEDOR, CERO FRICCIÓN',
+    title: 'CENTRALIZACIÓN DE PROVEEDORES',
     description:
-      'Centralizamos todo tu embalaje (industria, gastronomía y salud) en un único punto de contacto. Eliminamos la gestión con múltiples proveedores para que recuperes ese tiempo operativo.',
+      'Un solo punto de contacto para el abastecimiento de sus insumos no productivos. Optimizando la gestión y reduciendo tiempos administrativos.',
   },
   {
     id: '02',
     title: 'PRECIOS ESTABLES Y ACUERDOS A LARGO PLAZO',
     description:
-      'Olvidate de la variabilidad mensual. Ofrecemos cotizaciones fijas y contratos flexibles que te permiten planificar tus costos sin sorpresas ni aumentos imprevistos.',
+      'Ofrecemos cotizaciones fijas y contratos flexibles que permiten planificar y evitar aumentos imprevistos.',
   },
   {
     id: '03',
     title: 'STOCK INTELIGENTE Y ENTREGAS GARANTIZADAS',
     description:
-      'Monitoreamos tu consumo para reponer automáticamente antes de que te falte (evitando quiebres de stock). Coordinamos entregas ágiles con seguimiento en tiempo real para asegurar tu continuidad.',
+      'Control de inventario y reposición automática para evitar quiebres de stock. Compromiso en los plazos de entrega y seguimiento en tiempo real para asegurar la continuidad de su operación.',
   },
   {
     id: '04',
-    title: 'CALIDAD CONTROLADA Y RESPUESTA INMEDIATA',
+    title: 'CALIDAD CONTROLADA Y ASESORAMIENTO',
     description:
-      'Productos testeados bajo estándares estrictos. Y si algo surge, tenés un ejecutivo de cuenta asignado para resolverlo al instante.',
+      'Productos evaluados bajo estándares estrictos y un ejecutivo dedicado que acompaña tu operación con soporte directo y resolución inmediata.',
   },
 ];
 
@@ -67,7 +67,7 @@ function TiltCard({ service }: { service: (typeof services)[0] }) {
 
       setTransform({ rotateX, rotateY });
     },
-    []
+    [],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -105,6 +105,28 @@ function TiltCard({ service }: { service: (typeof services)[0] }) {
           <span className="text-6xl font-light font-['Montserrat'] opacity-50">
             {service.id}
           </span>
+          {/* Icon placeholder — replace with final icons */}
+          <div
+            className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
+            style={{
+              border: '2px dashed rgba(255,255,255,0.3)',
+              backgroundColor: 'rgba(255,255,255,0.05)',
+            }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(255,255,255,0.4)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
         </div>
 
         <div className="mt-auto">
@@ -187,13 +209,13 @@ export function ServicesSection() {
               end: 'left 60%',
               scrub: true,
             },
-          }
+          },
         );
       });
 
       // Title reveal animation (plays once when section enters)
       const titleElements = document.querySelectorAll(
-        '.services-reveal-text'
+        '.services-reveal-text',
       );
       gsap.fromTo(
         titleElements,
@@ -214,14 +236,14 @@ export function ServicesSection() {
             start: 'top 70%',
             toggleActions: 'play none none reverse',
           },
-        }
+        },
       );
 
       return () => {
         scrollTween.scrollTrigger?.kill();
       };
     },
-    { scope: sectionRef, dependencies: [] }
+    { scope: sectionRef, dependencies: [] },
   );
 
   return (
@@ -242,15 +264,15 @@ export function ServicesSection() {
                   QUE LA FALTA DE UN INSUMO
                 </span>
                 <span className="services-reveal-text inline-block bg-white text-[#2D637E] px-4 py-1 mt-2 font-bold transform -skew-x-2">
-                  NO FRENE TU PRODUCCIÓN
+                  NO FRENE TU OPERACIÓN
                 </span>
               </h2>
               <p className="services-reveal-text mt-8 text-lg md:text-xl opacity-90 max-w-3xl mx-auto font-['Open_Sans']">
-                Dejá de gestionar compras aisladas y empezá a confiar
-                en un sistema. Reemplazamos la incertidumbre de tener
-                mil proveedores por un abastecimiento integral,
-                pensado para cuidar tu rentabilidad y que tu línea no
-                pare nunca.
+                Gestionamos los insumos que no generan ingresos
+                directos, pero cuya ausencia puede afectar tiempos,
+                entregas y servicio. Con fabricación propia y
+                logística eficiente, convertimos el abastecimiento en
+                una variable controlada.
               </p>
             </div>
           </div>

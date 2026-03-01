@@ -1,6 +1,5 @@
 import { Environment } from '@react-three/drei';
 import { useEffect, useState } from 'react';
-import { CAROUSEL_ITEMS, Carousel } from '../hero/Carousel';
 import {
   INDUSTRY_ITEM_NAMES,
   preloadIndustryWrapModel,
@@ -9,7 +8,7 @@ import { IndustryCylinder } from './IndustryCylinder';
 import { preloadModels } from './Products';
 
 const cityEnvironment = import('@pmndrs/assets/hdri/city.exr').then(
-  (module) => module.default as string
+  (module) => module.default as string,
 );
 
 // ============================================
@@ -19,13 +18,11 @@ const cityEnvironment = import('@pmndrs/assets/hdri/city.exr').then(
 // Camera scrolls through them based on page scroll
 
 export function Scene() {
-  const [environmentFile, setEnvironmentFile] = useState<string | null>(
-    null
-  );
+  const [environmentFile, setEnvironmentFile] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
-    preloadModels(CAROUSEL_ITEMS);
-
     const preloadTimeoutId = window.setTimeout(() => {
       preloadIndustryWrapModel();
       preloadModels(INDUSTRY_ITEM_NAMES);
@@ -46,7 +43,9 @@ export function Scene() {
 
   return (
     <>
-      {environmentFile ? <Environment files={environmentFile} /> : null}
+      {environmentFile ? (
+        <Environment files={environmentFile} />
+      ) : null}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
 
@@ -61,12 +60,6 @@ export function Scene() {
         intensity={0.3}
         color="#ffffff"
       />
-
-      {/* Hero Section 3D Content (scroll position ~0) */}
-      {/* Carousel positioned so it appears at the hero section */}
-      <group position={[0, -7.6, 0]}>
-        <Carousel radius={11} />
-      </group>
 
       <group position={[0, -67.8, 0]}>
         <IndustryCylinder />

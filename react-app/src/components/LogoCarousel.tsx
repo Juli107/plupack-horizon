@@ -107,7 +107,7 @@ export function LogoCarousel() {
       {/* Intro Text */}
       <div className="container mx-auto px-4 mb-8 md:mb-12">
         <p className="text-center text-white/60 uppercase tracking-[0.2em] text-xs md:text-base font-light">
-          Con la confianza de las mejores empresas
+          MARCAS QUE CONFÍAN EN NUESTRA GESTIÓN
         </p>
       </div>
 

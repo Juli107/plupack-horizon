@@ -6,10 +6,6 @@ import {
   Center,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import {
-  applyFrostedMaterial,
-  FROSTED_MATERIAL,
-} from './sharedMaterial';
 
 // Import optimized assets directly from src/assets/models/optimized
 import foodContainerUrl from '../../assets/models/optimized/food_container.glb';
@@ -82,19 +78,7 @@ function useMainMesh(url: string) {
     });
 
     if (!foundGeometry) return null;
-
-    let material = MATERIAL_CACHE.get(url);
-    if (!material) {
-      const mat = FROSTED_MATERIAL.clone();
-      if (foundNormalMap) {
-        mat.normalMap = foundNormalMap;
-        if (foundNormalScale) mat.normalScale.copy(foundNormalScale);
-      }
-      material = mat;
-      MATERIAL_CACHE.set(url, material);
-    }
-
-    return { geometry: foundGeometry, material };
+    return { geometry: foundGeometry };
   }, [scene, url]);
 }
 
@@ -107,11 +91,7 @@ export function FoodContainerStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances
-          range={8}
-          geometry={data.geometry}
-          material={data.material}
-        >
+        <Instances range={8} geometry={data.geometry}>
           <Instance position={[0, 0.06, 0]} />
           <Instance position={[0, 0.04, 0]} />
           <Instance position={[0, 0.02, 0]} />
@@ -133,11 +113,7 @@ export function TapeStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances
-          range={3}
-          geometry={data.geometry}
-          material={data.material}
-        >
+        <Instances range={3} geometry={data.geometry}>
           <Instance
             position={[-0.06, 0.05, -0.15]}
             rotation={[0, 1, 0]}
@@ -161,11 +137,7 @@ export function PaperRollStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances
-          range={3}
-          geometry={data.geometry}
-          material={data.material}
-        >
+        <Instances range={3} geometry={data.geometry}>
           {/* Two on bottom, touching */}
           <Instance position={[0, 0, 0]} rotation={[0, 0, 0]} />
           <Instance position={[0, -0.12, 0]} rotation={[0, 0, 0]} />
@@ -188,11 +160,7 @@ export function NapkinStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances
-          range={count}
-          geometry={geometry}
-          material={FROSTED_MATERIAL}
-        >
+        <Instances range={count} geometry={geometry}>
           {Array.from({ length: count }).map((_, i) => (
             <Instance
               key={i}
@@ -223,7 +191,6 @@ export function SingleProduct({
   const { scene } = useGLTF(url);
   const cloned = useMemo(() => {
     const c = scene.clone();
-    applyFrostedMaterial(c);
     return c;
   }, [scene]);
 

@@ -483,7 +483,7 @@ export function LogisticsMapSection() {
               letterSpacing: '-0.02em',
             }}
           >
-            COBERTURA FEDERAL
+            COBERTURA NACIONAL
           </h2>
           <p
             className="map-subheading text-white/80 font-light"
@@ -492,7 +492,7 @@ export function LogisticsMapSection() {
               fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
             }}
           >
-            Llegamos donde estés
+            Logística donde lo necesites.
           </p>
         </div>
 
