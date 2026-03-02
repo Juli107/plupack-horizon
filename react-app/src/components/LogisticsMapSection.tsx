@@ -17,36 +17,44 @@ interface PulseNode {
 
 // ============================================
 // SELECTED NODE INDICES FOR PULSE ANIMATION
-// These represent key provinces/locations on the map
+// 23 markers total: one per Argentine province
 // Indices chosen to spread across Argentina's geography
 // Based on cy coordinates: lower cy = north, higher cy = south
 // SVG has ~960 circles total
 // ============================================
 const PULSE_NODES: PulseNode[] = [
-  // Northern region (cy ~0-150)
-  { index: 10, delay: 0 },
-  { index: 35, delay: 0.8 },
-  // Central-north (cy ~150-300)
-  { index: 100, delay: 0.2 },
-  { index: 150, delay: 1.0 },
-  // Central region - Buenos Aires area (cy ~300-400)
-  { index: 220, delay: 0.4 },
-  { index: 280, delay: 1.2 },
-  // Central-west - Mendoza region (cy ~400-500)
-  { index: 350, delay: 0.6 },
-  { index: 420, delay: 1.4 },
-  // Patagonia north (cy ~500-600)
+  // North and northeast
+  { index: 10, delay: 0.0 },
+  { index: 35, delay: 0.5 },
+  { index: 70, delay: 1.0 },
+  { index: 100, delay: 1.5 },
+  { index: 130, delay: 0.2 },
+
+  // Cuyo and central-north
+  { index: 160, delay: 0.7 },
+  { index: 190, delay: 1.2 },
+  { index: 220, delay: 1.7 },
+  { index: 250, delay: 0.4 },
+  { index: 280, delay: 0.9 },
+
+  // Pampas and Buenos Aires region
+  { index: 320, delay: 1.4 },
+  { index: 350, delay: 0.1 },
+  { index: 380, delay: 0.6 },
+  { index: 420, delay: 1.1 },
+
+  // Northern Patagonia
+  { index: 470, delay: 1.6 },
   { index: 520, delay: 0.3 },
-  { index: 580, delay: 1.1 },
-  // Patagonia central (cy ~600-700)
-  { index: 650, delay: 0.5 },
-  { index: 720, delay: 1.3 },
-  // Patagonia south (cy ~700-800)
-  { index: 780, delay: 0.7 },
+  { index: 580, delay: 0.8 },
+
+  // Central and southern Patagonia
+  { index: 650, delay: 1.3 },
+  { index: 700, delay: 0.0 },
+  { index: 740, delay: 0.5 },
+  { index: 780, delay: 1.0 },
   { index: 850, delay: 1.5 },
-  // Tierra del Fuego (cy ~800-850)
-  { index: 900, delay: 0.9 },
-  { index: 940, delay: 1.7 },
+  { index: 940, delay: 0.2 },
 ];
 
 // Generate static connecting lines between nearby dots

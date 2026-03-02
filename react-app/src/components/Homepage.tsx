@@ -4,19 +4,22 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LenisRef } from 'lenis/react';
 import { ReactLenis, useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
+import { EnvironmentSection } from './EnvironmentSection';
 import { GlobalCanvas } from './GlobalCanvas';
+import { GlobalLightDarkOverlay } from './GlobalLightDarkOverlay';
 import { Hero } from './hero/Hero';
 import { IndustryDynamicsSection } from './IndustryDynamicsSection';
 import { IndustrySections } from './IndustrySections';
 import { LogisticsMapSection } from './LogisticsMapSection';
+import { LogoCarousel } from './LogoCarousel';
+import { MetricsSection } from './MetricsSection';
 import { NoiseOverlay } from './NoiseOverlay';
 import { PreFooterSection } from './PreFooterSection';
 import { ProductsShowcaseSection } from './ProductsShowcaseSection';
 import { PurchaseProcessSection } from './PurchaseProcessSection';
+import { ScrollDebugger } from './ScrollDebugger';
 import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
-import { LogoCarousel } from './LogoCarousel';
-import { ScrollDebugger } from './ScrollDebugger';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -109,7 +112,7 @@ interface HomepageProps {
 }
 
 export function Homepage({
-  backgroundColor = '#146C90',
+  backgroundColor = '#084e85',
   headingText: _headingText,
   subheadingText: _subheadingText,
 }: HomepageProps) {
@@ -196,11 +199,20 @@ export function Homepage({
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
         <GlobalCanvas />
+        <GlobalLightDarkOverlay />
         {import.meta.env.DEV ? <ScrollDebugger /> : null}
 
         <NoiseOverlay />
         <Hero />
         <LogoCarousel />
+        <div
+          className="w-full"
+          style={{
+            backgroundColor: '#084e85',
+            height: 'clamp(3rem, 6vh, 5rem)',
+          }}
+        />
+        <MetricsSection />
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
         <LogisticsMapSection />
@@ -208,8 +220,9 @@ export function Homepage({
         <ProductsShowcaseSection />
         <IndustryDynamicsSection />
         <IndustrySections />
-        {/* COMBINED: Stock + Sustainability - Images persist across both phases */}
+        {/* COMBINED: Stock explosion - Images persist across scroll */}
         <StockSustainabilityWrapper />
+        <EnvironmentSection />
         <PurchaseProcessSection />
         <PreFooterSection />
       </main>

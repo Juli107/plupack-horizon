@@ -2,12 +2,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from 'lenis/react';
-import {
-  useRef,
-  useMemo,
-  useEffect,
-  useState,
-} from 'react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
 
@@ -165,7 +160,7 @@ export function StockSection({
           });
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(containerElement);
@@ -181,7 +176,7 @@ export function StockSection({
       if (productImages.length === 0) return;
 
       const images = imagesRef.current.filter(
-        Boolean
+        Boolean,
       ) as HTMLDivElement[];
       if (images.length === 0) return;
 
@@ -243,7 +238,7 @@ export function StockSection({
             ease: 'power2.out',
             duration: 0.4,
           },
-          0.1
+          0.1,
         );
       });
 
@@ -260,7 +255,7 @@ export function StockSection({
             ease: 'power2.out',
             duration: 0.4,
           },
-          0.15
+          0.15,
         );
       });
 
@@ -277,7 +272,7 @@ export function StockSection({
             ease: 'power2.out',
             duration: 0.4,
           },
-          0.2
+          0.2,
         );
       });
 
@@ -292,7 +287,7 @@ export function StockSection({
             duration: 0.5,
             ease: 'none',
           },
-          0.5
+          0.5,
         );
       });
 
@@ -306,7 +301,7 @@ export function StockSection({
             duration: 0.5,
             ease: 'none',
           },
-          0.5
+          0.5,
         );
       });
 
@@ -320,7 +315,7 @@ export function StockSection({
             duration: 0.5,
             ease: 'none',
           },
-          0.5
+          0.5,
         );
       });
 
@@ -335,7 +330,7 @@ export function StockSection({
     {
       scope: containerRef,
       dependencies: [productImages, positions, isMobile],
-    }
+    },
   );
 
   // Get layer-based styling
@@ -350,8 +345,8 @@ export function StockSection({
         layer === 1
           ? 'blur(2px)'
           : layer === 2
-          ? 'blur(0.5px)'
-          : 'none',
+            ? 'blur(0.5px)'
+            : 'none',
     };
   };
 
@@ -368,7 +363,6 @@ export function StockSection({
         style={{ backgroundColor: '#E8ECF2' }}
       >
         {/* Product Images - positioned absolutely from center */}
-        {/* These images are shared with SustainabilityLoopSection */}
         {productImages
           .slice(0, positions.length)
           .map((image, index) => (
@@ -394,8 +388,8 @@ export function StockSection({
                     positions[index]?.layer === 3
                       ? '0 15px 40px rgba(0,0,0,0.2)'
                       : positions[index]?.layer === 2
-                      ? '0 10px 25px rgba(0,0,0,0.15)'
-                      : '0 5px 15px rgba(0,0,0,0.1)',
+                        ? '0 10px 25px rgba(0,0,0,0.15)'
+                        : '0 5px 15px rgba(0,0,0,0.1)',
                 }}
               >
                 <img

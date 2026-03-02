@@ -56,8 +56,10 @@
 /* Smooth hover transitions for all interactive elements */
 #react-homepage a,
 #react-homepage button {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.3s ease, color 0.2s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    color 0.2s ease;
 }
 
 /* Text selection styling */
@@ -127,7 +129,9 @@
     transparent 70%
   );
   transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease;
+  transition:
+    width 0.4s ease,
+    height 0.4s ease;
   border-radius: 50%;
 }
 
@@ -209,7 +213,7 @@
   Example:
   
   @theme {
-    --color-brand: #146C90;
+    --color-brand: #084e85;
     --font-display: "Inter", sans-serif;
   }
 */

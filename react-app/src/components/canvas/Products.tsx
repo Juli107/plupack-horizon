@@ -21,8 +21,6 @@ import glovesUrl from '../../assets/models/optimized/gloves.glb';
 import cartonUrl from '../../assets/models/optimized/carton.glb';
 
 type GroupProps = any;
-const MATERIAL_CACHE = new Map<string, THREE.Material>();
-
 // Map filenames (keys) to imported URL strings (values)
 const MODEL_URLS: Record<string, string> = {
   'food_container.glb': foodContainerUrl,
@@ -53,8 +51,7 @@ function useMainMesh(url: string) {
   const { scene } = useGLTF(url);
   return useMemo(() => {
     let foundGeometry: THREE.BufferGeometry | null = null;
-    let foundNormalMap: THREE.Texture | null = null;
-    let foundNormalScale: THREE.Vector2 | null = null;
+    let foundMaterial: THREE.Material | THREE.Material[] | null = null;
     let largestVertexCount = -1;
 
     scene.traverse((node: any) => {
@@ -67,18 +64,12 @@ function useMainMesh(url: string) {
 
         largestVertexCount = vertexCount;
         foundGeometry = node.geometry;
-        if (node.material.normalMap) {
-          foundNormalMap = node.material.normalMap;
-          foundNormalScale = node.material.normalScale;
-        } else {
-          foundNormalMap = null;
-          foundNormalScale = null;
-        }
+        foundMaterial = node.material ?? null;
       }
     });
 
-    if (!foundGeometry) return null;
-    return { geometry: foundGeometry };
+    if (!foundGeometry || !foundMaterial) return null;
+    return { geometry: foundGeometry, material: foundMaterial };
   }, [scene, url]);
 }
 
@@ -91,7 +82,13 @@ export function FoodContainerStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances range={8} geometry={data.geometry}>
+        <Instances
+          range={8}
+          geometry={data.geometry}
+          material={data.material}
+          castShadow
+          receiveShadow
+        >
           <Instance position={[0, 0.06, 0]} />
           <Instance position={[0, 0.04, 0]} />
           <Instance position={[0, 0.02, 0]} />
@@ -113,7 +110,13 @@ export function TapeStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances range={3} geometry={data.geometry}>
+        <Instances
+          range={3}
+          geometry={data.geometry}
+          material={data.material}
+          castShadow
+          receiveShadow
+        >
           <Instance
             position={[-0.06, 0.05, -0.15]}
             rotation={[0, 1, 0]}
@@ -137,7 +140,13 @@ export function PaperRollStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances range={3} geometry={data.geometry}>
+        <Instances
+          range={3}
+          geometry={data.geometry}
+          material={data.material}
+          castShadow
+          receiveShadow
+        >
           {/* Two on bottom, touching */}
           <Instance position={[0, 0, 0]} rotation={[0, 0, 0]} />
           <Instance position={[0, -0.12, 0]} rotation={[0, 0, 0]} />
@@ -160,7 +169,8 @@ export function NapkinStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances range={count} geometry={geometry}>
+        <Instances range={count} geometry={geometry} castShadow receiveShadow>
+          <meshStandardMaterial color="#ffffff" roughness={0.55} />
           {Array.from({ length: count }).map((_, i) => (
             <Instance
               key={i}
@@ -191,6 +201,12 @@ export function SingleProduct({
   const { scene } = useGLTF(url);
   const cloned = useMemo(() => {
     const c = scene.clone();
+    c.traverse((node: any) => {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
     return c;
   }, [scene]);
 

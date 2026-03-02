@@ -13,7 +13,7 @@ const INDUSTRY_COLORS = {
   industrial: '#1A5F7A', // Deep teal blue
   gastronomy: '#3D7A8C', // Muted teal
   institutional: '#2D6A6A', // Teal green
-  exit: '#146C90', // Return to main brand color
+  exit: '#084e85', // Return to main brand color
 };
 
 // ============================================
@@ -22,7 +22,7 @@ const INDUSTRY_COLORS = {
 function interpolateColors(
   color1: string,
   color2: string,
-  factor: number
+  factor: number,
 ): string {
   const hex1 = color1.replace('#', '');
   const hex2 = color2.replace('#', '');
@@ -203,7 +203,7 @@ function IndustrySection({
           opacity: 1,
           duration: 1.2,
           ease: 'power3.out',
-        }
+        },
       );
 
       // Kinetic typography: fill when in center focus
@@ -224,7 +224,7 @@ function IndustrySection({
         onLeaveBack: () => setFillProgress(0),
       });
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
@@ -274,22 +274,19 @@ export function IndustrySections() {
     {
       id: 'industrial',
       title: 'INDUSTRIAL',
-      description:
-        'Protección, film stretch y cintas para tu línea de producción y centro de distribución.',
+      description: 'Protección para tu operación',
       color: INDUSTRY_COLORS.industrial,
     },
     {
       id: 'gastronomy',
       title: 'GASTRONOMÍA',
-      description:
-        'Packaging seguro para alimentos, compostable y personalizado para delivery y take away.',
+      description: 'Packaging y descartables para alimentos',
       color: INDUSTRY_COLORS.gastronomy,
     },
     {
       id: 'institutional',
       title: 'INSTITUCIONAL',
-      description:
-        'Insumos certificados y esterilizados para laboratorios, clínicas y centros médicos.',
+      description: 'Artículos institucionales de alto rendimiento',
       color: INDUSTRY_COLORS.institutional,
     },
   ];
@@ -339,11 +336,11 @@ export function IndustrySections() {
           const scaledProgress = progress * totalSections;
           const currentIndex = Math.min(
             Math.floor(scaledProgress),
-            totalSections - 1
+            totalSections - 1,
           );
           const nextIndex = Math.min(
             currentIndex + 1,
-            totalSections - 1
+            totalSections - 1,
           );
 
           // Local progress within current section (0 to 1)
@@ -360,13 +357,13 @@ export function IndustrySections() {
           const currentColor = interpolateColors(
             fromColor,
             toColor,
-            localProgress
+            localProgress,
           );
           bg.style.backgroundColor = currentColor;
         },
       });
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (

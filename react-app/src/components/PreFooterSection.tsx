@@ -7,85 +7,6 @@ import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 gsap.registerPlugin(ScrollTrigger);
 
 // ============================================
-// OUTLINE TEXT COMPONENT
-// ============================================
-// SVG-based outline text for "SIN LÍMITES"
-interface OutlineTextProps {
-  text: string;
-  className?: string;
-  strokeWidth?: number;
-}
-
-function OutlineText({
-  text,
-  className = '',
-  strokeWidth = 3,
-}: OutlineTextProps) {
-  const { getFontFamily } = useShopifyTheme();
-  const filterId = `outline-filter-${text
-    .replace(/\s/g, '-')
-    .toLowerCase()}-${Math.random().toString(36).substr(2, 9)}`;
-
-  return (
-    <span className={`relative inline-block ${className}`}>
-      {/* Invisible text for sizing */}
-      <span
-        className="invisible font-medium tracking-tight uppercase"
-        aria-hidden="true"
-      >
-        {text}
-      </span>
-
-      {/* SVG outline text */}
-      <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
-        <defs>
-          <filter
-            id={filterId}
-            x="-20%"
-            y="-20%"
-            width="140%"
-            height="140%"
-          >
-            <feMorphology
-              in="SourceAlpha"
-              result="DILATED"
-              operator="dilate"
-              radius={strokeWidth}
-            />
-            <feComposite
-              in="DILATED"
-              in2="SourceAlpha"
-              operator="out"
-              result="OUTLINE"
-            />
-            <feFlood floodColor="white" result="COLOR" />
-            <feComposite
-              in="COLOR"
-              in2="OUTLINE"
-              operator="in"
-              result="FINAL"
-            />
-          </filter>
-        </defs>
-        <text
-          x="0"
-          y="0.85em"
-          className="font-medium tracking-tight uppercase"
-          style={{
-            fontFamily: getFontFamily('heading'),
-            fontSize: 'inherit',
-            filter: `url(#${filterId})`,
-            fill: 'white',
-          }}
-        >
-          {text}
-        </text>
-      </svg>
-    </span>
-  );
-}
-
-// ============================================
 // PRE-FOOTER SECTION COMPONENT
 // ============================================
 export function PreFooterSection() {
@@ -140,17 +61,19 @@ export function PreFooterSection() {
       >
         {/* Main Headline */}
         <h2
-          className="text-5xl md:text-7xl lg:text-[116px] font-medium uppercase tracking-tight leading-[0.95] text-white mb-8"
+          className="text-4xl md:text-6xl lg:text-[90px] font-bold uppercase tracking-tight leading-[1] text-white mb-2"
           style={{ fontFamily: getFontFamily('heading') }}
         >
-          Embalajes
-          <br />
-          <OutlineText
-            text="SIN LÍMITES"
-            strokeWidth={2.8}
-            className="text-5xl md:text-7xl lg:text-[116px]"
-          />
+          Centralizá tu abastecimiento.
         </h2>
+
+        {/* Subheadline */}
+        <p
+          className="text-2xl md:text-4xl lg:text-[56px] font-medium uppercase tracking-tight leading-[1.1] text-white/70 mb-12"
+          style={{ fontFamily: getFontFamily('heading') }}
+        >
+          Simplificá tu gestión.
+        </p>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mt-8">

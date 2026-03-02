@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { useEffect, useMemo, useState } from 'react';
 import { PerformanceMonitor } from '@react-three/drei';
+import * as THREE from 'three';
 import { ScrollCamera } from './canvas/ScrollCamera';
 import { Scene } from './canvas/Scene';
 
@@ -39,8 +40,17 @@ export function GlobalCanvas() {
     <div className="fixed inset-0 z-10 pointer-events-none w-screen h-screen">
       <Canvas
         dpr={dpr}
+        shadows
         performance={{ min: 0.6 }}
-        onCreated={() => {
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = isMobile ? 1.05 : 1.1;
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          gl.shadowMap.enabled = true;
+          gl.shadowMap.type = isMobile
+            ? THREE.BasicShadowMap
+            : THREE.PCFSoftShadowMap;
+
           if (window.__PLUPACK_CANVAS_READY__) {
             return;
           }
@@ -68,7 +78,7 @@ export function GlobalCanvas() {
         />
         {/* Camera is controlled by ScrollCamera using keyframes */}
         <ScrollCamera />
-        <Scene />
+        <Scene isMobile={isMobile} />
       </Canvas>
     </div>
   );

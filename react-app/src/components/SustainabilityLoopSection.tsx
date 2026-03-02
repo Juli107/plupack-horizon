@@ -140,7 +140,7 @@ function BiodegradableBadge({
         height: 'clamp(140px, 28vw, 220px)',
         // Brand colors: Deep blue background with teal accent ring
         background:
-          'linear-gradient(135deg, #1B4B6B 0%, #146C90 50%, #0A3D54 100%)',
+          'linear-gradient(135deg, #1B4B6B 0%, #084e85 50%, #0A3D54 100%)',
         boxShadow:
           '0 0 0 4px rgba(94, 234, 212, 0.6), 0 25px 80px rgba(20, 108, 144, 0.4), 0 10px 30px rgba(0, 0, 0, 0.2)',
       }}
@@ -243,7 +243,7 @@ export function SustainabilityLoopSection() {
       // These are the SAME images - no duplication
       // ============================================
       const floatingImages = Array.from(
-        document.querySelectorAll('.stock-floating-image')
+        document.querySelectorAll('.stock-floating-image'),
       ) as HTMLDivElement[];
 
       if (floatingImages.length === 0) return;
@@ -294,13 +294,13 @@ export function SustainabilityLoopSection() {
       // Calculate center of THIS section for implosion target
       // Get layer groups based on positions
       const backImages = floatingImages.filter(
-        (_, i) => positions[i]?.layer === 1
+        (_, i) => positions[i]?.layer === 1,
       );
       const midImages = floatingImages.filter(
-        (_, i) => positions[i]?.layer === 2
+        (_, i) => positions[i]?.layer === 2,
       );
       const frontImages = floatingImages.filter(
-        (_, i) => positions[i]?.layer === 3
+        (_, i) => positions[i]?.layer === 3,
       );
 
       // Back layer - implodes first
@@ -316,7 +316,7 @@ export function SustainabilityLoopSection() {
             duration: 0.2,
             ease: 'power3.in',
           },
-          0
+          0,
         );
       });
 
@@ -333,7 +333,7 @@ export function SustainabilityLoopSection() {
             duration: 0.2,
             ease: 'power3.in',
           },
-          0.05
+          0.05,
         );
       });
 
@@ -350,7 +350,7 @@ export function SustainabilityLoopSection() {
             duration: 0.2,
             ease: 'power3.in',
           },
-          0.1
+          0.1,
         );
       });
 
@@ -363,7 +363,7 @@ export function SustainabilityLoopSection() {
           duration: 0.15,
           ease: 'power2.out',
         },
-        0.18
+        0.18,
       );
 
       // ============================================
@@ -379,7 +379,7 @@ export function SustainabilityLoopSection() {
           duration: 0.35,
           ease: 'none',
         },
-        0.25
+        0.25,
       );
 
       // Left text appears: "SCRAP INDUSTRIAL"
@@ -391,7 +391,7 @@ export function SustainabilityLoopSection() {
           duration: 0.1,
           ease: 'power3.out',
         },
-        0.3
+        0.3,
       );
 
       // Left text fades out, right text appears: "MATERIA PRIMA"
@@ -403,7 +403,7 @@ export function SustainabilityLoopSection() {
           duration: 0.1,
           ease: 'power2.in',
         },
-        0.45
+        0.45,
       );
 
       tl.to(
@@ -414,7 +414,7 @@ export function SustainabilityLoopSection() {
           duration: 0.1,
           ease: 'power3.out',
         },
-        0.5
+        0.5,
       );
 
       // ============================================
@@ -430,7 +430,7 @@ export function SustainabilityLoopSection() {
           duration: 0.08,
           ease: 'power2.in',
         },
-        0.6
+        0.6,
       );
 
       // Ring container fades
@@ -441,7 +441,7 @@ export function SustainabilityLoopSection() {
           duration: 0.1,
           ease: 'power2.in',
         },
-        0.62
+        0.62,
       );
 
       // Badge blooms from center with elastic easing
@@ -453,7 +453,7 @@ export function SustainabilityLoopSection() {
           duration: 0.15,
           ease: 'elastic.out(1, 0.5)',
         },
-        0.65
+        0.65,
       );
 
       // Badge holds, then starts to scale down
@@ -465,7 +465,7 @@ export function SustainabilityLoopSection() {
           duration: 0.1,
           ease: 'power2.in',
         },
-        0.8
+        0.8,
       );
 
       // THE WIPE: Expanding ring grows to fill screen
@@ -477,7 +477,7 @@ export function SustainabilityLoopSection() {
           duration: 0.2,
           ease: 'power2.out',
         },
-        0.82
+        0.82,
       );
 
       return () => {
@@ -488,7 +488,7 @@ export function SustainabilityLoopSection() {
         });
       };
     },
-    { dependencies: [positions, isMobile] }
+    { dependencies: [positions, isMobile] },
   );
 
   return (

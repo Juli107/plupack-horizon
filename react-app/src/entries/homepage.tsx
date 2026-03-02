@@ -15,7 +15,7 @@ function App() {
       <LoadingScreen />
       <Homepage
         backgroundColor={
-          shopifyData.settings?.backgroundColor ?? '#146C90'
+          shopifyData.settings?.backgroundColor ?? '#084e85'
         }
         shopName={shopifyData.shop?.name ?? 'Store'}
         headingText={shopifyData.settings?.headingText}

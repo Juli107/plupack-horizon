@@ -96,17 +96,20 @@ export function IndustryCylinder(props: any) {
       if ((obj as THREE.Mesh).isMesh) {
         (obj as THREE.Mesh).material = new THREE.MeshPhysicalMaterial(
           {
-            color: '#ffffff',
+            color: '#dff6ff',
             transparent: true,
-            opacity: 0.45,
-            roughness: 0.1,
-            metalness: 0.1,
-            transmission: 0.75,
-            thickness: 1.5,
+            opacity: 0.34,
+            roughness: 0.2,
+            metalness: 0.04,
+            transmission: 0.56,
+            thickness: 1.1,
+            envMapIntensity: 0.65,
             side: THREE.DoubleSide,
             depthWrite: false,
           }
         );
+        (obj as THREE.Mesh).castShadow = false;
+        (obj as THREE.Mesh).receiveShadow = true;
       }
     });
     return cloned;

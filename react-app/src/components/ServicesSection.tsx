@@ -253,7 +253,7 @@ export function ServicesSection() {
         {/* This is what moves horizontally */}
         <div
           ref={horizontalRef}
-          className="flex min-h-screen bg-[#146C90] text-white"
+          className="flex min-h-screen  text-white"
           style={{ width: 'fit-content' }}
         >
           {/* First panel - Title Section */}
@@ -263,7 +263,7 @@ export function ServicesSection() {
                 <span className="services-reveal-text block">
                   QUE LA FALTA DE UN INSUMO
                 </span>
-                <span className="services-reveal-text inline-block bg-white text-[#2D637E] px-4 py-1 mt-2 font-bold transform -skew-x-2">
+                <span className="services-reveal-text inline-block bg-white text-[#084e85] px-4 py-1 mt-2 font-bold transform -skew-x-2">
                   NO FRENE TU OPERACIÓN
                 </span>
               </h2>

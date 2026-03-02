@@ -39,7 +39,7 @@ if (typeof document !== 'undefined') {
         color: #ffffff !important;
       }
       .plupack-loading-text--blue {
-        color: #146C90 !important;
+        color: #084e85 !important;
       }
       @media (max-width: 768px) {
         .plupack-loading-text {
@@ -65,7 +65,7 @@ function getDistanceFromCenter(index: number): number {
   // Chebyshev distance (max of row/col distance) for square ripple
   return Math.max(
     Math.abs(row - centerRow),
-    Math.abs(col - centerCol)
+    Math.abs(col - centerCol),
   );
 }
 
@@ -74,7 +74,7 @@ const MAX_DISTANCE = Math.max((ROWS - 1) / 2, (COLS - 1) / 2);
 
 export function LoadingScreen() {
   const [phase, setPhase] = useState<'loading' | 'reveal' | 'done'>(
-    'loading'
+    'loading',
   );
   const [progress, setProgress] = useState(0);
   const [revealProgress, setRevealProgress] = useState(0);
@@ -85,7 +85,7 @@ export function LoadingScreen() {
   useLayoutEffect(() => {
     // Hide the Liquid loading screen immediately
     const liquidLoader = document.getElementById(
-      'liquid-loading-screen'
+      'liquid-loading-screen',
     );
     if (liquidLoader) {
       liquidLoader.style.display = 'none';
@@ -131,11 +131,7 @@ export function LoadingScreen() {
   }, []);
 
   useEffect(() => {
-    if (
-      phase === 'loading' &&
-      isProgressComplete &&
-      isCanvasReady
-    ) {
+    if (phase === 'loading' && isProgressComplete && isCanvasReady) {
       const revealDelayId = window.setTimeout(() => {
         setPhase('reveal');
       }, 300);
@@ -189,7 +185,7 @@ export function LoadingScreen() {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: '#146C90',
+              backgroundColor: '#084e85',
               clipPath: `inset(0 0 ${progress}% 0)`,
             }}
           >
@@ -250,7 +246,7 @@ export function LoadingScreen() {
                 const localProgress = Math.min(
                   (revealProgress - startThreshold) /
                     (endThreshold - startThreshold),
-                  1
+                  1,
                 );
                 scale = 1 - localProgress;
               }
@@ -281,6 +277,6 @@ export function LoadingScreen() {
         </>
       )}
     </div>,
-    document.body
+    document.body,
   );
 }

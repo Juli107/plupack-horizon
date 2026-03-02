@@ -55,12 +55,6 @@ export const cameraKeyframes: CameraKeyframe[] = [
     lookAt: [0, 0, 0],
     fov: 45,
   },
-  {
-    scrollPercent: 7,
-    position: [0, -20, -10],
-    lookAt: [0, -20, -10],
-    fov: 45,
-  },
 
   // ============================================
   // SERVICES & INDUSTRY DYNAMICS (20-54%)
@@ -71,13 +65,6 @@ export const cameraKeyframes: CameraKeyframe[] = [
     scrollPercent: 20,
     position: [0, -40, 30],
     lookAt: [0, -40, 30],
-  },
-
-  {
-    scrollPercent: 30,
-    position: [0, -50, 0],
-    lookAt: [0, -50, 0],
-    fov: 85,
   },
 
   {

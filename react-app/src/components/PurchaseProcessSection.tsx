@@ -14,25 +14,28 @@ interface ProcessStep {
   number: string;
   title: string;
   subtitle?: string;
+  iconLabel?: string;
 }
 
 // ============================================
 // PROCESS STEPS DATA
 // ============================================
 const PROCESS_STEPS: ProcessStep[] = [
-  { number: '01', title: 'Requerimiento de compra' },
-  { number: '02', title: 'Cotización personalizada' },
-  { number: '03', title: 'Alta del cliente o proveedor' },
+  { number: '01', title: 'Requerimiento de compra', iconLabel: 'Solicitud' },
+  { number: '02', title: 'Cotización personalizada', iconLabel: 'Cotización' },
+  { number: '03', title: 'Alta del cliente o proveedor', iconLabel: 'Registro' },
   {
     number: '04',
     title: 'Coordinación de la entrega',
     subtitle: '*Garantizada en 10 días hábiles',
+    iconLabel: 'Entrega',
   },
   {
     number: '05',
     title: 'Seguimiento en tiempo real y envíos sin cargo',
+    iconLabel: 'Tracking',
   },
-  { number: '06', title: 'Asesoramiento post-entrega' },
+  { number: '06', title: 'Asesoramiento post-entrega', iconLabel: 'Soporte' },
 ];
 
 // Line height between steps (in pixels) - MASSIVE SPACING!
@@ -227,7 +230,7 @@ export function PurchaseProcessSection() {
         </h2>
 
         {/* Main content - 3 column grid for perfect centering */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-start">
+        <div className="grid grid-cols-[1fr_48px_1fr] items-start">
           {/* Left side - Big number (right aligned, sticky) */}
           <div className="hidden md:block h-full">
             <div className="sticky top-[30vh] flex justify-end pr-12 lg:pr-16">
@@ -249,13 +252,33 @@ export function PurchaseProcessSection() {
           {/* Center - Timeline dots and lines */}
           <div className="flex flex-col items-center">
             {PROCESS_STEPS.map((_, index) => (
-              <div key={index} className="flex flex-col items-center">
-                {/* Vertical line above dot */}
-                {index > 0 && (
-                  <div
-                    className="relative w-0.5"
-                    style={{ height: `${LINE_HEIGHT}px` }}
-                  >
+              <div
+                key={index}
+                className="flex flex-col items-center"
+                style={{
+                  minHeight:
+                    index === PROCESS_STEPS.length - 1
+                      ? 'auto'
+                      : `${LINE_HEIGHT}px`,
+                }}
+              >
+                {/* Dot — vertically centered against the 32px icon/title row */}
+                <div
+                  ref={(el) => {
+                    dotsRef.current[index] = el;
+                  }}
+                  className="w-4 h-4 rounded-full shrink-0"
+                  style={{
+                    marginTop: 8,
+                    backgroundColor:
+                      index === 0
+                        ? '#1B4B6B'
+                        : 'rgba(27, 75, 107, 0.1)',
+                  }}
+                />
+                {/* Vertical line below dot, stretching to next dot */}
+                {index < PROCESS_STEPS.length - 1 && (
+                  <div className="relative w-0.5 flex-1">
                     {/* Background line */}
                     <div
                       className="absolute inset-0"
@@ -266,7 +289,7 @@ export function PurchaseProcessSection() {
                     {/* Progress line fill */}
                     <div
                       ref={(el) => {
-                        progressLinesRef.current[index - 1] = el;
+                        progressLinesRef.current[index] = el;
                       }}
                       className="absolute inset-0 origin-top"
                       style={{
@@ -276,25 +299,12 @@ export function PurchaseProcessSection() {
                     />
                   </div>
                 )}
-                {/* Dot */}
-                <div
-                  ref={(el) => {
-                    dotsRef.current[index] = el;
-                  }}
-                  className="w-4 h-4 rounded-full shrink-0"
-                  style={{
-                    backgroundColor:
-                      index === 0
-                        ? '#1B4B6B'
-                        : 'rgba(27, 75, 107, 0.1)',
-                  }}
-                />
               </div>
             ))}
           </div>
 
-          {/* Right side - Step texts (left aligned) */}
-          <div className="flex flex-col pl-8 md:pl-12 lg:pl-16">
+          {/* Right side - Step texts with icons */}
+          <div className="flex flex-col">
             {/* Mobile number - sticky */}
             <div className="md:hidden sticky top-4 z-10 mb-8">
               <span
@@ -316,32 +326,60 @@ export function PurchaseProcessSection() {
                 ref={(el) => {
                   stepsRef.current[index] = el;
                 }}
-                className="flex items-start"
+                className="flex"
                 style={{
                   minHeight:
                     index === PROCESS_STEPS.length - 1
                       ? 'auto'
-                      : `calc(${LINE_HEIGHT}px + 1rem)`,
+                      : `${LINE_HEIGHT}px`,
+                  alignItems: 'flex-start',
                 }}
               >
-                <div className="py-0.5">
+                {/* Icon placeholder */}
+                <div
+                  className="flex items-center justify-center shrink-0"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    border: '2px dashed rgba(27, 75, 107, 0.25)',
+                    borderRadius: '6px',
+                    backgroundColor: 'rgba(27, 75, 107, 0.03)',
+                    marginRight: 12,
+                  }}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="rgba(27, 75, 107, 0.3)"
+                    strokeWidth="1.5"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
+                </div>
+
+                <div>
                   <p
-                    className="font-semibold leading-snug"
+                    className="font-semibold"
                     style={{
                       fontFamily: getFontFamily('body'),
                       color: '#1B4B6B',
-                      fontSize: 'clamp(1.15rem, 3vw, 1.5rem)',
+                      fontSize: 'clamp(1.05rem, 2.3vw, 1.35rem)',
+                      lineHeight: 1.3,
                     }}
                   >
                     {step.title}
                   </p>
                   {step.subtitle && (
                     <p
-                      className="mt-2"
+                      className="mt-1"
                       style={{
                         fontFamily: getFontFamily('body'),
                         color: 'rgba(27, 75, 107, 0.5)',
-                        fontSize: 'clamp(0.9rem, 2vw, 1.05rem)',
+                        fontSize: 'clamp(0.8rem, 1.6vw, 0.95rem)',
                         fontStyle: 'italic',
                       }}
                     >

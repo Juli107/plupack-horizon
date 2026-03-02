@@ -103,9 +103,9 @@ export function LogoCarousel() {
   );
 
   return (
-    <section className="relative w-full bg-[#146C90] py-12 md:pt-28 md:-mb-10 overflow-hidden">
+    <section className="relative w-full py-12 md:pt-28 md:-mb-10 overflow-hidden">
       {/* Intro Text */}
-      <div className="container mx-auto px-4 mb-8 md:mb-12">
+      <div className="container mx-auto px-4 pb-6 border-b border-white/20">
         <p className="text-center text-white/60 uppercase tracking-[0.2em] text-xs md:text-base font-light">
           MARCAS QUE CONFÍAN EN NUESTRA GESTIÓN
         </p>
@@ -117,8 +117,8 @@ export function LogoCarousel() {
         className="w-full relative flex overflow-hidden mask-gradient-x"
       >
         {/* Gradient Masks for fading edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 md:w-32 z-1 bg-linear-to-r from-[#146C90] to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 md:w-32 z-1 bg-linear-to-l from-[#146C90] to-transparent pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 md:w-62 z-1 bg-linear-to-r from-[#084e85] to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 md:w-62 z-1 bg-linear-to-l from-[#084e85] to-transparent pointer-events-none" />
 
         <div
           ref={trackRef}
@@ -139,7 +139,7 @@ export function LogoCarousel() {
                     .replace('.png', '')
                     .replace(/-/g, ' ')}
                   className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
-                  style={{ height: `${(logo.scale || 1) * 10}rem` }}
+                  style={{ height: `${(logo.scale || 1) * 8}rem` }}
                 />
               </div>
             ))}
@@ -157,7 +157,7 @@ export function LogoCarousel() {
                   src={getLogoSrc(logo.src)}
                   alt=""
                   className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
-                  style={{ height: `${(logo.scale || 1) * 10}rem` }}
+                  style={{ height: `${(logo.scale || 1) * 8}rem` }}
                 />
               </div>
             ))}
