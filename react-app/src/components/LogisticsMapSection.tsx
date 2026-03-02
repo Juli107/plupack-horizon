@@ -60,7 +60,7 @@ const PULSE_NODES: PulseNode[] = [
 // Generate static connecting lines between nearby dots
 function generateStaticLines(
   circleData: { cx: number; cy: number }[],
-  linesGroup: SVGGElement
+  linesGroup: SVGGElement,
 ) {
   const MAX_DISTANCE = 20; // SVG units
   const lines: string[] = [];
@@ -81,7 +81,7 @@ function generateStaticLines(
       if (dist < MAX_DISTANCE && dist > 5) {
         const opacity = 0.3 * (1 - dist / MAX_DISTANCE);
         lines.push(
-          `<line x1="${c1.cx}" y1="${c1.cy}" x2="${c2.cx}" y2="${c2.cy}" stroke="rgba(94, 234, 212, ${opacity})" stroke-width="0.8"/>`
+          `<line x1="${c1.cx}" y1="${c1.cy}" x2="${c2.cx}" y2="${c2.cy}" stroke="rgba(94, 234, 212, ${opacity})" stroke-width="0.8"/>`,
         );
       }
     }
@@ -100,7 +100,6 @@ export function LogisticsMapSection() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapWrapperRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const blurOverlayRef = useRef<HTMLDivElement>(null);
   const linesGroupRef = useRef<SVGGElement | null>(null);
   const { getFontFamily } = useShopifyTheme();
   const [svgLoaded, setSvgLoaded] = useState(false);
@@ -152,7 +151,7 @@ export function LogisticsMapSection() {
         // Create lines group (inserted first so lines appear behind circles)
         const linesGroup = document.createElementNS(
           'http://www.w3.org/2000/svg',
-          'g'
+          'g',
         );
         linesGroup.setAttribute('class', 'connecting-lines');
         linesGroup.style.opacity = '0'; // Start hidden, reveal on scroll
@@ -184,7 +183,6 @@ export function LogisticsMapSection() {
         !stickyRef.current ||
         !mapContainerRef.current ||
         !textRef.current ||
-        !blurOverlayRef.current ||
         !svgLoaded ||
         animationInitialized.current
       )
@@ -195,7 +193,6 @@ export function LogisticsMapSection() {
       const section = sectionRef.current;
       const mapContainer = mapContainerRef.current;
       const text = textRef.current;
-      const blurOverlay = blurOverlayRef.current;
       const heading = text.querySelector('.map-heading');
       const subheading = text.querySelector('.map-subheading');
 
@@ -206,12 +203,12 @@ export function LogisticsMapSection() {
 
       // Select specific circles for pulse animation and store original radii
       const pulseCircles = PULSE_NODES.map(
-        (node) => circleArray[node.index]
+        (node) => circleArray[node.index],
       ).filter(Boolean) as SVGCircleElement[];
 
       // Store original radius for each pulse circle
       const originalRadii = pulseCircles.map((circle) =>
-        parseFloat(circle.getAttribute('r') || '3')
+        parseFloat(circle.getAttribute('r') || '3'),
       );
 
       // ============================================
@@ -231,8 +228,6 @@ export function LogisticsMapSection() {
           y: 30,
         });
       }
-
-      gsap.set(blurOverlay, { opacity: 0 });
 
       // ============================================
       // MAIN SCROLL TIMELINE
@@ -259,7 +254,7 @@ export function LogisticsMapSection() {
           duration: 0.2,
           ease: 'power3.out',
         },
-        0
+        0,
       );
 
       // ----------------------------------------
@@ -273,7 +268,7 @@ export function LogisticsMapSection() {
           duration: 0.4,
           ease: 'power3.out',
         },
-        0.1
+        0.1,
       );
 
       // Reveal connecting lines
@@ -285,7 +280,7 @@ export function LogisticsMapSection() {
             duration: 0.4,
             ease: 'power2.out',
           },
-          0.2
+          0.2,
         );
       }
 
@@ -301,7 +296,7 @@ export function LogisticsMapSection() {
               duration: 0.3,
               ease: 'power2.out',
             },
-            0.2 + i * 0.02
+            0.2 + i * 0.02,
           );
         });
       }
@@ -318,7 +313,7 @@ export function LogisticsMapSection() {
           duration: 0.3,
           ease: 'power3.out',
         },
-        0.3
+        0.3,
       );
 
       if (heading) {
@@ -330,7 +325,7 @@ export function LogisticsMapSection() {
             duration: 0.25,
             ease: 'power3.out',
           },
-          0.35
+          0.35,
         );
       }
 
@@ -343,7 +338,7 @@ export function LogisticsMapSection() {
             duration: 0.25,
             ease: 'power3.out',
           },
-          0.4
+          0.4,
         );
       }
 
@@ -352,23 +347,13 @@ export function LogisticsMapSection() {
       // Blur and fade while next section slides over
       // ----------------------------------------
       tl.to(
-        blurOverlay,
-        {
-          opacity: 1,
-          duration: 0.3,
-          ease: 'power2.in',
-        },
-        0.7
-      );
-
-      tl.to(
         [mapContainer, text],
         {
           opacity: 0,
           duration: 0.3,
           ease: 'power2.in',
         },
-        0.7
+        0.7,
       );
 
       // ============================================
@@ -440,7 +425,7 @@ export function LogisticsMapSection() {
         });
       };
     },
-    { scope: sectionRef, dependencies: [svgLoaded] }
+    { scope: sectionRef, dependencies: [svgLoaded] },
   );
 
   return (
@@ -453,7 +438,7 @@ export function LogisticsMapSection() {
       <div
         ref={stickyRef}
         className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center"
-        style={{ backgroundColor: '#0A3D54' }}
+        style={{ backgroundColor: '#1B4B6B' }}
       >
         {/* Background Noise Texture */}
         <div
@@ -484,7 +469,7 @@ export function LogisticsMapSection() {
           className="relative z-20 text-center px-6 will-change-transform"
         >
           <h2
-            className="map-heading text-white font-bold tracking-tight mb-4"
+            className="map-heading text-white font-bold tracking-tight"
             style={{
               fontFamily: getFontFamily('heading'),
               fontSize: 'clamp(2.5rem, 8vw, 5rem)',
@@ -494,7 +479,7 @@ export function LogisticsMapSection() {
             COBERTURA NACIONAL
           </h2>
           <p
-            className="map-subheading text-white/80 font-light"
+            className="map-subheading text-white font-medium"
             style={{
               fontFamily: getFontFamily('body'),
               fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
@@ -503,17 +488,6 @@ export function LogisticsMapSection() {
             Logística donde lo necesites.
           </p>
         </div>
-
-        {/* Blur Overlay - for exit transition */}
-        <div
-          ref={blurOverlayRef}
-          className="absolute inset-0 z-30 pointer-events-none"
-          style={{
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            backgroundColor: 'rgba(10, 61, 84, 0.5)',
-          }}
-        />
       </div>
     </section>
   );

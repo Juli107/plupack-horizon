@@ -68,7 +68,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
   },
 
   {
-    scrollPercent: 46,
+    scrollPercent: 52,
     position: [0, -50, 0],
     lookAt: [0, -50, 0],
   },
@@ -79,7 +79,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Start - Front view, top of rod
   {
-    scrollPercent: 51,
+    scrollPercent: 58,
     orbit: true,
     orbitCenter: [0, -57.8, 0],
     orbitAngle: Math.PI,
@@ -90,7 +90,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Three-quarter rotation - Left side, near bottom
   {
-    scrollPercent: 54,
+    scrollPercent: 63,
     orbit: true,
     orbitCenter: [0, -63.8, 0],
     orbitAngle: Math.PI * 1.75,
@@ -101,10 +101,10 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Full rotation - Back at front, bottom of rod
   {
-    scrollPercent: 70,
+    scrollPercent: 68,
     orbit: true,
-    orbitCenter: [0, -80.8, 0],
-    orbitAngle: Math.PI * 3,
+    orbitCenter: [0, -69.8, 0],
+    orbitAngle: Math.PI * 2.6,
     orbitRadius: 8,
     orbitHeight: 0,
     fov: 45,
@@ -112,41 +112,11 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // End of rotation
   {
-    scrollPercent: 76,
-    orbit: false,
-    position: [0, -67.8, -8],
-    lookAt: [0, -67.8, 0],
-    fov: 45,
-  },
-
-  // ============================================
-  // TRANSITION TO FOOTER (75-100%)
-  // ============================================
-
-  {
     scrollPercent: 78,
-    position: [-8, -70, -8],
-    lookAt: [-8, -70, 0],
+    orbit: false,
+    position: [0, -77.8, -8],
+    lookAt: [0, -77.8, 0],
     fov: 45,
-  },
-
-  {
-    scrollPercent: 80,
-    position: [-6, 20, 10],
-    lookAt: [-6, 20, -5],
-    fov: 45,
-  },
-
-  {
-    scrollPercent: 92,
-    position: [-6, 0, 10],
-    lookAt: [-6, 0, -5],
-  },
-
-  {
-    scrollPercent: 100,
-    position: [-6, -30, 10],
-    lookAt: [-6, -30, -5],
   },
 ];
 
