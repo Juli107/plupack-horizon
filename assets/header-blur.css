@@ -8,8 +8,9 @@
 
 /* Default glass effect - white with low opacity (when not in blue region) */
 .header--tint-light[sticky][data-sticky-state='active'] .header__row,
-.header--tint-light[transparent][data-sticky-state='active'] .header__row {
-  background: rgba(255,255,255, 0.15) !important;
+.header--tint-light[transparent][data-sticky-state='active']
+  .header__row {
+  background: rgba(255, 255, 255, 0.15) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
@@ -42,17 +43,18 @@
 
 /* Blue tint state - for gray sections like stock (apply regardless of sticky state) */
 .header--tint-blue .header__row {
-   background: rgba(20, 108, 144, 0.85) !important;
-   -webkit-backdrop-filter: blur(20px) !important;
-   backdrop-filter: blur(20px) !important;
-   transition: background 0.15s ease !important;
-   border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
+  background: rgba(20, 108, 144, 0.85) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  transition: background 0.15s ease !important;
+  border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
 }
 
 /* Override for sticky active state to match opacity */
 .header--tint-blue[sticky][data-sticky-state='active'] .header__row,
-.header--tint-blue[transparent][data-sticky-state='active'] .header__row {
-   background: rgba(20, 108, 144, 0.85) !important;
+.header--tint-blue[transparent][data-sticky-state='active']
+  .header__row {
+  background: rgba(20, 108, 144, 0.85) !important;
 }
 
 /* Ensure white text on transparent/glass background */
@@ -139,12 +141,12 @@
 .header--tint-dark .header-actions__action,
 .header--tint-dark .search-action,
 .header--tint-dark .header-logo a {
-  color: #146c90 !important;
+  color: #084e85 !important;
 }
 
 .header--tint-dark .header-actions__action svg,
 .header--tint-dark .search-action svg {
-  stroke: #146c90 !important;
+  stroke: #084e85 !important;
 }
 
 /* Smooth transition for tint changes */
