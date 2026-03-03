@@ -214,12 +214,10 @@ export function MetricsSection() {
         {/* Bento Grid - 3 items */}
         <div
           ref={containerRef}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
+          className="metrics-grid"
         >
           {/* Item 1 - Large left card (años en el mercado) */}
-          <div
-            className="md:row-span-2"
-          >
+          <div className="metrics-desktop-only metrics-grid__primary">
             <AnimatedCounter
               {...METRICS[0]}
               delay={0}
@@ -230,7 +228,7 @@ export function MetricsSection() {
           </div>
 
           {/* Item 2 - Top right (clientes activos) */}
-          <div>
+          <div className="metrics-desktop-only">
             <AnimatedCounter
               {...METRICS[1]}
               delay={0.12}
@@ -241,7 +239,7 @@ export function MetricsSection() {
           </div>
 
           {/* Item 3 - Bottom right (sectores) */}
-          <div>
+          <div className="metrics-desktop-only">
             <AnimatedCounter
               {...METRICS[2]}
               delay={0.24}
@@ -252,8 +250,8 @@ export function MetricsSection() {
           </div>
 
           {/* Mobile fallback */}
-          <div className="md:hidden col-span-full">
-            <div className="grid grid-cols-1 gap-6">
+          <div className="metrics-mobile-only">
+            <div className="metrics-mobile-list">
               {METRICS.map((metric, index) => (
                 <div key={metric.label}>
                   <AnimatedCounter

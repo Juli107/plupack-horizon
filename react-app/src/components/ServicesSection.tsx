@@ -7,38 +7,56 @@ import {
   useCallback,
   useState,
 } from 'react';
+import {
+  BadgeDollarSign,
+  Boxes,
+  ShieldCheck,
+  Truck,
+  type LucideIcon,
+} from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const services = [
+interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
+  Icon: LucideIcon;
+}
+
+const services: ServiceItem[] = [
   {
     id: '01',
     title: 'CENTRALIZACIÓN DE PROVEEDORES',
     description:
       'Un solo punto de contacto para el abastecimiento de sus insumos no productivos. Optimizando la gestión y reduciendo tiempos administrativos.',
+    Icon: Boxes,
   },
   {
     id: '02',
     title: 'PRECIOS ESTABLES Y ACUERDOS A LARGO PLAZO',
     description:
       'Ofrecemos cotizaciones fijas y contratos flexibles que permiten planificar y evitar aumentos imprevistos.',
+    Icon: BadgeDollarSign,
   },
   {
     id: '03',
     title: 'STOCK INTELIGENTE Y ENTREGAS GARANTIZADAS',
     description:
       'Control de inventario y reposición automática para evitar quiebres de stock. Compromiso en los plazos de entrega y seguimiento en tiempo real para asegurar la continuidad de su operación.',
+    Icon: Truck,
   },
   {
     id: '04',
     title: 'CALIDAD CONTROLADA Y ASESORAMIENTO',
     description:
       'Productos evaluados bajo estándares estrictos y un ejecutivo dedicado que acompaña tu operación con soporte directo y resolución inmediata.',
+    Icon: ShieldCheck,
   },
 ];
 
 // Lightweight 3D Tilt Card - uses CSS transforms for performance
-function TiltCard({ service }: { service: (typeof services)[0] }) {
+function TiltCard({ service }: { service: ServiceItem }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState({
     rotateX: 0,
@@ -105,27 +123,19 @@ function TiltCard({ service }: { service: (typeof services)[0] }) {
           <span className="text-6xl font-light font-['Montserrat'] opacity-50">
             {service.id}
           </span>
-          {/* Icon placeholder — replace with final icons */}
           <div
             className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
             style={{
-              border: '2px dashed rgba(255,255,255,0.3)',
-              backgroundColor: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.35)',
+              backgroundColor: 'rgba(255,255,255,0.12)',
             }}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="rgba(255,255,255,0.4)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
+            <service.Icon
+              size={22}
+              strokeWidth={1.9}
+              color="rgba(255,255,255,0.92)"
+              aria-hidden="true"
+            />
           </div>
         </div>
 

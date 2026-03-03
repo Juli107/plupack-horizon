@@ -208,6 +208,53 @@
   background-clip: text;
 }
 
+/* Metrics section hardening against Shopify grid utilities */
+#react-homepage .metrics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  gap: 1.5rem !important;
+}
+
+@media (min-width: 768px) {
+  #react-homepage .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #react-homepage .metrics-grid__primary {
+    grid-row: span 2 / span 2 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  #react-homepage .metrics-grid {
+    gap: 2rem !important;
+  }
+}
+
+#react-homepage .metrics-mobile-only {
+  grid-column: 1 / -1;
+}
+
+#react-homepage .metrics-desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  #react-homepage .metrics-desktop-only {
+    display: block;
+  }
+
+  #react-homepage .metrics-mobile-only {
+    display: none !important;
+  }
+}
+
+#react-homepage .metrics-mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 /* 
   Custom theme extensions can be added here.
   Example:

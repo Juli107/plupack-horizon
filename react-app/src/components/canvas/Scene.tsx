@@ -1,15 +1,11 @@
-import { Environment } from '@react-three/drei';
-import { useEffect, useState } from 'react';
+import { Environment, Lightformer } from '@react-three/drei';
+import { useEffect } from 'react';
 import {
   INDUSTRY_ITEM_NAMES,
   preloadIndustryWrapModel,
 } from './industryAssets';
 import { IndustryCylinder } from './IndustryCylinder';
 import { preloadModels } from './Products';
-
-const cityEnvironment = import('@pmndrs/assets/hdri/city.exr').then(
-  (module) => module.default as string,
-);
 
 // ============================================
 // GLOBAL 3D SCENE
@@ -22,37 +18,54 @@ type SceneProps = {
 };
 
 export function Scene({ isMobile }: SceneProps) {
-  const [environmentFile, setEnvironmentFile] = useState<
-    string | null
-  >(null);
-
   useEffect(() => {
     const preloadTimeoutId = window.setTimeout(() => {
       preloadIndustryWrapModel();
       preloadModels(INDUSTRY_ITEM_NAMES);
     }, 1200);
 
-    let mounted = true;
-    cityEnvironment.then((file) => {
-      if (mounted) {
-        setEnvironmentFile(file);
-      }
-    });
-
     return () => {
-      mounted = false;
       window.clearTimeout(preloadTimeoutId);
     };
   }, []);
 
   return (
     <>
-      {environmentFile ? (
-        <Environment files={environmentFile} background={false} />
-      ) : null}
-      <ambientLight intensity={0.18} color="#c8d8ff" />
+      <Environment background={false} resolution={isMobile ? 64 : 128}>
+        <Lightformer
+          form="rect"
+          intensity={isMobile ? 2.1 : 2.8}
+          color="#f3f9ff"
+          scale={[16, 10, 1]}
+          position={[0, 2.8, 9]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={isMobile ? 0.7 : 1}
+          color="#b9e4ff"
+          scale={[12, 6, 1]}
+          position={[-8, 0, -6]}
+          rotation={[0, Math.PI / 2.2, 0]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={isMobile ? 1.35 : 1.8}
+          color="#ffffff"
+          scale={[10, 5, 1]}
+          position={[0, -1.8, 8.5]}
+        />
+        <Lightformer
+          form="ring"
+          intensity={isMobile ? 0.35 : 0.55}
+          color="#d7efff"
+          scale={6}
+          position={[0, -3, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        />
+      </Environment>
+      <ambientLight intensity={0.3} color="#dceaff" />
       <hemisphereLight
-        intensity={0.34}
+        intensity={0.54}
         color="#d9f5ff"
         groundColor="#3e5672"
       />
@@ -60,7 +73,7 @@ export function Scene({ isMobile }: SceneProps) {
       <directionalLight
         castShadow
         color="#ffffff"
-        intensity={isMobile ? 1.35 : 1.65}
+        intensity={isMobile ? 2.2 : 2.7}
         position={[8, -53, 14]}
         shadow-mapSize-width={isMobile ? 512 : 1024}
         shadow-mapSize-height={isMobile ? 512 : 1024}
@@ -76,6 +89,22 @@ export function Scene({ isMobile }: SceneProps) {
         <object3D attach="target" position={[0, -67.8, 0]} />
       </directionalLight>
 
+      <directionalLight
+        color="#9cc6ff"
+        intensity={isMobile ? 0.55 : 0.75}
+        position={[-12, -60, -10]}
+      >
+        <object3D attach="target" position={[0, -67.8, 0]} />
+      </directionalLight>
+
+      <directionalLight
+        color="#fff4e3"
+        intensity={isMobile ? 0.8 : 1.15}
+        position={[-4, -58, 14]}
+      >
+        <object3D attach="target" position={[-1.2, -67.4, 0]} />
+      </directionalLight>
+
       <pointLight
         color="#8bdcff"
         intensity={isMobile ? 0.5 : 0.65}
@@ -86,7 +115,7 @@ export function Scene({ isMobile }: SceneProps) {
       <spotLight
         castShadow={false}
         color="#f4fbff"
-        intensity={isMobile ? 1.35 : 1.6}
+        intensity={isMobile ? 1.65 : 2}
         angle={0.48}
         penumbra={0.7}
         distance={54}
@@ -94,6 +123,19 @@ export function Scene({ isMobile }: SceneProps) {
         position={[2.8, -58, 16]}
       >
         <object3D attach="target" position={[0, -66.8, 0]} />
+      </spotLight>
+
+      <spotLight
+        castShadow={false}
+        color="#a8dcff"
+        intensity={isMobile ? 0.78 : 1.08}
+        angle={0.42}
+        penumbra={0.9}
+        distance={60}
+        decay={2}
+        position={[0, -63.5, -18]}
+      >
+        <object3D attach="target" position={[0, -66.5, 0]} />
       </spotLight>
 
       <mesh

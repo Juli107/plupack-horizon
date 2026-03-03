@@ -44,7 +44,7 @@ export function GlobalCanvas() {
         performance={{ min: 0.6 }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = isMobile ? 1.05 : 1.1;
+          gl.toneMappingExposure = isMobile ? 1.2 : 1.36;
           gl.outputColorSpace = THREE.SRGBColorSpace;
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = isMobile

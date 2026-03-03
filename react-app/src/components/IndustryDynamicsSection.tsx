@@ -79,6 +79,7 @@ export function IndustryDynamicsSection() {
 
   return (
     <section
+      id="industry-dynamics"
       ref={sectionRef}
       className="relative w-full flex items-center justify-center overflow-hidden"
       style={{

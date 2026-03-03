@@ -3,6 +3,15 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from 'lenis/react';
 import { useRef, useState } from 'react';
+import {
+  ClipboardList,
+  FileText,
+  Headset,
+  Route,
+  Truck,
+  UserPlus,
+  type LucideIcon,
+} from 'lucide-react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,28 +23,28 @@ interface ProcessStep {
   number: string;
   title: string;
   subtitle?: string;
-  iconLabel?: string;
+  Icon: LucideIcon;
 }
 
 // ============================================
 // PROCESS STEPS DATA
 // ============================================
 const PROCESS_STEPS: ProcessStep[] = [
-  { number: '01', title: 'Requerimiento de compra', iconLabel: 'Solicitud' },
-  { number: '02', title: 'Cotización personalizada', iconLabel: 'Cotización' },
-  { number: '03', title: 'Alta del cliente o proveedor', iconLabel: 'Registro' },
+  { number: '01', title: 'Requerimiento de compra', Icon: ClipboardList },
+  { number: '02', title: 'Cotización personalizada', Icon: FileText },
+  { number: '03', title: 'Alta del cliente o proveedor', Icon: UserPlus },
   {
     number: '04',
     title: 'Coordinación de la entrega',
     subtitle: '*Garantizada en 10 días hábiles',
-    iconLabel: 'Entrega',
+    Icon: Truck,
   },
   {
     number: '05',
     title: 'Seguimiento en tiempo real y envíos sin cargo',
-    iconLabel: 'Tracking',
+    Icon: Route,
   },
-  { number: '06', title: 'Asesoramiento post-entrega', iconLabel: 'Soporte' },
+  { number: '06', title: 'Asesoramiento post-entrega', Icon: Headset },
 ];
 
 // Line height between steps (in pixels) - MASSIVE SPACING!
@@ -335,30 +344,23 @@ export function PurchaseProcessSection() {
                   alignItems: 'flex-start',
                 }}
               >
-                {/* Icon placeholder */}
                 <div
                   className="flex items-center justify-center shrink-0"
                   style={{
                     width: 32,
                     height: 32,
-                    border: '2px dashed rgba(27, 75, 107, 0.25)',
+                    border: '1px solid rgba(27, 75, 107, 0.25)',
                     borderRadius: '6px',
-                    backgroundColor: 'rgba(27, 75, 107, 0.03)',
+                    backgroundColor: 'rgba(27, 75, 107, 0.06)',
                     marginRight: 12,
                   }}
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="rgba(27, 75, 107, 0.3)"
-                    strokeWidth="1.5"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <path d="M21 15l-5-5L5 21" />
-                  </svg>
+                  <step.Icon
+                    size={16}
+                    strokeWidth={2}
+                    color="#1B4B6B"
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <div>
