@@ -54,25 +54,22 @@
     },
 
     heroFeaturedProducts: [
-      {%- assign hero_featured_handles = '' | split: ',' -%}
-      {%- if section.settings.hero_featured_product_1 != blank -%}
-        {%- assign hero_featured_handles = hero_featured_handles | push: section.settings.hero_featured_product_1 -%}
-      {%- endif -%}
-      {%- if section.settings.hero_featured_product_2 != blank -%}
-        {%- assign hero_featured_handles = hero_featured_handles | push: section.settings.hero_featured_product_2 -%}
-      {%- endif -%}
-      {%- if section.settings.hero_featured_product_3 != blank -%}
-        {%- assign hero_featured_handles = hero_featured_handles | push: section.settings.hero_featured_product_3 -%}
-      {%- endif -%}
-      {%- if section.settings.hero_featured_product_4 != blank -%}
-        {%- assign hero_featured_handles = hero_featured_handles | push: section.settings.hero_featured_product_4 -%}
-      {%- endif -%}
+      {%- capture hero_featured_handles_csv -%}
+        {%- if section.settings.hero_featured_product_1 != blank -%}{{ section.settings.hero_featured_product_1 }},{%- endif -%}
+        {%- if section.settings.hero_featured_product_2 != blank -%}{{ section.settings.hero_featured_product_2 }},{%- endif -%}
+        {%- if section.settings.hero_featured_product_3 != blank -%}{{ section.settings.hero_featured_product_3 }},{%- endif -%}
+        {%- if section.settings.hero_featured_product_4 != blank -%}{{ section.settings.hero_featured_product_4 }},{%- endif -%}
+      {%- endcapture -%}
+      {%- assign hero_featured_handles = hero_featured_handles_csv | split: ',' -%}
 
       {%- assign hero_first_item = true -%}
       {%- assign hero_selected_count = 0 -%}
       {%- assign hero_seen_product_ids = '|' -%}
 
       {%- for product_handle in hero_featured_handles -%}
+        {%- if product_handle == blank -%}
+          {%- continue -%}
+        {%- endif -%}
         {%- if hero_selected_count >= 4 -%}
           {%- break -%}
         {%- endif -%}
