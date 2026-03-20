@@ -376,14 +376,14 @@
         "type": "color",
         "id": "about_page_text_muted",
         "label": "Secondary text",
-        "default": "rgba(255, 255, 255, 0.72)",
+        "default": "#DDEBF5",
         "alpha": true
       },
       {
         "type": "color",
         "id": "about_page_line",
         "label": "Lines and dividers",
-        "default": "rgba(255, 255, 255, 0.24)",
+        "default": "#9FC9DE",
         "alpha": true
       },
       {
