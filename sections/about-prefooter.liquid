@@ -15,9 +15,12 @@
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
-      <span>{{ section.settings.heading_line_1 }}</span>
-      <span class="about-prefooter__title-subline">{{ section.settings.heading_line_2 }}</span>
+      {{ section.settings.heading_line_1 }}
     </h2>
+
+    <p class="about-prefooter__subtitle" data-reveal style="--reveal-delay: 0.12s;">
+      {{ section.settings.heading_line_2 }}
+    </p>
 
     <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
       <a
@@ -51,7 +54,7 @@
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(circle at 50% 50%, color-mix(in srgb, white 8%, transparent) 0%, transparent 56%),
+      radial-gradient(circle at 50% 50%, color-mix(in srgb, white 8%, transparent) 0%, transparent 54%),
       linear-gradient(180deg, color-mix(in srgb, var(--prefooter-bg-start) 92%, black 8%) 0%, var(--prefooter-bg-start) 100%);
   }
 
@@ -75,38 +78,35 @@
     justify-content: center;
     text-align: center;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1200px;
     color: var(--prefooter-text);
     padding: clamp(2rem, 4vw, 3rem) 0;
   }
 
   .about-prefooter__title {
     margin: 0;
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    max-width: 12ch;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(3rem, 8vw, 5.625rem);
+    font-size: clamp(3rem, 7.2vw, 5.625rem);
     text-transform: uppercase;
     letter-spacing: -0.03em;
     line-height: 1;
     font-weight: 700;
-  }
-
-  .about-prefooter__title span {
-    display: block;
     color: var(--prefooter-text);
+    text-wrap: balance;
   }
 
-  .about-prefooter__title-subline {
+  .about-prefooter__subtitle {
+    margin: 1.25rem 0 0;
+    max-width: 16ch;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: inherit;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-size: clamp(2rem, 4.4vw, 3.5rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
     text-transform: uppercase;
-    color: var(--prefooter-text);
+    color: color-mix(in srgb, var(--prefooter-text) 70%, transparent);
+    text-wrap: balance;
   }
 
   .about-prefooter__actions {
@@ -115,13 +115,13 @@
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    margin-top: 2.5rem;
+    margin-top: 3rem;
   }
 
   .about-prefooter__btn {
-    min-width: 220px;
+    min-width: 284px;
     min-height: 60px;
-    padding: 1rem 3.4rem;
+    padding: 1rem 3rem;
     border-radius: 10px;
     border: 1px solid var(--prefooter-line);
     display: inline-flex;
@@ -194,12 +194,15 @@
     }
 
     .about-prefooter__title {
+      max-width: 10ch;
       font-size: clamp(3rem, 13vw, 4.75rem);
       line-height: 1;
     }
 
-    .about-prefooter__title span {
-      font-size: inherit;
+    .about-prefooter__subtitle {
+      max-width: 14ch;
+      font-size: clamp(1.9rem, 8vw, 3rem);
+      line-height: 1.08;
     }
 
     .about-prefooter__btn {
@@ -237,19 +240,19 @@
       "type": "text",
       "id": "heading_line_1",
       "label": "Heading line 1",
-      "default": "Embalajes"
+      "default": "Centralizá tu abastecimiento."
     },
     {
       "type": "text",
       "id": "heading_line_2",
       "label": "Heading line 2",
-      "default": "SIN LÍMITES"
+      "default": "Simplificá tu gestión."
     },
     {
       "type": "text",
       "id": "primary_cta_label",
       "label": "Primary button label",
-      "default": "VER PRODUCTOS"
+      "default": "Ver productos"
     },
     {
       "type": "url",
