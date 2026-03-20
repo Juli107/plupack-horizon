@@ -2,14 +2,16 @@
   id="about-prefooter-{{ section.id }}"
   class="about-prefooter"
   style="
-    --prefooter-bg-start: {{ settings.about_page_bg_alt }};
+    --prefooter-bg-start: {{ settings.about_page_bg }};
     --prefooter-text: {{ settings.about_page_text }};
     --prefooter-line: {{ settings.about_page_line }};
     --prefooter-button-bg: {{ settings.about_page_button_bg }};
     --prefooter-button-text: {{ settings.about_page_button_text }};
+    --prefooter-noise: url('{{ 'noise.webp' | asset_url }}');
   "
 >
   <div class="about-prefooter__backdrop" aria-hidden="true"></div>
+  <div class="about-prefooter__noise" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
@@ -48,9 +50,20 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: color-mix(in srgb, var(--prefooter-bg-start) 74%, transparent);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in srgb, white 8%, transparent) 0%, transparent 56%),
+      linear-gradient(180deg, color-mix(in srgb, var(--prefooter-bg-start) 92%, black 8%) 0%, var(--prefooter-bg-start) 100%);
+  }
+
+  .about-prefooter__noise {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--prefooter-noise);
+    background-repeat: repeat;
+    opacity: 0.05;
+    mix-blend-mode: soft-light;
   }
 
   .about-prefooter__inner {
@@ -69,13 +82,13 @@
 
   .about-prefooter__title {
     margin: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(2.8rem, 7vw, 5.625rem);
+    font-size: clamp(3rem, 8vw, 5.625rem);
     text-transform: uppercase;
     letter-spacing: -0.03em;
     line-height: 1;
@@ -90,10 +103,10 @@
   .about-prefooter__title-subline {
     font-family: var(--font-heading--family), sans-serif;
     font-size: inherit;
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--prefooter-text) 70%, transparent);
+    color: var(--prefooter-text);
   }
 
   .about-prefooter__actions {
@@ -102,13 +115,13 @@
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
   }
 
   .about-prefooter__btn {
     min-width: 220px;
-    min-height: 48px;
-    padding: 0.75rem 2.5rem;
+    min-height: 60px;
+    padding: 1rem 3.4rem;
     border-radius: 10px;
     border: 1px solid var(--prefooter-line);
     display: inline-flex;
@@ -120,7 +133,7 @@
     letter-spacing: 0.08em;
     font-family: var(--font-body--family), sans-serif;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1;
     transition: background-color 220ms ease, color 220ms ease, transform 220ms ease;
   }
@@ -137,8 +150,8 @@
   }
 
   .about-prefooter__btn:hover {
-    background: color-mix(in srgb, var(--prefooter-text) 8%, transparent);
-    color: var(--prefooter-text);
+    background: color-mix(in srgb, var(--prefooter-button-bg) 90%, black 10%);
+    color: var(--prefooter-button-text);
   }
 
   .about-prefooter__btn--solid:hover {
@@ -181,7 +194,7 @@
     }
 
     .about-prefooter__title {
-      font-size: clamp(2.5rem, 11vw, 4.75rem);
+      font-size: clamp(3rem, 13vw, 4.75rem);
       line-height: 1;
     }
 
