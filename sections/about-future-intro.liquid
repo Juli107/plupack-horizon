@@ -1,0 +1,129 @@
+<section
+  id="about-future-intro-{{ section.id }}"
+  class="about-future-intro"
+  style="
+    --future-intro-bg: {{ settings.about_page_purpose_bg }};
+    --future-intro-text: {{ settings.about_page_purpose_text }};
+    --future-intro-pad-top: {{ section.settings.padding_top }}px;
+    --future-intro-pad-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="about-future-intro__inner">
+    <p class="about-future-intro__lead" aria-label="{{ section.settings.paragraph | escape }}">
+      {% assign future_intro_words = section.settings.paragraph | strip | split: ' ' %}
+      {% for word in future_intro_words %}
+        <span class="about-future-intro__word" style="--word-index: {{ forloop.index0 }};">{{ word }}&nbsp;</span>
+      {% endfor %}
+    </p>
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-future-intro {
+    background: var(--future-intro-bg);
+    color: var(--future-intro-text);
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 2rem) 0;
+  }
+
+  .about-future-intro__inner {
+    max-width: min(1550px, 100%);
+    margin-inline: auto;
+    padding-top: clamp(1.5rem, calc(var(--future-intro-pad-top) * 1px), 8rem);
+    padding-bottom: clamp(0.5rem, calc(var(--future-intro-pad-bottom) * 1px), 8rem);
+  }
+
+  .about-future-intro__lead {
+    margin: 0;
+    max-width: min(24ch, 100%);
+    font-family: var(--font-body--family), sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    line-height: 1.16;
+    color: var(--future-intro-text);
+    font-weight: 420;
+    text-wrap: pretty;
+    text-align: left;
+  }
+
+  .about-future-intro__word {
+    display: inline-block;
+    opacity: 0;
+    transform: translate3d(0, 0.75em, 0);
+    animation: about-future-intro-word-reveal 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.04s + (var(--word-index) * 0.035s));
+    will-change: transform, opacity;
+  }
+
+  @keyframes about-future-intro-word-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.75em, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (max-width: 989px) {
+    .about-future-intro {
+      padding-left: clamp(1rem, 4vw, 1.4rem);
+      padding-right: clamp(1rem, 4vw, 1.4rem);
+    }
+
+    .about-future-intro__lead {
+      max-width: 100%;
+      font-size: clamp(1.5rem, 7vw, 2.2rem);
+      line-height: 1.18;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-future-intro__word {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Future Intro",
+  "tag": "section",
+  "class": "about-future-intro-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "paragraph",
+      "label": "Paragraph",
+      "default": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos."
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Future Intro"
+    }
+  ]
+}
+{% endschema %}
