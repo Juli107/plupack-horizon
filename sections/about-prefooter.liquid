@@ -28,7 +28,7 @@
             <filter id="prefooter-outline-{{ section.id }}" x="-20%" y="-20%" width="140%" height="140%">
               <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="2.8" />
               <feComposite in="DILATED" in2="SourceAlpha" operator="out" result="OUTLINE" />
-              <feFlood flood-color="rgba(234, 244, 250, 0.96)" result="COLOR" />
+              <feFlood flood-color="currentColor" result="COLOR" />
               <feComposite in="COLOR" in2="OUTLINE" operator="in" result="FINAL" />
             </filter>
           </defs>
@@ -81,7 +81,11 @@
   .about-prefooter__bubble {
     position: absolute;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(225, 245, 255, 0.78) 0%, rgba(225, 245, 255, 0) 74%);
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--prefooter-text) 78%, transparent) 0%,
+      transparent 74%
+    );
     filter: blur(14px);
     mix-blend-mode: screen;
   }
