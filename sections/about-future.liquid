@@ -11,15 +11,6 @@
   "
 >
   <div class="about-future__inner">
-    <header class="about-future__header" data-reveal style="--reveal-delay: 0.04s;">
-      <p class="about-future__lead" aria-label="{{ section.settings.paragraph_1 | escape }}">
-        {% assign future_words = section.settings.paragraph_1 | strip | split: ' ' %}
-        {% for word in future_words %}
-          <span class="about-future__lead-word" style="--word-index: {{ forloop.index0 }};">{{ word }}&nbsp;</span>
-        {% endfor %}
-      </p>
-    </header>
-
     <div class="about-future__layout">
       <aside class="about-future__rail" data-reveal style="--reveal-delay: 0.1s;">
         <h2 class="about-future__title">{{ section.settings.heading }}</h2>
@@ -76,10 +67,9 @@
 
 {% stylesheet %}
   .about-future {
-    --future-section-space: clamp(6.4rem, 10vh, 8rem);
     position: relative;
     overflow: clip;
-    padding: var(--future-section-space) clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
+    padding: 0 clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
     background: var(--future-bg);
     color: var(--future-text);
     isolation: isolate;
@@ -91,35 +81,7 @@
     max-width: min(1550px, 100%);
     margin-inline: auto;
     display: grid;
-    gap: clamp(2.2rem, 4.5vw, 3.6rem);
-  }
-
-  .about-future__header {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    padding-block: clamp(0.4rem, 1vw, 0.9rem) 0;
-  }
-
-  .about-future__lead {
-    margin: 0;
-    max-width: min(24ch, 100%);
-    font-family: var(--font-body--family), sans-serif;
-    font-size: clamp(2rem, 3.5vw, 3.5rem);
-    line-height: 1.16;
-    color: var(--future-text);
-    font-weight: 420;
-    text-wrap: pretty;
-    text-align: left;
-  }
-
-  .about-future__lead-word {
-    display: inline-block;
-    opacity: 0;
-    transform: translate3d(0, 0.75em, 0);
-    animation: about-future-word-reveal 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: calc(0.04s + (var(--word-index) * 0.035s));
-    will-change: transform, opacity;
+    gap: 0;
   }
 
   .about-future__layout {
@@ -229,34 +191,11 @@
     }
   }
 
-  @keyframes about-future-word-reveal {
-    from {
-      opacity: 0;
-      transform: translate3d(0, 0.75em, 0);
-    }
-
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-  }
-
   @media (max-width: 989px) {
     .about-future {
-      padding-top: clamp(3.4rem, 8vh, 4.4rem);
       padding-bottom: clamp(3.6rem, 8vh, 4.8rem);
       padding-left: clamp(1rem, 4vw, 1.4rem);
       padding-right: clamp(1rem, 4vw, 1.4rem);
-    }
-
-    .about-future__header {
-      padding-block: 0;
-    }
-
-    .about-future__lead {
-      max-width: 100%;
-      font-size: clamp(1.5rem, 7vw, 2.2rem);
-      line-height: 1.18;
     }
 
     .about-future__layout {
@@ -312,8 +251,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-future [data-reveal],
-    .about-future__lead-word {
+    .about-future [data-reveal] {
       opacity: 1;
       transform: none;
       animation: none;
@@ -332,12 +270,6 @@
       "id": "heading",
       "label": "Heading",
       "default": "Futuro"
-    },
-    {
-      "type": "textarea",
-      "id": "paragraph_1",
-      "label": "Intro paragraph",
-      "default": "Queremos consolidarnos como una de las marcas de embalaje mas modernas y confiables de Argentina. Nuestra proyeccion se sostiene en cinco ejes concretos."
     },
     {
       "type": "text",

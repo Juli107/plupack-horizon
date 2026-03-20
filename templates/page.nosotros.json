@@ -34,10 +34,17 @@
       }
     },
     "about_future": {
+      "type": "about-future-intro",
+      "settings": {
+        "paragraph": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
+        "padding_top": 56,
+        "padding_bottom": 20
+      }
+    },
+    "about_future_axes": {
       "type": "about-future",
       "settings": {
         "heading": "Futuro",
-        "paragraph_1": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
         "axis_1_title": "Expansión nacional",
         "axis_1_text": "Presencia operativa en todas las provincias con cobertura logística eficiente.",
         "axis_2_title": "Fortalecimiento estructural",
@@ -64,6 +71,7 @@
     "about_hero",
     "about_purpose",
     "about_future",
+    "about_future_axes",
     "about_prefooter"
   ]
 }
