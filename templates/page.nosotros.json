@@ -12,8 +12,6 @@
     "about_hero": {
       "type": "about-hero",
       "settings": {
-        "background_color": "#ecf2f6",
-        "text_color": "#146c90",
         "eyebrow": "Sobre nosotros",
         "heading_line_1": "Soluciones",
         "heading_line_2": "integrales en",
@@ -28,8 +26,6 @@
     "about_purpose": {
       "type": "about-purpose",
       "settings": {
-        "background_color": "#ecf2f6",
-        "text_color": "#146c90",
         "heading": "Nuestro propósito",
         "paragraph_1": "Simplificar la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable. Menos fricción, menos vueltas, más continuidad operativa.",
         "paragraph_2": "No buscamos ser un proveedor más. Buscamos ser el punto de referencia al que volvés porque responde, cumple y sostiene acuerdos en el tiempo.",
@@ -40,8 +36,6 @@
     "about_future": {
       "type": "about-future",
       "settings": {
-        "background_color": "#dde6ec",
-        "text_color": "#146c90",
         "heading": "Futuro",
         "paragraph_1": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
         "axis_1_title": "Expansión nacional",
@@ -59,13 +53,10 @@
     "about_prefooter": {
       "type": "about-prefooter",
       "settings": {
-        "background_start": "#136b8f",
-        "background_end": "#136b8f",
-        "text_color": "#eaf4fa",
-        "heading_line_1": "Embalajes",
-        "heading_line_2": "SIN LÍMITES",
-        "primary_cta_label": "VER PRODUCTOS",
-        "primary_cta_url": "/collections/all",
+        "heading_line_1": "Centralizá tu abastecimiento.",
+        "heading_line_2": "Simplificá tu gestión.",
+        "primary_cta_label": "Ver productos",
+        "primary_cta_url": "/collections/all"
       }
     }
   },
