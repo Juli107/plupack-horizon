@@ -2,8 +2,10 @@
   id="about-purpose-{{ section.id }}"
   class="about-purpose"
   style="
-    --about-bg: {{ section.settings.background_color }};
-    --about-text: {{ section.settings.text_color }};
+    --about-bg: {{ settings.about_page_bg }};
+    --about-text: {{ settings.about_page_text }};
+    --about-text-muted: {{ settings.about_page_text_muted }};
+    --about-line: {{ settings.about_page_line }};
   "
 >
   <div class="about-purpose__inner">
@@ -145,7 +147,11 @@
     height: clamp(56px, 7vw, 110px);
     pointer-events: none;
     z-index: 1;
-    background: linear-gradient(180deg, rgba(20, 108, 144, 0.06) 0%, rgba(20, 108, 144, 0) 100%);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--about-line) 42%, transparent) 0%,
+      transparent 100%
+    );
   }
 
   .about-purpose__inner,
@@ -186,7 +192,7 @@
     font-size: clamp(1.08rem, 1.18vw, 1.38rem);
     line-height: 1.52;
     font-weight: 420;
-    color: rgba(20, 108, 144, 0.9);
+    color: var(--about-text-muted);
   }
 
   .about-purpose__content p {
@@ -204,8 +210,12 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(221, 230, 237, 0.06) 0%, rgba(221, 230, 237, 0.22) 100%),
-      rgba(20, 108, 144, 0.08);
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--about-bg) 8%, transparent) 0%,
+        color-mix(in srgb, var(--about-bg) 24%, transparent) 100%
+      ),
+      color-mix(in srgb, var(--about-line) 26%, transparent);
     mix-blend-mode: multiply;
   }
 
@@ -285,18 +295,6 @@
   "tag": "section",
   "class": "about-purpose-section",
   "settings": [
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#ecf2f6"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#084e85"
-    },
     {
       "type": "text",
       "id": "heading",

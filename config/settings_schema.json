@@ -345,6 +345,68 @@
     ]
   },
   {
+    "name": "About Page",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Palette"
+      },
+      {
+        "type": "color",
+        "id": "about_page_bg",
+        "label": "Background",
+        "default": "#084E85",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_bg_alt",
+        "label": "Alternate background",
+        "default": "#0B6386",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_text",
+        "label": "Primary text",
+        "default": "#FFFFFF",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_text_muted",
+        "label": "Secondary text",
+        "default": "rgba(255, 255, 255, 0.72)",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_line",
+        "label": "Lines and dividers",
+        "default": "rgba(255, 255, 255, 0.24)",
+        "alpha": true
+      },
+      {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "color",
+        "id": "about_page_button_bg",
+        "label": "Button background",
+        "default": "#FFFFFF",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_button_text",
+        "label": "Button text",
+        "default": "#084E85",
+        "alpha": true
+      }
+    ]
+  },
+  {
     "name": "t:names.typography",
     "settings": [
       {

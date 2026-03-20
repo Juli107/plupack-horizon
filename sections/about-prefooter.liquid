@@ -4,8 +4,11 @@
   id="about-prefooter-{{ section.id }}"
   class="about-prefooter"
   style="
-    --prefooter-bg-start: {{ section.settings.background_start }};
-    --prefooter-text: {{ section.settings.text_color }};
+    --prefooter-bg-start: {{ settings.about_page_bg_alt }};
+    --prefooter-text: {{ settings.about_page_text }};
+    --prefooter-line: {{ settings.about_page_line }};
+    --prefooter-button-bg: {{ settings.about_page_button_bg }};
+    --prefooter-button-text: {{ settings.about_page_button_text }};
   "
 >
   <div class="about-prefooter__orbital" aria-hidden="true">
@@ -148,7 +151,7 @@
 
   .about-prefooter__title span {
     display: block;
-    color: #ffffff;
+    color: var(--prefooter-text);
   }
 
   .about-prefooter__outline-wrap {
@@ -178,7 +181,7 @@
     font-weight: 500;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    fill: #ffffff;
+    fill: var(--prefooter-text);
   }
 
   .about-prefooter__actions {
@@ -195,7 +198,7 @@
     min-height: 48px;
     padding: 0.75rem 2.5rem;
     border-radius: 10px;
-    border: 1px solid #ffffff;
+    border: 1px solid var(--prefooter-line);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -211,28 +214,28 @@
   }
 
   .about-prefooter__btn--solid {
-    background: #ffffff;
-    color: #0b6386;
-    border-color: #ffffff;
+    background: var(--prefooter-button-bg);
+    color: var(--prefooter-button-text);
+    border-color: var(--prefooter-button-bg);
   }
 
   .about-prefooter__btn--ghost {
     background: transparent;
-    color: #ffffff;
+    color: var(--prefooter-text);
   }
 
   .about-prefooter__btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background: color-mix(in srgb, var(--prefooter-text) 8%, transparent);
+    color: var(--prefooter-text);
   }
 
   .about-prefooter__btn--solid:hover {
-    background: #f4f7f9;
-    color: #0b6386;
+    background: color-mix(in srgb, var(--prefooter-button-bg) 90%, var(--prefooter-text) 10%);
+    color: var(--prefooter-button-text);
   }
 
   .about-prefooter__btn:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline: 2px solid color-mix(in srgb, var(--prefooter-text) 90%, transparent);
     outline-offset: 3px;
   }
 
@@ -325,24 +328,6 @@
   "tag": "section",
   "class": "about-prefooter-section",
   "settings": [
-    {
-      "type": "color",
-      "id": "background_start",
-      "label": "Background start",
-      "default": "#136B8F"
-    },
-    {
-      "type": "color",
-      "id": "background_end",
-      "label": "Background end",
-      "default": "#136B8F"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#EAF4FA"
-    },
     {
       "type": "text",
       "id": "heading_line_1",

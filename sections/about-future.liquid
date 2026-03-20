@@ -2,8 +2,10 @@
   id="about-future-{{ section.id }}"
   class="about-future"
   style="
-    --future-bg: {{ section.settings.background_color }};
-    --future-text: {{ section.settings.text_color }};
+    --future-bg: {{ settings.about_page_bg_alt }};
+    --future-text: {{ settings.about_page_text }};
+    --future-text-muted: {{ settings.about_page_text_muted }};
+    --future-line: {{ settings.about_page_line }};
   "
 >
   <div class="about-future__inner">
@@ -73,10 +75,10 @@
     padding: var(--future-section-space) clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
     background: radial-gradient(
         120% 120% at 82% 12%,
-        color-mix(in srgb, var(--future-text) 12%, transparent) 0%,
+        color-mix(in srgb, var(--future-line) 60%, transparent) 0%,
         transparent 56%
       ),
-      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 96%, white 4%) 0%, var(--future-bg) 100%);
+      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 90%, black 10%) 0%, var(--future-bg) 100%);
     color: var(--future-text);
     isolation: isolate;
   }
@@ -101,7 +103,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(1.65rem, 2.8vw, 2.9rem);
     line-height: 1.24;
-    color: color-mix(in srgb, var(--future-text) 95%, transparent);
+    color: var(--future-text);
     font-weight: 430;
     text-wrap: pretty;
   }
@@ -136,7 +138,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(0.9rem, 0.98vw, 1.08rem);
     line-height: 1.42;
-    color: color-mix(in srgb, var(--future-text) 72%, transparent);
+    color: var(--future-text-muted);
   }
 
   .about-future__axes {
@@ -145,7 +147,7 @@
     padding: 0;
     display: grid;
     gap: 0;
-    border-top: 1px solid color-mix(in srgb, var(--future-text) 28%, transparent);
+    border-top: 1px solid var(--future-line);
     max-width: min(40rem, 100%);
     width: 100%;
     justify-self: end;
@@ -158,7 +160,7 @@
     align-items: start;
     min-height: 0;
     padding: clamp(1.35rem, 2.1vw, 1.9rem) 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--future-text) 24%, transparent);
+    border-bottom: 1px solid var(--future-line);
   }
 
   .about-future__index {
@@ -167,7 +169,7 @@
     font-size: clamp(0.76rem, 0.9vw, 0.95rem);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--future-text) 56%, transparent);
+    color: var(--future-text-muted);
   }
 
   .about-future__axis-body h3 {
@@ -187,7 +189,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(0.95rem, 1.05vw, 1.18rem);
     line-height: 1.48;
-    color: color-mix(in srgb, var(--future-text) 83%, transparent);
+    color: var(--future-text-muted);
     font-weight: 410;
     text-wrap: pretty;
   }
@@ -295,18 +297,6 @@
   "tag": "section",
   "class": "about-future-section",
   "settings": [
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#DDE6EC"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#084e85"
-    },
     {
       "type": "text",
       "id": "heading",
