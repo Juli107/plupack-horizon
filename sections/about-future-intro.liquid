@@ -18,6 +18,62 @@
   </div>
 </section>
 
+<script>
+  (() => {
+    const sectionId = 'about-future-intro-{{ section.id }}';
+
+    const initFutureIntroReveal = () => {
+      const section = document.getElementById(sectionId);
+      if (!section || section.dataset.revealInitialized === 'true') return;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        section.dataset.revealReady = 'true';
+        return;
+      }
+
+      section.dataset.revealInitialized = 'true';
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            section.dataset.revealReady = 'true';
+            observer.disconnect();
+          });
+        },
+        {
+          threshold: 0.2,
+          rootMargin: '0px 0px -10% 0px',
+        }
+      );
+
+      observer.observe(section);
+
+      section.addEventListener(
+        'shopify:section:unload',
+        () => {
+          observer.disconnect();
+        },
+        { once: true }
+      );
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFutureIntroReveal, { once: true });
+    } else {
+      initFutureIntroReveal();
+    }
+
+    document.addEventListener('shopify:section:load', (event) => {
+      if (event.target && event.target.id === sectionId) {
+        initFutureIntroReveal();
+      }
+    });
+  })();
+</script>
+
 {% stylesheet %}
   .about-future-intro {
     background: var(--future-intro-bg);
@@ -48,9 +104,12 @@
     display: inline-block;
     opacity: 0;
     transform: translate3d(0, 0.75em, 0);
+    will-change: transform, opacity;
+  }
+
+  .about-future-intro[data-reveal-ready='true'] .about-future-intro__word {
     animation: about-future-intro-word-reveal 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: calc(0.04s + (var(--word-index) * 0.035s));
-    will-change: transform, opacity;
   }
 
   @keyframes about-future-intro-word-reveal {
