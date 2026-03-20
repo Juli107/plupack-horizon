@@ -2,10 +2,12 @@
   id="about-future-{{ section.id }}"
   class="about-future"
   style="
-    --future-bg: {{ settings.about_page_bg_alt }};
-    --future-text: {{ settings.about_page_text }};
-    --future-text-muted: {{ settings.about_page_text_muted }};
-    --future-line: {{ settings.about_page_line }};
+    --future-bg: {{ settings.about_page_purpose_bg }};
+    --future-text: {{ settings.about_page_purpose_text }};
+    --future-text-muted: {{ settings.about_page_purpose_text_muted }};
+    --future-line: color-mix(in srgb, {{ settings.about_page_purpose_text }} 14%, transparent);
+    --future-card-bg: color-mix(in srgb, white 78%, {{ settings.about_page_purpose_bg }} 22%);
+    --future-card-border: color-mix(in srgb, {{ settings.about_page_purpose_text }} 12%, transparent);
   "
 >
   <div class="about-future__inner">
@@ -73,12 +75,7 @@
     position: relative;
     overflow: clip;
     padding: var(--future-section-space) clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
-    background: radial-gradient(
-        120% 120% at 82% 12%,
-        color-mix(in srgb, var(--future-line) 60%, transparent) 0%,
-        transparent 56%
-      ),
-      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 90%, black 10%) 0%, var(--future-bg) 100%);
+    background: var(--future-bg);
     color: var(--future-text);
     isolation: isolate;
   }
@@ -146,8 +143,7 @@
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0;
-    border-top: 1px solid var(--future-line);
+    gap: 0.9rem;
     max-width: min(40rem, 100%);
     width: 100%;
     justify-self: end;
@@ -159,8 +155,11 @@
     gap: clamp(0.95rem, 1.8vw, 1.6rem);
     align-items: start;
     min-height: 0;
-    padding: clamp(1.35rem, 2.1vw, 1.9rem) 0;
-    border-bottom: 1px solid var(--future-line);
+    padding: clamp(1.35rem, 2.1vw, 1.9rem);
+    background: var(--future-card-bg);
+    border: 1px solid var(--future-card-border);
+    border-radius: 18px;
+    box-shadow: 0 14px 35px color-mix(in srgb, var(--future-text) 5%, transparent);
   }
 
   .about-future__index {
@@ -169,7 +168,7 @@
     font-size: clamp(0.76rem, 0.9vw, 0.95rem);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--future-text-muted);
+    color: color-mix(in srgb, var(--future-text) 62%, transparent);
   }
 
   .about-future__axis-body h3 {
@@ -262,6 +261,7 @@
       gap: 0.35rem;
       min-height: 0;
       padding: 1rem 1rem 1.1rem;
+      border-radius: 16px;
     }
 
     .about-future__index {
