@@ -91,26 +91,26 @@
     max-width: min(1550px, 100%);
     margin-inline: auto;
     display: grid;
-    gap: var(--future-section-space);
+    gap: clamp(2.2rem, 4.5vw, 3.6rem);
   }
 
   .about-future__header {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
-    padding-block: clamp(1rem, 2vw, 1.75rem) clamp(1.5rem, 3vw, 2.5rem);
+    padding-block: clamp(0.4rem, 1vw, 0.9rem) 0;
   }
 
   .about-future__lead {
     margin: 0;
-    max-width: min(20ch, 100%);
+    max-width: min(24ch, 100%);
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(2rem, 3.5vw, 3.5rem);
     line-height: 1.16;
     color: var(--future-text);
     font-weight: 420;
     text-wrap: pretty;
-    text-align: center;
+    text-align: left;
   }
 
   .about-future__lead-word {
@@ -125,7 +125,7 @@
   .about-future__layout {
     display: grid;
     grid-template-columns: minmax(250px, 0.34fr) minmax(0, 1fr);
-    gap: clamp(4.8rem, 8vw, 10rem);
+    gap: clamp(1.5rem, 4vw, 5rem);
     align-items: start;
   }
 
@@ -250,7 +250,7 @@
     }
 
     .about-future__header {
-      padding-block: 0 clamp(0.8rem, 3vw, 1.35rem);
+      padding-block: 0;
     }
 
     .about-future__lead {
@@ -261,7 +261,7 @@
 
     .about-future__layout {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.2rem;
     }
 
     .about-future__axes {
