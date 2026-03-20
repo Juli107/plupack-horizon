@@ -388,6 +388,31 @@
       },
       {
         "type": "header",
+        "content": "Purpose Section"
+      },
+      {
+        "type": "color",
+        "id": "about_page_purpose_bg",
+        "label": "Purpose background",
+        "default": "#E8ECF2",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_purpose_text",
+        "label": "Purpose primary text",
+        "default": "#1B4B6B",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_purpose_text_muted",
+        "label": "Purpose secondary text",
+        "default": "#365E7B",
+        "alpha": true
+      },
+      {
+        "type": "header",
         "content": "Button"
       },
       {

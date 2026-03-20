@@ -1,5 +1,3 @@
-{% assign heading_line_2_upcase = section.settings.heading_line_2 | upcase %}
-
 <section
   id="about-prefooter-{{ section.id }}"
   class="about-prefooter"
@@ -11,32 +9,12 @@
     --prefooter-button-text: {{ settings.about_page_button_text }};
   "
 >
-  <div class="about-prefooter__orbital" aria-hidden="true">
-    <span class="about-prefooter__bubble about-prefooter__bubble--a"></span>
-    <span class="about-prefooter__bubble about-prefooter__bubble--b"></span>
-    <span class="about-prefooter__bubble about-prefooter__bubble--c"></span>
-    <span class="about-prefooter__bubble about-prefooter__bubble--d"></span>
-  </div>
+  <div class="about-prefooter__backdrop" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
       <span>{{ section.settings.heading_line_1 }}</span>
-      <span class="about-prefooter__outline-wrap">
-        <span class="about-prefooter__outline-sizer" aria-hidden="true">{{ heading_line_2_upcase }}</span>
-        <svg class="about-prefooter__outline-svg" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id="prefooter-outline-{{ section.id }}" x="-20%" y="-20%" width="140%" height="140%">
-              <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="2.8" />
-              <feComposite in="DILATED" in2="SourceAlpha" operator="out" result="OUTLINE" />
-              <feFlood flood-color="currentColor" result="COLOR" />
-              <feComposite in="COLOR" in2="OUTLINE" operator="in" result="FINAL" />
-            </filter>
-          </defs>
-          <text class="about-prefooter__outline-text" x="0" y="0.85em" style="filter: url(#prefooter-outline-{{ section.id }});">
-            {{ heading_line_2_upcase }}
-          </text>
-        </svg>
-      </span>
+      <span class="about-prefooter__title-subline">{{ section.settings.heading_line_2 }}</span>
     </h2>
 
     <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
@@ -65,64 +43,14 @@
     isolation: isolate;
   }
 
-  .about-prefooter__orbital {
+  .about-prefooter__backdrop {
     position: absolute;
-    top: -92%;
-    right: -72%;
-    width: clamp(1500px, 110vw, 2200px);
-    height: clamp(1500px, 110vw, 2200px);
+    inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.62;
-    animation: prefooter-orbital-spin 26s linear infinite;
-    transform-origin: center;
-  }
-
-  .about-prefooter__bubble {
-    position: absolute;
-    border-radius: 999px;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--prefooter-text) 78%, transparent) 0%,
-      transparent 74%
-    );
-    filter: blur(14px);
-    mix-blend-mode: screen;
-  }
-
-  .about-prefooter__bubble--a {
-    top: 16%;
-    left: 50%;
-    width: clamp(150px, 12vw, 220px);
-    height: clamp(150px, 12vw, 220px);
-    transform: translateX(-50%);
-  }
-
-  .about-prefooter__bubble--b {
-    top: 50%;
-    right: 10%;
-    width: clamp(108px, 9vw, 170px);
-    height: clamp(108px, 9vw, 170px);
-    transform: translateY(-50%);
-    opacity: 0.86;
-  }
-
-  .about-prefooter__bubble--c {
-    bottom: 14%;
-    left: 52%;
-    width: clamp(72px, 6vw, 112px);
-    height: clamp(72px, 6vw, 112px);
-    transform: translateX(-50%);
-    opacity: 0.8;
-  }
-
-  .about-prefooter__bubble--d {
-    top: 50%;
-    left: 10%;
-    width: clamp(44px, 4.5vw, 76px);
-    height: clamp(44px, 4.5vw, 76px);
-    transform: translateY(-50%);
-    opacity: 0.76;
+    background: color-mix(in srgb, var(--prefooter-bg-start) 74%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .about-prefooter__inner {
@@ -134,23 +62,24 @@
     justify-content: center;
     text-align: center;
     width: 100%;
-    max-width: 1300px;
+    max-width: 1100px;
     color: var(--prefooter-text);
+    padding: clamp(2rem, 4vw, 3rem) 0;
   }
 
   .about-prefooter__title {
     margin: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(3rem, 8vw, 118px);
+    font-size: clamp(2.8rem, 7vw, 5.625rem);
     text-transform: uppercase;
-    letter-spacing: -0.02em;
-    line-height: 0.94;
-    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-weight: 700;
   }
 
   .about-prefooter__title span {
@@ -158,34 +87,13 @@
     color: var(--prefooter-text);
   }
 
-  .about-prefooter__outline-wrap {
-    position: relative;
-    display: inline-block;
-    font-size: inherit;
-    line-height: inherit;
-  }
-
-  .about-prefooter__outline-sizer {
-    visibility: hidden;
-    display: inline-block;
-  }
-
-  .about-prefooter__outline-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  .about-prefooter__outline-text {
+  .about-prefooter__title-subline {
     font-family: var(--font-heading--family), sans-serif;
     font-size: inherit;
     font-weight: 500;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    fill: var(--prefooter-text);
+    color: color-mix(in srgb, var(--prefooter-text) 70%, transparent);
   }
 
   .about-prefooter__actions {
@@ -214,7 +122,7 @@
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1;
-    transition: background-color 220ms ease, color 220ms ease;
+    transition: background-color 220ms ease, color 220ms ease, transform 220ms ease;
   }
 
   .about-prefooter__btn--solid {
@@ -265,17 +173,6 @@
       transform: translate3d(0, 0, 0);
     }
   }
-
-  @keyframes prefooter-orbital-spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
   @media (max-width: 989px) {
     .about-prefooter {
       min-height: 72vh;
@@ -283,17 +180,9 @@
       padding-bottom: 4rem;
     }
 
-    .about-prefooter__orbital {
-      top: -42%;
-      right: -120%;
-      width: clamp(1200px, 250vw, 1800px);
-      height: clamp(1200px, 250vw, 1800px);
-      opacity: 0.54;
-    }
-
     .about-prefooter__title {
-      font-size: clamp(3rem, 13vw, 4.75rem);
-      line-height: 0.95;
+      font-size: clamp(2.5rem, 11vw, 4.75rem);
+      line-height: 1;
     }
 
     .about-prefooter__title span {
@@ -313,7 +202,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-prefooter__orbital,
     .about-prefooter [data-reveal] {
       animation: none;
       opacity: 1;

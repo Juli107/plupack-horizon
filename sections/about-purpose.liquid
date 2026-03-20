@@ -2,10 +2,9 @@
   id="about-purpose-{{ section.id }}"
   class="about-purpose"
   style="
-    --about-bg: {{ settings.about_page_bg }};
-    --about-text: {{ settings.about_page_text }};
-    --about-text-muted: {{ settings.about_page_text_muted }};
-    --about-line: {{ settings.about_page_line }};
+    --about-bg: {{ settings.about_page_purpose_bg }};
+    --about-text: {{ settings.about_page_purpose_text }};
+    --about-text-muted: {{ settings.about_page_purpose_text_muted }};
   "
 >
   <div class="about-purpose__inner">
@@ -140,20 +139,6 @@
     padding: clamp(6.4rem, 9vh, 8rem) clamp(1rem, 2vw, 1.5rem);
   }
 
-  .about-purpose::after {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: clamp(56px, 7vw, 110px);
-    pointer-events: none;
-    z-index: 1;
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--about-line) 42%, transparent) 0%,
-      transparent 100%
-    );
-  }
-
   .about-purpose__inner,
   .about-purpose__image-wrap {
     position: relative;
@@ -210,13 +195,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--about-bg) 8%, transparent) 0%,
-        color-mix(in srgb, var(--about-bg) 24%, transparent) 100%
-      ),
-      color-mix(in srgb, var(--about-line) 26%, transparent);
-    mix-blend-mode: multiply;
+    background: color-mix(in srgb, var(--about-bg) 10%, transparent);
   }
 
   .about-purpose__image {
