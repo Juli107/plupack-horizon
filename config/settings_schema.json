@@ -345,6 +345,93 @@
     ]
   },
   {
+    "name": "About Page",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Palette"
+      },
+      {
+        "type": "color",
+        "id": "about_page_bg",
+        "label": "Background",
+        "default": "#084E85",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_bg_alt",
+        "label": "Alternate background",
+        "default": "#0B6386",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_text",
+        "label": "Primary text",
+        "default": "#FFFFFF",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_text_muted",
+        "label": "Secondary text",
+        "default": "#DDEBF5",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_line",
+        "label": "Lines and dividers",
+        "default": "#9FC9DE",
+        "alpha": true
+      },
+      {
+        "type": "header",
+        "content": "Purpose Section"
+      },
+      {
+        "type": "color",
+        "id": "about_page_purpose_bg",
+        "label": "Purpose background",
+        "default": "#E8ECF2",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_purpose_text",
+        "label": "Purpose primary text",
+        "default": "#1B4B6B",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_purpose_text_muted",
+        "label": "Purpose secondary text",
+        "default": "#365E7B",
+        "alpha": true
+      },
+      {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "color",
+        "id": "about_page_button_bg",
+        "label": "Button background",
+        "default": "#FFFFFF",
+        "alpha": true
+      },
+      {
+        "type": "color",
+        "id": "about_page_button_text",
+        "label": "Button text",
+        "default": "#084E85",
+        "alpha": true
+      }
+    ]
+  },
+  {
     "name": "t:names.typography",
     "settings": [
       {

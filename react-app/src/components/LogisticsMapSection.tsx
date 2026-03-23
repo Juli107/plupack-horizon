@@ -15,6 +15,13 @@ interface PulseNode {
   delay: number;
 }
 
+interface TransportistaItem {
+  src: string;
+  alt: string;
+  mobileOrder: number;
+  scale?: number;
+}
+
 // ============================================
 // SELECTED NODE INDICES FOR PULSE ANIMATION
 // 23 markers total: one per Argentine province
@@ -55,6 +62,70 @@ const PULSE_NODES: PulseNode[] = [
   { index: 780, delay: 1.0 },
   { index: 850, delay: 1.5 },
   { index: 940, delay: 0.2 },
+];
+
+const transportistaImports = import.meta.glob(
+  '../assets/transportistas/*.webp',
+  {
+    eager: true,
+    import: 'default',
+  },
+);
+
+const getTransportistaSrc = (filename: string) => {
+  const path = `../assets/transportistas/${filename}`;
+  return (transportistaImports[path] as string) || '';
+};
+
+const TRANSPORTISTAS: TransportistaItem[] = [
+  {
+    src: 'via-cargo.webp',
+    alt: 'Via Cargo',
+    mobileOrder: 1,
+    scale: 1.9,
+  },
+  {
+    src: 'transportes-navas-srl.webp',
+    alt: 'Transportes Navas SRL',
+    mobileOrder: 2,
+    scale: 1.6,
+  },
+  {
+    src: 'distribucion-y-logistica.webp',
+    alt: 'Distribucion y logistica',
+    mobileOrder: 3,
+    scale: 1.8,
+  },
+  {
+    src: 'cruz-del-sur.webp',
+    alt: 'Cruz del Sur',
+    mobileOrder: 4,
+    scale: 1.8,
+  },
+  {
+    src: 'g.webp',
+    alt: 'G',
+    mobileOrder: 5,
+    scale: 2.8,
+  },
+  {
+    src: 'mostto-logistica-y-transporte.webp',
+    alt: 'Mostto logistica y transporte',
+    mobileOrder: 6,
+    scale: 1.85,
+  },
+  {
+    src: 'transporte-snaider.webp',
+    alt: 'Transporte Snaider',
+    mobileOrder: 7,
+    scale: 2,
+  },
+  {
+    src: 'transportes-premat-sa.webp',
+    alt: 'Transportes Premat SA',
+    mobileOrder: 8,
+    scale: 1.65,
+  },
 ];
 
 // Generate static connecting lines between nearby dots
@@ -139,7 +210,7 @@ export function LogisticsMapSection() {
 
         circles.forEach((circle) => {
           const svgCircle = circle as SVGCircleElement;
-          svgCircle.style.fill = 'rgba(255, 255, 255, 0.08)';
+          svgCircle.style.fill = 'rgba(255, 255, 255, 0.32)';
           svgCircle.style.stroke = 'none';
 
           circleData.push({
@@ -195,7 +266,6 @@ export function LogisticsMapSection() {
       const text = textRef.current;
       const heading = text.querySelector('.map-heading');
       const subheading = text.querySelector('.map-subheading');
-
       // Get all circle elements from the SVG
       const circles =
         mapContainer.querySelectorAll('circle, ellipse');
@@ -221,7 +291,6 @@ export function LogisticsMapSection() {
       });
 
       gsap.set(text, { opacity: 0, y: 50 });
-
       if (heading && subheading) {
         gsap.set([heading, subheading], {
           clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)',
@@ -449,44 +518,91 @@ export function LogisticsMapSection() {
         />
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
-        <div
-          ref={mapWrapperRef}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <div
-            ref={mapContainerRef}
-            className="will-change-transform"
-            style={{
-              width: 'clamp(300px, 60vw, 600px)',
-              height: 'clamp(400px, 80vh, 700px)',
-            }}
-          />
-        </div>
+        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1760px] items-center px-6 py-12 md:px-10 lg:px-16 xl:px-24">
+          <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(360px,0.9fr)_minmax(560px,1.1fr)] lg:gap-16 xl:gap-24">
+            <div
+              ref={mapWrapperRef}
+              className="relative flex items-center justify-center"
+            >
+              <div
+                ref={mapContainerRef}
+                className="will-change-transform"
+                style={{
+                  width: 'clamp(340px, 39vw, 620px)',
+                  height: 'clamp(440px, 78vh, 860px)',
+                }}
+              />
+            </div>
 
-        {/* Foreground Text Layer */}
-        <div
-          ref={textRef}
-          className="relative z-20 text-center px-6 will-change-transform"
-        >
-          <h2
-            className="map-heading text-white font-bold tracking-tight"
-            style={{
-              fontFamily: getFontFamily('heading'),
-              fontSize: 'clamp(2.5rem, 8vw, 5rem)',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            COBERTURA NACIONAL
-          </h2>
-          <p
-            className="map-subheading text-white font-medium"
-            style={{
-              fontFamily: getFontFamily('body'),
-              fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
-            }}
-          >
-            Logística donde lo necesites.
-          </p>
+            <div
+              ref={textRef}
+              className="relative z-20 flex flex-col items-start text-left will-change-transform"
+            >
+              <h2
+                className="map-heading text-white font-bold tracking-tight"
+                style={{
+                  fontFamily: getFontFamily('heading'),
+                  fontSize: 'clamp(3.4rem, 6.9vw, 7rem)',
+                  letterSpacing: '-0.03em',
+                  lineHeight: 0.9,
+                  maxWidth: '13ch',
+                }}
+              >
+                COBERTURA NACIONAL
+              </h2>
+              <p
+                className="map-subheading mt-4 text-white/92 font-medium"
+                style={{
+                  fontFamily: getFontFamily('body'),
+                  fontSize: 'clamp(1.12rem, 1.55vw, 1.65rem)',
+                }}
+              >
+                Logística donde lo necesites.
+              </p>
+
+              <div className="mt-10 hidden w-full max-w-[920px] lg:block">
+                <div className="grid grid-cols-2 gap-x-14 gap-y-8 xl:gap-x-18 xl:gap-y-10">
+                  {TRANSPORTISTAS.map((transportista) => (
+                    <div
+                      key={`desktop-${transportista.src}`}
+                      className="flex min-h-[6.75rem] items-center justify-start"
+                    >
+                      <img
+                        src={getTransportistaSrc(transportista.src)}
+                        alt={transportista.alt}
+                        className="w-auto object-contain opacity-95 drop-shadow-[0_0_14px_rgba(255,255,255,0.08)]"
+                        style={{
+                          height: `${(transportista.scale || 1) * 3.2}rem`,
+                          maxWidth: '100%',
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 grid w-full max-w-[26rem] grid-cols-2 gap-3 sm:mt-10 lg:hidden">
+            {TRANSPORTISTAS.slice()
+              .sort((a, b) => a.mobileOrder - b.mobileOrder)
+              .map((transportista) => (
+                <div
+                  key={`mobile-${transportista.src}`}
+                  className="relative flex h-[4.75rem] items-center justify-center px-2"
+                >
+                  <img
+                    src={getTransportistaSrc(transportista.src)}
+                    alt={transportista.alt}
+                    className="w-auto object-contain opacity-95"
+                    style={{
+                      height: `${(transportista.scale || 1) * 1.9}rem`,
+                      maxWidth: '100%',
+                    }}
+                  />
+                </div>
+              ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

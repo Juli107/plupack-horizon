@@ -53,6 +53,76 @@
       subheadingText: {{ section.settings.subheading_text | json }}
     },
 
+    heroFeaturedProducts: [
+      {%- capture hero_featured_handles_csv -%}
+        {%- if section.settings.hero_featured_product_1 != blank -%}{{ section.settings.hero_featured_product_1 }},{%- endif -%}
+        {%- if section.settings.hero_featured_product_2 != blank -%}{{ section.settings.hero_featured_product_2 }},{%- endif -%}
+        {%- if section.settings.hero_featured_product_3 != blank -%}{{ section.settings.hero_featured_product_3 }},{%- endif -%}
+        {%- if section.settings.hero_featured_product_4 != blank -%}{{ section.settings.hero_featured_product_4 }},{%- endif -%}
+      {%- endcapture -%}
+      {%- assign hero_featured_handles = hero_featured_handles_csv | split: ',' -%}
+
+      {%- assign hero_first_item = true -%}
+      {%- assign hero_selected_count = 0 -%}
+      {%- assign hero_seen_product_ids = '|' -%}
+
+      {%- for product_handle in hero_featured_handles -%}
+        {%- if product_handle == blank -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- if hero_selected_count >= 4 -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- assign selected_product = all_products[product_handle] -%}
+        {%- if selected_product == blank -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- assign selected_product_token = '|' | append: selected_product.id | append: '|' -%}
+        {%- if hero_seen_product_ids contains selected_product_token -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- assign hero_seen_product_ids = hero_seen_product_ids | append: selected_product_token -%}
+        {%- unless hero_first_item -%},{%- endunless -%}
+        {
+          title: {{ selected_product.title | json }},
+          handle: {{ selected_product.handle | json }},
+          url: {{ selected_product.url | json }},
+          image: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+          price: {{ selected_product.price | money | json }},
+          description: {{ selected_product.description | strip_html | strip_newlines | truncate: 130 | json }}
+        }
+        {%- assign hero_first_item = false -%}
+        {%- assign hero_selected_count = hero_selected_count | plus: 1 -%}
+      {%- endfor -%}
+
+      {%- if hero_selected_count < 4 -%}
+        {%- for fallback_product in collections.all.products -%}
+          {%- if hero_selected_count >= 4 -%}
+            {%- break -%}
+          {%- endif -%}
+          {%- if fallback_product.featured_image == blank -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- assign fallback_product_token = '|' | append: fallback_product.id | append: '|' -%}
+          {%- if hero_seen_product_ids contains fallback_product_token -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- assign hero_seen_product_ids = hero_seen_product_ids | append: fallback_product_token -%}
+          {%- unless hero_first_item -%},{%- endunless -%}
+          {
+            title: {{ fallback_product.title | json }},
+            handle: {{ fallback_product.handle | json }},
+            url: {{ fallback_product.url | json }},
+            image: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+            price: {{ fallback_product.price | money | json }},
+            description: {{ fallback_product.description | strip_html | strip_newlines | truncate: 130 | json }}
+          }
+          {%- assign hero_first_item = false -%}
+          {%- assign hero_selected_count = hero_selected_count | plus: 1 -%}
+        {%- endfor -%}
+      {%- endif -%}
+    ],
+
     // Stock Section settings and images
     stockSection: {
       title: {{ section.settings.stock_section_title | json }},
@@ -414,6 +484,26 @@
     {
       "type": "header",
       "content": "Hero Content"
+    },
+    {
+      "type": "product",
+      "id": "hero_featured_product_1",
+      "label": "Hero featured product 1"
+    },
+    {
+      "type": "product",
+      "id": "hero_featured_product_2",
+      "label": "Hero featured product 2"
+    },
+    {
+      "type": "product",
+      "id": "hero_featured_product_3",
+      "label": "Hero featured product 3"
+    },
+    {
+      "type": "product",
+      "id": "hero_featured_product_4",
+      "label": "Hero featured product 4"
     },
     {
       "type": "header",

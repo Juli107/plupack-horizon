@@ -8,6 +8,10 @@ import {
   findSurroundingKeyframes,
   interpolateKeyframes,
 } from './cameraKeyframes';
+import {
+  getCameraDirectorEffectiveScrollPercent,
+  setCameraDirectorPageScrollPercent,
+} from './cameraDirector';
 
 // ============================================
 // SCROLL-SYNCED CAMERA CONTROLLER
@@ -41,7 +45,6 @@ export function ScrollCamera() {
   );
   const targetRotation = useRef<THREE.Euler | null>(null);
   const targetFov = useRef(45);
-  const scrollPercentRef = useRef(0);
 
   // Track if we're using lookAt or rotation
   const useLookAtRef = useRef(true);
@@ -56,10 +59,8 @@ export function ScrollCamera() {
   // Use Lenis scroll for smooth, synced scrolling
   useLenis((lenis) => {
     // Get scroll progress (0 to 100 percent) from Lenis
-    const scrollPercent = lenis.progress * 100;
-    scrollPercentRef.current = scrollPercent;
-
-    // console.log('Scroll Percent:', scrollPercent);
+    setCameraDirectorPageScrollPercent(lenis.progress * 100);
+    const scrollPercent = getCameraDirectorEffectiveScrollPercent();
 
     // Find surrounding keyframes and interpolate
     const { from, to, t } = findSurroundingKeyframes(

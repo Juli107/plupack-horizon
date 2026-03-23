@@ -2,15 +2,15 @@
   id="about-future-{{ section.id }}"
   class="about-future"
   style="
-    --future-bg: {{ section.settings.background_color }};
-    --future-text: {{ section.settings.text_color }};
+    --future-bg: {{ settings.about_page_purpose_bg }};
+    --future-text: {{ settings.about_page_purpose_text }};
+    --future-text-muted: {{ settings.about_page_purpose_text_muted }};
+    --future-line: color-mix(in srgb, {{ settings.about_page_purpose_text }} 14%, transparent);
+    --future-card-bg: color-mix(in srgb, white 78%, {{ settings.about_page_purpose_bg }} 22%);
+    --future-card-border: color-mix(in srgb, {{ settings.about_page_purpose_text }} 12%, transparent);
   "
 >
   <div class="about-future__inner">
-    <header class="about-future__header" data-reveal style="--reveal-delay: 0.04s;">
-      <p class="about-future__lead">{{ section.settings.paragraph_1 }}</p>
-    </header>
-
     <div class="about-future__layout">
       <aside class="about-future__rail" data-reveal style="--reveal-delay: 0.1s;">
         <h2 class="about-future__title">{{ section.settings.heading }}</h2>
@@ -67,16 +67,10 @@
 
 {% stylesheet %}
   .about-future {
-    --future-section-space: clamp(6.4rem, 10vh, 8rem);
     position: relative;
     overflow: clip;
-    padding: var(--future-section-space) clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
-    background: radial-gradient(
-        120% 120% at 82% 12%,
-        color-mix(in srgb, var(--future-text) 12%, transparent) 0%,
-        transparent 56%
-      ),
-      linear-gradient(180deg, color-mix(in srgb, var(--future-bg) 96%, white 4%) 0%, var(--future-bg) 100%);
+    padding: 0 clamp(2.4rem, 5.2vw, 5rem) clamp(4.8rem, 10vh, 8.2rem);
+    background: var(--future-bg);
     color: var(--future-text);
     isolation: isolate;
   }
@@ -87,29 +81,13 @@
     max-width: min(1550px, 100%);
     margin-inline: auto;
     display: grid;
-    gap: var(--future-section-space);
-  }
-
-  .about-future__header {
-    display: block;
-    max-width: min(940px, 100%);
-  }
-
-  .about-future__lead {
-    margin: 0;
-    max-width: 30ch;
-    font-family: var(--font-body--family), sans-serif;
-    font-size: clamp(1.65rem, 2.8vw, 2.9rem);
-    line-height: 1.24;
-    color: color-mix(in srgb, var(--future-text) 95%, transparent);
-    font-weight: 430;
-    text-wrap: pretty;
+    gap: 0;
   }
 
   .about-future__layout {
     display: grid;
     grid-template-columns: minmax(250px, 0.34fr) minmax(0, 1fr);
-    gap: clamp(4.8rem, 8vw, 10rem);
+    gap: clamp(1.5rem, 4vw, 5rem);
     align-items: start;
   }
 
@@ -136,7 +114,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(0.9rem, 0.98vw, 1.08rem);
     line-height: 1.42;
-    color: color-mix(in srgb, var(--future-text) 72%, transparent);
+    color: var(--future-text-muted);
   }
 
   .about-future__axes {
@@ -144,8 +122,7 @@
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0;
-    border-top: 1px solid color-mix(in srgb, var(--future-text) 28%, transparent);
+    gap: 0.9rem;
     max-width: min(40rem, 100%);
     width: 100%;
     justify-self: end;
@@ -157,8 +134,11 @@
     gap: clamp(0.95rem, 1.8vw, 1.6rem);
     align-items: start;
     min-height: 0;
-    padding: clamp(1.35rem, 2.1vw, 1.9rem) 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--future-text) 24%, transparent);
+    padding: clamp(1.35rem, 2.1vw, 1.9rem);
+    background: var(--future-card-bg);
+    border: 1px solid var(--future-card-border);
+    border-radius: 18px;
+    box-shadow: 0 14px 35px color-mix(in srgb, var(--future-text) 5%, transparent);
   }
 
   .about-future__index {
@@ -167,7 +147,7 @@
     font-size: clamp(0.76rem, 0.9vw, 0.95rem);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--future-text) 56%, transparent);
+    color: color-mix(in srgb, var(--future-text) 62%, transparent);
   }
 
   .about-future__axis-body h3 {
@@ -187,7 +167,7 @@
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(0.95rem, 1.05vw, 1.18rem);
     line-height: 1.48;
-    color: color-mix(in srgb, var(--future-text) 83%, transparent);
+    color: var(--future-text-muted);
     font-weight: 410;
     text-wrap: pretty;
   }
@@ -213,25 +193,14 @@
 
   @media (max-width: 989px) {
     .about-future {
-      padding-top: clamp(3.4rem, 8vh, 4.4rem);
       padding-bottom: clamp(3.6rem, 8vh, 4.8rem);
       padding-left: clamp(1rem, 4vw, 1.4rem);
       padding-right: clamp(1rem, 4vw, 1.4rem);
     }
 
-    .about-future__header {
-      max-width: 100%;
-    }
-
-    .about-future__lead {
-      max-width: 100%;
-      font-size: clamp(1.2rem, 6vw, 1.65rem);
-      line-height: 1.3;
-    }
-
     .about-future__layout {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.2rem;
     }
 
     .about-future__axes {
@@ -260,6 +229,7 @@
       gap: 0.35rem;
       min-height: 0;
       padding: 1rem 1rem 1.1rem;
+      border-radius: 16px;
     }
 
     .about-future__index {
@@ -296,28 +266,10 @@
   "class": "about-future-section",
   "settings": [
     {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#DDE6EC"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#084e85"
-    },
-    {
       "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "Futuro"
-    },
-    {
-      "type": "textarea",
-      "id": "paragraph_1",
-      "label": "Intro paragraph",
-      "default": "Queremos consolidarnos como una de las marcas de embalaje mas modernas y confiables de Argentina. Nuestra proyeccion se sostiene en cinco ejes concretos."
     },
     {
       "type": "text",

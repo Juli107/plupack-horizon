@@ -246,6 +246,7 @@ export function FoodContainerStack(props: GroupProps) {
           material={data.material}
           castShadow
           receiveShadow
+          frustumCulled={false}
         >
           <Instance position={[0, 0.06, 0]} />
           <Instance position={[0, 0.04, 0]} />
@@ -274,6 +275,7 @@ export function TapeStack(props: GroupProps) {
           material={data.material}
           castShadow
           receiveShadow
+          frustumCulled={false}
         >
           <Instance
             position={[-0.06, 0.05, -0.15]}
@@ -304,6 +306,7 @@ export function PaperRollStack(props: GroupProps) {
           material={data.material}
           castShadow
           receiveShadow
+          frustumCulled={false}
         >
           {/* Two on bottom, touching */}
           <Instance position={[0, 0, 0]} rotation={[0, 0, 0]} />
@@ -327,7 +330,13 @@ export function NapkinStack(props: GroupProps) {
   return (
     <group {...props}>
       <Center bottom>
-        <Instances range={count} geometry={geometry} castShadow receiveShadow>
+        <Instances
+          range={count}
+          geometry={geometry}
+          castShadow
+          receiveShadow
+          frustumCulled={false}
+        >
           <meshStandardMaterial color="#ffffff" roughness={0.55} />
           {Array.from({ length: count }).map((_, i) => (
             <Instance

@@ -8,8 +8,10 @@
   id="about-hero-{{ section.id }}"
   class="about-hero"
   style="
-    --about-bg: {{ section.settings.background_color }};
-    --about-text: {{ section.settings.text_color }};
+    --about-bg: {{ settings.about_page_bg }};
+    --about-text: {{ settings.about_page_text }};
+    --about-text-muted: {{ settings.about_page_text_muted }};
+    --about-line: {{ settings.about_page_line }};
   "
 >
   <div class="about-hero__orbit about-hero__orbit--left" aria-hidden="true">
@@ -186,21 +188,21 @@
   .about-hero__orbit-inner-faint,
   .about-hero__orbit-line {
     fill: none;
-    stroke: rgba(20, 108, 144, 0.56);
+    stroke: color-mix(in srgb, var(--about-line) 82%, transparent);
     stroke-width: 1.1;
   }
 
   .about-hero__orbit-inner {
-    stroke: rgba(20, 108, 144, 0.4);
+    stroke: color-mix(in srgb, var(--about-line) 58%, transparent);
   }
 
   .about-hero__orbit-inner-faint {
-    stroke: rgba(20, 108, 144, 0.26);
+    stroke: color-mix(in srgb, var(--about-line) 42%, transparent);
   }
 
   .about-hero__orbit-line {
     stroke-linecap: round;
-    stroke: rgba(20, 108, 144, 0.62);
+    stroke: color-mix(in srgb, var(--about-line) 96%, transparent);
     stroke-width: 1.25;
   }
 
@@ -323,6 +325,7 @@
     font-size: clamp(1rem, 1.2vw, 1.45rem);
     line-height: 1.45;
     font-weight: 430;
+    color: var(--about-text-muted);
   }
 
   .about-hero__copy p {
@@ -334,8 +337,8 @@
   .about-hero__values {
     position: relative;
     z-index: 1;
-    border-top: 1px solid rgba(20, 108, 144, 0.22);
-    border-bottom: 1px solid rgba(20, 108, 144, 0.22);
+    border-top: 1px solid var(--about-line);
+    border-bottom: 1px solid var(--about-line);
     min-height: clamp(4.6rem, 6.7vw, 6.3rem);
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -351,7 +354,7 @@
     text-transform: uppercase;
     letter-spacing: 0.29em;
     font-weight: 600;
-    color: rgba(20, 108, 144, 0.92);
+    color: var(--about-text-muted);
     text-align: center;
     line-height: 1.2;
   }
@@ -403,7 +406,7 @@
       min-height: 3.9rem;
       display: grid;
       place-items: center;
-      border-bottom: 1px solid rgba(20, 108, 144, 0.2);
+      border-bottom: 1px solid var(--about-line);
       letter-spacing: 0.22em;
       font-size: clamp(0.78rem, 3.7vw, 0.92rem);
     }
@@ -441,18 +444,6 @@
   "tag": "section",
   "class": "about-hero-section",
   "settings": [
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#ecf2f6"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#084e85"
-    },
     {
       "type": "text",
       "id": "eyebrow",

@@ -3,40 +3,9 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
+import warehouseImage from '@/assets/warehouse-environment.webp';
 
 gsap.registerPlugin(ScrollTrigger);
-
-// ============================================
-// PLACEHOLDER ICON
-// ============================================
-function PlaceholderIcon({ size = 48 }: { size?: number }) {
-  return (
-    <div
-      className="flex items-center justify-center"
-      style={{
-        width: size,
-        height: size,
-        border: '2px dashed rgba(94, 234, 212, 0.4)',
-        borderRadius: '8px',
-      }}
-    >
-      <svg
-        width={size * 0.5}
-        height={size * 0.5}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="rgba(94, 234, 212, 0.5)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <path d="M21 15l-5-5L5 21" />
-      </svg>
-    </div>
-  );
-}
 
 // ============================================
 // CHECKLIST DATA
@@ -55,6 +24,7 @@ export function EnvironmentSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const { getFontFamily } = useShopifyTheme();
 
   useGSAP(
@@ -63,12 +33,14 @@ export function EnvironmentSection() {
 
       const title = titleRef.current;
       const content = contentRef.current;
-      if (!title || !content) return;
+      const image = imageRef.current;
+      if (!title || !content || !image) return;
 
       gsap.set(title, { y: 40, opacity: 0 });
 
       const items = content.querySelectorAll('.env-animate');
       gsap.set(items, { y: 25, opacity: 0 });
+      gsap.set(image, { y: 0, scale: 1.12, transformOrigin: 'center center' });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -96,6 +68,27 @@ export function EnvironmentSection() {
         },
         '-=0.3'
       );
+
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
+      if (!prefersReducedMotion) {
+        gsap.fromTo(
+          image,
+          { y: -56 },
+          {
+            y: 56,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          }
+        );
+      }
     },
     { scope: sectionRef }
   );
@@ -195,23 +188,23 @@ export function EnvironmentSection() {
             </ul>
           </div>
 
-          {/* Right: Image placeholder */}
+          {/* Right: Image */}
           <div className="env-animate w-full md:w-[420px] shrink-0">
             <div
-              className="w-full aspect-[4/3] flex flex-col items-center justify-center gap-3"
+              className="w-full aspect-[4/3] overflow-hidden"
               style={{
-                border: '2px dashed rgba(94, 234, 212, 0.25)',
                 borderRadius: '12px',
-                backgroundColor: 'rgba(94, 234, 212, 0.03)',
+                boxShadow: '0 28px 60px rgba(1, 17, 25, 0.26)',
               }}
             >
-              <PlaceholderIcon size={48} />
-              <span
-                className="text-[10px] uppercase tracking-[0.2em]"
-                style={{ color: 'rgba(94, 234, 212, 0.35)' }}
-              >
-                Imagen pendiente
-              </span>
+              <img
+                ref={imageRef}
+                src={warehouseImage}
+                alt="Depósito logístico de PLUPack"
+                className="block h-full w-full object-cover"
+                style={{ objectPosition: 'center 38%' }}
+                loading="lazy"
+              />
             </div>
           </div>
         </div>

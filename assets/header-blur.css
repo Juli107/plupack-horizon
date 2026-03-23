@@ -19,7 +19,7 @@
 
 /* Blue tint state - for gray sections like stock (apply regardless of sticky state) */
 .header--tint-blue .header__row {
-  background: rgba(20, 108, 144, 0.85) !important;
+  background: rgba(8, 78, 133, 0.85) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(27, 75, 107, 0.1) !important;
@@ -43,7 +43,7 @@
 
 /* Blue tint state - for gray sections like stock (apply regardless of sticky state) */
 .header--tint-blue .header__row {
-  background: rgba(20, 108, 144, 0.85) !important;
+  background: rgba(8, 78, 133, 0.85) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
   transition: background 0.15s ease !important;
@@ -54,7 +54,7 @@
 .header--tint-blue[sticky][data-sticky-state='active'] .header__row,
 .header--tint-blue[transparent][data-sticky-state='active']
   .header__row {
-  background: rgba(20, 108, 144, 0.85) !important;
+  background: rgba(8, 78, 133, 0.85) !important;
 }
 
 /* Ensure white text on transparent/glass background */

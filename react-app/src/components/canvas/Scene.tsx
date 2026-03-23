@@ -1,4 +1,4 @@
-import { Environment, Lightformer } from '@react-three/drei';
+import { Environment, Lightformer, Preload } from '@react-three/drei';
 import { useEffect } from 'react';
 import {
   INDUSTRY_ITEM_NAMES,
@@ -19,14 +19,8 @@ type SceneProps = {
 
 export function Scene({ isMobile }: SceneProps) {
   useEffect(() => {
-    const preloadTimeoutId = window.setTimeout(() => {
-      preloadIndustryWrapModel();
-      preloadModels(INDUSTRY_ITEM_NAMES);
-    }, 1200);
-
-    return () => {
-      window.clearTimeout(preloadTimeoutId);
-    };
+    preloadIndustryWrapModel();
+    preloadModels(INDUSTRY_ITEM_NAMES);
   }, []);
 
   return (
@@ -150,6 +144,8 @@ export function Scene({ isMobile }: SceneProps) {
       <group position={[0, -67.8, 0]}>
         <IndustryCylinder />
       </group>
+
+      <Preload all />
     </>
   );
 }

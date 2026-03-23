@@ -1,0 +1,188 @@
+<section
+  id="about-future-intro-{{ section.id }}"
+  class="about-future-intro"
+  style="
+    --future-intro-bg: {{ settings.about_page_purpose_bg }};
+    --future-intro-text: {{ settings.about_page_purpose_text }};
+    --future-intro-pad-top: {{ section.settings.padding_top }}px;
+    --future-intro-pad-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="about-future-intro__inner">
+    <p class="about-future-intro__lead" aria-label="{{ section.settings.paragraph | escape }}">
+      {% assign future_intro_words = section.settings.paragraph | strip | split: ' ' %}
+      {% for word in future_intro_words %}
+        <span class="about-future-intro__word" style="--word-index: {{ forloop.index0 }};">{{ word }}&nbsp;</span>
+      {% endfor %}
+    </p>
+  </div>
+</section>
+
+<script>
+  (() => {
+    const sectionId = 'about-future-intro-{{ section.id }}';
+
+    const initFutureIntroReveal = () => {
+      const section = document.getElementById(sectionId);
+      if (!section || section.dataset.revealInitialized === 'true') return;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        section.dataset.revealReady = 'true';
+        return;
+      }
+
+      section.dataset.revealInitialized = 'true';
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            section.dataset.revealReady = 'true';
+            observer.disconnect();
+          });
+        },
+        {
+          threshold: 0.2,
+          rootMargin: '0px 0px -10% 0px',
+        }
+      );
+
+      observer.observe(section);
+
+      section.addEventListener(
+        'shopify:section:unload',
+        () => {
+          observer.disconnect();
+        },
+        { once: true }
+      );
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFutureIntroReveal, { once: true });
+    } else {
+      initFutureIntroReveal();
+    }
+
+    document.addEventListener('shopify:section:load', (event) => {
+      if (event.target && event.target.id === sectionId) {
+        initFutureIntroReveal();
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .about-future-intro {
+    background: var(--future-intro-bg);
+    color: var(--future-intro-text);
+    padding: 0 clamp(1rem, 4vw, 2rem);
+  }
+
+  .about-future-intro__inner {
+    max-width: min(1550px, 100%);
+    margin-inline: auto;
+    padding-top: var(--future-intro-pad-top);
+    padding-bottom: var(--future-intro-pad-bottom);
+  }
+
+  .about-future-intro__lead {
+    margin: 0;
+    max-width: min(32ch, 100%);
+    font-family: var(--font-body--family), sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    line-height: 1.16;
+    color: var(--future-intro-text);
+    font-weight: 420;
+    text-wrap: pretty;
+    text-align: left;
+  }
+
+  .about-future-intro__word {
+    display: inline-block;
+    opacity: 0;
+    transform: translate3d(0, 0.75em, 0);
+    will-change: transform, opacity;
+  }
+
+  .about-future-intro[data-reveal-ready='true'] .about-future-intro__word {
+    animation: about-future-intro-word-reveal 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.04s + (var(--word-index) * 0.035s));
+  }
+
+  @keyframes about-future-intro-word-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.75em, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (max-width: 989px) {
+    .about-future-intro {
+      padding-left: clamp(1rem, 4vw, 1.4rem);
+      padding-right: clamp(1rem, 4vw, 1.4rem);
+    }
+
+    .about-future-intro__lead {
+      max-width: 100%;
+      font-size: clamp(1.5rem, 7vw, 2.2rem);
+      line-height: 1.18;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-future-intro__word {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Future Intro",
+  "tag": "section",
+  "class": "about-future-intro-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "paragraph",
+      "label": "Paragraph",
+      "default": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos."
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Future Intro"
+    }
+  ]
+}
+{% endschema %}

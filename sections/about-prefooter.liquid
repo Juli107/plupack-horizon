@@ -1,40 +1,26 @@
-{% assign heading_line_2_upcase = section.settings.heading_line_2 | upcase %}
-
 <section
   id="about-prefooter-{{ section.id }}"
   class="about-prefooter"
   style="
-    --prefooter-bg-start: {{ section.settings.background_start }};
-    --prefooter-text: {{ section.settings.text_color }};
+    --prefooter-bg-start: {{ settings.about_page_bg }};
+    --prefooter-text: {{ settings.about_page_text }};
+    --prefooter-line: {{ settings.about_page_line }};
+    --prefooter-button-bg: {{ settings.about_page_button_bg }};
+    --prefooter-button-text: {{ settings.about_page_button_text }};
+    --prefooter-noise: url('{{ 'noise.webp' | asset_url }}');
   "
 >
-  <div class="about-prefooter__orbital" aria-hidden="true">
-    <span class="about-prefooter__bubble about-prefooter__bubble--a"></span>
-    <span class="about-prefooter__bubble about-prefooter__bubble--b"></span>
-    <span class="about-prefooter__bubble about-prefooter__bubble--c"></span>
-    <span class="about-prefooter__bubble about-prefooter__bubble--d"></span>
-  </div>
+  <div class="about-prefooter__backdrop" aria-hidden="true"></div>
+  <div class="about-prefooter__noise" aria-hidden="true"></div>
 
   <div class="about-prefooter__inner">
     <h2 class="about-prefooter__title" data-reveal style="--reveal-delay: 0.06s;">
-      <span>{{ section.settings.heading_line_1 }}</span>
-      <span class="about-prefooter__outline-wrap">
-        <span class="about-prefooter__outline-sizer" aria-hidden="true">{{ heading_line_2_upcase }}</span>
-        <svg class="about-prefooter__outline-svg" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id="prefooter-outline-{{ section.id }}" x="-20%" y="-20%" width="140%" height="140%">
-              <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="2.8" />
-              <feComposite in="DILATED" in2="SourceAlpha" operator="out" result="OUTLINE" />
-              <feFlood flood-color="rgba(234, 244, 250, 0.96)" result="COLOR" />
-              <feComposite in="COLOR" in2="OUTLINE" operator="in" result="FINAL" />
-            </filter>
-          </defs>
-          <text class="about-prefooter__outline-text" x="0" y="0.85em" style="filter: url(#prefooter-outline-{{ section.id }});">
-            {{ heading_line_2_upcase }}
-          </text>
-        </svg>
-      </span>
+      {{ section.settings.heading_line_1 }}
     </h2>
+
+    <p class="about-prefooter__subtitle" data-reveal style="--reveal-delay: 0.12s;">
+      {{ section.settings.heading_line_2 }}
+    </p>
 
     <div class="about-prefooter__actions" data-reveal style="--reveal-delay: 0.16s;">
       <a
@@ -62,60 +48,25 @@
     isolation: isolate;
   }
 
-  .about-prefooter__orbital {
+  .about-prefooter__backdrop {
     position: absolute;
-    top: -92%;
-    right: -72%;
-    width: clamp(1500px, 110vw, 2200px);
-    height: clamp(1500px, 110vw, 2200px);
+    inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.62;
-    animation: prefooter-orbital-spin 26s linear infinite;
-    transform-origin: center;
+    background-color: rgba(30, 67, 119, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
-  .about-prefooter__bubble {
+  .about-prefooter__noise {
     position: absolute;
-    border-radius: 999px;
-    background: radial-gradient(circle, rgba(225, 245, 255, 0.78) 0%, rgba(225, 245, 255, 0) 74%);
-    filter: blur(14px);
-    mix-blend-mode: screen;
-  }
-
-  .about-prefooter__bubble--a {
-    top: 16%;
-    left: 50%;
-    width: clamp(150px, 12vw, 220px);
-    height: clamp(150px, 12vw, 220px);
-    transform: translateX(-50%);
-  }
-
-  .about-prefooter__bubble--b {
-    top: 50%;
-    right: 10%;
-    width: clamp(108px, 9vw, 170px);
-    height: clamp(108px, 9vw, 170px);
-    transform: translateY(-50%);
-    opacity: 0.86;
-  }
-
-  .about-prefooter__bubble--c {
-    bottom: 14%;
-    left: 52%;
-    width: clamp(72px, 6vw, 112px);
-    height: clamp(72px, 6vw, 112px);
-    transform: translateX(-50%);
-    opacity: 0.8;
-  }
-
-  .about-prefooter__bubble--d {
-    top: 50%;
-    left: 10%;
-    width: clamp(44px, 4.5vw, 76px);
-    height: clamp(44px, 4.5vw, 76px);
-    transform: translateY(-50%);
-    opacity: 0.76;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--prefooter-noise);
+    background-repeat: repeat;
+    opacity: 0.02;
+    mix-blend-mode: soft-light;
   }
 
   .about-prefooter__inner {
@@ -127,58 +78,33 @@
     justify-content: center;
     text-align: center;
     width: 100%;
-    max-width: 1300px;
+    max-width: none;
     color: var(--prefooter-text);
+    padding: 5rem 1.5rem;
   }
 
   .about-prefooter__title {
     margin: 0;
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(3rem, 8vw, 118px);
+    font-size: clamp(2.25rem, 8vw, 90px);
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 0.94;
-    font-weight: 500;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--prefooter-text);
+    margin-bottom: 0.5rem;
   }
 
-  .about-prefooter__title span {
-    display: block;
-    color: #ffffff;
-  }
-
-  .about-prefooter__outline-wrap {
-    position: relative;
-    display: inline-block;
-    font-size: inherit;
-    line-height: inherit;
-  }
-
-  .about-prefooter__outline-sizer {
-    visibility: hidden;
-    display: inline-block;
-  }
-
-  .about-prefooter__outline-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  .about-prefooter__outline-text {
+  .about-prefooter__subtitle {
+    margin: 0;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: inherit;
+    font-size: clamp(1.5rem, 5vw, 56px);
     font-weight: 500;
     letter-spacing: -0.02em;
+    line-height: 1.1;
     text-transform: uppercase;
-    fill: #ffffff;
+    color: color-mix(in srgb, var(--prefooter-text) 70%, transparent);
+    max-width: none;
   }
 
   .about-prefooter__actions {
@@ -191,11 +117,11 @@
   }
 
   .about-prefooter__btn {
-    min-width: 220px;
-    min-height: 48px;
+    min-width: 0;
+    min-height: 0;
     padding: 0.75rem 2.5rem;
     border-radius: 10px;
-    border: 1px solid #ffffff;
+    border: 1px solid var(--prefooter-line);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -207,32 +133,33 @@
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1;
-    transition: background-color 220ms ease, color 220ms ease;
+    min-width: 220px;
+    transition: background-color 220ms ease, color 220ms ease, transform 220ms ease;
   }
 
   .about-prefooter__btn--solid {
-    background: #ffffff;
-    color: #0b6386;
-    border-color: #ffffff;
+    background: var(--prefooter-button-bg);
+    color: var(--prefooter-button-text);
+    border-color: var(--prefooter-button-bg);
   }
 
   .about-prefooter__btn--ghost {
     background: transparent;
-    color: #ffffff;
+    color: var(--prefooter-text);
   }
 
   .about-prefooter__btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background: color-mix(in srgb, var(--prefooter-button-bg) 90%, black 10%);
+    color: var(--prefooter-button-text);
   }
 
   .about-prefooter__btn--solid:hover {
-    background: #f4f7f9;
-    color: #0b6386;
+    background: color-mix(in srgb, var(--prefooter-button-bg) 90%, var(--prefooter-text) 10%);
+    color: var(--prefooter-button-text);
   }
 
   .about-prefooter__btn:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline: 2px solid color-mix(in srgb, var(--prefooter-text) 90%, transparent);
     outline-offset: 3px;
   }
 
@@ -258,17 +185,6 @@
       transform: translate3d(0, 0, 0);
     }
   }
-
-  @keyframes prefooter-orbital-spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
   @media (max-width: 989px) {
     .about-prefooter {
       min-height: 72vh;
@@ -276,26 +192,24 @@
       padding-bottom: 4rem;
     }
 
-    .about-prefooter__orbital {
-      top: -42%;
-      right: -120%;
-      width: clamp(1200px, 250vw, 1800px);
-      height: clamp(1200px, 250vw, 1800px);
-      opacity: 0.54;
+    .about-prefooter__inner {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
     }
 
     .about-prefooter__title {
-      font-size: clamp(3rem, 13vw, 4.75rem);
-      line-height: 0.95;
+      font-size: clamp(2.25rem, 13vw, 4.75rem);
+      line-height: 1;
     }
 
-    .about-prefooter__title span {
-      font-size: inherit;
+    .about-prefooter__subtitle {
+      font-size: clamp(1.5rem, 8vw, 3rem);
+      line-height: 1.1;
     }
 
     .about-prefooter__btn {
-      width: min(340px, 100%);
-      min-width: 0;
+      width: auto;
+      min-width: 220px;
     }
   }
 
@@ -306,7 +220,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-prefooter__orbital,
     .about-prefooter [data-reveal] {
       animation: none;
       opacity: 1;
@@ -326,40 +239,22 @@
   "class": "about-prefooter-section",
   "settings": [
     {
-      "type": "color",
-      "id": "background_start",
-      "label": "Background start",
-      "default": "#136B8F"
-    },
-    {
-      "type": "color",
-      "id": "background_end",
-      "label": "Background end",
-      "default": "#136B8F"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#EAF4FA"
-    },
-    {
       "type": "text",
       "id": "heading_line_1",
       "label": "Heading line 1",
-      "default": "Embalajes"
+      "default": "Centralizá tu abastecimiento."
     },
     {
       "type": "text",
       "id": "heading_line_2",
       "label": "Heading line 2",
-      "default": "SIN LÍMITES"
+      "default": "Simplificá tu gestión."
     },
     {
       "type": "text",
       "id": "primary_cta_label",
       "label": "Primary button label",
-      "default": "VER PRODUCTOS"
+      "default": "Ver productos"
     },
     {
       "type": "url",

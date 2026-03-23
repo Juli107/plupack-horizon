@@ -1,8 +1,12 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState } from 'react';
+import { useId, useMemo, useRef } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
+import {
+  setCameraDirectorIndustryActive,
+  setCameraDirectorIndustryProgress,
+} from './canvas/cameraDirector';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,30 +57,26 @@ interface OutlineTextProps {
   text: string;
   className?: string;
   strokeWidth?: number;
-  fillProgress?: number; // 0-1, controls opacity of outline (0=full outline, 1=solid)
 }
 
 function OutlineText({
   text,
   className = '',
   strokeWidth = 2,
-  fillProgress = 0,
 }: OutlineTextProps) {
   const { getFontFamily } = useShopifyTheme();
-  const filterId = `outline-filter-${text
-    .replace(/\s/g, '-')
-    .toLowerCase()}-${Math.random().toString(36).substr(2, 9)}`;
-
-  // Scale transforms based on fill progress (subtle: 1 to 1.05)
-  const scale = 1 + fillProgress * 0.05;
-  // Solid text opacity: 0 when fillProgress is 0, 1 when fillProgress is 1
-  const solidOpacity = fillProgress;
+  const outlineId = useId();
+  const filterId = useMemo(
+    () => `outline-filter-${text.replace(/\s/g, '-').toLowerCase()}-${outlineId}`,
+    [outlineId, text],
+  );
 
   return (
     <span
       className={`relative inline-block ${className}`}
       style={{
-        transform: `scale(${scale})`,
+        transform:
+          'scale(calc(1 + var(--industry-fill-progress, 0) * 0.05))',
         transition: 'transform 0.3s ease-out',
       }}
     >
@@ -144,7 +144,7 @@ function OutlineText({
             fontFamily: getFontFamily('heading'),
             fontSize: 'inherit',
             fill: 'white',
-            opacity: solidOpacity,
+            opacity: 'var(--industry-fill-progress, 0)',
             transition: 'opacity 0.3s ease-out',
           }}
         >
@@ -173,7 +173,6 @@ function IndustrySection({
 }: IndustrySectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { getFontFamily } = useShopifyTheme();
-  const [fillProgress, setFillProgress] = useState(0);
 
   useGSAP(
     () => {
@@ -181,6 +180,7 @@ function IndustrySection({
 
       const section = sectionRef.current;
       const titleEl = section.querySelector('.industry-title');
+      section.style.setProperty('--industry-fill-progress', '0');
 
       // Title reveal animation
       const tl = gsap.timeline({
@@ -218,10 +218,14 @@ function IndustrySection({
           const progress = self.progress;
           // Use sine curve for smooth in/out: peaks at 0.5
           const fillValue = Math.sin(progress * Math.PI);
-          setFillProgress(fillValue);
+          section.style.setProperty(
+            '--industry-fill-progress',
+            fillValue.toFixed(4),
+          );
         },
-        onLeave: () => setFillProgress(0),
-        onLeaveBack: () => setFillProgress(0),
+        onLeave: () => section.style.setProperty('--industry-fill-progress', '0'),
+        onLeaveBack: () =>
+          section.style.setProperty('--industry-fill-progress', '0'),
       });
     },
     { scope: sectionRef },
@@ -244,7 +248,6 @@ function IndustrySection({
             text={title}
             className="block text-[clamp(3rem,15vw,11.2rem)]"
             strokeWidth={2}
-            fillProgress={fillProgress}
           />
         </h2>
       </div>
@@ -308,6 +311,16 @@ export function IndustrySections() {
         trigger: container,
         start: 'top bottom',
         end: 'bottom top',
+        onToggle: (self) => {
+          setCameraDirectorIndustryActive(self.isActive);
+
+          if (!self.isActive) {
+            setCameraDirectorIndustryProgress(self.direction < 0 ? 0 : 1);
+          }
+        },
+        onUpdate: (self) => {
+          setCameraDirectorIndustryProgress(self.progress);
+        },
         onEnter: () => {
           bg.style.opacity = '1';
         },
@@ -362,6 +375,11 @@ export function IndustrySections() {
           bg.style.backgroundColor = currentColor;
         },
       });
+
+      return () => {
+        setCameraDirectorIndustryActive(false);
+        setCameraDirectorIndustryProgress(0);
+      };
     },
     { scope: containerRef },
   );

@@ -7,7 +7,7 @@ interface LogoItem {
   scale?: number;
 }
 
-const logoImports = import.meta.glob('../assets/logos/*.png', {
+const logoImports = import.meta.glob('../assets/logos/*.webp', {
   eager: true,
   import: 'default',
 });
@@ -18,23 +18,26 @@ const getLogoSrc = (filename: string) => {
 };
 
 const LOGOS: LogoItem[] = [
-  { src: 'arnaldo-chapini.png', scale: 1 },
-  { src: 'colombraro.png', scale: 0.8 },
-  { src: 'dean_dennys.png', scale: 0.6 },
-  { src: 'garbo.png', scale: 0.9 },
-  { src: 'grupo-sheina.png', scale: 0.6 },
-  { src: 'hotel-madero.png', scale: 1.2 },
-  { src: 'kekol.png', scale: 0.9 },
-  { src: 'llao-llao-resort.png', scale: 0.8 },
-  { src: 'loginter.png', scale: 0.8 },
-  { src: 'lustramax.png', scale: 1.2 },
-  { src: 'manguera-flex.png', scale: 0.7 },
-  { src: 'papelera-buenos-aires.png', scale: 1.1 },
-  { src: 'res.png', scale: 0.7 },
-  { src: 'riiing.png', scale: 1.1 },
-  { src: 'sanatorio-gumes.png', scale: 0.9 },
-  { src: 'segufer.png', scale: 1.3 },
-  { src: 'supermercado-modelo.png', scale: 0.8 },
+  { src: 'ajec-autoadhesivos.webp', scale: 1 },
+  { src: 'alpac-srl.webp', scale: 0.95 },
+  { src: 'american-envases-group.webp', scale: 1.05 },
+  { src: 'arnaldo-chapini.webp', scale: 0.9 },
+  { src: 'bandex.webp', scale: 0.9 },
+  { src: 'celpack-argentina.webp', scale: 0.9 },
+  { src: 'cotnyl-sa.webp', scale: 0.95 },
+  { src: 'elite.webp', scale: 1.05 },
+  { src: 'enpolex.webp', scale: 1 },
+  { src: 'euroswiss.webp', scale: 0.8 },
+  { src: 'filmroll-food-service.webp', scale: 1.1 },
+  { src: 'grupo-estisol.webp', scale: 0.95 },
+  { src: 'inpack-sa.webp', scale: 0.9 },
+  { src: 'ipack.webp', scale: 0.9 },
+  { src: 'manu-packaging.webp', scale: 0.9 },
+  { src: 'papelera-berazategui.webp', scale: 1 },
+  { src: 'plastivas.webp', scale: 0.95 },
+  { src: 'resinite.webp', scale: 0.85 },
+  { src: 'thames.webp', scale: 0.85 },
+  { src: 'vassoi.webp', scale: 0.95 },
 ];
 
 export function LogoCarousel() {
@@ -136,7 +139,7 @@ export function LogoCarousel() {
                 <img
                   src={getLogoSrc(logo.src)}
                   alt={logo.src
-                    .replace('.png', '')
+                    .replace('.webp', '')
                     .replace(/-/g, ' ')}
                   className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
                   style={{ height: `${(logo.scale || 1) * 8}rem` }}

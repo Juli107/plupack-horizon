@@ -127,6 +127,7 @@ export interface ShopifyHomepageProduct {
   url: string;
   image: string | null;
   price: string;
+  description?: string;
 }
 
 export interface ShopifyProductsShowcase {
@@ -147,6 +148,7 @@ export interface ShopifyData {
   cart?: ShopifyCart;
   routes?: ShopifyRoutes;
   products?: ShopifyHomepageProduct[];
+  heroFeaturedProducts?: ShopifyHomepageProduct[];
   productsShowcase?: ShopifyProductsShowcase;
   sectionId?: string;
 }
