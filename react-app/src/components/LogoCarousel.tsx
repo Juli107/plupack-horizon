@@ -4,7 +4,6 @@ import { useRef } from 'react';
 
 interface LogoItem {
   src: string;
-  scale?: number;
 }
 
 const logoImports = import.meta.glob('../assets/logos/*.webp', {
@@ -18,26 +17,26 @@ const getLogoSrc = (filename: string) => {
 };
 
 const LOGOS: LogoItem[] = [
-  { src: 'ajec-autoadhesivos.webp', scale: 1 },
-  { src: 'alpac-srl.webp', scale: 0.95 },
-  { src: 'american-envases-group.webp', scale: 1.05 },
-  { src: 'arnaldo-chapini.webp', scale: 0.9 },
-  { src: 'bandex.webp', scale: 0.9 },
-  { src: 'celpack-argentina.webp', scale: 0.9 },
-  { src: 'cotnyl-sa.webp', scale: 0.95 },
-  { src: 'elite.webp', scale: 1.05 },
-  { src: 'enpolex.webp', scale: 1 },
-  { src: 'euroswiss.webp', scale: 0.8 },
-  { src: 'filmroll-food-service.webp', scale: 1.1 },
-  { src: 'grupo-estisol.webp', scale: 0.95 },
-  { src: 'inpack-sa.webp', scale: 0.9 },
-  { src: 'ipack.webp', scale: 0.9 },
-  { src: 'manu-packaging.webp', scale: 0.9 },
-  { src: 'papelera-berazategui.webp', scale: 1 },
-  { src: 'plastivas.webp', scale: 0.95 },
-  { src: 'resinite.webp', scale: 0.85 },
-  { src: 'thames.webp', scale: 0.85 },
-  { src: 'vassoi.webp', scale: 0.95 },
+  { src: 'ajec-autoadhesivos.webp' },
+  { src: 'american-envases-group.webp' },
+  { src: 'alpac-srl.webp' },
+  { src: 'arnaldo-chapini.webp' },
+  { src: 'bandex.webp' },
+  { src: 'celpack-argentina.webp' },
+  { src: 'cotnyl-sa.webp' },
+  { src: 'elite.webp' },
+  { src: 'enpolex.webp' },
+  { src: 'euroswiss.webp' },
+  { src: 'filmroll-food-service.webp' },
+  { src: 'grupo-estisol.webp' },
+  { src: 'inpack-sa.webp' },
+  { src: 'ipack.webp' },
+  { src: 'manu-packaging.webp' },
+  { src: 'papelera-berazategui.webp' },
+  { src: 'plastivas.webp' },
+  { src: 'resinite.webp' },
+  { src: 'thames.webp' },
+  { src: 'vassoi.webp' },
 ];
 
 export function LogoCarousel() {
@@ -108,7 +107,7 @@ export function LogoCarousel() {
   return (
     <section className="relative w-full py-12 md:pt-28 md:-mb-10 overflow-hidden">
       {/* Intro Text */}
-      <div className="container mx-auto px-4 pb-6 border-b border-white/20">
+      <div className="container mx-auto px-4 pb-6 border-b border-white/20 mb-8">
         <p className="text-center text-white/60 uppercase tracking-[0.2em] text-xs md:text-base font-light">
           MARCAS QUE CONFÍAN EN NUESTRA GESTIÓN
         </p>
@@ -134,15 +133,14 @@ export function LogoCarousel() {
             {LOGOS.map((logo, index) => (
               <div
                 key={`logo-1-${index}`}
-                className="relative group shrink-0 h-20 md:h-34 w-auto flex items-center justify-center"
+                className="relative group shrink-0 h-12 w-28 md:h-16 md:w-40 flex items-center justify-center"
               >
                 <img
                   src={getLogoSrc(logo.src)}
                   alt={logo.src
                     .replace('.webp', '')
                     .replace(/-/g, ' ')}
-                  className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
-                  style={{ height: `${(logo.scale || 1) * 8}rem` }}
+                  className="h-full w-full object-contain object-center grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
                 />
               </div>
             ))}
@@ -154,13 +152,12 @@ export function LogoCarousel() {
             {LOGOS.map((logo, index) => (
               <div
                 key={`logo-2-${index}`}
-                className="relative group shrink-0 h-20 md:h-34 w-auto flex items-center justify-center"
+                className="relative group shrink-0 h-12 w-28 md:h-16 md:w-40 flex items-center justify-center"
               >
                 <img
                   src={getLogoSrc(logo.src)}
                   alt=""
-                  className="w-auto object-contain grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
-                  style={{ height: `${(logo.scale || 1) * 8}rem` }}
+                  className="h-full w-full object-contain object-center grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
                 />
               </div>
             ))}

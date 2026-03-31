@@ -19,7 +19,6 @@ interface TransportistaItem {
   src: string;
   alt: string;
   mobileOrder: number;
-  scale?: number;
 }
 
 // ============================================
@@ -82,49 +81,41 @@ const TRANSPORTISTAS: TransportistaItem[] = [
     src: 'via-cargo.webp',
     alt: 'Via Cargo',
     mobileOrder: 1,
-    scale: 1.9,
   },
   {
     src: 'transportes-navas-srl.webp',
     alt: 'Transportes Navas SRL',
     mobileOrder: 2,
-    scale: 1.6,
   },
   {
     src: 'distribucion-y-logistica.webp',
     alt: 'Distribucion y logistica',
     mobileOrder: 3,
-    scale: 1.8,
   },
   {
     src: 'cruz-del-sur.webp',
     alt: 'Cruz del Sur',
     mobileOrder: 4,
-    scale: 1.8,
   },
   {
     src: 'g.webp',
     alt: 'G',
     mobileOrder: 5,
-    scale: 2.8,
   },
   {
     src: 'mostto-logistica-y-transporte.webp',
     alt: 'Mostto logistica y transporte',
     mobileOrder: 6,
-    scale: 1.85,
   },
   {
     src: 'transporte-snaider.webp',
     alt: 'Transporte Snaider',
     mobileOrder: 7,
-    scale: 2,
   },
   {
     src: 'transportes-premat-sa.webp',
     alt: 'Transportes Premat SA',
     mobileOrder: 8,
-    scale: 1.65,
   },
 ];
 
@@ -266,6 +257,9 @@ export function LogisticsMapSection() {
       const text = textRef.current;
       const heading = text.querySelector('.map-heading');
       const subheading = text.querySelector('.map-subheading');
+      const isDesktop = window.matchMedia(
+        '(min-width: 1024px)',
+      ).matches;
       // Get all circle elements from the SVG
       const circles =
         mapContainer.querySelectorAll('circle, ellipse');
@@ -298,132 +292,139 @@ export function LogisticsMapSection() {
         });
       }
 
-      // ============================================
-      // MAIN SCROLL TIMELINE
-      // ============================================
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.8,
-          // markers: true, // Uncomment for debugging
-        },
-      });
-
-      // ----------------------------------------
-      // STATE 0: Entrance (0% - 20%)
-      // Section slides up with parallax effect
-      // ----------------------------------------
-      tl.to(
-        mapContainer,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.2,
-          ease: 'power3.out',
-        },
-        0,
-      );
-
-      // ----------------------------------------
-      // STATE 1: The Reveal (10% - 50%)
-      // Map zooms out from 1.3 to 1.0
-      // ----------------------------------------
-      tl.to(
-        mapContainer,
-        {
-          scale: 1.0,
-          duration: 0.4,
-          ease: 'power3.out',
-        },
-        0.1,
-      );
-
-      // Reveal connecting lines
-      if (linesGroupRef.current) {
-        tl.to(
-          linesGroupRef.current,
-          {
-            opacity: 1,
-            duration: 0.4,
-            ease: 'power2.out',
+      if (isDesktop) {
+        // ============================================
+        // MAIN SCROLL TIMELINE
+        // ============================================
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.8,
           },
-          0.2,
-        );
-      }
+        });
 
-      // Highlight pulse nodes with brighter fill
-      if (pulseCircles.length > 0) {
-        pulseCircles.forEach((circle, i) => {
-          const enlargedR = originalRadii[i] + 2;
+        tl.to(
+          mapContainer,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.2,
+            ease: 'power3.out',
+          },
+          0,
+        );
+
+        tl.to(
+          mapContainer,
+          {
+            scale: 1.0,
+            duration: 0.4,
+            ease: 'power3.out',
+          },
+          0.1,
+        );
+
+        if (linesGroupRef.current) {
           tl.to(
-            circle,
+            linesGroupRef.current,
             {
-              fill: 'rgba(255, 255, 255, 0.6)',
-              attr: { r: enlargedR },
-              duration: 0.3,
+              opacity: 1,
+              duration: 0.4,
               ease: 'power2.out',
             },
-            0.2 + i * 0.02,
+            0.2,
           );
-        });
-      }
+        }
 
-      // ----------------------------------------
-      // STATE 2: Text Reveal (30% - 50%)
-      // Clip-path reveal animation
-      // ----------------------------------------
-      tl.to(
-        text,
-        {
+        if (pulseCircles.length > 0) {
+          pulseCircles.forEach((circle, i) => {
+            const enlargedR = originalRadii[i] + 2;
+            tl.to(
+              circle,
+              {
+                fill: 'rgba(255, 255, 255, 0.6)',
+                attr: { r: enlargedR },
+                duration: 0.3,
+                ease: 'power2.out',
+              },
+              0.2 + i * 0.02,
+            );
+          });
+        }
+
+        tl.to(
+          text,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.3,
+            ease: 'power3.out',
+          },
+          0.3,
+        );
+
+        if (heading) {
+          tl.to(
+            heading,
+            {
+              clipPath:
+                'polygon(0 0%, 100% 0%, 100% 100%, 0 100%)',
+              y: 0,
+              duration: 0.25,
+              ease: 'power3.out',
+            },
+            0.35,
+          );
+        }
+
+        if (subheading) {
+          tl.to(
+            subheading,
+            {
+              clipPath:
+                'polygon(0 0%, 100% 0%, 100% 100%, 0 100%)',
+              y: 0,
+              duration: 0.25,
+              ease: 'power3.out',
+            },
+            0.4,
+          );
+        }
+
+        tl.to(
+          [mapContainer, text],
+          {
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power2.in',
+          },
+          0.7,
+        );
+      } else {
+        gsap.set(mapContainer, {
+          scale: 1,
           opacity: 1,
           y: 0,
-          duration: 0.3,
-          ease: 'power3.out',
-        },
-        0.3,
-      );
-
-      if (heading) {
-        tl.to(
-          heading,
-          {
-            clipPath: 'polygon(0 0%, 100% 0%, 100% 100%, 0 100%)',
+        });
+        gsap.set(text, { opacity: 1, y: 0 });
+        if (heading && subheading) {
+          gsap.set([heading, subheading], {
+            clipPath: 'none',
             y: 0,
-            duration: 0.25,
-            ease: 'power3.out',
-          },
-          0.35,
-        );
+          });
+        }
+        if (linesGroupRef.current) {
+          gsap.set(linesGroupRef.current, { opacity: 1 });
+        }
+        pulseCircles.forEach((circle, i) => {
+          gsap.set(circle, {
+            fill: 'rgba(255, 255, 255, 0.6)',
+            attr: { r: originalRadii[i] + 2 },
+          });
+        });
       }
-
-      if (subheading) {
-        tl.to(
-          subheading,
-          {
-            clipPath: 'polygon(0 0%, 100% 0%, 100% 100%, 0 100%)',
-            y: 0,
-            duration: 0.25,
-            ease: 'power3.out',
-          },
-          0.4,
-        );
-      }
-
-      // ----------------------------------------
-      // STATE 3: Exit (70% - 100%)
-      // Blur and fade while next section slides over
-      // ----------------------------------------
-      tl.to(
-        [mapContainer, text],
-        {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power2.in',
-        },
-        0.7,
-      );
 
       // ============================================
       // PULSE ANIMATION (Continuous while in view)
@@ -500,13 +501,12 @@ export function LogisticsMapSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-10"
-      style={{ height: '200vh' }}
+      className="relative z-10 lg:h-[200vh]"
     >
       {/* Sticky Wrapper - stays fixed during scroll */}
       <div
         ref={stickyRef}
-        className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center"
+        className="relative w-full overflow-hidden flex items-start justify-center py-10 lg:sticky lg:top-0 lg:h-screen lg:items-center lg:py-0"
         style={{ backgroundColor: '#1B4B6B' }}
       >
         {/* Background Noise Texture */}
@@ -519,7 +519,7 @@ export function LogisticsMapSection() {
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
         <div className="relative z-10 mx-auto flex h-full w-full max-w-[1760px] items-center px-6 py-12 md:px-10 lg:px-16 xl:px-24">
-          <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(360px,0.9fr)_minmax(560px,1.1fr)] lg:gap-16 xl:gap-24">
+          <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(320px,0.82fr)_minmax(700px,1.18fr)] lg:gap-14 xl:gap-20">
             <div
               ref={mapWrapperRef}
               className="relative flex items-center justify-center"
@@ -528,8 +528,8 @@ export function LogisticsMapSection() {
                 ref={mapContainerRef}
                 className="will-change-transform"
                 style={{
-                  width: 'clamp(340px, 39vw, 620px)',
-                  height: 'clamp(440px, 78vh, 860px)',
+                  width: 'clamp(260px, 74vw, 620px)',
+                  height: 'clamp(340px, 56vh, 860px)',
                 }}
               />
             </div>
@@ -542,7 +542,7 @@ export function LogisticsMapSection() {
                 className="map-heading text-white font-bold tracking-tight"
                 style={{
                   fontFamily: getFontFamily('heading'),
-                  fontSize: 'clamp(3.4rem, 6.9vw, 7rem)',
+                  fontSize: 'clamp(3.2rem, 6.2vw, 6.2rem)',
                   letterSpacing: '-0.03em',
                   lineHeight: 0.9,
                   maxWidth: '13ch',
@@ -560,46 +560,26 @@ export function LogisticsMapSection() {
                 Logística donde lo necesites.
               </p>
 
-              <div className="mt-10 hidden w-full max-w-[920px] lg:block">
-                <div className="grid grid-cols-2 gap-x-14 gap-y-8 xl:gap-x-18 xl:gap-y-10">
-                  {TRANSPORTISTAS.map((transportista) => (
-                    <div
-                      key={`desktop-${transportista.src}`}
-                      className="flex min-h-[6.75rem] items-center justify-start"
-                    >
-                      <img
-                        src={getTransportistaSrc(transportista.src)}
-                        alt={transportista.alt}
-                        className="w-auto object-contain opacity-95 drop-shadow-[0_0_14px_rgba(255,255,255,0.08)]"
-                        style={{
-                          height: `${(transportista.scale || 1) * 3.2}rem`,
-                          maxWidth: '100%',
-                        }}
-                      />
-                    </div>
-                  ))}
+              <div className="mt-10 w-full max-w-[1080px]">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:gap-x-10 sm:gap-y-8 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-8 xl:gap-x-12">
+                  {TRANSPORTISTAS.slice()
+                    .sort((a, b) => a.mobileOrder - b.mobileOrder)
+                    .map((transportista) => (
+                      <div
+                        key={`transportista-${transportista.src}`}
+                        className="flex h-[5.75rem] items-center justify-start sm:h-[6.25rem] lg:h-[6.75rem]"
+                      >
+                        <img
+                          src={getTransportistaSrc(transportista.src)}
+                          alt={transportista.alt}
+                          className="max-w-[95%] object-contain object-left grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                          style={{
+                            maxHeight: '4.9rem',
+                          }}
+                        />
+                      </div>
+                    ))}
                 </div>
-              </div>
-
-              <div className="mt-8 grid w-full max-w-[26rem] grid-cols-2 gap-3 sm:mt-10 lg:hidden">
-            {TRANSPORTISTAS.slice()
-              .sort((a, b) => a.mobileOrder - b.mobileOrder)
-              .map((transportista) => (
-                <div
-                  key={`mobile-${transportista.src}`}
-                  className="relative flex h-[4.75rem] items-center justify-center px-2"
-                >
-                  <img
-                    src={getTransportistaSrc(transportista.src)}
-                    alt={transportista.alt}
-                    className="w-auto object-contain opacity-95"
-                    style={{
-                      height: `${(transportista.scale || 1) * 1.9}rem`,
-                      maxWidth: '100%',
-                    }}
-                  />
-                </div>
-              ))}
               </div>
             </div>
           </div>
