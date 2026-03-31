@@ -1,5 +1,4 @@
-const INDUSTRY_PAGE_SCROLL_START = 58;
-const INDUSTRY_PAGE_SCROLL_END = 78;
+import { getIndustryPageScrollFromProgress } from './industryTimeline';
 
 type CameraDirectorState = {
   pageScrollPercent: number;
@@ -38,9 +37,14 @@ export function getCameraDirectorEffectiveScrollPercent() {
     return state.pageScrollPercent;
   }
 
-  return (
-    INDUSTRY_PAGE_SCROLL_START +
-    (INDUSTRY_PAGE_SCROLL_END - INDUSTRY_PAGE_SCROLL_START) *
-      state.industryProgress
-  );
+  return getIndustryPageScrollFromProgress(state.industryProgress);
+}
+
+export function getCameraDirectorDebugState() {
+  return {
+    pageScrollPercent: state.pageScrollPercent,
+    industryProgress: state.industryProgress,
+    industryActive: state.industryActive,
+    effectiveScrollPercent: getCameraDirectorEffectiveScrollPercent(),
+  };
 }

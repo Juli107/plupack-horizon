@@ -18,7 +18,6 @@ interface PulseNode {
 interface TransportistaItem {
   src: string;
   alt: string;
-  mobileOrder: number;
 }
 
 // ============================================
@@ -80,42 +79,34 @@ const TRANSPORTISTAS: TransportistaItem[] = [
   {
     src: 'via-cargo.webp',
     alt: 'Via Cargo',
-    mobileOrder: 1,
   },
   {
     src: 'transportes-navas-srl.webp',
     alt: 'Transportes Navas SRL',
-    mobileOrder: 2,
   },
   {
     src: 'distribucion-y-logistica.webp',
     alt: 'Distribucion y logistica',
-    mobileOrder: 3,
   },
   {
     src: 'cruz-del-sur.webp',
     alt: 'Cruz del Sur',
-    mobileOrder: 4,
   },
   {
     src: 'g.webp',
     alt: 'G',
-    mobileOrder: 5,
   },
   {
     src: 'mostto-logistica-y-transporte.webp',
     alt: 'Mostto logistica y transporte',
-    mobileOrder: 6,
   },
   {
     src: 'transporte-snaider.webp',
     alt: 'Transporte Snaider',
-    mobileOrder: 7,
   },
   {
     src: 'transportes-premat-sa.webp',
     alt: 'Transportes Premat SA',
-    mobileOrder: 8,
   },
 ];
 
@@ -162,6 +153,9 @@ export function LogisticsMapSection() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapWrapperRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const transportCarouselRef = useRef<HTMLDivElement>(null);
+  const transportTrackRef = useRef<HTMLDivElement>(null);
+  const transportSetRef = useRef<HTMLDivElement>(null);
   const linesGroupRef = useRef<SVGGElement | null>(null);
   const { getFontFamily } = useShopifyTheme();
   const [svgLoaded, setSvgLoaded] = useState(false);
@@ -498,6 +492,65 @@ export function LogisticsMapSection() {
     { scope: sectionRef, dependencies: [svgLoaded] },
   );
 
+  useGSAP(
+    () => {
+      if (
+        window.matchMedia?.('(prefers-reduced-motion: reduce)')
+          ?.matches
+      )
+        return;
+
+      const track = transportTrackRef.current;
+      const set = transportSetRef.current;
+      if (!track || !set) return;
+
+      const getSetGap = () => {
+        const styles = window.getComputedStyle(track);
+        const value = styles.columnGap || styles.gap || '0';
+        const parsed = Number.parseFloat(value);
+        return Number.isFinite(parsed) ? parsed : 0;
+      };
+
+      const getDistance = () => set.scrollWidth + getSetGap();
+
+      const tween = gsap.to(track, {
+        x: () => -getDistance(),
+        ease: 'none',
+        duration: 36,
+        repeat: -1,
+      });
+
+      const refresh = () => {
+        gsap.set(track, { x: 0 });
+        tween.invalidate().restart();
+      };
+
+      const resizeObserver = new ResizeObserver(refresh);
+      resizeObserver.observe(set);
+
+      const container = transportCarouselRef.current;
+      const images = Array.from(
+        container?.querySelectorAll('img') ?? [],
+      );
+      const onImgLoad = () => refresh();
+      images.forEach((img) => {
+        if (img.complete) return;
+        img.addEventListener('load', onImgLoad, { once: true });
+        img.addEventListener('error', onImgLoad, { once: true });
+      });
+
+      return () => {
+        resizeObserver.disconnect();
+        tween.kill();
+        images.forEach((img) => {
+          img.removeEventListener('load', onImgLoad);
+          img.removeEventListener('error', onImgLoad);
+        });
+      };
+    },
+    { scope: transportCarouselRef, dependencies: [svgLoaded] },
+  );
+
   return (
     <section
       ref={sectionRef}
@@ -506,7 +559,7 @@ export function LogisticsMapSection() {
       {/* Sticky Wrapper - stays fixed during scroll */}
       <div
         ref={stickyRef}
-        className="relative w-full overflow-hidden flex items-start justify-center py-10 lg:sticky lg:top-0 lg:h-screen lg:items-center lg:py-0"
+        className="relative w-full overflow-visible flex items-start justify-center py-10 lg:sticky lg:top-0 lg:h-screen lg:items-center lg:overflow-hidden lg:py-0"
         style={{ backgroundColor: '#1B4B6B' }}
       >
         {/* Background Noise Texture */}
@@ -519,7 +572,7 @@ export function LogisticsMapSection() {
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
         <div className="relative z-10 mx-auto flex h-full w-full max-w-[1760px] items-center px-6 py-12 md:px-10 lg:px-16 xl:px-24">
-          <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(320px,0.82fr)_minmax(700px,1.18fr)] lg:gap-14 xl:gap-20">
+          <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(420px,1fr)_minmax(620px,1fr)] lg:gap-14 xl:gap-20">
             <div
               ref={mapWrapperRef}
               className="relative flex items-center justify-center"
@@ -528,8 +581,8 @@ export function LogisticsMapSection() {
                 ref={mapContainerRef}
                 className="will-change-transform"
                 style={{
-                  width: 'clamp(260px, 74vw, 620px)',
-                  height: 'clamp(340px, 56vh, 860px)',
+                  width: 'clamp(250px, 46vw, 880px)',
+                  height: 'clamp(330px, 86vh, 1020px)',
                 }}
               />
             </div>
@@ -560,25 +613,50 @@ export function LogisticsMapSection() {
                 Logística donde lo necesites.
               </p>
 
-              <div className="mt-10 w-full max-w-[1080px]">
-                <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:gap-x-10 sm:gap-y-8 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-8 xl:gap-x-12">
-                  {TRANSPORTISTAS.slice()
-                    .sort((a, b) => a.mobileOrder - b.mobileOrder)
-                    .map((transportista) => (
+              <div
+                ref={transportCarouselRef}
+                className="relative mt-14 md:mt-16 w-full max-w-[980px] overflow-hidden mask-gradient-x"
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-r from-[#1B4B6B] to-transparent pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-l from-[#1B4B6B] to-transparent pointer-events-none" />
+                <div
+                  ref={transportTrackRef}
+                  className="flex w-max items-center mix-blend-screen will-change-transform gap-8 md:gap-12"
+                >
+                  <div
+                    ref={transportSetRef}
+                    className="flex flex-none shrink-0 gap-8 md:gap-12 items-center"
+                  >
+                    {TRANSPORTISTAS.map((transportista) => (
                       <div
-                        key={`transportista-${transportista.src}`}
-                        className="flex h-[5.75rem] items-center justify-start sm:h-[6.25rem] lg:h-[6.75rem]"
+                        key={`transportista-1-${transportista.src}`}
+                        className="relative shrink-0 h-14 w-40 md:h-16 md:w-52 flex items-center justify-center"
                       >
                         <img
                           src={getTransportistaSrc(transportista.src)}
                           alt={transportista.alt}
-                          className="max-w-[95%] object-contain object-left grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
-                          style={{
-                            maxHeight: '4.9rem',
-                          }}
+                          className="h-full w-full object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
                         />
                       </div>
                     ))}
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    className="flex flex-none shrink-0 gap-8 md:gap-12 items-center"
+                  >
+                    {TRANSPORTISTAS.map((transportista) => (
+                      <div
+                        key={`transportista-2-${transportista.src}`}
+                        className="relative shrink-0 h-14 w-40 md:h-16 md:w-52 flex items-center justify-center"
+                      >
+                        <img
+                          src={getTransportistaSrc(transportista.src)}
+                          alt=""
+                          className="h-full w-full object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

@@ -216,7 +216,7 @@ export function Homepage({
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
         <LogisticsMapSection />
-        {/* <div className="h-[875.24px]">Products</div> */}
+        <div className="h-[875.24px]">Products</div>
         <ProductsShowcaseSection />
         <IndustryDynamicsSection />
         <IndustrySections />
@@ -226,7 +226,7 @@ export function Homepage({
         <PurchaseProcessSection />
         <PreFooterSection />
       </main>
-      {/* <div className="h-[603.99px]">Footer</div> */}
+      <div className="h-[603.99px]">Footer</div>
     </ReactLenis>
   );
 }

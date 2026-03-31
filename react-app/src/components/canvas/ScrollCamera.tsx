@@ -12,6 +12,10 @@ import {
   getCameraDirectorEffectiveScrollPercent,
   setCameraDirectorPageScrollPercent,
 } from './cameraDirector';
+import {
+  INDUSTRY_TIMELINE,
+  isIndustryScrollPercent,
+} from './industryTimeline';
 
 // ============================================
 // SCROLL-SYNCED CAMERA CONTROLLER
@@ -24,9 +28,6 @@ const LERP_FACTOR = 0.08;
 const FOV_EPSILON = 0.02;
 const FOV_DAMPING = 24;
 const FOV_MAX_SPEED = 90;
-const INDUSTRY_SCROLL_START = 48;
-const INDUSTRY_SCROLL_END = 74;
-const INDUSTRY_MIN_CAMERA_TARGET_DISTANCE = 8;
 
 export function ScrollCamera() {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
@@ -72,18 +73,17 @@ export function ScrollCamera() {
     // Prevent brief "zoom-in" feeling in industries by keeping
     // a minimum camera-to-target distance during that section.
     if (
-      scrollPercent >= INDUSTRY_SCROLL_START &&
-      scrollPercent <= INDUSTRY_SCROLL_END &&
+      isIndustryScrollPercent(scrollPercent) &&
       interpolated.lookAt
     ) {
       const offset = interpolated.position.clone().sub(interpolated.lookAt);
       const distance = offset.length();
 
-      if (distance < INDUSTRY_MIN_CAMERA_TARGET_DISTANCE) {
+      if (distance < INDUSTRY_TIMELINE.camera.minTargetDistance) {
         if (distance > 1e-4) {
-          offset.setLength(INDUSTRY_MIN_CAMERA_TARGET_DISTANCE);
+          offset.setLength(INDUSTRY_TIMELINE.camera.minTargetDistance);
         } else {
-          offset.set(0, 0, INDUSTRY_MIN_CAMERA_TARGET_DISTANCE);
+          offset.set(0, 0, INDUSTRY_TIMELINE.camera.minTargetDistance);
         }
         interpolated.position.copy(interpolated.lookAt.clone().add(offset));
       }

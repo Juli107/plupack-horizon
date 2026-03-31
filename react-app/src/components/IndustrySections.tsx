@@ -7,6 +7,10 @@ import {
   setCameraDirectorIndustryActive,
   setCameraDirectorIndustryProgress,
 } from './canvas/cameraDirector';
+import {
+  INDUSTRY_TIMELINE,
+  mapIndustrySectionProgress,
+} from './canvas/industryTimeline';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -76,7 +80,7 @@ function OutlineText({
       className={`relative inline-block ${className}`}
       style={{
         transform:
-          'scale(calc(1 + var(--industry-fill-progress, 0) * 0.05))',
+          'scale(calc(var(--industry-fit-scale, 1) * (1 + var(--industry-fill-progress, 0) * 0.05)))',
         transition: 'transform 0.3s ease-out',
       }}
     >
@@ -172,6 +176,7 @@ function IndustrySection({
   index,
 }: IndustrySectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const titleMeasureRef = useRef<HTMLSpanElement>(null);
   const { getFontFamily } = useShopifyTheme();
 
   useGSAP(
@@ -181,6 +186,36 @@ function IndustrySection({
       const section = sectionRef.current;
       const titleEl = section.querySelector('.industry-title');
       section.style.setProperty('--industry-fill-progress', '0');
+      section.style.setProperty('--industry-fit-scale', '1');
+
+      let resizeRaf: number | null = null;
+
+      const updateTitleFitScale = () => {
+        if (!sectionRef.current || !titleMeasureRef.current) return;
+
+        const availableWidth = sectionRef.current.clientWidth * 0.94;
+        const titleWidth = titleMeasureRef.current.offsetWidth;
+        if (!titleWidth) return;
+
+        const fitScale = Math.min(1, availableWidth / titleWidth);
+        sectionRef.current.style.setProperty(
+          '--industry-fit-scale',
+          fitScale.toFixed(4),
+        );
+      };
+
+      const scheduleTitleFitScaleUpdate = () => {
+        if (resizeRaf !== null) {
+          cancelAnimationFrame(resizeRaf);
+        }
+
+        resizeRaf = requestAnimationFrame(() => {
+          resizeRaf = null;
+          updateTitleFitScale();
+        });
+      };
+
+      scheduleTitleFitScaleUpdate();
 
       // Title reveal animation
       const tl = gsap.timeline({
@@ -227,6 +262,35 @@ function IndustrySection({
         onLeaveBack: () =>
           section.style.setProperty('--industry-fill-progress', '0'),
       });
+
+      let resizeObserver: ResizeObserver | null = null;
+
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(() => {
+          scheduleTitleFitScaleUpdate();
+        });
+        resizeObserver.observe(section);
+      }
+
+      window.addEventListener('resize', scheduleTitleFitScaleUpdate);
+
+      if (document.fonts && typeof document.fonts.ready?.then === 'function') {
+        void document.fonts.ready.then(() => {
+          scheduleTitleFitScaleUpdate();
+        });
+      }
+
+      return () => {
+        if (resizeRaf !== null) {
+          cancelAnimationFrame(resizeRaf);
+        }
+
+        if (resizeObserver) {
+          resizeObserver.disconnect();
+        }
+
+        window.removeEventListener('resize', scheduleTitleFitScaleUpdate);
+      };
     },
     { scope: sectionRef },
   );
@@ -241,14 +305,16 @@ function IndustrySection({
       {/* Title Layer - BEHIND 3D canvas (z-5) */}
       <div className="absolute z-5 inset-0 w-full h-full flex justify-center pointer-events-none">
         <h2
-          className="industry-title text-white will-change-transform"
+          className="industry-title inline-block whitespace-nowrap leading-none text-white will-change-transform"
           style={{ fontFamily: getFontFamily('heading') }}
         >
-          <OutlineText
-            text={title}
-            className="block text-[clamp(3rem,15vw,11.2rem)]"
-            strokeWidth={2}
-          />
+          <span ref={titleMeasureRef} className="inline-block">
+            <OutlineText
+              text={title}
+              className="block text-[clamp(3rem,15vw,11.2rem)]"
+              strokeWidth={2}
+            />
+          </span>
         </h2>
       </div>
 
@@ -309,18 +375,8 @@ export function IndustrySections() {
       // Show/hide the fixed background based on container visibility
       ScrollTrigger.create({
         trigger: container,
-        start: 'top bottom',
-        end: 'bottom top',
-        onToggle: (self) => {
-          setCameraDirectorIndustryActive(self.isActive);
-
-          if (!self.isActive) {
-            setCameraDirectorIndustryProgress(self.direction < 0 ? 0 : 1);
-          }
-        },
-        onUpdate: (self) => {
-          setCameraDirectorIndustryProgress(self.progress);
-        },
+        start: INDUSTRY_TIMELINE.trigger.visibilityStart,
+        end: INDUSTRY_TIMELINE.trigger.visibilityEnd,
         onEnter: () => {
           bg.style.opacity = '1';
         },
@@ -338,11 +394,21 @@ export function IndustrySections() {
       // Smooth color transition based on scroll position through the container
       ScrollTrigger.create({
         trigger: container,
-        start: 'top top',
-        end: 'bottom bottom',
+        start: INDUSTRY_TIMELINE.trigger.progressStart,
+        end: INDUSTRY_TIMELINE.trigger.progressEnd,
         scrub: true,
+        onToggle: (self) => {
+          setCameraDirectorIndustryActive(self.isActive);
+
+          if (!self.isActive) {
+            setCameraDirectorIndustryProgress(self.direction < 0 ? 0 : 1);
+          }
+        },
         onUpdate: (self) => {
-          const progress = self.progress;
+          const industryProgress = mapIndustrySectionProgress(self.progress);
+          setCameraDirectorIndustryProgress(industryProgress);
+
+          const progress = industryProgress;
           const totalSections = colors.length;
 
           // Scale progress across all sections

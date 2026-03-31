@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { INDUSTRY_TIMELINE } from './industryTimeline';
 
 // ============================================
 // CAMERA KEYFRAME CONFIGURATION
@@ -57,7 +58,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
   },
 
   // ============================================
-  // SERVICES & INDUSTRY DYNAMICS (20-54%)
+  // SERVICES & INDUSTRY DYNAMICS (20% to industry hold)
   // ============================================
 
   // Hold Camera movement
@@ -69,17 +70,24 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   {
     scrollPercent: 52,
-    position: [0, -50, 0],
-    lookAt: [0, -50, 0],
+    position: [0, -40, 0],
+    lookAt: [0, -40, 0],
+  },
+
+  // Hold this framing longer so the industry cylinder does not enter early
+  {
+    scrollPercent: INDUSTRY_TIMELINE.keyframes.hold,
+    position: [0, -40, 0],
+    lookAt: [0, -40, 0],
   },
 
   // ============================================
-  // INDUSTRIES (54-80%) - Orbital descent around the rod
+  // INDUSTRIES (timeline-controlled range) - Orbital descent around the rod
   // ============================================
 
   // Start - Front view, top of rod
   {
-    scrollPercent: 58,
+    scrollPercent: INDUSTRY_TIMELINE.keyframes.start,
     orbit: true,
     orbitCenter: [0, -57.8, 0],
     orbitAngle: Math.PI,
@@ -90,7 +98,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Three-quarter rotation - Left side, near bottom
   {
-    scrollPercent: 63,
+    scrollPercent: INDUSTRY_TIMELINE.keyframes.midOne,
     orbit: true,
     orbitCenter: [0, -63.8, 0],
     orbitAngle: Math.PI * 1.75,
@@ -101,7 +109,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Full rotation - Back at front, bottom of rod
   {
-    scrollPercent: 68,
+    scrollPercent: INDUSTRY_TIMELINE.keyframes.midTwo,
     orbit: true,
     orbitCenter: [0, -69.8, 0],
     orbitAngle: Math.PI * 2.6,
@@ -112,7 +120,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // End of rotation
   {
-    scrollPercent: 78,
+    scrollPercent: INDUSTRY_TIMELINE.keyframes.end,
     orbit: false,
     position: [0, -77.8, -8],
     lookAt: [0, -77.8, 0],
