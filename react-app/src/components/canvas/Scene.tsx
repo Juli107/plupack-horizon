@@ -4,6 +4,7 @@ import {
   INDUSTRY_ITEM_NAMES,
   preloadIndustryWrapModel,
 } from './industryAssets';
+import { INDUSTRY_TIMELINE } from './industryTimeline';
 import { IndustryCylinder } from './IndustryCylinder';
 import { preloadModels } from './Products';
 
@@ -18,6 +19,8 @@ type SceneProps = {
 };
 
 export function Scene({ isMobile }: SceneProps) {
+  const industryWorldY = INDUSTRY_TIMELINE.world.anchorY;
+
   useEffect(() => {
     preloadIndustryWrapModel();
     preloadModels(INDUSTRY_ITEM_NAMES);
@@ -65,38 +68,30 @@ export function Scene({ isMobile }: SceneProps) {
       />
 
       <directionalLight
-        castShadow
         color="#ffffff"
         intensity={isMobile ? 2.2 : 2.7}
-        position={[8, -53, 14]}
-        shadow-mapSize-width={isMobile ? 512 : 1024}
-        shadow-mapSize-height={isMobile ? 512 : 1024}
-        shadow-bias={-0.00015}
-        shadow-normalBias={0.02}
-        shadow-camera-near={1}
-        shadow-camera-far={120}
-        shadow-camera-left={-22}
-        shadow-camera-right={22}
-        shadow-camera-top={22}
-        shadow-camera-bottom={-22}
+        position={[8, industryWorldY + 14.8, 14]}
       >
-        <object3D attach="target" position={[0, -67.8, 0]} />
+        <object3D attach="target" position={[0, industryWorldY, 0]} />
       </directionalLight>
 
       <directionalLight
         color="#9cc6ff"
         intensity={isMobile ? 0.55 : 0.75}
-        position={[-12, -60, -10]}
+        position={[-12, industryWorldY + 7.8, -10]}
       >
-        <object3D attach="target" position={[0, -67.8, 0]} />
+        <object3D attach="target" position={[0, industryWorldY, 0]} />
       </directionalLight>
 
       <directionalLight
         color="#fff4e3"
         intensity={isMobile ? 0.8 : 1.15}
-        position={[-4, -58, 14]}
+        position={[-4, industryWorldY + 9.8, 14]}
       >
-        <object3D attach="target" position={[-1.2, -67.4, 0]} />
+        <object3D
+          attach="target"
+          position={[-1.2, industryWorldY + 0.4, 0]}
+        />
       </directionalLight>
 
       <pointLight
@@ -104,7 +99,7 @@ export function Scene({ isMobile }: SceneProps) {
         intensity={isMobile ? 0.5 : 0.65}
         distance={40}
         decay={2}
-        position={[-8, -60, -14]}
+        position={[-8, industryWorldY + 7.8, -14]}
       />
       <spotLight
         castShadow={false}
@@ -114,9 +109,9 @@ export function Scene({ isMobile }: SceneProps) {
         penumbra={0.7}
         distance={54}
         decay={1.8}
-        position={[2.8, -58, 16]}
+        position={[2.8, industryWorldY + 9.8, 16]}
       >
-        <object3D attach="target" position={[0, -66.8, 0]} />
+        <object3D attach="target" position={[0, industryWorldY + 1, 0]} />
       </spotLight>
 
       <spotLight
@@ -127,21 +122,12 @@ export function Scene({ isMobile }: SceneProps) {
         penumbra={0.9}
         distance={60}
         decay={2}
-        position={[0, -63.5, -18]}
+        position={[0, industryWorldY + 4.3, -18]}
       >
-        <object3D attach="target" position={[0, -66.5, 0]} />
+        <object3D attach="target" position={[0, industryWorldY + 1.3, 0]} />
       </spotLight>
 
-      <mesh
-        position={[0, -72.4, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        receiveShadow
-      >
-        <planeGeometry args={[36, 36]} />
-        <shadowMaterial opacity={isMobile ? 0.2 : 0.28} />
-      </mesh>
-
-      <group position={[0, -67.8, 0]}>
+      <group position={[0, industryWorldY, 0]}>
         <IndustryCylinder />
       </group>
 

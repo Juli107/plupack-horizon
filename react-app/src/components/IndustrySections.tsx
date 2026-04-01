@@ -4,12 +4,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useId, useMemo, useRef } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import {
+  getCameraDirectorDebugState,
   setCameraDirectorIndustryActive,
   setCameraDirectorIndustryProgress,
 } from './canvas/cameraDirector';
 import {
   INDUSTRY_TIMELINE,
-  mapIndustrySectionProgress,
+  mapGlobalScrollToIndustryProgress,
+  normalizeIndustrySectionProgress,
 } from './canvas/industryTimeline';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -69,11 +71,61 @@ function OutlineText({
   strokeWidth = 2,
 }: OutlineTextProps) {
   const { getFontFamily } = useShopifyTheme();
+  const isSafari = useMemo(
+    () =>
+      typeof navigator !== 'undefined' &&
+      /Safari/i.test(navigator.userAgent) &&
+      !/Chrome|CriOS|Edg|OPR|FxiOS/i.test(navigator.userAgent),
+    [],
+  );
   const outlineId = useId();
   const filterId = useMemo(
     () => `outline-filter-${text.replace(/\s/g, '-').toLowerCase()}-${outlineId}`,
     [outlineId, text],
   );
+
+  if (isSafari) {
+    return (
+      <span
+        className={`relative inline-block whitespace-nowrap ${className}`}
+        style={{
+          transform:
+            'scale(calc(var(--industry-fit-scale, 1) * (1 + var(--industry-fill-progress, 0) * 0.05)))',
+          transition: 'transform 0.24s ease-out',
+        }}
+      >
+        <span
+          className="invisible font-bold tracking-tight"
+          aria-hidden="true"
+        >
+          {text}
+        </span>
+
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 font-bold tracking-tight text-transparent"
+          style={{
+            fontFamily: getFontFamily('heading'),
+            WebkitTextStroke: `${strokeWidth}px white`,
+          }}
+        >
+          {text}
+        </span>
+
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 font-bold tracking-tight text-white"
+          style={{
+            fontFamily: getFontFamily('heading'),
+            opacity: 'var(--industry-fill-progress, 0)',
+            transition: 'opacity 0.2s linear',
+          }}
+        >
+          {text}
+        </span>
+      </span>
+    );
+  }
 
   return (
     <span
@@ -375,8 +427,8 @@ export function IndustrySections() {
       // Show/hide the fixed background based on container visibility
       ScrollTrigger.create({
         trigger: container,
-        start: INDUSTRY_TIMELINE.trigger.visibilityStart,
-        end: INDUSTRY_TIMELINE.trigger.visibilityEnd,
+        start: INDUSTRY_TIMELINE.sectionTrigger.visibilityRange.start,
+        end: INDUSTRY_TIMELINE.sectionTrigger.visibilityRange.end,
         onEnter: () => {
           bg.style.opacity = '1';
         },
@@ -394,18 +446,27 @@ export function IndustrySections() {
       // Smooth color transition based on scroll position through the container
       ScrollTrigger.create({
         trigger: container,
-        start: INDUSTRY_TIMELINE.trigger.progressStart,
-        end: INDUSTRY_TIMELINE.trigger.progressEnd,
+        start: INDUSTRY_TIMELINE.sectionTrigger.progressRange.start,
+        end: INDUSTRY_TIMELINE.sectionTrigger.progressRange.end,
         scrub: true,
         onToggle: (self) => {
-          setCameraDirectorIndustryActive(self.isActive);
-
-          if (!self.isActive) {
-            setCameraDirectorIndustryProgress(self.direction < 0 ? 0 : 1);
+          if (self.isActive) {
+            const { pageScrollPercent } = getCameraDirectorDebugState();
+            const syncedProgress = mapGlobalScrollToIndustryProgress(
+              pageScrollPercent,
+            );
+            setCameraDirectorIndustryProgress(syncedProgress);
+            setCameraDirectorIndustryActive(true);
+            return;
           }
+
+          setCameraDirectorIndustryActive(false);
+
+          setCameraDirectorIndustryProgress(self.direction < 0 ? 0 : 1);
         },
         onUpdate: (self) => {
-          const industryProgress = mapIndustrySectionProgress(self.progress);
+          const industryProgress =
+            normalizeIndustrySectionProgress(self.progress);
           setCameraDirectorIndustryProgress(industryProgress);
 
           const progress = industryProgress;

@@ -17,6 +17,8 @@ export function GlobalCanvas() {
   const [isMobile, setIsMobile] = useState(false);
   const [dynamicDprMax, setDynamicDprMax] = useState(2);
 
+  const targetDprMax = isMobile ? 1.25 : 2;
+
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)');
     const update = () => setIsMobile(mediaQuery.matches);
@@ -28,28 +30,24 @@ export function GlobalCanvas() {
   }, []);
 
   const dpr = useMemo<[number, number]>(
-    () => (isMobile ? [1, Math.min(dynamicDprMax, 1.4)] : [1, dynamicDprMax]),
-    [dynamicDprMax, isMobile]
+    () => [1, Math.min(dynamicDprMax, targetDprMax)],
+    [dynamicDprMax, targetDprMax]
   );
 
   useEffect(() => {
-    setDynamicDprMax(isMobile ? 1.4 : 2);
-  }, [isMobile]);
+    setDynamicDprMax(targetDprMax);
+  }, [targetDprMax]);
 
   return (
     <div className="fixed inset-0 z-10 pointer-events-none w-screen h-screen">
       <Canvas
         dpr={dpr}
-        shadows
         performance={{ min: 0.6 }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = isMobile ? 1.2 : 1.36;
           gl.outputColorSpace = THREE.SRGBColorSpace;
-          gl.shadowMap.enabled = true;
-          gl.shadowMap.type = isMobile
-            ? THREE.BasicShadowMap
-            : THREE.PCFSoftShadowMap;
+          gl.shadowMap.enabled = false;
 
           if (window.__PLUPACK_CANVAS_READY__) {
             return;
@@ -68,11 +66,11 @@ export function GlobalCanvas() {
       >
         <PerformanceMonitor
           onDecline={() => {
-            setDynamicDprMax((prev) => Math.max(1, prev - 0.25));
+            setDynamicDprMax((prev) => Math.max(1, prev - 0.2));
           }}
           onIncline={() => {
             setDynamicDprMax((prev) =>
-              Math.min(isMobile ? 1.4 : 2, prev + 0.25)
+              Math.min(targetDprMax, prev + 0.2)
             );
           }}
         />

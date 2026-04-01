@@ -1,8 +1,10 @@
 import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { RenderProduct } from './Products';
 import { industryWrapUrl } from './industryAssets';
+import { getCameraDirectorDebugState } from './cameraDirector';
 
 // Helper types for individual item configuration
 type ItemConfig = {
@@ -89,6 +91,14 @@ const BOT_ITEMS: ItemConfig[] = [
 export function IndustryCylinder(props: any) {
   const cylinderRef = useRef<THREE.Group>(null);
 
+  useFrame(() => {
+    if (!cylinderRef.current) {
+      return;
+    }
+
+    cylinderRef.current.visible = getCameraDirectorDebugState().industryActive;
+  });
+
   const { scene } = useGLTF(industryWrapUrl);
   const wrapperModel = useMemo(() => {
     const cloned = scene.clone();
@@ -114,7 +124,7 @@ export function IndustryCylinder(props: any) {
           }
         );
         (obj as THREE.Mesh).castShadow = false;
-        (obj as THREE.Mesh).receiveShadow = true;
+        (obj as THREE.Mesh).receiveShadow = false;
       }
     });
     return cloned;

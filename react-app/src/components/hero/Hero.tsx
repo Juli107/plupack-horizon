@@ -21,6 +21,8 @@ export function Hero() {
   const activeProduct = hasFeaturedProducts
     ? featuredProducts[activeProductIndex]
     : null;
+  const featuredMediaHeightClass = 'md:h-[49vh] md:min-h-[25rem]';
+  const featuredContentOffsetClass = 'md:pt-[calc(49vh+2.5rem)]';
 
   const scrollToIndustries = () => {
     if (!lenis) return;
@@ -127,7 +129,9 @@ export function Hero() {
       `}</style>
       <div className="md:absolute md:inset-0 md:h-full pointer-events-none text-white flex flex-col md:block">
         {hasFeaturedProducts ? (
-          <div className="pointer-events-auto w-full md:absolute md:inset-x-0 md:top-0 md:h-[55vh] md:min-h-[30rem]">
+          <div
+            className={`pointer-events-auto w-full md:absolute md:inset-x-0 md:top-0 ${featuredMediaHeightClass}`}
+          >
             <article className="relative overflow-hidden w-full aspect-[4/3] md:aspect-auto md:h-full bg-[#072f4f] text-white">
 
               {/* Full-bleed images — stacked, crossfade via opacity */}
@@ -247,7 +251,7 @@ export function Hero() {
 
         <div
           className={`flex-1 md:h-full flex items-end px-6 md:px-10 xl:px-12 pb-8 md:pb-10 pt-8 ${
-            hasFeaturedProducts ? 'md:pt-[55vh]' : 'md:pt-28'
+            hasFeaturedProducts ? featuredContentOffsetClass : 'md:pt-28'
           }`}
         >
           <div className="flex flex-col lg:flex-row w-full relative items-start lg:justify-between gap-8 lg:gap-6">

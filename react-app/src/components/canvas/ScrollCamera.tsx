@@ -12,43 +12,17 @@ import {
   getCameraDirectorEffectiveScrollPercent,
   setCameraDirectorPageScrollPercent,
 } from './cameraDirector';
-import {
-  INDUSTRY_TIMELINE,
-  isIndustryScrollPercent,
-} from './industryTimeline';
 
 // ============================================
 // SCROLL-SYNCED CAMERA CONTROLLER
 // ============================================
-// This component moves the camera based on scroll position
-// using keyframes defined in cameraKeyframes.ts
-// Uses Lenis scroll values for smooth syncing
-
-const LERP_FACTOR = 0.08;
+// Camera is resolved deterministically from effective scroll
+// on every frame so behavior is consistent across browsers.
 const FOV_EPSILON = 0.02;
-const FOV_DAMPING = 24;
-const FOV_MAX_SPEED = 90;
 
 export function ScrollCamera() {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const { set } = useThree();
-
-  // Current interpolated values (for smooth lerping)
-  const currentPosition = useRef(new THREE.Vector3(0, 0, 10));
-  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
-  const currentRotation = useRef(new THREE.Euler(0, 0, 0));
-  const currentFov = useRef(45);
-
-  // Target values (from keyframes)
-  const targetPosition = useRef(new THREE.Vector3(0, 0, 10));
-  const targetLookAt = useRef<THREE.Vector3 | null>(
-    new THREE.Vector3(0, 0, 0)
-  );
-  const targetRotation = useRef<THREE.Euler | null>(null);
-  const targetFov = useRef(45);
-
-  // Track if we're using lookAt or rotation
-  const useLookAtRef = useRef(true);
 
   // Set this camera as the default
   useEffect(() => {
@@ -59,97 +33,29 @@ export function ScrollCamera() {
 
   // Use Lenis scroll for smooth, synced scrolling
   useLenis((lenis) => {
-    // Get scroll progress (0 to 100 percent) from Lenis
     setCameraDirectorPageScrollPercent(lenis.progress * 100);
-    const scrollPercent = getCameraDirectorEffectiveScrollPercent();
+  });
 
-    // Find surrounding keyframes and interpolate
+  useFrame(() => {
+    if (!cameraRef.current) return;
+
+    const scrollPercent = getCameraDirectorEffectiveScrollPercent();
     const { from, to, t } = findSurroundingKeyframes(
       scrollPercent,
-      cameraKeyframes
+      cameraKeyframes,
     );
     const interpolated = interpolateKeyframes(from, to, t);
 
-    // Prevent brief "zoom-in" feeling in industries by keeping
-    // a minimum camera-to-target distance during that section.
-    if (
-      isIndustryScrollPercent(scrollPercent) &&
-      interpolated.lookAt
-    ) {
-      const offset = interpolated.position.clone().sub(interpolated.lookAt);
-      const distance = offset.length();
+    cameraRef.current.position.copy(interpolated.position);
 
-      if (distance < INDUSTRY_TIMELINE.camera.minTargetDistance) {
-        if (distance > 1e-4) {
-          offset.setLength(INDUSTRY_TIMELINE.camera.minTargetDistance);
-        } else {
-          offset.set(0, 0, INDUSTRY_TIMELINE.camera.minTargetDistance);
-        }
-        interpolated.position.copy(interpolated.lookAt.clone().add(offset));
-      }
-    }
-
-    // Set target values
-    targetPosition.current.copy(interpolated.position);
-    targetFov.current = interpolated.fov;
-
-    // Handle lookAt vs rotation
     if (interpolated.lookAt) {
-      targetLookAt.current = interpolated.lookAt;
-      targetRotation.current = null;
-      useLookAtRef.current = true;
+      cameraRef.current.lookAt(interpolated.lookAt);
     } else if (interpolated.rotation) {
-      targetRotation.current = interpolated.rotation;
-      targetLookAt.current = null;
-      useLookAtRef.current = false;
-    }
-  });
-
-  useFrame((_, delta) => {
-    if (!cameraRef.current) return;
-
-    // Lerp position
-    currentPosition.current.lerp(targetPosition.current, LERP_FACTOR);
-    cameraRef.current.position.copy(currentPosition.current);
-
-    // Handle rotation - either via lookAt or direct rotation
-    if (useLookAtRef.current && targetLookAt.current) {
-      // Lerp lookAt target
-      currentLookAt.current.lerp(targetLookAt.current, LERP_FACTOR);
-      cameraRef.current.lookAt(currentLookAt.current);
-    } else if (targetRotation.current) {
-      // Lerp rotation directly
-      currentRotation.current.x = THREE.MathUtils.lerp(
-        currentRotation.current.x,
-        targetRotation.current.x,
-        LERP_FACTOR
-      );
-      currentRotation.current.y = THREE.MathUtils.lerp(
-        currentRotation.current.y,
-        targetRotation.current.y,
-        LERP_FACTOR
-      );
-      currentRotation.current.z = THREE.MathUtils.lerp(
-        currentRotation.current.z,
-        targetRotation.current.z,
-        LERP_FACTOR
-      );
-      cameraRef.current.rotation.copy(currentRotation.current);
+      cameraRef.current.rotation.copy(interpolated.rotation);
     }
 
-    // Damped + rate-limited FOV keeps zoom transitions snappy
-    // while preventing sudden lens spikes during aggressive scroll bursts.
-    const dampFactor = 1 - Math.exp(-FOV_DAMPING * delta);
-    const desiredStep = (targetFov.current - currentFov.current) * dampFactor;
-    const maxStep = FOV_MAX_SPEED * delta;
-    const clampedStep = THREE.MathUtils.clamp(desiredStep, -maxStep, maxStep);
-    currentFov.current += clampedStep;
-
-    if (
-      Math.abs(cameraRef.current.fov - currentFov.current) >
-      FOV_EPSILON
-    ) {
-      cameraRef.current.fov = currentFov.current;
+    if (Math.abs(cameraRef.current.fov - interpolated.fov) > FOV_EPSILON) {
+      cameraRef.current.fov = interpolated.fov;
       cameraRef.current.updateProjectionMatrix();
     }
   });

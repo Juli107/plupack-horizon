@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import { INDUSTRY_TIMELINE } from './industryTimeline';
 
+const INDUSTRY_WORLD_Y = INDUSTRY_TIMELINE.world.anchorY;
+const INDUSTRY_PREP_Y = INDUSTRY_WORLD_Y + 27.8;
+const INDUSTRY_ORBIT_TOP_Y = INDUSTRY_WORLD_Y + 10;
+const INDUSTRY_ORBIT_MID_Y = INDUSTRY_WORLD_Y + 4;
+const INDUSTRY_ORBIT_BOTTOM_Y = INDUSTRY_WORLD_Y - 2;
+const INDUSTRY_EXIT_Y = INDUSTRY_WORLD_Y - 10;
+
 // ============================================
 // CAMERA KEYFRAME CONFIGURATION
 // ============================================
@@ -64,21 +71,21 @@ export const cameraKeyframes: CameraKeyframe[] = [
   // Hold Camera movement
   {
     scrollPercent: 20,
-    position: [0, -40, 30],
-    lookAt: [0, -40, 30],
+    position: [0, INDUSTRY_PREP_Y, 30],
+    lookAt: [0, INDUSTRY_PREP_Y, 30],
   },
 
   {
     scrollPercent: 52,
-    position: [0, -40, 0],
-    lookAt: [0, -40, 0],
+    position: [0, INDUSTRY_PREP_Y, 0],
+    lookAt: [0, INDUSTRY_PREP_Y, 0],
   },
 
   // Hold this framing longer so the industry cylinder does not enter early
   {
-    scrollPercent: INDUSTRY_TIMELINE.keyframes.hold,
-    position: [0, -40, 0],
-    lookAt: [0, -40, 0],
+    scrollPercent: INDUSTRY_TIMELINE.cameraMotion.preIndustryHoldPercent,
+    position: [0, INDUSTRY_PREP_Y, 0],
+    lookAt: [0, INDUSTRY_PREP_Y, 0],
   },
 
   // ============================================
@@ -87,9 +94,9 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Start - Front view, top of rod
   {
-    scrollPercent: INDUSTRY_TIMELINE.keyframes.start,
+    scrollPercent: INDUSTRY_TIMELINE.cameraMotion.industryStartPercent,
     orbit: true,
-    orbitCenter: [0, -57.8, 0],
+    orbitCenter: [0, INDUSTRY_ORBIT_TOP_Y, 0],
     orbitAngle: Math.PI,
     orbitRadius: 8,
     orbitHeight: 0,
@@ -98,9 +105,9 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Three-quarter rotation - Left side, near bottom
   {
-    scrollPercent: INDUSTRY_TIMELINE.keyframes.midOne,
+    scrollPercent: INDUSTRY_TIMELINE.cameraMotion.industryMidOnePercent,
     orbit: true,
-    orbitCenter: [0, -63.8, 0],
+    orbitCenter: [0, INDUSTRY_ORBIT_MID_Y, 0],
     orbitAngle: Math.PI * 1.75,
     orbitRadius: 8,
     orbitHeight: 0,
@@ -109,9 +116,9 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // Full rotation - Back at front, bottom of rod
   {
-    scrollPercent: INDUSTRY_TIMELINE.keyframes.midTwo,
+    scrollPercent: INDUSTRY_TIMELINE.cameraMotion.industryMidTwoPercent,
     orbit: true,
-    orbitCenter: [0, -69.8, 0],
+    orbitCenter: [0, INDUSTRY_ORBIT_BOTTOM_Y, 0],
     orbitAngle: Math.PI * 2.6,
     orbitRadius: 8,
     orbitHeight: 0,
@@ -120,10 +127,10 @@ export const cameraKeyframes: CameraKeyframe[] = [
 
   // End of rotation
   {
-    scrollPercent: INDUSTRY_TIMELINE.keyframes.end,
+    scrollPercent: INDUSTRY_TIMELINE.cameraMotion.industryEndPercent,
     orbit: false,
-    position: [0, -77.8, -8],
-    lookAt: [0, -77.8, 0],
+    position: [0, INDUSTRY_EXIT_Y, -8],
+    lookAt: [0, INDUSTRY_EXIT_Y, 0],
     fov: 45,
   },
 ];

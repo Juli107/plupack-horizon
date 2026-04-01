@@ -579,17 +579,13 @@ export function LogisticsMapSection() {
             >
               <div
                 ref={mapContainerRef}
-                className="will-change-transform"
-                style={{
-                  width: 'clamp(250px, 46vw, 880px)',
-                  height: 'clamp(330px, 86vh, 1020px)',
-                }}
+                className="will-change-transform w-[clamp(250px,46vw,880px)] h-[clamp(330px,86vh,1020px)] lg:w-[clamp(260px,40vw,760px)] lg:h-[clamp(360px,74vh,900px)]"
               />
             </div>
 
             <div
               ref={textRef}
-              className="relative z-20 flex flex-col items-start text-left will-change-transform"
+              className="relative z-20 flex w-full flex-col items-start text-left will-change-transform"
             >
               <h2
                 className="map-heading text-white font-bold tracking-tight"
@@ -615,7 +611,7 @@ export function LogisticsMapSection() {
 
               <div
                 ref={transportCarouselRef}
-                className="relative mt-14 md:mt-16 w-full max-w-[980px] overflow-hidden mask-gradient-x"
+                className="relative mt-14 md:mt-16 w-full overflow-hidden mask-gradient-x"
               >
                 <div className="absolute left-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-r from-[#1B4B6B] to-transparent pointer-events-none" />
                 <div className="absolute right-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-l from-[#1B4B6B] to-transparent pointer-events-none" />

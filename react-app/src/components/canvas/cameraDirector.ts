@@ -1,4 +1,4 @@
-import { getIndustryPageScrollFromProgress } from './industryTimeline';
+import { mapIndustryProgressToGlobalScroll } from './industryTimeline';
 
 type CameraDirectorState = {
   pageScrollPercent: number;
@@ -37,7 +37,7 @@ export function getCameraDirectorEffectiveScrollPercent() {
     return state.pageScrollPercent;
   }
 
-  return getIndustryPageScrollFromProgress(state.industryProgress);
+  return mapIndustryProgressToGlobalScroll(state.industryProgress);
 }
 
 export function getCameraDirectorDebugState() {
