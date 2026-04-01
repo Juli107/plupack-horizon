@@ -65,62 +65,6 @@
   </div>
 </section>
 
-<script>
-  (() => {
-    const sectionId = 'about-future-{{ section.id }}';
-
-    const initFutureReveal = () => {
-      const section = document.getElementById(sectionId);
-      if (!section || section.dataset.revealInitialized === 'true') return;
-
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion) {
-        section.dataset.revealReady = 'true';
-        return;
-      }
-
-      section.dataset.revealInitialized = 'true';
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-
-            section.dataset.revealReady = 'true';
-            observer.disconnect();
-          });
-        },
-        {
-          threshold: 0.15,
-          rootMargin: '0px 0px -10% 0px',
-        }
-      );
-
-      observer.observe(section);
-
-      section.addEventListener(
-        'shopify:section:unload',
-        () => {
-          observer.disconnect();
-        },
-        { once: true }
-      );
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initFutureReveal, { once: true });
-    } else {
-      initFutureReveal();
-    }
-
-    document.addEventListener('shopify:section:load', (event) => {
-      if (event.target && event.target.id === sectionId) {
-        initFutureReveal();
-      }
-    });
-  })();
-</script>
-
 {% stylesheet %}
   .about-future {
     position: relative;
@@ -229,7 +173,7 @@
     text-wrap: pretty;
   }
 
-  .about-future[data-reveal-ready='true'] [data-reveal] {
+  .about-future[data-reveal] {
     opacity: 0;
     transform: translate3d(0, 24px, 0);
     animation: about-future-reveal 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
