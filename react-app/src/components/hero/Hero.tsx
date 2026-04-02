@@ -3,6 +3,7 @@ import { getShopifyData } from '@/types/shopify';
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useLenis } from 'lenis/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function Hero() {
   const { getFontFamily } = useShopifyTheme();
@@ -133,13 +134,14 @@ export function Hero() {
             className={`pointer-events-auto w-full md:absolute md:inset-x-0 md:top-0 ${featuredMediaHeightClass}`}
           >
             <article className="relative overflow-hidden w-full aspect-[4/3] md:aspect-auto md:h-full bg-[#072f4f] text-white">
-
               {/* Full-bleed images — stacked, crossfade via opacity */}
               {featuredProducts.map((product, index) => (
                 <div
                   key={product.handle}
                   className="absolute inset-0 transition-opacity duration-700 ease-in-out"
-                  style={{ opacity: index === activeProductIndex ? 1 : 0 }}
+                  style={{
+                    opacity: index === activeProductIndex ? 1 : 0,
+                  }}
                   aria-hidden={index !== activeProductIndex}
                 >
                   {product.image ? (
@@ -161,35 +163,25 @@ export function Hero() {
               {/* "Destacados" badge — top-left, below navbar */}
               <div className="absolute top-16 md:top-20 left-6 md:left-10">
                 <p
-                  className="inline-flex items-center w-max px-3 py-1 rounded-full bg-white/15 border border-white/30 text-white text-[10px] md:text-[11px] uppercase tracking-[0.18em] font-semibold backdrop-blur-sm"
+                  className="inline-flex items-center w-max px-2.5 py-1 rounded-full bg-[#0a4f82]/45 border border-[#69b6e8]/45 text-white text-[8px] md:text-[9px] uppercase tracking-[0.16em] font-semibold backdrop-blur-sm"
                   style={{ fontFamily: getFontFamily('accent') }}
                 >
                   Destacados
                 </p>
               </div>
 
-              {/* Slide counter — top-right */}
-              <div className="absolute top-16 md:top-20 right-6 md:right-10">
-                <span
-                  className="text-[11px] md:text-xs uppercase tracking-[0.14em] text-white/70"
-                  style={{ fontFamily: getFontFamily('accent') }}
-                >
-                  {activeProductIndex + 1} / {featuredProducts.length}
-                </span>
-              </div>
-
               {/* Text overlay — bottom-left, sitting on scrim */}
               {activeProduct ? (
                 <div className="absolute bottom-0 left-0 right-0 pl-6 pr-6 md:pl-10 md:pr-20 pb-10 md:pb-8">
                   <h2
-                    className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight uppercase tracking-wide line-clamp-2"
+                    className="text-xl md:text-2xl lg:text-3xl font-medium leading-tight uppercase tracking-wide line-clamp-2"
                     style={{ fontFamily: getFontFamily('heading') }}
                   >
                     {activeProduct.title}
                   </h2>
                   {activeProduct.description ? (
                     <p
-                      className="mt-1.5 text-sm md:text-base leading-snug text-white/80 line-clamp-2 max-w-2xl"
+                      className="mt-1.5 text-[11px] md:text-[13px] leading-snug text-white/80 line-clamp-2 max-w-2xl"
                       style={{ fontFamily: getFontFamily('body') }}
                     >
                       {activeProduct.description}
@@ -198,7 +190,7 @@ export function Hero() {
                   <div className="mt-3 md:mt-4">
                     <a
                       href={activeProduct.url}
-                      className="inline-flex items-center justify-center rounded-[8px] border border-white/70 bg-white/10 backdrop-blur-sm text-white px-5 py-2 md:px-6 md:py-2.5 uppercase tracking-[0.08em] text-xs md:text-sm font-semibold hover:bg-white/25 transition-colors duration-300"
+                      className="inline-flex items-center justify-center rounded-[8px] border border-white/70 bg-white/10 backdrop-blur-sm text-white px-4 py-1.5 md:px-5 md:py-2 uppercase tracking-[0.08em] text-[11px] md:text-xs font-semibold hover:bg-white/25 transition-colors duration-300"
                       style={{ fontFamily: getFontFamily('body') }}
                     >
                       Ver producto
@@ -207,42 +199,42 @@ export function Hero() {
                 </div>
               ) : null}
 
-              {/* Arrow — previous (hidden on mobile, shown md+) */}
-              <button
-                type="button"
-                onClick={goToPrevProduct}
-                className="hidden md:inline-flex absolute left-4 top-1/2 -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-sm text-white hover:bg-black/45 transition-colors"
-                aria-label="Producto anterior"
-              >
-                <span aria-hidden="true" className="text-xl leading-none">‹</span>
-              </button>
-
-              {/* Arrow — next (hidden on mobile, shown md+) */}
-              <button
-                type="button"
-                onClick={goToNextProduct}
-                className="hidden md:inline-flex absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-sm text-white hover:bg-black/45 transition-colors"
-                aria-label="Siguiente producto"
-              >
-                <span aria-hidden="true" className="text-xl leading-none">›</span>
-              </button>
-
-              {/* Dot indicators — bottom-right */}
+              {/* Controls group — bottom-right */}
               {featuredProducts.length > 1 ? (
-                <div className="absolute bottom-6 md:bottom-8 right-6 md:right-10 flex items-center gap-1.5">
-                  {featuredProducts.map((_, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => setActiveProductIndex(index)}
-                      aria-label={`Ir al producto ${index + 1}`}
-                      className={`rounded-full transition-all duration-300 ${
-                        index === activeProductIndex
-                          ? 'w-5 h-1.5 bg-white'
-                          : 'w-1.5 h-1.5 bg-white/45 hover:bg-white/70'
-                      }`}
+                <div className="hidden md:flex absolute bottom-6 md:bottom-8 right-6 md:right-10 items-center gap-2.5 pointer-events-auto">
+                  <button
+                    type="button"
+                    onClick={goToPrevProduct}
+                    className="inline-flex items-center justify-center p-1 text-white/75 hover:text-white transition-colors"
+                    aria-label="Producto anterior"
+                  >
+                    <ChevronLeft
+                      aria-hidden="true"
+                      size={16}
+                      strokeWidth={2.25}
                     />
-                  ))}
+                  </button>
+
+                  <span
+                    className="text-[10px] uppercase tracking-[0.14em] text-white/80"
+                    style={{ fontFamily: getFontFamily('accent') }}
+                  >
+                    {activeProductIndex + 1} /{' '}
+                    {featuredProducts.length}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={goToNextProduct}
+                    className="inline-flex items-center justify-center p-1 text-white/75 hover:text-white transition-colors"
+                    aria-label="Siguiente producto"
+                  >
+                    <ChevronRight
+                      aria-hidden="true"
+                      size={16}
+                      strokeWidth={2.25}
+                    />
+                  </button>
                 </div>
               ) : null}
             </article>
@@ -250,224 +242,238 @@ export function Hero() {
         ) : null}
 
         <div
-          className={`flex-1 md:h-full flex items-end px-6 md:px-10 xl:px-12 pb-8 md:pb-10 pt-8 ${
-            hasFeaturedProducts ? featuredContentOffsetClass : 'md:pt-28'
+          className={`flex-1 md:h-full flex items-center pl-6 pr-6 md:pl-7 md:pr-10 xl:pl-9 xl:pr-12 pb-8 md:pb-10 pt-8 ${
+            hasFeaturedProducts
+              ? featuredContentOffsetClass
+              : 'md:pt-28'
           }`}
         >
           <div className="flex flex-col lg:flex-row w-full relative items-start lg:justify-between gap-8 lg:gap-6">
-          <div className="lg:w-3/5 xl:w-7/12 flex flex-col justify-start relative">
-            <h1
-              ref={headlineRef}
-              style={{ fontFamily: getFontFamily('heading') }}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-[clamp(4.2rem,5.5vw,5.8rem)] xl:text-[clamp(5rem,5.5vw,6.4rem)] leading-[0.9] font-medium uppercase tracking-wide mt-[-0.05em]"
-            >
-              <div className="flex flex-wrap items-baseline gap-x-[0.18em] leading-[0.92]">
-                <div className="relative inline-block">
-                  {/* Invisible placeholder for sizing — weight must match SVG fontWeight: 500 */}
-                  <div className="opacity-0 font-medium tracking-wider">
-                    SOLUCIONES
+            <div className="lg:w-3/5 xl:w-7/12 flex flex-col justify-start relative">
+              <h1
+                ref={headlineRef}
+                style={{ fontFamily: getFontFamily('heading') }}
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-[clamp(4.2rem,5.5vw,5.8rem)] xl:text-[clamp(5rem,5.5vw,6.4rem)] leading-[0.92] font-medium uppercase tracking-wide mt-[-0.05em]"
+              >
+                <div className="flex flex-col items-start leading-[0.92]">
+                  <div className="relative inline-block min-h-[0.92em] leading-[0.92]">
+                    {/* Invisible placeholder for sizing — weight must match SVG fontWeight: 500 */}
+                    <div className="opacity-0 font-medium tracking-wider leading-[0.92]">
+                      SOLUCIONES
+                    </div>
+
+                    <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
+                      <defs>
+                        {/* Desktop outline filter — slightly thicker stroke */}
+                        <filter
+                          id="outline-filter-hero"
+                          x="-20%"
+                          y="-20%"
+                          width="140%"
+                          height="140%"
+                        >
+                          <feMorphology
+                            in="SourceAlpha"
+                            result="DILATED"
+                            operator="dilate"
+                            radius="1.8"
+                          />
+                          <feMorphology
+                            in="SourceAlpha"
+                            result="ERODED"
+                            operator="erode"
+                            radius="0.5"
+                          />
+                          <feComposite
+                            in="DILATED"
+                            in2="ERODED"
+                            operator="out"
+                            result="OUTLINE"
+                          />
+                          <feFlood
+                            floodColor="white"
+                            result="COLOR"
+                          />
+                          <feComposite
+                            in="COLOR"
+                            in2="OUTLINE"
+                            operator="in"
+                            result="FINAL"
+                          />
+                        </filter>
+                        {/* Mobile outline filter — thinner stroke to avoid heavy look */}
+                        <filter
+                          id="outline-filter-hero-mobile"
+                          x="-20%"
+                          y="-20%"
+                          width="140%"
+                          height="140%"
+                        >
+                          <feMorphology
+                            in="SourceAlpha"
+                            result="DILATED"
+                            operator="dilate"
+                            radius="0.8"
+                          />
+                          <feMorphology
+                            in="SourceAlpha"
+                            result="ERODED"
+                            operator="erode"
+                            radius="0.3"
+                          />
+                          <feComposite
+                            in="DILATED"
+                            in2="ERODED"
+                            operator="out"
+                            result="OUTLINE"
+                          />
+                          <feFlood
+                            floodColor="white"
+                            result="COLOR"
+                          />
+                          <feComposite
+                            in="COLOR"
+                            in2="OUTLINE"
+                            operator="in"
+                            result="FINAL"
+                          />
+                        </filter>
+                      </defs>
+
+                      {/* Outline text - always visible — mobile uses thinner filter */}
+                      <text
+                        x="0.03em"
+                        y="0.9em"
+                        className="hero-outline-text"
+                        style={{
+                          fontFamily: getFontFamily('heading'),
+                          fontSize: 'inherit',
+                          fontWeight: 500,
+                          fontVariationSettings: '"wght" 530',
+                          fill: 'white',
+                          textRendering: 'geometricPrecision',
+                        }}
+                      >
+                        SOLUCIONES
+                      </text>
+
+                      {/* Solid fill text - fades in on top of outline */}
+                      <text
+                        data-hero-highlight-fill="true"
+                        x="0.03em"
+                        y="0.9em"
+                        style={{
+                          fontFamily: getFontFamily('heading'),
+                          fontSize: 'inherit',
+                          fontWeight: 500,
+                          fontVariationSettings: '"wght" 530',
+                          fill: 'white',
+                          opacity: 0,
+                          textRendering: 'geometricPrecision',
+                        }}
+                      >
+                        SOLUCIONES
+                      </text>
+                    </svg>
                   </div>
 
-                  <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
-                    <defs>
-                      {/* Desktop outline filter — slightly thicker stroke */}
-                      <filter
-                        id="outline-filter-hero"
-                        x="-20%"
-                        y="-20%"
-                        width="140%"
-                        height="140%"
+                  <div className="relative inline-block min-h-[0.92em] leading-[0.92]">
+                    {/* Invisible placeholder for sizing — weight must match SVG fontWeight: 500 */}
+                    <div className="opacity-0 font-medium tracking-wider leading-[0.92]">
+                      INTEGRALES
+                    </div>
+
+                    <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
+                      {/* Outline text - always visible */}
+                      <text
+                        x="0.03em"
+                        y="0.9em"
+                        className="hero-outline-text"
+                        style={{
+                          fontFamily: getFontFamily('heading'),
+                          fontSize: 'inherit',
+                          fontWeight: 500,
+                          fontVariationSettings: '"wght" 530',
+                          fill: 'white',
+                          textRendering: 'geometricPrecision',
+                        }}
                       >
-                        <feMorphology
-                          in="SourceAlpha"
-                          result="DILATED"
-                          operator="dilate"
-                          radius="1.8"
-                        />
-                        <feMorphology
-                          in="SourceAlpha"
-                          result="ERODED"
-                          operator="erode"
-                          radius="0.5"
-                        />
-                        <feComposite
-                          in="DILATED"
-                          in2="ERODED"
-                          operator="out"
-                          result="OUTLINE"
-                        />
-                        <feFlood floodColor="white" result="COLOR" />
-                        <feComposite
-                          in="COLOR"
-                          in2="OUTLINE"
-                          operator="in"
-                          result="FINAL"
-                        />
-                      </filter>
-                      {/* Mobile outline filter — thinner stroke to avoid heavy look */}
-                      <filter
-                        id="outline-filter-hero-mobile"
-                        x="-20%"
-                        y="-20%"
-                        width="140%"
-                        height="140%"
+                        INTEGRALES
+                      </text>
+
+                      {/* Solid fill text - fades in on top of outline */}
+                      <text
+                        data-hero-highlight-fill="true"
+                        x="0.03em"
+                        y="0.9em"
+                        style={{
+                          fontFamily: getFontFamily('heading'),
+                          fontSize: 'inherit',
+                          fontWeight: 500,
+                          fontVariationSettings: '"wght" 530',
+                          fill: 'white',
+                          opacity: 0,
+                          textRendering: 'geometricPrecision',
+                        }}
                       >
-                        <feMorphology
-                          in="SourceAlpha"
-                          result="DILATED"
-                          operator="dilate"
-                          radius="0.8"
-                        />
-                        <feMorphology
-                          in="SourceAlpha"
-                          result="ERODED"
-                          operator="erode"
-                          radius="0.3"
-                        />
-                        <feComposite
-                          in="DILATED"
-                          in2="ERODED"
-                          operator="out"
-                          result="OUTLINE"
-                        />
-                        <feFlood floodColor="white" result="COLOR" />
-                        <feComposite
-                          in="COLOR"
-                          in2="OUTLINE"
-                          operator="in"
-                          result="FINAL"
-                        />
-                      </filter>
-                    </defs>
-
-                    {/* Outline text - always visible — mobile uses thinner filter */}
-                    <text
-                      x="0.05em"
-                      y="0.9em"
-                      className="hero-outline-text"
-                      style={{
-                        fontFamily: getFontFamily('heading'),
-                        fontSize: 'inherit',
-                        fontWeight: 500,
-                        fontVariationSettings: '"wght" 530',
-                        fill: 'white',
-                        textRendering: 'geometricPrecision',
-                      }}
-                    >
-                      SOLUCIONES
-                    </text>
-
-                    {/* Solid fill text - fades in on top of outline */}
-                    <text
-                      data-hero-highlight-fill="true"
-                      x="0.05em"
-                      y="0.9em"
-                      style={{
-                        fontFamily: getFontFamily('heading'),
-                        fontSize: 'inherit',
-                        fontWeight: 500,
-                        fontVariationSettings: '"wght" 530',
-                        fill: 'white',
-                        opacity: 0,
-                        textRendering: 'geometricPrecision',
-                      }}
-                    >
-                      SOLUCIONES
-                    </text>
-                  </svg>
-                </div>
-
-                <div className="relative inline-block">
-                  {/* Invisible placeholder for sizing — weight must match SVG fontWeight: 500 */}
-                  <div className="opacity-0 font-medium tracking-wider">
-                    INTEGRALES
+                        INTEGRALES
+                      </text>
+                    </svg>
                   </div>
-
-                  <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
-                    {/* Outline text - always visible */}
-                    <text
-                      x="0.05em"
-                      y="0.9em"
-                      className="hero-outline-text"
-                      style={{
-                        fontFamily: getFontFamily('heading'),
-                        fontSize: 'inherit',
-                        fontWeight: 500,
-                        fontVariationSettings: '"wght" 530',
-                        fill: 'white',
-                        textRendering: 'geometricPrecision',
-                      }}
-                    >
-                      INTEGRALES
-                    </text>
-
-                    {/* Solid fill text - fades in on top of outline */}
-                    <text
-                      data-hero-highlight-fill="true"
-                      x="0.05em"
-                      y="0.9em"
-                      style={{
-                        fontFamily: getFontFamily('heading'),
-                        fontSize: 'inherit',
-                        fontWeight: 500,
-                        fontVariationSettings: '"wght" 530',
-                        fill: 'white',
-                        opacity: 0,
-                        textRendering: 'geometricPrecision',
-                      }}
-                    >
-                      INTEGRALES
-                    </text>
-                  </svg>
+                  <div className="min-h-[0.92em] mt-[0.04em] leading-[0.92]">
+                    <span className="block -tracking-wide mt-0 leading-[0.92]">
+                      PARA TU{' '}
+                      <span className="block mt-[0.05em]">
+                        EMPRESA
+                      </span>
+                    </span>
+                  </div>
                 </div>
+              </h1>
+            </div>
+
+            <div className="lg:w-2/5 flex flex-col justify-start items-start lg:pl-8 mt-4 lg:mt-0 pointer-events-auto z-30 relative pt-2 gap-3">
+              <p
+                className="text-sm tracking-[0.2em] uppercase font-medium"
+                style={{ fontFamily: getFontFamily('accent') }}
+              >
+                TU ALIADO ESTRATÉGICO
+              </p>
+
+              <div className="w-full h-px bg-white/50"></div>
+
+              <p
+                className="text-md leading-relaxed mb-4"
+                style={{ fontFamily: getFontFamily('body') }}
+              >
+                En PLUPack somos especialistas en abastecimiento
+                mayorista de embalajes y descartables. Fabricamos y
+                distribuimos insumos para papeleras, industriales,
+                gastronomía, salud y hotelería, asegurando stock
+                permanente y continuidad operativa. Además,
+                centralizamos la provisión de insumos indirectos y
+                complementarios que sostienen el funcionamiento diario
+                de cada empresa.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 w-full">
+                <button
+                  className="px-8 py-1 flex-1 bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
+                  style={{ fontFamily: getFontFamily('body') }}
+                >
+                  Ver productos
+                </button>
+                <button
+                  onClick={scrollToIndustries}
+                  className="px-8 py-1 flex-1 border border-white/60 text-white rounded-[10px] font-bold hover:bg-white/10 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
+                  style={{ fontFamily: getFontFamily('body') }}
+                >
+                  Explorar soluciones
+                </button>
               </div>
-              <span className="block -tracking-wide mt-[0.28em] leading-[0.92]">
-                PARA TU <span className="block 2xl:inline">EMPRESA</span>
-              </span>
-            </h1>
-          </div>
-
-          <div className="lg:w-2/5 flex flex-col justify-start items-start lg:pl-8 mt-4 lg:mt-0 pointer-events-auto z-30 relative pt-2 gap-3">
-            <p
-              className="text-sm tracking-[0.2em] uppercase font-medium"
-              style={{ fontFamily: getFontFamily('accent') }}
-            >
-              TU ALIADO ESTRATÉGICO
-            </p>
-
-            <div className="w-full h-px bg-white/50"></div>
-
-            <p
-              className="text-md leading-relaxed mb-4"
-              style={{ fontFamily: getFontFamily('body') }}
-            >
-              En PLUPack somos especialistas en abastecimiento mayorista
-              de embalajes y descartables. Fabricamos y distribuimos
-              insumos para papeleras, industriales, gastronomía, salud y
-              hotelería, asegurando stock permanente y continuidad
-              operativa. Además, centralizamos la provisión de insumos
-              indirectos y complementarios que sostienen el
-              funcionamiento diario de cada empresa.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 w-full">
-              <button
-                className="px-8 py-1 flex-1 bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
-                style={{ fontFamily: getFontFamily('body') }}
-              >
-                Ver productos
-              </button>
-              <button
-                onClick={scrollToIndustries}
-                className="px-8 py-1 flex-1 border border-white/60 text-white rounded-[10px] font-bold hover:bg-white/10 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
-                style={{ fontFamily: getFontFamily('body') }}
-              >
-                Explorar soluciones
-              </button>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

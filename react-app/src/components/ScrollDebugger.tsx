@@ -1,6 +1,6 @@
 import { useLenis } from 'lenis/react';
 import { useRef } from 'react';
-import { cameraKeyframes, findSurroundingKeyframes } from './canvas/cameraKeyframes';
+import { findSurroundingKeyframes } from './canvas/cameraKeyframes';
 import { getCameraDirectorDebugState } from './canvas/cameraDirector';
 
 export function ScrollDebugger() {
@@ -13,7 +13,6 @@ export function ScrollDebugger() {
       const debugState = getCameraDirectorDebugState();
       const { from, to, t } = findSurroundingKeyframes(
         debugState.effectiveScrollPercent,
-        cameraKeyframes,
       );
 
       elementRef.current.textContent = [

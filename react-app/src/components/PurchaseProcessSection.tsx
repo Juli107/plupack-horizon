@@ -248,7 +248,7 @@ export function PurchaseProcessSection() {
                 className="font-bold select-none"
                 style={{
                   fontFamily: getFontFamily('heading'),
-                  color: 'rgba(27, 75, 107, 0.08)',
+                  color: 'rgba(27, 75, 107, 0.2)',
                   fontSize: 'clamp(10rem, 20vw, 16rem)',
                   lineHeight: 0.85,
                 }}
@@ -320,7 +320,7 @@ export function PurchaseProcessSection() {
                 className="font-bold"
                 style={{
                   fontFamily: getFontFamily('heading'),
-                  color: 'rgba(27, 75, 107, 0.08)',
+                  color: 'rgba(27, 75, 107, 0.2)',
                   fontSize: '7rem',
                   lineHeight: 0.85,
                 }}

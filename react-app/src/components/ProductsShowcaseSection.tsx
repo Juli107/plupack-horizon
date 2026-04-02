@@ -19,12 +19,6 @@ export function ProductsShowcaseSection() {
       <div className="container mx-auto px-6 md:px-12">
         <header className="mb-8 md:mb-10 flex items-start justify-between gap-6">
           <div>
-            <p
-              className="uppercase text-white/70 tracking-[0.12em] text-xs md:text-sm mb-2"
-              style={{ fontFamily: getFontFamily('accent') }}
-            >
-              Productos destacados
-            </p>
             <h2
               className="text-3xl md:text-5xl font-semibold leading-tight"
               style={{ fontFamily: getFontFamily('heading') }}
@@ -35,7 +29,7 @@ export function ProductsShowcaseSection() {
 
           <a
             href={showcase?.buttonUrl ?? shopifyData.routes?.allProducts ?? '/collections/all'}
-            className="shrink-0 inline-flex items-center gap-2 border border-white rounded-[10px] px-4 py-2 md:px-5 md:py-2.5 text-xs md:text-sm uppercase tracking-[0.08em] bg-transparent text-white hover:bg-white hover:text-[#0F5575] transition-colors duration-300"
+            className="shrink-0 inline-flex items-center gap-2 border border-white rounded-[10px] px-4 py-2 md:px-5 md:py-2.5 text-xs md:text-sm uppercase tracking-[0.08em] font-semibold bg-transparent text-white hover:bg-white hover:text-[#0F5575] transition-colors duration-300"
             style={{
               fontFamily: getFontFamily('body'),
             }}
@@ -49,16 +43,16 @@ export function ProductsShowcaseSection() {
         <ul
           className="m-0 list-none flex gap-4 md:gap-6 overflow-x-auto pb-3 snap-x snap-mandatory pl-6 md:pl-[max(3rem,calc((100vw-80rem)/2+3rem))] scroll-pl-6 md:scroll-pl-[max(3rem,calc((100vw-80rem)/2+3rem))] [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.4)_transparent]"
         >
-          {products.map((product) => (
+          {products.map((product, index) => (
             <li
               key={product.handle}
-              className="snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[30vw] lg:w-[24vw]"
+              className={`snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[30vw] lg:w-[24vw]${index === products.length - 1 ? ' mr-6 md:mr-[max(3rem,calc((100vw-80rem)/2+3rem))]' : ''}`}
             >
               <a
                 href={product.url}
                 className="group block h-full overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300"
               >
-                <div className="relative aspect-[4/5] bg-[#0A3D54]">
+                <div className="relative aspect-square bg-[#0A3D54]">
                   {product.image ? (
                     <img
                       src={product.image}

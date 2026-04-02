@@ -119,16 +119,16 @@ export function LogoCarousel() {
         className="w-full relative flex overflow-hidden mask-gradient-x"
       >
         {/* Gradient Masks for fading edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 md:w-62 z-1 bg-linear-to-r from-[#084e85] to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 md:w-62 z-1 bg-linear-to-l from-[#084e85] to-transparent pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-8 md:w-20 lg:w-24 z-1 bg-linear-to-r from-[#084e85] to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 md:w-20 lg:w-24 z-1 bg-linear-to-l from-[#084e85] to-transparent pointer-events-none" />
 
         <div
           ref={trackRef}
-          className="flex w-max items-center mix-blend-screen will-change-transform gap-12 md:gap-20"
+          className="flex w-max items-center mix-blend-screen will-change-transform gap-8 md:gap-16"
         >
           <div
             ref={setRef}
-            className="flex flex-none shrink-0 gap-12 md:gap-28 items-center"
+            className="flex flex-none shrink-0 gap-8 md:gap-16 items-center"
           >
             {LOGOS.map((logo, index) => (
               <div
@@ -147,7 +147,7 @@ export function LogoCarousel() {
           </div>
           <div
             aria-hidden="true"
-            className="flex flex-none shrink-0 gap-12 md:gap-28 items-center"
+            className="flex flex-none shrink-0 gap-8 md:gap-16 items-center"
           >
             {LOGOS.map((logo, index) => (
               <div

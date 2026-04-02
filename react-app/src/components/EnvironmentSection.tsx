@@ -106,30 +106,49 @@ export function EnvironmentSection() {
       }}
     >
       <div className="max-w-6xl mx-auto">
-        {/* Title */}
-        <h2
-          ref={titleRef}
-          className="font-bold text-center mb-12 md:mb-16"
-          style={{
-            fontFamily: getFontFamily('heading'),
-            color: '#FFFFFF',
-            fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
-            lineHeight: 1.15,
-            letterSpacing: '0.04em',
-          }}
-        >
-          COMPROMETIDOS CON
-          <br />
-          EL MEDIO AMBIENTE
-        </h2>
-
         {/* Content */}
         <div
           ref={contentRef}
-          className="flex flex-col md:flex-row gap-10 md:gap-16 items-start"
+          className="flex flex-col md:flex-row gap-10 md:gap-16 items-stretch"
         >
-          {/* Left: Text content */}
+          {/* Left: Image */}
+          <div className="w-full md:w-[420px] shrink-0">
+            <div
+              className="w-full h-full overflow-hidden"
+              style={{
+                boxShadow: '0 28px 60px rgba(1, 17, 25, 0.26)',
+                minHeight: '100%',
+              }}
+            >
+              <img
+                ref={imageRef}
+                src={warehouseImage}
+                alt="Depósito logístico de PLUPack"
+                className="block w-full h-full object-cover"
+                style={{ objectPosition: 'center 38%' }}
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          {/* Right: Text content */}
           <div className="flex-1 w-full">
+            <h2
+              ref={titleRef}
+              className="font-bold mb-8 md:mb-10"
+              style={{
+                fontFamily: getFontFamily('heading'),
+                color: '#FFFFFF',
+                fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
+                lineHeight: 1.15,
+                letterSpacing: '0.04em',
+              }}
+            >
+              COMPROMETIDOS CON
+              <br />
+              EL MEDIO AMBIENTE
+            </h2>
+
             <p
               className="env-animate mb-8"
               style={{
@@ -188,25 +207,7 @@ export function EnvironmentSection() {
             </ul>
           </div>
 
-          {/* Right: Image */}
-          <div className="env-animate w-full md:w-[420px] shrink-0">
-            <div
-              className="w-full aspect-[4/3] overflow-hidden"
-              style={{
-                borderRadius: '12px',
-                boxShadow: '0 28px 60px rgba(1, 17, 25, 0.26)',
-              }}
-            >
-              <img
-                ref={imageRef}
-                src={warehouseImage}
-                alt="Depósito logístico de PLUPack"
-                className="block h-full w-full object-cover"
-                style={{ objectPosition: 'center 38%' }}
-                loading="lazy"
-              />
-            </div>
-          </div>
+
         </div>
       </div>
     </section>

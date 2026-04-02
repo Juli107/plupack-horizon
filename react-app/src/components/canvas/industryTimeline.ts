@@ -18,7 +18,7 @@ export const INDUSTRY_TIMELINE = {
     },
   },
   cameraMotion: {
-    industryStartPercent: 61,
+    industryStartPercent: 62,
     industryMidOnePercent: 69,
     industryMidTwoPercent: 78,
     industryEndPercent: 84,

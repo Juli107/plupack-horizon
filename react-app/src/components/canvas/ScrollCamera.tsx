@@ -4,7 +4,6 @@ import { useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import {
-  cameraKeyframes,
   findSurroundingKeyframes,
   interpolateKeyframes,
 } from './cameraKeyframes';
@@ -40,19 +39,11 @@ export function ScrollCamera() {
     if (!cameraRef.current) return;
 
     const scrollPercent = getCameraDirectorEffectiveScrollPercent();
-    const { from, to, t } = findSurroundingKeyframes(
-      scrollPercent,
-      cameraKeyframes,
-    );
+    const { from, to, t } = findSurroundingKeyframes(scrollPercent);
     const interpolated = interpolateKeyframes(from, to, t);
 
     cameraRef.current.position.copy(interpolated.position);
-
-    if (interpolated.lookAt) {
-      cameraRef.current.lookAt(interpolated.lookAt);
-    } else if (interpolated.rotation) {
-      cameraRef.current.rotation.copy(interpolated.rotation);
-    }
+    cameraRef.current.lookAt(interpolated.lookAt);
 
     if (Math.abs(cameraRef.current.fov - interpolated.fov) > FOV_EPSILON) {
       cameraRef.current.fov = interpolated.fov;

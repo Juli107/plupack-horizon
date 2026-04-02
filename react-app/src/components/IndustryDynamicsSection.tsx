@@ -17,7 +17,6 @@ export function IndustryDynamicsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
   const { getFontFamily } = useShopifyTheme();
 
   useGSAP(
@@ -26,14 +25,12 @@ export function IndustryDynamicsSection() {
 
       const title = titleRef.current;
       const subtitle = subtitleRef.current;
-      const line = lineRef.current;
 
-      if (!title || !subtitle || !line) return;
+      if (!title || !subtitle) return;
 
       // Initial hidden states
       gsap.set(title, { y: 60, opacity: 0 });
       gsap.set(subtitle, { y: 40, opacity: 0 });
-      gsap.set(line, { scaleX: 0, transformOrigin: 'center center' });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -41,13 +38,6 @@ export function IndustryDynamicsSection() {
           start: 'top 70%',
           toggleActions: 'play none none none',
         },
-      });
-
-      // Decorative line scales in first
-      tl.to(line, {
-        scaleX: 1,
-        duration: 0.8,
-        ease: 'power3.out',
       });
 
       // Title fades/slides up
@@ -59,7 +49,6 @@ export function IndustryDynamicsSection() {
           duration: 0.9,
           ease: 'power3.out',
         },
-        '-=0.5',
       );
 
       // Subtitle follows
@@ -88,18 +77,7 @@ export function IndustryDynamicsSection() {
         padding: 'clamp(4rem, 10vh, 8rem) 1.5rem',
       }}
     >
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-        {/* Decorative line */}
-        <div
-          ref={lineRef}
-          className="mx-auto mb-10"
-          style={{
-            width: '80px',
-            height: '2px',
-            backgroundColor: '#5EEAD4',
-          }}
-        />
-
+      <div className="relative z-10 text-center max-w-6xl mx-auto px-6">
         {/* Title */}
         <h2
           ref={titleRef}

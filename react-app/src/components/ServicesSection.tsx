@@ -5,7 +5,6 @@ import {
   useRef,
   useLayoutEffect,
   useCallback,
-  useState,
 } from 'react';
 import {
   BadgeDollarSign,
@@ -58,11 +57,32 @@ const services: ServiceItem[] = [
 // Lightweight 3D Tilt Card - uses CSS transforms for performance
 function TiltCard({ service }: { service: ServiceItem }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState({
-    rotateX: 0,
-    rotateY: 0,
-  });
   const lastUpdate = useRef(0);
+  const frameRef = useRef<number | null>(null);
+  const rotationRef = useRef({ rotateX: 0, rotateY: 0 });
+
+  const applyTransform = useCallback(() => {
+    frameRef.current = null;
+
+    if (!cardRef.current) return;
+
+    const { rotateX, rotateY } = rotationRef.current;
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  }, []);
+
+  const scheduleTransform = useCallback(() => {
+    if (frameRef.current !== null) return;
+
+    frameRef.current = window.requestAnimationFrame(applyTransform);
+  }, [applyTransform]);
+
+  useLayoutEffect(() => {
+    return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -80,17 +100,20 @@ function TiltCard({ service }: { service: ServiceItem }) {
       const centerY = rect.height / 2;
 
       // Calculate rotation (max 8 degrees - reduced for subtlety)
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
+      rotationRef.current = {
+        rotateX: ((y - centerY) / centerY) * -8,
+        rotateY: ((x - centerX) / centerX) * 8,
+      };
 
-      setTransform({ rotateX, rotateY });
+      scheduleTransform();
     },
-    [],
+    [scheduleTransform],
   );
 
   const handleMouseLeave = useCallback(() => {
-    setTransform({ rotateX: 0, rotateY: 0 });
-  }, []);
+    rotationRef.current = { rotateX: 0, rotateY: 0 };
+    scheduleTransform();
+  }, [scheduleTransform]);
 
   return (
     <div
@@ -100,8 +123,9 @@ function TiltCard({ service }: { service: ServiceItem }) {
       className="service-card w-[85vw] md:w-[600px] h-[450px] p-8 md:p-12 flex flex-col justify-between relative group shrink-0"
       style={{
         transformStyle: 'preserve-3d',
-        transform: `perspective(1000px) rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg)`,
+        transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
         transition: 'transform 0.15s ease-out',
+        willChange: 'transform',
       }}
     >
       {/* Glassmorphism Background */}
@@ -109,9 +133,7 @@ function TiltCard({ service }: { service: ServiceItem }) {
         className="absolute inset-0 overflow-hidden"
         style={{
           background:
-            'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
+            'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%)',
           border: '1px solid rgba(255,255,255,0.15)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
         }}

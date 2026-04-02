@@ -99,7 +99,7 @@ function AnimatedCounter({
   return (
     <div
       ref={itemRef}
-      className="metric-item rounded-3xl p-8 lg:p-12 flex flex-col justify-between h-full min-h-[250px]"
+      className="metric-item rounded-lg p-8 lg:p-12 flex flex-col justify-between h-full min-h-[250px]"
       style={{
         backgroundColor,
       }}
