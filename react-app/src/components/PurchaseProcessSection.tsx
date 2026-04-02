@@ -314,21 +314,6 @@ export function PurchaseProcessSection() {
 
           {/* Right side - Step texts with icons */}
           <div className="flex flex-col">
-            {/* Mobile number - sticky */}
-            <div className="md:hidden sticky top-4 z-10 mb-8">
-              <span
-                className="font-bold"
-                style={{
-                  fontFamily: getFontFamily('heading'),
-                  color: 'rgba(27, 75, 107, 0.2)',
-                  fontSize: '7rem',
-                  lineHeight: 0.85,
-                }}
-              >
-                {PROCESS_STEPS[currentStep]?.number || '01'}
-              </span>
-            </div>
-
             {PROCESS_STEPS.map((step, index) => (
               <div
                 key={index}

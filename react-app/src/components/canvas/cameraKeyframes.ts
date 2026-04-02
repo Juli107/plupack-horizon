@@ -45,6 +45,8 @@ export interface CameraKeyframe {
   orbitHeight?: number;
 }
 
+export const MOBILE_ORBIT_PULLBACK = 1.5;
+
 // ============================================
 // KEYFRAMES DEFINITION
 // ============================================
@@ -257,6 +259,7 @@ export function interpolateKeyframes(
   from: ResolvedKeyframe,
   to: ResolvedKeyframe,
   t: number,
+  orbitPullback = 1,
 ): {
   position: THREE.Vector3;
   lookAt: THREE.Vector3;
@@ -277,7 +280,7 @@ export function interpolateKeyframes(
   const getOrbitPosition = (kf: CameraKeyframe): THREE.Vector3 => {
     const center = kf.orbitCenter ?? [0, 0, 0];
     const angle = kf.orbitAngle ?? 0;
-    const radius = kf.orbitRadius ?? 10;
+    const radius = (kf.orbitRadius ?? 10) * orbitPullback;
     const height = kf.orbitHeight ?? 0;
     return calculateOrbitPosition(center, angle, radius, height);
   };
@@ -294,8 +297,8 @@ export function interpolateKeyframes(
     const toCenter = to.orbitCenter ?? [0, 0, 0];
     const fromAngle = from.orbitAngle ?? 0;
     const toAngle = to.orbitAngle ?? 0;
-    const fromRadius = from.orbitRadius ?? 10;
-    const toRadius = to.orbitRadius ?? 10;
+    const fromRadius = (from.orbitRadius ?? 10) * orbitPullback;
+    const toRadius = (to.orbitRadius ?? 10) * orbitPullback;
     const fromHeight = from.orbitHeight ?? 0;
     const toHeight = to.orbitHeight ?? 0;
 

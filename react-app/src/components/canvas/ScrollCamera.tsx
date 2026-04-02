@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import {
   findSurroundingKeyframes,
   interpolateKeyframes,
+  MOBILE_ORBIT_PULLBACK,
 } from './cameraKeyframes';
 import {
   getCameraDirectorEffectiveScrollPercent,
@@ -19,7 +20,11 @@ import {
 // on every frame so behavior is consistent across browsers.
 const FOV_EPSILON = 0.02;
 
-export function ScrollCamera() {
+interface ScrollCameraProps {
+  isMobile: boolean;
+}
+
+export function ScrollCamera({ isMobile }: ScrollCameraProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const { set } = useThree();
 
@@ -40,7 +45,13 @@ export function ScrollCamera() {
 
     const scrollPercent = getCameraDirectorEffectiveScrollPercent();
     const { from, to, t } = findSurroundingKeyframes(scrollPercent);
-    const interpolated = interpolateKeyframes(from, to, t);
+    const orbitPullback = isMobile ? MOBILE_ORBIT_PULLBACK : 1;
+    const interpolated = interpolateKeyframes(
+      from,
+      to,
+      t,
+      orbitPullback,
+    );
 
     cameraRef.current.position.copy(interpolated.position);
     cameraRef.current.lookAt(interpolated.lookAt);

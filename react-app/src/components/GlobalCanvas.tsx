@@ -75,7 +75,7 @@ export function GlobalCanvas() {
           }}
         />
         {/* Camera is controlled by ScrollCamera using keyframes */}
-        <ScrollCamera />
+        <ScrollCamera isMobile={isMobile} />
         <Scene isMobile={isMobile} />
       </Canvas>
     </div>

@@ -188,6 +188,9 @@ export function LogisticsMapSection() {
 
         svg.style.width = '100%';
         svg.style.height = '100%';
+        svg.style.display = 'block';
+        svg.style.margin = '0 auto';
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
         // Style all circles and collect positions
         const circles = svg.querySelectorAll('circle, ellipse');
@@ -252,7 +255,7 @@ export function LogisticsMapSection() {
       const heading = text.querySelector('.map-heading');
       const subheading = text.querySelector('.map-subheading');
       const isDesktop = window.matchMedia(
-        '(min-width: 1024px)',
+        '(min-width: 1280px) and (hover: hover) and (pointer: fine)',
       ).matches;
       // Get all circle elements from the SVG
       const circles =
@@ -572,20 +575,20 @@ export function LogisticsMapSection() {
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
         <div className="relative z-10 mx-auto flex h-full w-full max-w-[1760px] items-center px-6 py-12 md:px-10 lg:px-16 xl:px-24">
-          <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(420px,1fr)_minmax(620px,1fr)] lg:gap-14 xl:gap-20">
+          <div className="grid w-full grid-cols-1 items-center gap-10 xl:grid-cols-12 xl:gap-20">
             <div
               ref={mapWrapperRef}
-              className="relative flex items-center justify-center"
+              className="relative flex w-full items-center justify-center xl:col-span-5"
             >
               <div
                 ref={mapContainerRef}
-                className="will-change-transform w-[clamp(250px,46vw,880px)] h-[clamp(330px,86vh,1020px)] lg:w-[clamp(260px,40vw,760px)] lg:h-[clamp(360px,74vh,900px)]"
+                className="will-change-transform w-[clamp(170px,52vw,260px)] h-auto max-h-[62vh] aspect-[407/854] sm:w-[clamp(190px,46vw,300px)] lg:w-[clamp(260px,40vw,760px)] lg:h-[clamp(360px,74vh,900px)] lg:max-h-none"
               />
             </div>
 
             <div
               ref={textRef}
-              className="relative z-20 flex w-full flex-col items-start text-left will-change-transform"
+              className="relative z-20 flex w-full max-w-[36rem] flex-col items-start text-left will-change-transform xl:col-span-7 xl:max-w-none"
             >
               <h2
                 className="map-heading text-white font-bold tracking-tight"

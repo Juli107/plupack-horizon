@@ -22,7 +22,8 @@ export function Hero() {
     ? featuredProducts[activeProductIndex]
     : null;
   const featuredMediaHeightClass = 'md:h-[49vh] md:min-h-[25rem]';
-  const featuredContentOffsetClass = 'md:pt-[calc(49vh+2.5rem)]';
+  const featuredContentOffsetClass =
+    'md:pt-[max(calc(49vh+2.5rem),27.5rem)]';
 
   const scrollToIndustries = () => {
     if (!lenis) return;
@@ -105,7 +106,7 @@ export function Hero() {
   }, [activeProductIndex, featuredProducts.length]);
 
   return (
-    <section className="relative w-full min-h-screen md:h-screen">
+    <section className="relative w-full min-h-screen">
       {/* Responsive SVG filter switcher: mobile uses thinner dilate radius */}
       <style>{`
         .hero-outline-text { filter: url(#outline-filter-hero-mobile); }
@@ -113,7 +114,7 @@ export function Hero() {
           .hero-outline-text { filter: url(#outline-filter-hero); }
         }
       `}</style>
-      <div className="md:absolute md:inset-0 md:h-full pointer-events-none text-white flex flex-col md:block">
+      <div className="relative w-full pointer-events-none text-white flex flex-col">
         {hasFeaturedProducts ? (
           <div
             className={`pointer-events-auto w-full md:absolute md:inset-x-0 md:top-0 ${featuredMediaHeightClass}`}
