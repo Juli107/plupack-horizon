@@ -328,15 +328,14 @@
     text-rendering: geometricPrecision;
   }
 
+  .about-hero__heading-line-outline {
+    filter: url(#about-hero-outline-mobile-{{ section.id }});
+  }
+
   @media (min-width: 768px) {
     .about-hero__heading-line-outline {
       filter: url(#about-hero-outline-{{ section.id }});
     }
-  }
-
-  .about-hero__heading-line-outline {
-    fill: currentColor;
-    filter: url(#about-hero-outline-mobile-{{ section.id }});
   }
 
   .about-hero__heading-line-fill {
