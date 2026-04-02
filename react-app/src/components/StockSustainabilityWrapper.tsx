@@ -485,7 +485,7 @@ export function StockSustainabilityWrapper() {
             </h2>
             <a
               href={buttonUrl}
-              className="inline-block px-8 py-3 rounded-[10px] font-medium transition-all duration-300 hover:scale-105"
+              className="inline-block px-8 py-3 rounded-[10px] text-sm font-bold uppercase tracking-wide transition-all duration-300 hover:scale-105"
               style={{
                 fontFamily: getFontFamily('body'),
                 backgroundColor: '#2873A8',

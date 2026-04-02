@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -59,49 +59,61 @@ function AnimatedCounter({
 }) {
   const counterRef = useRef<HTMLSpanElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const hasAnimatedRef = useRef(false);
 
-  useEffect(() => {
-    if (hasAnimated) return;
-    const el = itemRef.current;
-    if (!el) return;
+  useGSAP(
+    () => {
+      const el = itemRef.current;
+      const counterEl = counterRef.current;
+      if (!el || !counterEl) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setHasAnimated(true);
-          observer.disconnect();
+      counterEl.textContent = `0${suffix}`;
+      const counter = { val: 0 };
+      let lastRenderedValue = 0;
 
-          const counterEl = counterRef.current;
-          if (!counterEl) return;
+      const tween = gsap.to(counter, {
+        val: value,
+        duration: 1.6,
+        delay,
+        ease: 'power2.out',
+        paused: true,
+        snap: { val: 1 },
+        onUpdate: () => {
+          const nextValue = Math.round(counter.val);
+          if (nextValue === lastRenderedValue) return;
+          lastRenderedValue = nextValue;
+          counterEl.textContent = `${nextValue}${suffix}`;
+        },
+      });
 
-          const counter = { val: 0 };
-          gsap.to(counter, {
-            val: value,
-            duration: 2,
-            delay,
-            ease: 'power2.out',
-            onUpdate: () => {
-              counterEl.textContent =
-                Math.round(counter.val * 10) / 10 + suffix;
-            },
-          });
-        }
-      },
-      { threshold: 0.3 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasAnimated, value, suffix, delay]);
+      const trigger = ScrollTrigger.create({
+        trigger: el,
+        start: 'top 82%',
+        once: true,
+        onEnter: () => {
+          if (hasAnimatedRef.current) return;
+          hasAnimatedRef.current = true;
+          tween.play();
+        },
+      });
+
+      return () => {
+        trigger.kill();
+        tween.kill();
+      };
+    },
+    { scope: itemRef },
+  );
 
   const isDark = textColor === 'dark';
 
   return (
     <div
       ref={itemRef}
-      className="metric-item rounded-lg p-8 lg:p-12 flex flex-col justify-between h-full min-h-[250px]"
+      className="metric-item rounded-lg p-8 lg:p-12 flex flex-col justify-between h-full min-h-[250px] transform-gpu will-change-transform will-change-opacity"
       style={{
         backgroundColor,
+        contain: 'layout paint',
       }}
     >
       <div>
@@ -113,6 +125,7 @@ function AnimatedCounter({
             color: isDark ? '#1B4B6B' : '#FFFFFF',
             fontSize: 'clamp(2.5rem, 5vw, 4rem)',
             lineHeight: 1,
+            fontVariantNumeric: 'tabular-nums',
           }}
         >
           0{suffix}
@@ -162,19 +175,20 @@ export function MetricsSection() {
 
       const items =
         containerRef.current.querySelectorAll('.metric-item');
-      gsap.set(items, { y: 30, opacity: 0 });
+      gsap.set(items, { y: 24, autoAlpha: 0, force3D: true });
 
       gsap.to(items, {
         y: 0,
-        opacity: 1,
-        duration: 0.7,
-        stagger: 0.12,
+        autoAlpha: 1,
+        duration: 0.55,
+        stagger: 0.08,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: containerRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none none',
+          start: 'top 85%',
+          once: true,
         },
+        clearProps: 'transform,opacity,visibility',
       });
     },
     { scope: sectionRef },
@@ -216,63 +230,28 @@ export function MetricsSection() {
           ref={containerRef}
           className="metrics-grid"
         >
-          {/* Item 1 - Large left card (años en el mercado) */}
-          <div className="metrics-desktop-only metrics-grid__primary">
-            <AnimatedCounter
-              {...METRICS[0]}
-              delay={0}
-              getFontFamily={getFontFamily}
-              backgroundColor="#1B4B6B"
-              textColor="light"
-            />
-          </div>
-
-          {/* Item 2 - Top right (clientes activos) */}
-          <div className="metrics-desktop-only">
-            <AnimatedCounter
-              {...METRICS[1]}
-              delay={0.12}
-              getFontFamily={getFontFamily}
-              backgroundColor="#F0F4F8"
-              textColor="dark"
-            />
-          </div>
-
-          {/* Item 3 - Bottom right (sectores) */}
-          <div className="metrics-desktop-only">
-            <AnimatedCounter
-              {...METRICS[2]}
-              delay={0.24}
-              getFontFamily={getFontFamily}
-              backgroundColor="#0F2B48"
-              textColor="light"
-            />
-          </div>
-
-          {/* Mobile fallback */}
-          <div className="metrics-mobile-only">
-            <div className="metrics-mobile-list">
-              {METRICS.map((metric, index) => (
-                <div key={metric.label}>
-                  <AnimatedCounter
-                    {...metric}
-                    delay={index * 0.12}
-                    getFontFamily={getFontFamily}
-                    backgroundColor={
-                      index === 0
-                        ? '#1B4B6B'
-                        : index === 1
-                        ? '#F0F4F8'
-                        : '#0F2B48'
-                    }
-                    textColor={
-                      index === 1 ? 'dark' : 'light'
-                    }
-                  />
-                </div>
-              ))}
+          {METRICS.map((metric, index) => (
+            <div
+              key={metric.label}
+              className={
+                index === 0 ? 'md:row-span-2' : undefined
+              }
+            >
+              <AnimatedCounter
+                {...metric}
+                delay={index * 0.12}
+                getFontFamily={getFontFamily}
+                backgroundColor={
+                  index === 0
+                    ? '#1B4B6B'
+                    : index === 1
+                      ? '#F0F4F8'
+                      : '#0F2B48'
+                }
+                textColor={index === 1 ? 'dark' : 'light'}
+              />
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

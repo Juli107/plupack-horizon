@@ -3,7 +3,6 @@ import { getShopifyData } from '@/types/shopify';
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useLenis } from 'lenis/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function Hero() {
   const { getFontFamily } = useShopifyTheme();
@@ -105,20 +104,6 @@ export function Hero() {
     setActiveProductIndex(0);
   }, [activeProductIndex, featuredProducts.length]);
 
-  const goToPrevProduct = () => {
-    if (featuredProducts.length <= 1) return;
-    setActiveProductIndex((prev) =>
-      prev === 0 ? featuredProducts.length - 1 : prev - 1,
-    );
-  };
-
-  const goToNextProduct = () => {
-    if (featuredProducts.length <= 1) return;
-    setActiveProductIndex((prev) =>
-      prev === featuredProducts.length - 1 ? 0 : prev + 1,
-    );
-  };
-
   return (
     <section className="relative w-full min-h-screen md:h-screen">
       {/* Responsive SVG filter switcher: mobile uses thinner dilate radius */}
@@ -201,40 +186,20 @@ export function Hero() {
 
               {/* Controls group — bottom-right */}
               {featuredProducts.length > 1 ? (
-                <div className="hidden md:flex absolute bottom-6 md:bottom-8 right-6 md:right-10 items-center gap-2.5 pointer-events-auto">
-                  <button
-                    type="button"
-                    onClick={goToPrevProduct}
-                    className="inline-flex items-center justify-center p-1 text-white/75 hover:text-white transition-colors"
-                    aria-label="Producto anterior"
-                  >
-                    <ChevronLeft
-                      aria-hidden="true"
-                      size={16}
-                      strokeWidth={2.25}
+                <div className="hidden md:flex absolute bottom-6 md:bottom-8 right-6 md:right-10 items-center gap-2 pointer-events-auto">
+                  {featuredProducts.map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setActiveProductIndex(index)}
+                      aria-label={`Ir al producto ${index + 1}`}
+                      className={`h-2 w-2 rounded-full bg-white transition-opacity duration-300 ${
+                        index === activeProductIndex
+                          ? 'opacity-95'
+                          : 'opacity-35 hover:opacity-65'
+                      }`}
                     />
-                  </button>
-
-                  <span
-                    className="text-[10px] uppercase tracking-[0.14em] text-white/80"
-                    style={{ fontFamily: getFontFamily('accent') }}
-                  >
-                    {activeProductIndex + 1} /{' '}
-                    {featuredProducts.length}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={goToNextProduct}
-                    className="inline-flex items-center justify-center p-1 text-white/75 hover:text-white transition-colors"
-                    aria-label="Siguiente producto"
-                  >
-                    <ChevronRight
-                      aria-hidden="true"
-                      size={16}
-                      strokeWidth={2.25}
-                    />
-                  </button>
+                  ))}
                 </div>
               ) : null}
             </article>
