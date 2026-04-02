@@ -19,7 +19,9 @@ export function ScrollDebugger() {
       elementRef.current.textContent = [
         `Page ${pageScroll.toFixed(1)}%`,
         `Eff ${debugState.effectiveScrollPercent.toFixed(1)}%`,
-        `Ind ${debugState.industryProgress.toFixed(3)} (${debugState.industryActive ? 'on' : 'off'})`,
+        `IndCam ${debugState.industryProgress.toFixed(3)} (${debugState.industryActive ? 'on' : 'off'})`,
+        `IndSec ${debugState.industrySectionProgress.toFixed(3)}`,
+        `IndVis ${debugState.industryVisible ? 'on' : 'off'}`,
         `KF ${from.scrollPercent} -> ${to.scrollPercent} (t=${t.toFixed(3)})`,
       ].join('\n');
     }
@@ -32,7 +34,9 @@ export function ScrollDebugger() {
     >
       Page 0.0%
       {'\n'}Eff 0.0%
-      {'\n'}Ind 0.000 (off)
+      {'\n'}IndCam 0.000 (off)
+      {'\n'}IndSec 0.000
+      {'\n'}IndVis off
       {'\n'}KF 0 -&gt; 0 (t=0.000)
     </div>
   );

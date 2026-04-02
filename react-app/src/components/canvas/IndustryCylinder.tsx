@@ -6,6 +6,10 @@ import { RenderProduct } from './Products';
 import { industryWrapUrl } from './industryAssets';
 import { getCameraDirectorDebugState } from './cameraDirector';
 
+const PRE_ROTATE_LIFT_START_OFFSET_Y = -3;
+const PRE_ROTATE_LIFT_END_OFFSET_Y = 0;
+const PRE_ROTATE_LIFT_END_INDUSTRY_PROGRESS = 0.13;
+
 // Helper types for individual item configuration
 type ItemConfig = {
   name: string;
@@ -85,18 +89,38 @@ const BOT_ITEMS: ItemConfig[] = [
   },
 ];
 
-// Preload all assets
-// Preloading is now handled within RenderProduct
+const ALL_ITEMS: ItemConfig[] = [...TOP_ITEMS, ...MID_ITEMS, ...BOT_ITEMS];
 
 export function IndustryCylinder(props: any) {
   const cylinderRef = useRef<THREE.Group>(null);
+  const liftGroupRef = useRef<THREE.Group>(null);
+
+  const clamp01 = (value: number) => {
+    return Math.max(0, Math.min(1, value));
+  };
 
   useFrame(() => {
-    if (!cylinderRef.current) {
+    if (!cylinderRef.current || !liftGroupRef.current) {
       return;
     }
 
-    cylinderRef.current.visible = getCameraDirectorDebugState().industryActive;
+    const { industrySectionProgress, industryVisible } =
+      getCameraDirectorDebugState();
+
+    const liftProgress =
+      PRE_ROTATE_LIFT_END_INDUSTRY_PROGRESS > 0
+        ? clamp01(
+            industrySectionProgress /
+              PRE_ROTATE_LIFT_END_INDUSTRY_PROGRESS,
+          )
+        : 1;
+    const liftedY = THREE.MathUtils.lerp(
+      PRE_ROTATE_LIFT_START_OFFSET_Y,
+      PRE_ROTATE_LIFT_END_OFFSET_Y,
+      liftProgress,
+    );
+    liftGroupRef.current.position.y = liftedY;
+    cylinderRef.current.visible = industryVisible;
   });
 
   const { scene } = useGLTF(industryWrapUrl);
@@ -130,28 +154,26 @@ export function IndustryCylinder(props: any) {
     return cloned;
   }, [scene]);
 
-  const allItems = [...TOP_ITEMS, ...MID_ITEMS, ...BOT_ITEMS];
-
   return (
     <group ref={cylinderRef} {...props}>
-      {/* Main transparent cylinder replacement */}
-      <primitive
-        object={wrapperModel}
-        scale={2.5}
-        position={[0, -3.5, 0]}
-        rotation={[0, 0, 0]}
-      />
-
-      {/* Render Individually Configured Items */}
-      {allItems.map((item, index) => (
-        <RenderProduct
-          key={`${item.name}-${index}`}
-          name={item.name}
-          position={item.position}
-          rotation={item.rotation}
-          scale={6}
+      <group ref={liftGroupRef}>
+        <primitive
+          object={wrapperModel}
+          scale={2.5}
+          position={[0, -3.5, 0]}
+          rotation={[0, 0, 0]}
         />
-      ))}
+
+        {ALL_ITEMS.map((item, index) => (
+          <RenderProduct
+            key={`${item.name}-${index}`}
+            name={item.name}
+            position={item.position}
+            rotation={item.rotation}
+            scale={6}
+          />
+        ))}
+      </group>
     </group>
   );
 }

@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { INDUSTRY_TIMELINE } from './industryTimeline';
+import { INDUSTRY_TIMELINE, INDUSTRY_WORLD_Y } from './industryTimeline';
 
-const INDUSTRY_WORLD_Y = INDUSTRY_TIMELINE.world.anchorY;
 const INDUSTRY_PREP_Y = INDUSTRY_WORLD_Y + 27.8;
 const INDUSTRY_ORBIT_TOP_Y = INDUSTRY_WORLD_Y + 10;
 const INDUSTRY_ORBIT_MID_Y = INDUSTRY_WORLD_Y + 4;
 const INDUSTRY_ORBIT_BOTTOM_Y = INDUSTRY_WORLD_Y - 2;
 const INDUSTRY_EXIT_Y = INDUSTRY_WORLD_Y - 10;
+const INDUSTRY_PRE_ORBIT_HOLD_PERCENT = 52;
 
 // ============================================
 // CAMERA KEYFRAME CONFIGURATION
@@ -76,14 +76,7 @@ export const cameraKeyframes: CameraKeyframe[] = [
   },
 
   {
-    scrollPercent: 52,
-    position: [0, INDUSTRY_PREP_Y, 0],
-    lookAt: [0, INDUSTRY_PREP_Y, 0],
-  },
-
-  // Hold this framing longer so the industry cylinder does not enter early
-  {
-    scrollPercent: INDUSTRY_TIMELINE.cameraMotion.preIndustryHoldPercent,
+    scrollPercent: INDUSTRY_PRE_ORBIT_HOLD_PERCENT,
     position: [0, INDUSTRY_PREP_Y, 0],
     lookAt: [0, INDUSTRY_PREP_Y, 0],
   },

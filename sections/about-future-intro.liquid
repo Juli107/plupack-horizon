@@ -78,19 +78,20 @@
   .about-future-intro {
     background: var(--future-intro-bg);
     color: var(--future-intro-text);
-    padding: 0 clamp(1rem, 4vw, 2rem);
+    padding: 0 clamp(1rem, 2vw, 1.5rem);
   }
 
   .about-future-intro__inner {
     max-width: min(1550px, 100%);
     margin-inline: auto;
+    padding-inline: clamp(0.4rem, 1.4vw, 1.5rem);
     padding-top: var(--future-intro-pad-top);
     padding-bottom: var(--future-intro-pad-bottom);
   }
 
   .about-future-intro__lead {
     margin: 0;
-    max-width: min(32ch, 100%);
+    max-width: min(45ch, 100%);
     font-family: var(--font-body--family), sans-serif;
     font-size: clamp(2rem, 3.5vw, 3.5rem);
     line-height: 1.16;
@@ -126,8 +127,8 @@
 
   @media (max-width: 989px) {
     .about-future-intro {
-      padding-left: clamp(1rem, 4vw, 1.4rem);
-      padding-right: clamp(1rem, 4vw, 1.4rem);
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .about-future-intro__lead {

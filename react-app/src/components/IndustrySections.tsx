@@ -4,13 +4,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useId, useMemo, useRef } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import {
-  getCameraDirectorDebugState,
   setCameraDirectorIndustryActive,
   setCameraDirectorIndustryProgress,
+  setCameraDirectorIndustrySectionProgress,
+  setCameraDirectorIndustryVisible,
 } from './canvas/cameraDirector';
 import {
   INDUSTRY_TIMELINE,
-  mapGlobalScrollToIndustryProgress,
   normalizeIndustrySectionProgress,
 } from './canvas/industryTimeline';
 
@@ -431,15 +431,19 @@ export function IndustrySections() {
         end: INDUSTRY_TIMELINE.sectionTrigger.visibilityRange.end,
         onEnter: () => {
           bg.style.opacity = '1';
+          setCameraDirectorIndustryVisible(true);
         },
         onLeave: () => {
           bg.style.opacity = '0';
+          setCameraDirectorIndustryVisible(false);
         },
         onEnterBack: () => {
           bg.style.opacity = '1';
+          setCameraDirectorIndustryVisible(true);
         },
         onLeaveBack: () => {
           bg.style.opacity = '0';
+          setCameraDirectorIndustryVisible(false);
         },
       });
 
@@ -450,12 +454,11 @@ export function IndustrySections() {
         end: INDUSTRY_TIMELINE.sectionTrigger.progressRange.end,
         scrub: true,
         onToggle: (self) => {
+          const sectionProgress = normalizeIndustrySectionProgress(self.progress);
+
           if (self.isActive) {
-            const { pageScrollPercent } = getCameraDirectorDebugState();
-            const syncedProgress = mapGlobalScrollToIndustryProgress(
-              pageScrollPercent,
-            );
-            setCameraDirectorIndustryProgress(syncedProgress);
+            setCameraDirectorIndustryProgress(sectionProgress);
+            setCameraDirectorIndustrySectionProgress(sectionProgress);
             setCameraDirectorIndustryActive(true);
             return;
           }
@@ -463,13 +466,16 @@ export function IndustrySections() {
           setCameraDirectorIndustryActive(false);
 
           setCameraDirectorIndustryProgress(self.direction < 0 ? 0 : 1);
+          setCameraDirectorIndustrySectionProgress(self.direction < 0 ? 0 : 1);
         },
         onUpdate: (self) => {
-          const industryProgress =
+          const sectionProgress =
             normalizeIndustrySectionProgress(self.progress);
-          setCameraDirectorIndustryProgress(industryProgress);
 
-          const progress = industryProgress;
+          setCameraDirectorIndustryProgress(sectionProgress);
+          setCameraDirectorIndustrySectionProgress(sectionProgress);
+
+          const progress = sectionProgress;
           const totalSections = colors.length;
 
           // Scale progress across all sections
@@ -506,6 +512,8 @@ export function IndustrySections() {
       return () => {
         setCameraDirectorIndustryActive(false);
         setCameraDirectorIndustryProgress(0);
+        setCameraDirectorIndustrySectionProgress(0);
+        setCameraDirectorIndustryVisible(false);
       };
     },
     { scope: containerRef },
