@@ -340,8 +340,9 @@
 
   .about-hero__heading-line-fill {
     opacity: 0;
-    animation: about-hero-heading-fill 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.9s;
+    will-change: opacity;
+    animation: about-hero-heading-fill 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 1.5s;
   }
 
   @keyframes about-hero-heading-fill {
