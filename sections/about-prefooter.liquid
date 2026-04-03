@@ -86,7 +86,7 @@
   .about-prefooter__title {
     margin: 0;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(2.25rem, 8vw, 90px);
+    font-size: 2.25rem;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     line-height: 1;
@@ -98,7 +98,7 @@
   .about-prefooter__subtitle {
     margin: 0;
     font-family: var(--font-heading--family), sans-serif;
-    font-size: clamp(1.5rem, 5vw, 56px);
+    font-size: 1.5rem;
     font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.1;
@@ -185,37 +185,34 @@
       transform: translate3d(0, 0, 0);
     }
   }
-  @media (max-width: 989px) {
-    .about-prefooter {
-      min-height: 72vh;
-      padding-top: 4rem;
-      padding-bottom: 4rem;
-    }
-
-    .about-prefooter__inner {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-
-    .about-prefooter__title {
-      font-size: clamp(2.25rem, 13vw, 4.75rem);
-      line-height: 1;
-    }
-
-    .about-prefooter__subtitle {
-      font-size: clamp(1.5rem, 8vw, 3rem);
-      line-height: 1.1;
-    }
-
-    .about-prefooter__btn {
-      width: auto;
-      min-width: 220px;
-    }
-  }
-
   @media (min-width: 640px) {
     .about-prefooter__actions {
       flex-direction: row;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .about-prefooter__inner {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+
+    .about-prefooter__title {
+      font-size: 3.75rem;
+    }
+
+    .about-prefooter__subtitle {
+      font-size: 2.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-prefooter__title {
+      font-size: 90px;
+    }
+
+    .about-prefooter__subtitle {
+      font-size: 56px;
     }
   }
 
