@@ -3,14 +3,9 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LenisRef } from 'lenis/react';
 import { ReactLenis, useLenis } from 'lenis/react';
-import {
-  lazy,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EnvironmentSection } from './EnvironmentSection';
+import { GlobalCanvas } from './GlobalCanvas';
 import { GlobalLightDarkOverlay } from './GlobalLightDarkOverlay';
 import { Hero } from './hero/Hero';
 import { IndustryDynamicsSection } from './IndustryDynamicsSection';
@@ -28,12 +23,6 @@ import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
-
-const GlobalCanvas = lazy(() =>
-  import('./GlobalCanvas').then((module) => ({
-    default: module.GlobalCanvas,
-  }))
-);
 
 // ============================================
 // HEADER TINT CONTROLLER
@@ -262,11 +251,7 @@ export function Homepage({
         }}
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
-        {shouldMountCanvas ? (
-          <Suspense fallback={null}>
-            <GlobalCanvas />
-          </Suspense>
-        ) : null}
+        {shouldMountCanvas ? <GlobalCanvas /> : null}
         <GlobalLightDarkOverlay />
         {import.meta.env.DEV ? <ScrollDebugger /> : null}
 
