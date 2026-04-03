@@ -1,8 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-const CANVAS_READY_EVENT = 'plupack:canvas-ready';
-
 // Immediately inject critical CSS
 if (typeof document !== 'undefined') {
   const styleId = 'plupack-loading-critical';
@@ -79,7 +77,6 @@ export function LoadingScreen() {
   const [progress, setProgress] = useState(0);
   const [revealProgress, setRevealProgress] = useState(0);
   const [isProgressComplete, setIsProgressComplete] = useState(false);
-  const [isCanvasReady, setIsCanvasReady] = useState(false);
 
   // Hide Liquid loading screen and mark as React loaded
   useLayoutEffect(() => {
@@ -114,24 +111,7 @@ export function LoadingScreen() {
   }, []);
 
   useEffect(() => {
-    const markCanvasReady = () => {
-      setIsCanvasReady(true);
-    };
-
-    if (window.__PLUPACK_CANVAS_READY__) {
-      markCanvasReady();
-      return;
-    }
-
-    window.addEventListener(CANVAS_READY_EVENT, markCanvasReady);
-
-    return () => {
-      window.removeEventListener(CANVAS_READY_EVENT, markCanvasReady);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (phase === 'loading' && isProgressComplete && isCanvasReady) {
+    if (phase === 'loading' && isProgressComplete) {
       const revealDelayId = window.setTimeout(() => {
         setPhase('reveal');
       }, 300);
@@ -142,7 +122,7 @@ export function LoadingScreen() {
     }
 
     return;
-  }, [isCanvasReady, isProgressComplete, phase]);
+  }, [isProgressComplete, phase]);
 
   // Phase 2: Ripple reveal animation
   useEffect(() => {
