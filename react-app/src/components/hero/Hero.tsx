@@ -185,16 +185,16 @@ export function Hero() {
                 </div>
               ) : null}
 
-              {/* Controls group — bottom-right */}
+              {/* Controls group — visible on mobile and desktop */}
               {featuredProducts.length > 1 ? (
-                <div className="hidden md:flex absolute bottom-6 md:bottom-8 right-6 md:right-10 items-center gap-2 pointer-events-auto">
+                <div className="absolute bottom-4 right-6 md:bottom-8 md:right-10 z-10 flex items-center gap-2 md:gap-2.5 pointer-events-auto">
                   {featuredProducts.map((_, index) => (
                     <button
                       key={index}
                       type="button"
                       onClick={() => setActiveProductIndex(index)}
                       aria-label={`Ir al producto ${index + 1}`}
-                      className={`h-2 w-2 rounded-full bg-white transition-opacity duration-300 ${
+                      className={`h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-white ring-1 ring-white/50 transition-opacity duration-300 ${
                         index === activeProductIndex
                           ? 'opacity-95'
                           : 'opacity-35 hover:opacity-65'
