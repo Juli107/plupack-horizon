@@ -158,6 +158,10 @@ declare global {
   interface Window {
     SHOPIFY_DATA?: ShopifyData;
     __PLUPACK_CANVAS_READY__?: boolean;
+    __PLUPACK_CANVAS_CREATED__?: boolean;
+    __PLUPACK_HERO_READY__?: boolean;
+    __PLUPACK_SCENE_READY__?: boolean;
+    __PLUPACK_LOADING_COMPLETE__?: boolean;
   }
 }
 

@@ -1,7 +1,19 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useProgress } from '@react-three/drei';
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
+import {
+  CANVAS_CREATED_EVENT,
+  HERO_READY_EVENT,
+  dispatchLoadingComplete,
+  SCENE_READY_EVENT,
+} from './loadingEvents';
 
-// Immediately inject critical CSS
 if (typeof document !== 'undefined') {
   const styleId = 'plupack-loading-critical';
   if (!document.getElementById(styleId)) {
@@ -54,20 +66,18 @@ if (typeof document !== 'undefined') {
 const COLS = 10;
 const ROWS = 10;
 
-// Calculate distance from center for each cell
 function getDistanceFromCenter(index: number): number {
   const row = Math.floor(index / COLS);
   const col = index % COLS;
   const centerRow = (ROWS - 1) / 2;
   const centerCol = (COLS - 1) / 2;
-  // Chebyshev distance (max of row/col distance) for square ripple
+
   return Math.max(
     Math.abs(row - centerRow),
     Math.abs(col - centerCol),
   );
 }
 
-// Max distance is from center to corner
 const MAX_DISTANCE = Math.max((ROWS - 1) / 2, (COLS - 1) / 2);
 
 export function LoadingScreen() {
@@ -76,88 +86,205 @@ export function LoadingScreen() {
   );
   const [progress, setProgress] = useState(0);
   const [revealProgress, setRevealProgress] = useState(0);
-  const [isProgressComplete, setIsProgressComplete] = useState(false);
+  const [heroReady, setHeroReady] = useState(
+    () => window.__PLUPACK_HERO_READY__ === true,
+  );
+  const [canvasCreated, setCanvasCreated] = useState(
+    () => window.__PLUPACK_CANVAS_CREATED__ === true,
+  );
+  const [sceneReady, setSceneReady] = useState(
+    () => window.__PLUPACK_SCENE_READY__ === true,
+  );
+  const targetProgressRef = useRef(0);
+  const hasStartedRevealRef = useRef(false);
+  const { active, loaded, progress: assetProgress, total } = useProgress();
 
-  // Hide Liquid loading screen and mark as React loaded
   useLayoutEffect(() => {
-    // Hide the Liquid loading screen immediately
     const liquidLoader = document.getElementById(
       'liquid-loading-screen',
     );
+
     if (liquidLoader) {
       liquidLoader.style.display = 'none';
     }
-    // Add class to body so CSS knows React has loaded
+
     document.body.classList.add('react-loaded');
   }, []);
 
-  // Phase 1: Animate progress from 0 to 100 - step by step
   useEffect(() => {
-    const duration = 1000; // Total time for 0-100
-    const stepTime = duration / 100; // Time per number (10ms each)
-    let currentProgress = 0;
+    const handleHeroReady = () => setHeroReady(true);
+    const handleCanvasCreated = () => setCanvasCreated(true);
+    const handleSceneReady = () => setSceneReady(true);
 
-    const interval = setInterval(() => {
-      currentProgress += 1;
-      setProgress(currentProgress);
+    window.addEventListener(HERO_READY_EVENT, handleHeroReady);
+    window.addEventListener(CANVAS_CREATED_EVENT, handleCanvasCreated);
+    window.addEventListener(SCENE_READY_EVENT, handleSceneReady);
 
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        setIsProgressComplete(true);
-      }
-    }, stepTime);
-
-    return () => clearInterval(interval);
+    return () => {
+      window.removeEventListener(HERO_READY_EVENT, handleHeroReady);
+      window.removeEventListener(
+        CANVAS_CREATED_EVENT,
+        handleCanvasCreated,
+      );
+      window.removeEventListener(SCENE_READY_EVENT, handleSceneReady);
+    };
   }, []);
 
-  useEffect(() => {
-    if (phase === 'loading' && isProgressComplete) {
-      const revealDelayId = window.setTimeout(() => {
-        setPhase('reveal');
-      }, 300);
-
-      return () => {
-        window.clearTimeout(revealDelayId);
-      };
+  const assetsReady = useMemo(() => {
+    if (total === 0) {
+      return !active && canvasCreated;
     }
 
-    return;
-  }, [isProgressComplete, phase]);
+    return !active && loaded >= total;
+  }, [active, canvasCreated, loaded, total]);
 
-  // Phase 2: Ripple reveal animation
+  const readyForReveal =
+    phase === 'loading' &&
+    heroReady &&
+    canvasCreated &&
+    sceneReady &&
+    assetsReady;
+
+  useEffect(() => {
+    if (phase !== 'loading') {
+      return;
+    }
+
+    let target = 8;
+
+    if (heroReady) {
+      target = 24;
+    }
+
+    if (canvasCreated) {
+      target = Math.max(target, 38);
+    }
+
+    if (total > 0) {
+      const clampedAssetProgress = Math.max(
+        0,
+        Math.min(assetProgress, 100),
+      );
+      target = Math.max(
+        target,
+        38 + (clampedAssetProgress / 100) * 52,
+      );
+    } else if (canvasCreated) {
+      target = Math.max(target, 50);
+    }
+
+    if (sceneReady) {
+      target = Math.max(target, 92);
+    }
+
+    if (readyForReveal) {
+      target = 100;
+    }
+
+    targetProgressRef.current = target;
+  }, [
+    assetProgress,
+    canvasCreated,
+    heroReady,
+    phase,
+    readyForReveal,
+    sceneReady,
+    total,
+  ]);
+
+  useEffect(() => {
+    if (phase !== 'loading') {
+      return;
+    }
+
+    let animationFrameId = 0;
+
+    const animate = () => {
+      setProgress((previousProgress) => {
+        const targetProgress = targetProgressRef.current;
+
+        if (previousProgress >= targetProgress) {
+          return previousProgress;
+        }
+
+        const delta = Math.max(
+          readyForReveal ? 1.25 : 0.35,
+          (targetProgress - previousProgress) * 0.14,
+        );
+
+        return Math.min(previousProgress + delta, targetProgress);
+      });
+
+      animationFrameId = window.requestAnimationFrame(animate);
+    };
+
+    animationFrameId = window.requestAnimationFrame(animate);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [phase, readyForReveal]);
+
+  useEffect(() => {
+    if (
+      !readyForReveal ||
+      phase !== 'loading' ||
+      hasStartedRevealRef.current ||
+      progress < 99.5
+    ) {
+      return;
+    }
+
+    hasStartedRevealRef.current = true;
+    dispatchLoadingComplete();
+
+    const revealDelayId = window.setTimeout(() => {
+      setPhase('reveal');
+    }, 120);
+
+    return () => {
+      window.clearTimeout(revealDelayId);
+    };
+  }, [phase, progress, readyForReveal]);
+
   useEffect(() => {
     if (phase !== 'reveal') return;
 
     let startTime: number | null = null;
-    const duration = 1000;
+    let animationFrameId = 0;
+    const duration = 850;
 
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
+
       const elapsed = timestamp - startTime;
       const rawProgress = Math.min(elapsed / duration, 1);
-      // Ease out for smooth deceleration
       const easedProgress = 1 - Math.pow(1 - rawProgress, 2);
 
       setRevealProgress(easedProgress);
 
       if (rawProgress < 1) {
-        requestAnimationFrame(animate);
+        animationFrameId = window.requestAnimationFrame(animate);
       } else {
         setPhase('done');
       }
     };
 
-    requestAnimationFrame(animate);
+    animationFrameId = window.requestAnimationFrame(animate);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
   }, [phase]);
 
   if (phase === 'done') return null;
 
+  const displayedProgress = Math.round(progress);
+
   return createPortal(
     <div className="plupack-loading-screen">
-      {/* Phase 1: Loading progress */}
       {phase === 'loading' && (
         <>
-          {/* Blue background with white text - shrinks from bottom */}
           <div
             style={{
               position: 'absolute',
@@ -166,15 +293,14 @@ export function LoadingScreen() {
               right: 0,
               bottom: 0,
               backgroundColor: '#084e85',
-              clipPath: `inset(0 0 ${progress}% 0)`,
+              clipPath: `inset(0 0 ${displayedProgress}% 0)`,
             }}
           >
             <div className="plupack-loading-text plupack-loading-text--white">
-              {progress}%
+              {displayedProgress}%
             </div>
           </div>
 
-          {/* White area revealed from bottom with blue text */}
           <div
             style={{
               position: 'absolute',
@@ -183,20 +309,18 @@ export function LoadingScreen() {
               right: 0,
               bottom: 0,
               backgroundColor: '#ffffff',
-              clipPath: `inset(${100 - progress}% 0 0 0)`,
+              clipPath: `inset(${100 - displayedProgress}% 0 0 0)`,
             }}
           >
             <div className="plupack-loading-text plupack-loading-text--blue">
-              {progress}%
+              {displayedProgress}%
             </div>
           </div>
         </>
       )}
 
-      {/* Phase 2: Square grid ripple from center - transparent bg reveals content */}
       {phase === 'reveal' && (
         <>
-          {/* Grid of squares - white squares on transparent background */}
           <div
             style={{
               position: 'absolute',
@@ -213,14 +337,10 @@ export function LoadingScreen() {
           >
             {Array.from({ length: ROWS * COLS }).map((_, i) => {
               const distance = getDistanceFromCenter(i);
-              // Normalize distance to 0-1 range
               const normalizedDistance = distance / MAX_DISTANCE;
-              // Calculate when this square should start and end its animation
-              // Squares closer to center animate first
-              const startThreshold = normalizedDistance * 0.6; // stagger start times
-              const endThreshold = startThreshold + 0.4; // each square takes 0.4 of the total time
+              const startThreshold = normalizedDistance * 0.6;
+              const endThreshold = startThreshold + 0.4;
 
-              // Calculate scale for this square based on current progress
               let scale = 1;
               if (revealProgress > startThreshold) {
                 const localProgress = Math.min(
@@ -245,7 +365,6 @@ export function LoadingScreen() {
             })}
           </div>
 
-          {/* Text fading out */}
           <div
             className="plupack-loading-text plupack-loading-text--blue"
             style={{

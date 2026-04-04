@@ -3,11 +3,17 @@ import { getShopifyData } from '@/types/shopify';
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useLenis } from 'lenis/react';
+import {
+  dispatchHeroReady,
+  LOADING_COMPLETE_EVENT,
+} from '../loadingEvents';
 
 export function Hero() {
   const { getFontFamily } = useShopifyTheme();
   const shopifyData = getShopifyData();
   const headlineRef = useRef<HTMLHeadingElement>(null);
+  const firstFeaturedImageRef = useRef<HTMLImageElement>(null);
+  const hasDispatchedHeroReadyRef = useRef(false);
   const [animationTriggered, setAnimationTriggered] = useState(false);
   const [activeProductIndex, setActiveProductIndex] = useState(0);
   const lenis = useLenis();
@@ -25,6 +31,15 @@ export function Hero() {
   const featuredContentOffsetClass =
     'md:pt-[max(calc(49vh+2.5rem),27.5rem)]';
 
+  const markHeroReady = () => {
+    if (hasDispatchedHeroReadyRef.current) {
+      return;
+    }
+
+    hasDispatchedHeroReadyRef.current = true;
+    dispatchHeroReady();
+  };
+
   const scrollToIndustries = () => {
     if (!lenis) return;
     lenis.scrollTo('#industry-dynamics', {
@@ -33,16 +48,8 @@ export function Hero() {
     });
   };
 
-  // Listen for loading screen completion and trigger fill animation
   useEffect(() => {
     if (animationTriggered) return;
-
-    const checkLoadingComplete = () => {
-      const loadingScreen = document.querySelector(
-        '.plupack-loading-screen',
-      );
-      return !loadingScreen;
-    };
 
     const startAnimation = () => {
       if (!headlineRef.current) return;
@@ -65,25 +72,42 @@ export function Hero() {
       );
     };
 
-    const checkInterval = setInterval(() => {
-      if (checkLoadingComplete()) {
-        clearInterval(checkInterval);
-        setAnimationTriggered(true);
-        setTimeout(startAnimation, 200);
-      }
-    }, 100);
-
-    const fallbackTimeout = setTimeout(() => {
-      clearInterval(checkInterval);
+    const handleLoadingComplete = () => {
       setAnimationTriggered(true);
-      startAnimation();
-    }, 3000);
+      window.setTimeout(startAnimation, 200);
+    };
+
+    if (window.__PLUPACK_LOADING_COMPLETE__) {
+      handleLoadingComplete();
+      return;
+    }
+
+    window.addEventListener(
+      LOADING_COMPLETE_EVENT,
+      handleLoadingComplete,
+      { once: true },
+    );
 
     return () => {
-      clearInterval(checkInterval);
-      clearTimeout(fallbackTimeout);
+      window.removeEventListener(
+        LOADING_COMPLETE_EVENT,
+        handleLoadingComplete,
+      );
     };
   }, [animationTriggered]);
+
+  useEffect(() => {
+    const firstFeaturedImage = featuredProducts[0]?.image;
+
+    if (!firstFeaturedImage) {
+      markHeroReady();
+      return;
+    }
+
+    if (firstFeaturedImageRef.current?.complete) {
+      markHeroReady();
+    }
+  }, [featuredProducts]);
 
   useEffect(() => {
     if (featuredProducts.length <= 1) return;
@@ -132,10 +156,13 @@ export function Hero() {
                 >
                   {product.image ? (
                     <img
+                      ref={index === 0 ? firstFeaturedImageRef : undefined}
                       src={product.image}
                       alt={product.title}
                       className="absolute inset-0 w-full h-full object-cover object-center"
                       loading={index === 0 ? 'eager' : 'lazy'}
+                      onLoad={index === 0 ? markHeroReady : undefined}
+                      onError={index === 0 ? markHeroReady : undefined}
                     />
                   ) : null}
                 </div>

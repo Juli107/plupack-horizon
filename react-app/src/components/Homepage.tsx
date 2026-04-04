@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LenisRef } from 'lenis/react';
 import { ReactLenis, useLenis } from 'lenis/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { EnvironmentSection } from './EnvironmentSection';
 import { GlobalCanvas } from './GlobalCanvas';
 import { GlobalLightDarkOverlay } from './GlobalLightDarkOverlay';
@@ -100,58 +100,6 @@ function useLenisGSAP(lenisRef: React.RefObject<LenisRef | null>) {
   });
 }
 
-function useDeferredCanvasMount() {
-  const [shouldMountCanvas, setShouldMountCanvas] = useState(false);
-
-  useEffect(() => {
-    if (shouldMountCanvas) return;
-
-    let idleId: number | null = null;
-    let fallbackId: ReturnType<typeof globalThis.setTimeout> | null =
-      null;
-
-    const mountCanvas = () => {
-      setShouldMountCanvas(true);
-    };
-
-    const handleFirstInteraction = () => {
-      mountCanvas();
-    };
-
-    window.addEventListener('scroll', handleFirstInteraction, {
-      passive: true,
-      once: true,
-    });
-    window.addEventListener('pointerdown', handleFirstInteraction, {
-      passive: true,
-      once: true,
-    });
-
-    if ('requestIdleCallback' in window) {
-      idleId = window.requestIdleCallback(mountCanvas, {
-        timeout: 1800,
-      });
-    } else {
-      fallbackId = globalThis.setTimeout(mountCanvas, 1200);
-    }
-
-    return () => {
-      window.removeEventListener('scroll', handleFirstInteraction);
-      window.removeEventListener('pointerdown', handleFirstInteraction);
-
-      if (idleId !== null && 'cancelIdleCallback' in window) {
-        window.cancelIdleCallback(idleId);
-      }
-
-      if (fallbackId !== null) {
-        globalThis.clearTimeout(fallbackId);
-      }
-    };
-  }, [shouldMountCanvas]);
-
-  return shouldMountCanvas;
-}
-
 // ============================================
 // MAIN HOMEPAGE COMPONENT
 // ============================================
@@ -170,7 +118,6 @@ export function Homepage({
 }: HomepageProps) {
   // Lenis ref for GSAP integration
   const lenisRef = useRef<LenisRef>(null);
-  const shouldMountCanvas = useDeferredCanvasMount();
 
   // Sync Lenis with GSAP ScrollTrigger
   useLenisGSAP(lenisRef);
@@ -248,10 +195,13 @@ export function Homepage({
         style={{
           backgroundColor: backgroundColor,
           overflowX: 'clip',
+          maxWidth: '1920px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
         }}
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
-        {shouldMountCanvas ? <GlobalCanvas /> : null}
+        <GlobalCanvas />
         <GlobalLightDarkOverlay />
         {import.meta.env.DEV ? <ScrollDebugger /> : null}
 

@@ -4,8 +4,7 @@ import { PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 import { ScrollCamera } from './canvas/ScrollCamera';
 import { Scene } from './canvas/Scene';
-
-const CANVAS_READY_EVENT = 'plupack:canvas-ready';
+import { dispatchCanvasCreated } from './loadingEvents';
 
 // ============================================
 // GLOBAL CANVAS COMPONENT
@@ -73,12 +72,12 @@ export function GlobalCanvas() {
           gl.outputColorSpace = THREE.SRGBColorSpace;
           gl.shadowMap.enabled = false;
 
-          if (window.__PLUPACK_CANVAS_READY__) {
+          if (window.__PLUPACK_CANVAS_CREATED__) {
             return;
           }
 
           window.__PLUPACK_CANVAS_READY__ = true;
-          window.dispatchEvent(new Event(CANVAS_READY_EVENT));
+          dispatchCanvasCreated();
         }}
         gl={{
           antialias: !isMobile,

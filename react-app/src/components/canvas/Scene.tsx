@@ -1,12 +1,9 @@
-import { Environment, Lightformer, Preload } from '@react-three/drei';
-import { useEffect } from 'react';
-import {
-  INDUSTRY_ITEM_NAMES,
-  preloadIndustryWrapModel,
-} from './industryAssets';
+import { Environment, Lightformer } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+import { dispatchSceneReady } from '../loadingEvents';
 import { INDUSTRY_WORLD_Y } from './industryTimeline';
 import { IndustryCylinder } from './IndustryCylinder';
-import { preloadModels } from './Products';
 
 // ============================================
 // GLOBAL 3D SCENE
@@ -19,12 +16,22 @@ type SceneProps = {
   isTouchDevice: boolean;
 };
 
-export function Scene({ isMobile, isTouchDevice }: SceneProps) {
-  useEffect(() => {
-    preloadIndustryWrapModel();
-    preloadModels(INDUSTRY_ITEM_NAMES);
-  }, []);
+function SceneReadySignal() {
+  const hasDispatchedRef = useRef(false);
 
+  useFrame(() => {
+    if (hasDispatchedRef.current) {
+      return;
+    }
+
+    hasDispatchedRef.current = true;
+    dispatchSceneReady();
+  });
+
+  return null;
+}
+
+export function Scene({ isMobile, isTouchDevice }: SceneProps) {
   return (
     <>
       <Environment background={false} resolution={isMobile ? 64 : 128}>
@@ -130,7 +137,8 @@ export function Scene({ isMobile, isTouchDevice }: SceneProps) {
         <IndustryCylinder isTouchDevice={isTouchDevice} />
       </group>
 
-      <Preload all />
+      <SceneReadySignal />
+
     </>
   );
 }
