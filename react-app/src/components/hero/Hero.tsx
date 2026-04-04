@@ -452,7 +452,7 @@ export function Hero() {
               <div className="flex flex-col sm:flex-row gap-4 w-full">
                 <a
                   href="/collections/all"
-                  className="px-8 py-1 flex-1 bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
+                  className="px-8 py-1 flex-1 bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide min-h-[40px] flex items-center justify-center"
                   style={{ fontFamily: getFontFamily('body') }}
                 >
                   Ver productos
