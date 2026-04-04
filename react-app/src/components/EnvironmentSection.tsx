@@ -113,22 +113,22 @@ export function EnvironmentSection() {
         >
           {/* Left: Image */}
           <div className="w-full md:w-[420px] shrink-0">
-            <div
-              className="w-full h-full overflow-hidden"
-              style={{
-                boxShadow: '0 28px 60px rgba(1, 17, 25, 0.26)',
-                minHeight: '100%',
-              }}
-            >
-              <img
-                ref={imageRef}
-                src={warehouseImage}
-                alt="Depósito logístico de PLUPack"
-                className="block w-full h-full object-cover"
-                style={{ objectPosition: 'center 38%' }}
-                loading="lazy"
-              />
-            </div>
+              <div
+                className="w-full h-full overflow-hidden"
+                style={{
+                  boxShadow: '0 28px 60px rgba(1, 17, 25, 0.26)',
+                  minHeight: '280px',
+                }}
+              >
+                <img
+                  ref={imageRef}
+                  src={warehouseImage}
+                  alt="Depósito logístico de PLUPack"
+                  className="block w-full h-full object-cover"
+                  style={{ objectPosition: 'center 38%', minHeight: '280px' }}
+                  loading="lazy"
+                />
+              </div>
           </div>
 
           {/* Right: Text content */}
