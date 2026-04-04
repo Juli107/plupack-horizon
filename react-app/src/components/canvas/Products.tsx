@@ -21,6 +21,7 @@ import glovesUrl from '../../assets/models/optimized/gloves.glb';
 import cartonUrl from '../../assets/models/optimized/carton.glb';
 
 type GroupProps = any;
+type QualityTier = 'high' | 'balanced' | 'low';
 
 // Map filenames (keys) to imported URL strings (values)
 const MODEL_URLS: Record<string, string> = {
@@ -52,7 +53,11 @@ const METAL_MODELS = new Set(['aluminum_roll.glb', 'food_container.glb']);
 
 const CARDBOARD_MODELS = new Set(['carton.glb']);
 
-function tuneTextureAnisotropy(material: THREE.MeshStandardMaterial) {
+function tuneTextureAnisotropy(
+  material: THREE.MeshStandardMaterial,
+  qualityTier: QualityTier
+) {
+  const targetAnisotropy = qualityTier === 'high' ? 8 : qualityTier === 'balanced' ? 6 : 4;
   const textureKeys: Array<
     keyof Pick<
       THREE.MeshStandardMaterial,
@@ -63,7 +68,7 @@ function tuneTextureAnisotropy(material: THREE.MeshStandardMaterial) {
   for (const key of textureKeys) {
     const texture = material[key];
     if (texture) {
-      texture.anisotropy = Math.max(texture.anisotropy, 8);
+      texture.anisotropy = Math.max(texture.anisotropy, targetAnisotropy);
     }
   }
 }
@@ -76,14 +81,15 @@ function ensureColorTextureSpace(material: THREE.MeshStandardMaterial) {
 
 function tuneSingleMaterial(
   material: THREE.Material,
-  modelName: string
+  modelName: string,
+  qualityTier: QualityTier
 ): THREE.Material {
   if (!(material instanceof THREE.MeshStandardMaterial)) {
     return material;
   }
 
   const tuned = material.clone();
-  tuneTextureAnisotropy(tuned);
+  tuneTextureAnisotropy(tuned, qualityTier);
   ensureColorTextureSpace(tuned);
 
   tuned.envMapIntensity = Math.max(tuned.envMapIntensity ?? 1, 1.05);
@@ -107,6 +113,20 @@ function tuneSingleMaterial(
       tuned.attenuationDistance = tuned.attenuationDistance ?? 2.4;
       tuned.attenuationColor =
         tuned.attenuationColor ?? new THREE.Color('#c6eaff');
+
+      if (qualityTier === 'balanced') {
+        tuned.transmission *= 0.86;
+        tuned.clearcoat *= 0.85;
+        tuned.envMapIntensity *= 0.9;
+      }
+
+      if (qualityTier === 'low') {
+        tuned.transmission *= 0.7;
+        tuned.thickness *= 0.7;
+        tuned.clearcoat *= 0.65;
+        tuned.clearcoatRoughness = Math.max(tuned.clearcoatRoughness, 0.28);
+        tuned.envMapIntensity *= 0.8;
+      }
     }
   } else if (METAL_MODELS.has(modelName)) {
     const useTrayMaterialProfile =
@@ -137,6 +157,15 @@ function tuneSingleMaterial(
       tuned.thickness = 0;
       tuned.clearcoat = Math.max(tuned.clearcoat ?? 0, 0.1);
       tuned.clearcoatRoughness = Math.min(tuned.clearcoatRoughness ?? 0.28, 0.22);
+
+      if (qualityTier === 'balanced') {
+        tuned.clearcoat *= 0.85;
+      }
+
+      if (qualityTier === 'low') {
+        tuned.clearcoat *= 0.65;
+        tuned.envMapIntensity *= 0.9;
+      }
     }
   } else if (PAPER_MODELS.has(modelName)) {
     tuned.roughness = Math.max(tuned.roughness ?? 0.5, 0.8);
@@ -175,18 +204,27 @@ function tuneSingleMaterial(
     tuned.attenuationDistance = Infinity;
   }
 
+  if (qualityTier === 'balanced') {
+    tuned.envMapIntensity *= 0.92;
+  }
+
+  if (qualityTier === 'low') {
+    tuned.envMapIntensity *= 0.82;
+  }
+
   tuned.needsUpdate = true;
   return tuned;
 }
 
 function tuneMaterialSet(
   material: THREE.Material | THREE.Material[],
-  modelName: string
+  modelName: string,
+  qualityTier: QualityTier
 ) {
   if (Array.isArray(material)) {
-    return material.map((item) => tuneSingleMaterial(item, modelName));
+    return material.map((item) => tuneSingleMaterial(item, modelName, qualityTier));
   }
-  return tuneSingleMaterial(material, modelName);
+  return tuneSingleMaterial(material, modelName, qualityTier);
 }
 
 export function preloadModels(names: string[]) {
@@ -199,7 +237,7 @@ export function preloadModels(names: string[]) {
 }
 
 // Helper to find the main mesh geometry and material for instancing
-function useMainMesh(url: string, modelName: string) {
+function useMainMesh(url: string, modelName: string, qualityTier: QualityTier) {
   const { scene } = useGLTF(url);
   return useMemo(() => {
     let foundGeometry: THREE.BufferGeometry | null = null;
@@ -223,29 +261,29 @@ function useMainMesh(url: string, modelName: string) {
     if (!foundGeometry || !foundMaterial) return null;
     return {
       geometry: foundGeometry,
-      material: tuneMaterialSet(foundMaterial, modelName),
+      material: tuneMaterialSet(foundMaterial, modelName, qualityTier),
     };
-  }, [scene, url, modelName]);
+  }, [modelName, qualityTier, scene, url]);
 }
 
 // FOOD CONTAINERS (Stack of 8)
 export function FoodContainerStack(props: GroupProps) {
+  const { qualityTier = 'high', ...groupProps } = props;
   // Use imported URL
   const data = useMainMesh(
     MODEL_URLS['food_container.glb'],
-    'food_container.glb'
+    'food_container.glb',
+    qualityTier
   );
   if (!data) return null;
 
   return (
-    <group {...props}>
+    <group {...groupProps}>
       <Center bottom>
         <Instances
           range={8}
           geometry={data.geometry}
           material={data.material}
-          castShadow
-          receiveShadow
           frustumCulled={false}
         >
           <Instance position={[0, 0.06, 0]} />
@@ -264,17 +302,16 @@ export function FoodContainerStack(props: GroupProps) {
 
 // TAPES (Group of 3)
 export function TapeStack(props: GroupProps) {
-  const data = useMainMesh(MODEL_URLS['tape.glb'], 'tape.glb');
+  const { qualityTier = 'high', ...groupProps } = props;
+  const data = useMainMesh(MODEL_URLS['tape.glb'], 'tape.glb', qualityTier);
   if (!data) return null;
   return (
-    <group {...props}>
+    <group {...groupProps}>
       <Center bottom>
         <Instances
           range={3}
           geometry={data.geometry}
           material={data.material}
-          castShadow
-          receiveShadow
           frustumCulled={false}
         >
           <Instance
@@ -294,18 +331,21 @@ export function TapeStack(props: GroupProps) {
 
 // PAPER ROLLS (Stack of 2)
 export function PaperRollStack(props: GroupProps) {
-  const data = useMainMesh(MODEL_URLS['paper_rolls.glb'], 'paper_rolls.glb');
+  const { qualityTier = 'high', ...groupProps } = props;
+  const data = useMainMesh(
+    MODEL_URLS['paper_rolls.glb'],
+    'paper_rolls.glb',
+    qualityTier
+  );
   if (!data) return null;
 
   return (
-    <group {...props}>
+    <group {...groupProps}>
       <Center bottom>
         <Instances
           range={3}
           geometry={data.geometry}
           material={data.material}
-          castShadow
-          receiveShadow
           frustumCulled={false}
         >
           {/* Two on bottom, touching */}
@@ -319,6 +359,7 @@ export function PaperRollStack(props: GroupProps) {
 
 // NAPKINS (Procedural)
 export function NapkinStack(props: GroupProps) {
+  const { qualityTier = 'high', ...groupProps } = props;
   // Reduced size significantly: 1 -> 0.2
   const geometry = useMemo(
     () => new THREE.BoxGeometry(0.2, 0.002, 0.2),
@@ -328,16 +369,17 @@ export function NapkinStack(props: GroupProps) {
   const count = 40;
 
   return (
-    <group {...props}>
+    <group {...groupProps}>
       <Center bottom>
         <Instances
           range={count}
           geometry={geometry}
-          castShadow
-          receiveShadow
           frustumCulled={false}
         >
-          <meshStandardMaterial color="#ffffff" roughness={0.55} />
+          <meshStandardMaterial
+            color="#ffffff"
+            roughness={qualityTier === 'low' ? 0.66 : qualityTier === 'balanced' ? 0.6 : 0.55}
+          />
           {Array.from({ length: count }).map((_, i) => (
             <Instance
               key={i}
@@ -359,8 +401,9 @@ export function NapkinStack(props: GroupProps) {
 // GENERIC SINGLE ITEM
 export function SingleProduct({
   name,
+  qualityTier = 'high',
   ...props
-}: GroupProps & { name: string }) {
+}: GroupProps & { name: string; qualityTier?: QualityTier }) {
   // Use imported URL via lookup
   const url = MODEL_URLS[name];
   // Fallback or error handling if needed, but for now strict lookup
@@ -370,13 +413,11 @@ export function SingleProduct({
     const c = scene.clone();
     c.traverse((node: any) => {
       if (node.isMesh) {
-        node.material = tuneMaterialSet(node.material, name);
-        node.castShadow = true;
-        node.receiveShadow = true;
+        node.material = tuneMaterialSet(node.material, name, qualityTier);
       }
     });
     return c;
-  }, [scene]);
+  }, [name, qualityTier, scene]);
 
   return (
     <group {...props}>
@@ -400,11 +441,12 @@ export const PRODUCT_COMPONENTS: Record<
 
 export function RenderProduct({
   name,
+  qualityTier = 'high',
   ...props
-}: GroupProps & { name: string }) {
+}: GroupProps & { name: string; qualityTier?: QualityTier }) {
   const Component = PRODUCT_COMPONENTS[name];
   if (Component) {
-    return <Component {...props} />;
+    return <Component qualityTier={qualityTier} {...props} />;
   }
-  return <SingleProduct name={name} {...props} />;
+  return <SingleProduct name={name} qualityTier={qualityTier} {...props} />;
 }

@@ -17,6 +17,13 @@ type ItemConfig = {
   rotation: [number, number, number];
 };
 
+type QualityTier = 'high' | 'balanced' | 'low';
+
+type IndustryCylinderProps = {
+  isTouchDevice: boolean;
+  qualityTier: QualityTier;
+};
+
 // Manually defined positions based on previous circular logic (radius ~1.8)
 // User can now tweak each item individually.
 const TOP_ITEMS: ItemConfig[] = [
@@ -91,7 +98,11 @@ const BOT_ITEMS: ItemConfig[] = [
 
 const ALL_ITEMS: ItemConfig[] = [...TOP_ITEMS, ...MID_ITEMS, ...BOT_ITEMS];
 
-export function IndustryCylinder({ isTouchDevice, ...props }: any) {
+export function IndustryCylinder({
+  isTouchDevice,
+  qualityTier,
+  ...props
+}: IndustryCylinderProps) {
   const cylinderRef = useRef<THREE.Group>(null);
   const liftGroupRef = useRef<THREE.Group>(null);
   const smoothedSectionProgressRef = useRef(0);
@@ -136,6 +147,8 @@ export function IndustryCylinder({ isTouchDevice, ...props }: any) {
 
   const { scene } = useGLTF(industryWrapUrl);
   const wrapperModel = useMemo(() => {
+    const useBalancedProfile = qualityTier === 'balanced';
+    const useLowProfile = qualityTier === 'low';
     const cloned = scene.clone();
     cloned.traverse((obj) => {
       if ((obj as THREE.Mesh).isMesh) {
@@ -143,17 +156,17 @@ export function IndustryCylinder({ isTouchDevice, ...props }: any) {
           {
             color: '#d9f4ff',
             transparent: true,
-            opacity: 0.26,
-            roughness: 0.08,
+            opacity: useLowProfile ? 0.22 : 0.26,
+            roughness: useLowProfile ? 0.14 : 0.08,
             metalness: 0,
-            transmission: 0.92,
-            thickness: 0.38,
+            transmission: useLowProfile ? 0.75 : useBalancedProfile ? 0.84 : 0.92,
+            thickness: useLowProfile ? 0.2 : useBalancedProfile ? 0.3 : 0.38,
             ior: 1.46,
-            clearcoat: 0.8,
-            clearcoatRoughness: 0.12,
-            envMapIntensity: 1.25,
+            clearcoat: useLowProfile ? 0.45 : 0.8,
+            clearcoatRoughness: useLowProfile ? 0.22 : 0.12,
+            envMapIntensity: useLowProfile ? 0.95 : useBalancedProfile ? 1.1 : 1.25,
             attenuationColor: '#bfe9ff',
-            attenuationDistance: 2.2,
+            attenuationDistance: useLowProfile ? 1.7 : 2.2,
             side: THREE.DoubleSide,
             depthWrite: false,
           }
@@ -163,7 +176,7 @@ export function IndustryCylinder({ isTouchDevice, ...props }: any) {
       }
     });
     return cloned;
-  }, [scene]);
+  }, [qualityTier, scene]);
 
   return (
     <group ref={cylinderRef} {...props}>
@@ -179,6 +192,7 @@ export function IndustryCylinder({ isTouchDevice, ...props }: any) {
           <RenderProduct
             key={`${item.name}-${index}`}
             name={item.name}
+            qualityTier={qualityTier}
             position={item.position}
             rotation={item.rotation}
             scale={6}

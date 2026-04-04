@@ -450,12 +450,13 @@ export function Hero() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full">
-                <button
+                <a
+                  href="/collections/all"
                   className="px-8 py-1 flex-1 bg-white text-[#0B6386] rounded-[10px] font-bold hover:bg-gray-100 transition-colors uppercase text-sm tracking-wide min-h-[40px]"
                   style={{ fontFamily: getFontFamily('body') }}
                 >
                   Ver productos
-                </button>
+                </a>
                 <button
                   onClick={scrollToIndustries}
                   className="px-8 py-1 flex-1 border border-white/60 text-white rounded-[10px] font-bold hover:bg-white/10 transition-colors uppercase text-sm tracking-wide min-h-[40px]"

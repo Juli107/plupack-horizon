@@ -1,10 +1,14 @@
 import { Canvas } from '@react-three/fiber';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 import { ScrollCamera } from './canvas/ScrollCamera';
 import { Scene } from './canvas/Scene';
 import { dispatchCanvasCreated } from './loadingEvents';
+
+type QualityTier = 'high' | 'balanced' | 'low';
+
+const QUALITY_LEVELS: QualityTier[] = ['high', 'balanced', 'low'];
 
 // ============================================
 // GLOBAL CANVAS COMPONENT
@@ -16,6 +20,10 @@ export function GlobalCanvas() {
   const [isMobile, setIsMobile] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [dynamicDprMax, setDynamicDprMax] = useState(2);
+  const [qualityTier, setQualityTier] = useState<QualityTier>('high');
+
+  const declineStreakRef = useRef(0);
+  const inclineStreakRef = useRef(0);
 
   const targetDprMax = isMobile ? 1.25 : 2;
 
@@ -61,6 +69,30 @@ export function GlobalCanvas() {
     setDynamicDprMax(targetDprMax);
   }, [targetDprMax]);
 
+  useEffect(() => {
+    if (!isMobile) {
+      setQualityTier('high');
+      declineStreakRef.current = 0;
+      inclineStreakRef.current = 0;
+    }
+  }, [isMobile]);
+
+  const downgradeQualityTier = () => {
+    setQualityTier((prev) => {
+      const currentIndex = QUALITY_LEVELS.indexOf(prev);
+      const nextIndex = Math.min(currentIndex + 1, QUALITY_LEVELS.length - 1);
+      return QUALITY_LEVELS[nextIndex] ?? prev;
+    });
+  };
+
+  const upgradeQualityTier = () => {
+    setQualityTier((prev) => {
+      const currentIndex = QUALITY_LEVELS.indexOf(prev);
+      const nextIndex = Math.max(currentIndex - 1, 0);
+      return QUALITY_LEVELS[nextIndex] ?? prev;
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-10 pointer-events-none w-screen h-screen">
       <Canvas
@@ -90,16 +122,44 @@ export function GlobalCanvas() {
         <PerformanceMonitor
           onDecline={() => {
             setDynamicDprMax((prev) => Math.max(1, prev - 0.2));
+
+            if (!isMobile) {
+              return;
+            }
+
+            declineStreakRef.current += 1;
+            inclineStreakRef.current = 0;
+
+            if (declineStreakRef.current >= 2) {
+              downgradeQualityTier();
+              declineStreakRef.current = 0;
+            }
           }}
           onIncline={() => {
             setDynamicDprMax((prev) =>
               Math.min(targetDprMax, prev + 0.2)
             );
+
+            if (!isMobile) {
+              return;
+            }
+
+            inclineStreakRef.current += 1;
+            declineStreakRef.current = 0;
+
+            if (inclineStreakRef.current >= 3) {
+              upgradeQualityTier();
+              inclineStreakRef.current = 0;
+            }
           }}
         />
         {/* Camera is controlled by ScrollCamera using keyframes */}
         <ScrollCamera isMobile={isMobile} isTouchDevice={isTouchDevice} />
-        <Scene isMobile={isMobile} isTouchDevice={isTouchDevice} />
+        <Scene
+          isMobile={isMobile}
+          isTouchDevice={isTouchDevice}
+          qualityTier={qualityTier}
+        />
       </Canvas>
     </div>
   );

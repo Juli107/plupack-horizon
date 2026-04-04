@@ -14,6 +14,7 @@ import { IndustryCylinder } from './IndustryCylinder';
 type SceneProps = {
   isMobile: boolean;
   isTouchDevice: boolean;
+  qualityTier: 'high' | 'balanced' | 'low';
 };
 
 function SceneReadySignal() {
@@ -31,10 +32,23 @@ function SceneReadySignal() {
   return null;
 }
 
-export function Scene({ isMobile, isTouchDevice }: SceneProps) {
+export function Scene({ isMobile, isTouchDevice, qualityTier }: SceneProps) {
+  const mobileQualityTier = isMobile ? qualityTier : 'high';
+  const environmentResolution =
+    mobileQualityTier === 'low'
+      ? 32
+      : mobileQualityTier === 'balanced'
+        ? 48
+        : 64;
+  const useReducedLights = mobileQualityTier !== 'high';
+  const useMinimalLights = mobileQualityTier === 'low';
+
   return (
     <>
-      <Environment background={false} resolution={isMobile ? 64 : 128}>
+      <Environment
+        background={false}
+        resolution={isMobile ? environmentResolution : 128}
+      >
         <Lightformer
           form="rect"
           intensity={isMobile ? 2.1 : 2.8}
@@ -68,7 +82,7 @@ export function Scene({ isMobile, isTouchDevice }: SceneProps) {
       </Environment>
       <ambientLight intensity={0.3} color="#dceaff" />
       <hemisphereLight
-        intensity={0.54}
+        intensity={useMinimalLights ? 0.46 : 0.54}
         color="#d9f5ff"
         groundColor="#3e5672"
       />
@@ -83,30 +97,34 @@ export function Scene({ isMobile, isTouchDevice }: SceneProps) {
 
       <directionalLight
         color="#9cc6ff"
-        intensity={isMobile ? 0.55 : 0.75}
+        intensity={isMobile ? (useReducedLights ? 0.35 : 0.55) : 0.75}
         position={[-12, INDUSTRY_WORLD_Y + 7.8, -10]}
       >
         <object3D attach="target" position={[0, INDUSTRY_WORLD_Y, 0]} />
       </directionalLight>
 
-      <directionalLight
-        color="#fff4e3"
-        intensity={isMobile ? 0.8 : 1.15}
-        position={[-4, INDUSTRY_WORLD_Y + 9.8, 14]}
-      >
-        <object3D
-          attach="target"
-          position={[-1.2, INDUSTRY_WORLD_Y + 0.4, 0]}
-        />
-      </directionalLight>
+      {!useMinimalLights && (
+        <directionalLight
+          color="#fff4e3"
+          intensity={isMobile ? (useReducedLights ? 0.56 : 0.8) : 1.15}
+          position={[-4, INDUSTRY_WORLD_Y + 9.8, 14]}
+        >
+          <object3D
+            attach="target"
+            position={[-1.2, INDUSTRY_WORLD_Y + 0.4, 0]}
+          />
+        </directionalLight>
+      )}
 
-      <pointLight
-        color="#8bdcff"
-        intensity={isMobile ? 0.5 : 0.65}
-        distance={40}
-        decay={2}
-        position={[-8, INDUSTRY_WORLD_Y + 7.8, -14]}
-      />
+      {!useReducedLights && (
+        <pointLight
+          color="#8bdcff"
+          intensity={isMobile ? 0.5 : 0.65}
+          distance={40}
+          decay={2}
+          position={[-8, INDUSTRY_WORLD_Y + 7.8, -14]}
+        />
+      )}
       <spotLight
         castShadow={false}
         color="#f4fbff"
@@ -120,25 +138,29 @@ export function Scene({ isMobile, isTouchDevice }: SceneProps) {
         <object3D attach="target" position={[0, INDUSTRY_WORLD_Y + 1, 0]} />
       </spotLight>
 
-      <spotLight
-        castShadow={false}
-        color="#a8dcff"
-        intensity={isMobile ? 0.78 : 1.08}
-        angle={0.42}
-        penumbra={0.9}
-        distance={60}
-        decay={2}
-        position={[0, INDUSTRY_WORLD_Y + 4.3, -18]}
-      >
-        <object3D attach="target" position={[0, INDUSTRY_WORLD_Y + 1.3, 0]} />
-      </spotLight>
+      {!useMinimalLights && (
+        <spotLight
+          castShadow={false}
+          color="#a8dcff"
+          intensity={isMobile ? (useReducedLights ? 0.54 : 0.78) : 1.08}
+          angle={0.42}
+          penumbra={0.9}
+          distance={60}
+          decay={2}
+          position={[0, INDUSTRY_WORLD_Y + 4.3, -18]}
+        >
+          <object3D attach="target" position={[0, INDUSTRY_WORLD_Y + 1.3, 0]} />
+        </spotLight>
+      )}
 
       <group position={[0, INDUSTRY_WORLD_Y, 0]}>
-        <IndustryCylinder isTouchDevice={isTouchDevice} />
+        <IndustryCylinder
+          isTouchDevice={isTouchDevice}
+          qualityTier={mobileQualityTier}
+        />
       </group>
 
       <SceneReadySignal />
-
     </>
   );
 }
