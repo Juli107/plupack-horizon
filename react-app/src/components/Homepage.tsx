@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LenisRef } from 'lenis/react';
 import { ReactLenis, useLenis } from 'lenis/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EnvironmentSection } from './EnvironmentSection';
 import { GlobalCanvas } from './GlobalCanvas';
 import { GlobalLightDarkOverlay } from './GlobalLightDarkOverlay';
@@ -113,8 +113,53 @@ export function Homepage({
   headingText: _headingText,
   subheadingText: _subheadingText,
 }: HomepageProps) {
+  const [shouldRenderCanvas, setShouldRenderCanvas] =
+    useState(false);
+
   // Lenis ref for GSAP integration
   const lenisRef = useRef<LenisRef>(null);
+
+  useEffect(() => {
+    let rafId = 0;
+    let nestedRafId = 0;
+    let idleCallbackId: number | null = null;
+    let timeoutId = 0;
+    let cancelled = false;
+
+    const activateCanvas = () => {
+      if (!cancelled) {
+        setShouldRenderCanvas(true);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(() => {
+      nestedRafId = window.requestAnimationFrame(() => {
+        if (typeof window.requestIdleCallback === 'function') {
+          idleCallbackId = window.requestIdleCallback(activateCanvas, {
+            timeout: 700,
+          });
+          return;
+        }
+
+        timeoutId = window.setTimeout(activateCanvas, 0);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(rafId);
+      window.cancelAnimationFrame(nestedRafId);
+
+      if (
+        idleCallbackId !== null &&
+        typeof window.cancelIdleCallback === 'function'
+      ) {
+        window.cancelIdleCallback(idleCallbackId);
+      }
+
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   // Sync Lenis with GSAP ScrollTrigger
   useLenisGSAP(lenisRef);
@@ -125,20 +170,26 @@ export function Homepage({
   useGSAP(() => {
     setHeaderTint('light');
 
-    // Initial state check - set based on current scroll position
-    const stockTrigger = document.querySelector(
-      '.stock-sustainability-trigger',
-    );
-    const preFooterTrigger = document.querySelector(
-      '.pre-footer-trigger',
-    );
+    let pollId = 0;
+    let stockTintTrigger: ScrollTrigger | null = null;
+    let preFooterTintTrigger: ScrollTrigger | null = null;
 
-    if (stockTrigger && preFooterTrigger) {
+    const setupHeaderTintTriggers = () => {
+      const stockTrigger = document.querySelector(
+        '.stock-sustainability-trigger',
+      );
+      const preFooterTrigger = document.querySelector(
+        '.pre-footer-trigger',
+      );
+
+      if (!stockTrigger || !preFooterTrigger) {
+        return false;
+      }
+
       const stockRect = stockTrigger.getBoundingClientRect();
       const preFooterRect = preFooterTrigger.getBoundingClientRect();
       const viewportCenter = window.scrollY + window.innerHeight / 2;
 
-      // Convert to document-relative positions
       const stockTop = stockRect.top + window.scrollY;
       const preFooterBottom = preFooterRect.bottom + window.scrollY;
 
@@ -150,24 +201,38 @@ export function Homepage({
       } else {
         setHeaderTint('light');
       }
+
+      stockTintTrigger = ScrollTrigger.create({
+        trigger: stockTrigger,
+        start: 'top center',
+        onEnter: () => setHeaderTint('blue'),
+        onEnterBack: () => setHeaderTint('blue'),
+        onLeaveBack: () => setHeaderTint('light'),
+      });
+
+      preFooterTintTrigger = ScrollTrigger.create({
+        trigger: preFooterTrigger,
+        start: 'bottom 90%',
+        onEnter: () => setHeaderTint('light'),
+        onLeaveBack: () => setHeaderTint('blue'),
+      });
+
+      return true;
+    };
+
+    if (!setupHeaderTintTriggers()) {
+      pollId = window.setInterval(() => {
+        if (setupHeaderTintTriggers()) {
+          window.clearInterval(pollId);
+        }
+      }, 200);
     }
 
-    // Change to blue when entering StockSustainabilityWrapper
-    ScrollTrigger.create({
-      trigger: '.stock-sustainability-trigger',
-      start: 'top center',
-      onEnter: () => setHeaderTint('blue'),
-      onEnterBack: () => setHeaderTint('blue'),
-      onLeaveBack: () => setHeaderTint('light'),
-    });
-
-    // Back to light when PreFooter section is almost fully visible
-    ScrollTrigger.create({
-      trigger: '.pre-footer-trigger',
-      start: 'bottom 90%',
-      onEnter: () => setHeaderTint('light'),
-      onLeaveBack: () => setHeaderTint('blue'),
-    });
+    return () => {
+      window.clearInterval(pollId);
+      stockTintTrigger?.kill();
+      preFooterTintTrigger?.kill();
+    };
   }, []);
 
   return (
@@ -195,7 +260,9 @@ export function Homepage({
         }}
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
-        <GlobalCanvas />
+        {shouldRenderCanvas ? (
+          <GlobalCanvas />
+        ) : null}
         <GlobalLightDarkOverlay />
         {import.meta.env.DEV ? <ScrollDebugger /> : null}
 

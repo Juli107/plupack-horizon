@@ -141,6 +141,10 @@ export function LogoCarousel() {
                     .replace('.webp', '')
                     .replace(/-/g, ' ')}
                   className="h-full w-full object-contain object-center grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
+                  width={160}
+                  height={64}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             ))}
@@ -158,6 +162,10 @@ export function LogoCarousel() {
                   src={getLogoSrc(logo.src)}
                   alt=""
                   className="h-full w-full object-contain object-center grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
+                  width={160}
+                  height={64}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             ))}

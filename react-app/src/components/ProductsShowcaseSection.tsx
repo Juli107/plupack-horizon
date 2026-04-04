@@ -58,7 +58,10 @@ export function ProductsShowcaseSection() {
                       src={product.image}
                       alt={product.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      width={900}
+                      height={900}
                       loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div className="w-full h-full bg-linear-to-br from-[#1B4B6B] to-[#5AA2C2]" />

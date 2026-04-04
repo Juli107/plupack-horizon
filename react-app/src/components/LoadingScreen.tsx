@@ -94,7 +94,8 @@ export function LoadingScreen() {
   const [sceneReady, setSceneReady] = useState(
     () => window.__PLUPACK_SCENE_READY__ === true,
   );
-  const [sceneSettled, setSceneSettled] = useState(false);
+  const [firstPaintComplete, setFirstPaintComplete] = useState(false);
+  const [maxWaitElapsed, setMaxWaitElapsed] = useState(false);
   const [shouldStartReveal, setShouldStartReveal] = useState(false);
   const targetProgressRef = useRef(0);
   const hasStartedRevealRef = useRef(false);
@@ -133,25 +134,37 @@ export function LoadingScreen() {
 
   const readyForReveal =
     phase === 'loading' &&
-    heroReady &&
-    canvasCreated &&
-    sceneReady &&
-    sceneSettled;
+    ((heroReady && firstPaintComplete) || maxWaitElapsed);
 
   useEffect(() => {
-    if (!sceneReady) {
-      setSceneSettled(false);
+    let firstRaf = 0;
+    let secondRaf = 0;
+
+    firstRaf = window.requestAnimationFrame(() => {
+      secondRaf = window.requestAnimationFrame(() => {
+        setFirstPaintComplete(true);
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstRaf);
+      window.cancelAnimationFrame(secondRaf);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (phase !== 'loading') {
       return;
     }
 
-    const settleTimeoutId = window.setTimeout(() => {
-      setSceneSettled(true);
-    }, 220);
+    const maxWaitTimeoutId = window.setTimeout(() => {
+      setMaxWaitElapsed(true);
+    }, 1200);
 
     return () => {
-      window.clearTimeout(settleTimeoutId);
+      window.clearTimeout(maxWaitTimeoutId);
     };
-  }, [sceneReady]);
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== 'loading') {
@@ -185,10 +198,6 @@ export function LoadingScreen() {
       target = Math.max(target, 92);
     }
 
-    if (sceneSettled) {
-      target = Math.max(target, 96);
-    }
-
     if (readyForReveal) {
       target = 100;
     }
@@ -201,7 +210,6 @@ export function LoadingScreen() {
     phase,
     readyForReveal,
     sceneReady,
-    sceneSettled,
     total,
   ]);
 

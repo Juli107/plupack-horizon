@@ -425,7 +425,10 @@ export function StockSustainabilityWrapper() {
                     src={image.src}
                     alt={image.alt}
                     className="w-full h-full object-cover"
+                    width={300}
+                    height={300}
                     loading="lazy"
+                    decoding="async"
                     draggable={false}
                   />
                 </div>
