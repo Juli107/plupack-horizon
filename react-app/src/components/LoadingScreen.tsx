@@ -2,7 +2,6 @@ import { useProgress } from '@react-three/drei';
 import {
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -95,9 +94,10 @@ export function LoadingScreen() {
   const [sceneReady, setSceneReady] = useState(
     () => window.__PLUPACK_SCENE_READY__ === true,
   );
+  const [sceneSettled, setSceneSettled] = useState(false);
   const targetProgressRef = useRef(0);
   const hasStartedRevealRef = useRef(false);
-  const { active, loaded, progress: assetProgress, total } = useProgress();
+  const { progress: assetProgress, total } = useProgress();
 
   useLayoutEffect(() => {
     const liquidLoader = document.getElementById(
@@ -130,20 +130,27 @@ export function LoadingScreen() {
     };
   }, []);
 
-  const assetsReady = useMemo(() => {
-    if (total === 0) {
-      return !active && canvasCreated;
-    }
-
-    return !active && loaded >= total;
-  }, [active, canvasCreated, loaded, total]);
-
   const readyForReveal =
     phase === 'loading' &&
     heroReady &&
     canvasCreated &&
     sceneReady &&
-    assetsReady;
+    sceneSettled;
+
+  useEffect(() => {
+    if (!sceneReady) {
+      setSceneSettled(false);
+      return;
+    }
+
+    const settleTimeoutId = window.setTimeout(() => {
+      setSceneSettled(true);
+    }, 220);
+
+    return () => {
+      window.clearTimeout(settleTimeoutId);
+    };
+  }, [sceneReady]);
 
   useEffect(() => {
     if (phase !== 'loading') {
@@ -167,7 +174,7 @@ export function LoadingScreen() {
       );
       target = Math.max(
         target,
-        38 + (clampedAssetProgress / 100) * 52,
+        38 + (clampedAssetProgress / 100) * 48,
       );
     } else if (canvasCreated) {
       target = Math.max(target, 50);
@@ -175,6 +182,10 @@ export function LoadingScreen() {
 
     if (sceneReady) {
       target = Math.max(target, 92);
+    }
+
+    if (sceneSettled) {
+      target = Math.max(target, 96);
     }
 
     if (readyForReveal) {
@@ -189,6 +200,7 @@ export function LoadingScreen() {
     phase,
     readyForReveal,
     sceneReady,
+    sceneSettled,
     total,
   ]);
 

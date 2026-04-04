@@ -195,9 +195,6 @@ export function Homepage({
         style={{
           backgroundColor: backgroundColor,
           overflowX: 'clip',
-          maxWidth: '1920px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
         }}
       >
         {/* Global fixed 3D canvas - scroll synced camera */}
