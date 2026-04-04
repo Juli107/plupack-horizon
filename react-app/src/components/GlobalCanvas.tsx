@@ -15,6 +15,7 @@ const CANVAS_READY_EVENT = 'plupack:canvas-ready';
 
 export function GlobalCanvas() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [dynamicDprMax, setDynamicDprMax] = useState(2);
 
   const targetDprMax = isMobile ? 1.25 : 2;
@@ -27,6 +28,29 @@ export function GlobalCanvas() {
     mediaQuery.addEventListener('change', update);
 
     return () => mediaQuery.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    const update = () => {
+      setIsTouchDevice(
+        window.matchMedia('(pointer: coarse)').matches ||
+          window.matchMedia('(hover: none)').matches ||
+          navigator.maxTouchPoints > 0,
+      );
+    };
+
+    update();
+
+    const coarsePointerQuery = window.matchMedia('(pointer: coarse)');
+    const hoverQuery = window.matchMedia('(hover: none)');
+
+    coarsePointerQuery.addEventListener('change', update);
+    hoverQuery.addEventListener('change', update);
+
+    return () => {
+      coarsePointerQuery.removeEventListener('change', update);
+      hoverQuery.removeEventListener('change', update);
+    };
   }, []);
 
   const dpr = useMemo<[number, number]>(
@@ -75,8 +99,8 @@ export function GlobalCanvas() {
           }}
         />
         {/* Camera is controlled by ScrollCamera using keyframes */}
-        <ScrollCamera isMobile={isMobile} />
-        <Scene isMobile={isMobile} />
+        <ScrollCamera isMobile={isMobile} isTouchDevice={isTouchDevice} />
+        <Scene isMobile={isMobile} isTouchDevice={isTouchDevice} />
       </Canvas>
     </div>
   );

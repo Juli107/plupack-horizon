@@ -236,9 +236,6 @@ export function Homepage({
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        syncTouch: true,
-        syncTouchLerp: 0.075,
-        touchInertiaExponent: 1.7,
         prevent: (node) =>
           node instanceof HTMLElement
             ? node.closest('[data-lenis-prevent]') !== null

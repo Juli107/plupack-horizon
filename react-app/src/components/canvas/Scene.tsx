@@ -16,9 +16,10 @@ import { preloadModels } from './Products';
 
 type SceneProps = {
   isMobile: boolean;
+  isTouchDevice: boolean;
 };
 
-export function Scene({ isMobile }: SceneProps) {
+export function Scene({ isMobile, isTouchDevice }: SceneProps) {
   useEffect(() => {
     preloadIndustryWrapModel();
     preloadModels(INDUSTRY_ITEM_NAMES);
@@ -126,7 +127,7 @@ export function Scene({ isMobile }: SceneProps) {
       </spotLight>
 
       <group position={[0, INDUSTRY_WORLD_Y, 0]}>
-        <IndustryCylinder />
+        <IndustryCylinder isTouchDevice={isTouchDevice} />
       </group>
 
       <Preload all />

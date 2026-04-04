@@ -91,26 +91,37 @@ const BOT_ITEMS: ItemConfig[] = [
 
 const ALL_ITEMS: ItemConfig[] = [...TOP_ITEMS, ...MID_ITEMS, ...BOT_ITEMS];
 
-export function IndustryCylinder(props: any) {
+export function IndustryCylinder({ isTouchDevice, ...props }: any) {
   const cylinderRef = useRef<THREE.Group>(null);
   const liftGroupRef = useRef<THREE.Group>(null);
+  const smoothedSectionProgressRef = useRef(0);
 
   const clamp01 = (value: number) => {
     return Math.max(0, Math.min(1, value));
   };
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!cylinderRef.current || !liftGroupRef.current) {
       return;
     }
 
     const { industrySectionProgress, industryVisible } =
       getCameraDirectorDebugState();
+    const sectionProgress = isTouchDevice
+      ? THREE.MathUtils.damp(
+          smoothedSectionProgressRef.current,
+          industrySectionProgress,
+          14,
+          delta,
+        )
+      : industrySectionProgress;
+
+    smoothedSectionProgressRef.current = sectionProgress;
 
     const liftProgress =
       PRE_ROTATE_LIFT_END_INDUSTRY_PROGRESS > 0
         ? clamp01(
-            industrySectionProgress /
+            sectionProgress /
               PRE_ROTATE_LIFT_END_INDUSTRY_PROGRESS,
           )
         : 1;
