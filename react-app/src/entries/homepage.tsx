@@ -1,3 +1,5 @@
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createRoot } from 'react-dom/client';
 import { Homepage } from '@components/Homepage';
 import { LoadingScreen } from '@components/LoadingScreen';
@@ -5,6 +7,9 @@ import { getShopifyData } from '../types/shopify';
 
 // Import Tailwind CSS v4 styles
 import '../styles/globals.css';
+
+// Register GSAP plugins once at app bootstrap
+gsap.registerPlugin(ScrollTrigger);
 
 // Get data from Shopify (injected by Liquid)
 const shopifyData = getShopifyData();

@@ -1,6 +1,5 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   useRef,
   useLayoutEffect,
@@ -13,8 +12,6 @@ import {
   Truck,
   type LucideIcon,
 } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface ServiceItem {
   id: string;
@@ -178,11 +175,6 @@ export function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    // Refresh ScrollTrigger after layout
-    ScrollTrigger.refresh();
-  }, []);
 
   useGSAP(
     () => {

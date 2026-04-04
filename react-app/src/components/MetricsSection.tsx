@@ -4,8 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // METRICS DATA
 // ============================================
@@ -175,7 +173,7 @@ export function MetricsSection() {
 
       const items =
         containerRef.current.querySelectorAll('.metric-item');
-      gsap.set(items, { y: 24, autoAlpha: 0, force3D: true });
+      gsap.set(items, { y: 24, autoAlpha: 0 });
 
       gsap.to(items, {
         y: 0,

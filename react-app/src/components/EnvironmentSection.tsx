@@ -1,11 +1,8 @@
 import { useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import warehouseImage from '@/assets/warehouse-environment.webp';
-
-gsap.registerPlugin(ScrollTrigger);
 
 // ============================================
 // CHECKLIST DATA

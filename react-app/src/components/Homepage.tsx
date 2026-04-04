@@ -21,9 +21,6 @@ import { ScrollDebugger } from './ScrollDebugger';
 import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
 
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // HEADER TINT CONTROLLER
 // ============================================

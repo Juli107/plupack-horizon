@@ -4,8 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // TYPES
 // ============================================

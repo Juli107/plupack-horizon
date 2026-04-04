@@ -14,8 +14,6 @@ import {
 } from 'lucide-react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // TYPES
 // ============================================

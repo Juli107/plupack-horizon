@@ -14,8 +14,6 @@ import {
   normalizeIndustrySectionProgress,
 } from './canvas/industryTimeline';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // INDUSTRY COLORS
 // ============================================

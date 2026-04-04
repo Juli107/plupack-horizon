@@ -6,8 +6,6 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // TYPES
 // ============================================

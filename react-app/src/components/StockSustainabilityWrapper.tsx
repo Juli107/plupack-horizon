@@ -5,8 +5,6 @@ import { useRef, useEffect, useState, useMemo } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // TYPES
 // ============================================
@@ -261,107 +259,106 @@ export function StockSustainabilityWrapper() {
         },
       });
 
-      // Separate images by layer
-      const backImages: { el: HTMLDivElement; pos: ImagePosition }[] = [];
-      const midImages: { el: HTMLDivElement; pos: ImagePosition }[] = [];
-      const frontImages: { el: HTMLDivElement; pos: ImagePosition }[] = [];
+      const backElements: HTMLDivElement[] = [];
+      const backPositions: ImagePosition[] = [];
+      const midElements: HTMLDivElement[] = [];
+      const midPositions: ImagePosition[] = [];
+      const frontElements: HTMLDivElement[] = [];
+      const frontPositions: ImagePosition[] = [];
 
       images.forEach((img, index) => {
         const pos = positions[index];
         if (!pos) return;
-        if (pos.layer === 1) backImages.push({ el: img, pos });
-        else if (pos.layer === 2) midImages.push({ el: img, pos });
-        else frontImages.push({ el: img, pos });
+
+        if (pos.layer === 1) {
+          backElements.push(img);
+          backPositions.push(pos);
+          return;
+        }
+
+        if (pos.layer === 2) {
+          midElements.push(img);
+          midPositions.push(pos);
+          return;
+        }
+
+        frontElements.push(img);
+        frontPositions.push(pos);
       });
 
-      // Back layer - appears first
-      backImages.forEach(({ el, pos }) => {
+      const addLayerTweens = (
+        layerElements: HTMLDivElement[],
+        layerPositions: ImagePosition[],
+        startAt: number,
+        xMultiplier: number,
+        yMultiplier: number,
+        scaleMultiplier: number,
+        opacity: number,
+        driftY: number,
+        driftRotation: number
+      ) => {
+        if (layerElements.length === 0) return;
+
         masterTL.to(
-          el,
+          layerElements,
           {
-            x: `${pos.x * 0.8}vw`,
-            y: `${pos.y * 0.8}vh`,
-            scale: pos.scale * 0.85,
-            opacity: 0.6,
-            rotation: pos.rotate,
+            x: (i) => `${layerPositions[i].x * xMultiplier}vw`,
+            y: (i) => `${layerPositions[i].y * yMultiplier}vh`,
+            scale: (i) => layerPositions[i].scale * scaleMultiplier,
+            opacity,
+            rotation: (i) => layerPositions[i].rotate,
             ease: 'power2.out',
             duration: 0.5,
           },
-          0.05
+          startAt
         );
-      });
 
-      // Mid layer
-      midImages.forEach(({ el, pos }) => {
         masterTL.to(
-          el,
+          layerElements,
           {
-            x: `${pos.x}vw`,
-            y: `${pos.y}vh`,
-            scale: pos.scale * 0.95,
-            opacity: 0.85,
-            rotation: pos.rotate,
-            ease: 'power2.out',
-            duration: 0.5,
-          },
-          0.1
-        );
-      });
-
-      // Front layer
-      frontImages.forEach(({ el, pos }) => {
-        masterTL.to(
-          el,
-          {
-            x: `${pos.x * 1.1}vw`,
-            y: `${pos.y * 1.1}vh`,
-            scale: pos.scale,
-            opacity: 1,
-            rotation: pos.rotate,
-            ease: 'power2.out',
-            duration: 0.5,
-          },
-          0.15
-        );
-      });
-
-      // Parallax drift during second half
-      backImages.forEach(({ el, pos }) => {
-        masterTL.to(
-          el,
-          {
-            y: `${pos.y * 0.8 + 8}vh`,
-            rotation: pos.rotate + 3,
+            y: (i) =>
+              `${layerPositions[i].y * yMultiplier + driftY}vh`,
+            rotation: (i) => layerPositions[i].rotate + driftRotation,
             duration: 0.5,
             ease: 'none',
           },
           0.5
         );
-      });
-      midImages.forEach(({ el, pos }) => {
-        masterTL.to(
-          el,
-          {
-            y: `${pos.y + 15}vh`,
-            rotation: pos.rotate - 2,
-            duration: 0.5,
-            ease: 'none',
-          },
-          0.5
-        );
-      });
-      frontImages.forEach(({ el, pos }) => {
-        masterTL.to(
-          el,
-          {
-            y: `${pos.y * 1.1 + 25}vh`,
-            rotation: pos.rotate + 4,
-            duration: 0.5,
-            ease: 'none',
-          },
-          0.5
-        );
-      });
+      };
+
+      addLayerTweens(
+        backElements,
+        backPositions,
+        0.05,
+        0.8,
+        0.8,
+        0.85,
+        0.6,
+        8,
+        3
+      );
+      addLayerTweens(
+        midElements,
+        midPositions,
+        0.1,
+        1,
+        1,
+        0.95,
+        0.85,
+        15,
+        -2
+      );
+      addLayerTweens(
+        frontElements,
+        frontPositions,
+        0.15,
+        1.1,
+        1.1,
+        1,
+        1,
+        25,
+        4
+      );
 
       // Title fades at end
       masterTL.to(

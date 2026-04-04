@@ -5,8 +5,6 @@ import { useRef, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import argentinaSvgUrl from '@/assets/argentina.svg?url';
 
-gsap.registerPlugin(ScrollTrigger);
-
 // ============================================
 // TYPES
 // ============================================
@@ -427,46 +425,61 @@ export function LogisticsMapSection() {
       // PULSE ANIMATION (Continuous while in view)
       // Simulates "Live Activity" on key provinces
       // ============================================
-      let pulseTimelines: gsap.core.Tween[] = [];
+      let pulseDriver: gsap.core.Tween | null = null;
+      const pulsePeriod = 1.6;
+      const inactiveFill = 'rgba(255, 255, 255, 0.6)';
+      const activeFill = 'rgba(94, 234, 212, 0.9)';
 
       const startPulsing = () => {
-        // Kill any existing tweens first
-        pulseTimelines.forEach((tween) => tween.kill());
-        pulseTimelines = [];
+        pulseDriver?.kill();
+        pulseDriver = null;
 
         pulseCircles.forEach((circle, i) => {
-          const node = PULSE_NODES[i];
-          const baseR = originalRadii[i];
-          const pulseR = baseR + 4;
+          gsap.set(circle, {
+            fill: inactiveFill,
+            attr: { r: originalRadii[i] },
+          });
+        });
 
-          if (node && circle) {
-            // Reset to base state first
-            gsap.set(circle, {
-              fill: 'rgba(255, 255, 255, 0.6)',
-              attr: { r: baseR },
-            });
+        const clock = { t: 0 };
+        pulseDriver = gsap.to(clock, {
+          t: pulsePeriod,
+          duration: pulsePeriod,
+          ease: 'none',
+          repeat: -1,
+          onUpdate: () => {
+            pulseCircles.forEach((circle, i) => {
+              const node = PULSE_NODES[i];
+              const baseR = originalRadii[i];
+              if (!node) return;
 
-            const pulseTween = gsap.to(circle, {
-              fill: 'rgba(94, 234, 212, 0.9)',
-              attr: { r: pulseR },
-              duration: 0.8,
-              ease: 'power2.inOut',
-              repeat: -1,
-              yoyo: true,
-              delay: node.delay,
+              const shifted = (clock.t + node.delay) % pulsePeriod;
+              const normalized = shifted / pulsePeriod;
+              const wave =
+                normalized <= 0.5
+                  ? normalized * 2
+                  : (1 - normalized) * 2;
+
+              gsap.set(circle, {
+                fill: gsap.utils.interpolate(
+                  inactiveFill,
+                  activeFill,
+                  wave,
+                ),
+                attr: { r: baseR + wave * 4 },
+              });
             });
-            pulseTimelines.push(pulseTween);
-          }
+          },
         });
       };
 
       const stopPulsing = () => {
-        pulseTimelines.forEach((tween) => tween.kill());
-        pulseTimelines = [];
+        pulseDriver?.kill();
+        pulseDriver = null;
         // Reset circles to scroll-revealed state
         pulseCircles.forEach((circle, i) => {
           gsap.set(circle, {
-            fill: 'rgba(255, 255, 255, 0.6)',
+            fill: inactiveFill,
             attr: { r: originalRadii[i] + 2 },
           });
         });
@@ -484,7 +497,7 @@ export function LogisticsMapSection() {
 
       // Cleanup function
       return () => {
-        pulseTimelines.forEach((tween) => tween.kill());
+        pulseDriver?.kill();
         ScrollTrigger.getAll().forEach((st) => {
           if (st.trigger === section) {
             st.kill();
