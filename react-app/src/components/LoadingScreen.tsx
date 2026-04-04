@@ -95,6 +95,7 @@ export function LoadingScreen() {
     () => window.__PLUPACK_SCENE_READY__ === true,
   );
   const [sceneSettled, setSceneSettled] = useState(false);
+  const [shouldStartReveal, setShouldStartReveal] = useState(false);
   const targetProgressRef = useRef(0);
   const hasStartedRevealRef = useRef(false);
   const { progress: assetProgress, total } = useProgress();
@@ -248,6 +249,14 @@ export function LoadingScreen() {
     }
 
     hasStartedRevealRef.current = true;
+    setShouldStartReveal(true);
+  }, [phase, progress, readyForReveal]);
+
+  useEffect(() => {
+    if (!shouldStartReveal || phase !== 'loading') {
+      return;
+    }
+
     dispatchLoadingComplete();
 
     const revealDelayId = window.setTimeout(() => {
@@ -257,7 +266,7 @@ export function LoadingScreen() {
     return () => {
       window.clearTimeout(revealDelayId);
     };
-  }, [phase, progress, readyForReveal]);
+  }, [phase, shouldStartReveal]);
 
   useEffect(() => {
     if (phase !== 'reveal') return;
