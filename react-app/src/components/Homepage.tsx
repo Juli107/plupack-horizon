@@ -115,9 +115,20 @@ export function Homepage({
 }: HomepageProps) {
   const [shouldRenderCanvas, setShouldRenderCanvas] =
     useState(false);
+  const [shouldRenderTierOneSections, setShouldRenderTierOneSections] =
+    useState(false);
+  const [shouldRenderTierTwoSections, setShouldRenderTierTwoSections] =
+    useState(false);
+  const [shouldRenderTierThreeSections, setShouldRenderTierThreeSections] =
+    useState(false);
+  const [shouldRenderNoiseOverlay, setShouldRenderNoiseOverlay] =
+    useState(false);
 
   // Lenis ref for GSAP integration
   const lenisRef = useRef<LenisRef>(null);
+  const tierOneSentinelRef = useRef<HTMLDivElement | null>(null);
+  const tierTwoSentinelRef = useRef<HTMLDivElement | null>(null);
+  const tierThreeSentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let rafId = 0;
@@ -157,6 +168,155 @@ export function Homepage({
         window.cancelIdleCallback(idleCallbackId);
       }
 
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    let tierOneTimeoutId = 0;
+    let tierTwoTimeoutId = 0;
+    let tierThreeTimeoutId = 0;
+    let idleCallbackId: number | null = null;
+    let tierOneObserver: IntersectionObserver | null = null;
+    let cancelled = false;
+
+    const activateTierOne = () => {
+      if (cancelled) {
+        return;
+      }
+
+      setShouldRenderTierOneSections(true);
+    };
+
+    const activateTierTwo = () => {
+      if (cancelled) {
+        return;
+      }
+
+      setShouldRenderTierTwoSections(true);
+    };
+
+    const activateTierThree = () => {
+      if (cancelled) {
+        return;
+      }
+
+      setShouldRenderTierThreeSections(true);
+    };
+
+    if (typeof window.requestIdleCallback === 'function') {
+      idleCallbackId = window.requestIdleCallback(activateTierOne, {
+        timeout: 1200,
+      });
+    } else {
+      tierOneTimeoutId = window.setTimeout(activateTierOne, 700);
+    }
+
+    tierTwoTimeoutId = window.setTimeout(activateTierTwo, 2200);
+    tierThreeTimeoutId = window.setTimeout(activateTierThree, 3600);
+
+    if (tierOneSentinelRef.current) {
+      tierOneObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            activateTierOne();
+            tierOneObserver?.disconnect();
+          }
+        },
+        {
+          root: null,
+          rootMargin: '240px 0px',
+          threshold: 0.01,
+        }
+      );
+
+      tierOneObserver.observe(tierOneSentinelRef.current);
+    }
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(tierOneTimeoutId);
+      window.clearTimeout(tierTwoTimeoutId);
+      window.clearTimeout(tierThreeTimeoutId);
+      tierOneObserver?.disconnect();
+
+      if (
+        idleCallbackId !== null &&
+        typeof window.cancelIdleCallback === 'function'
+      ) {
+        window.cancelIdleCallback(idleCallbackId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldRenderTierOneSections || shouldRenderTierTwoSections) {
+      return;
+    }
+
+    const node = tierTwoSentinelRef.current;
+    if (!node) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldRenderTierTwoSections(true);
+          observer.disconnect();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '360px 0px',
+        threshold: 0.01,
+      }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [shouldRenderTierOneSections, shouldRenderTierTwoSections]);
+
+  useEffect(() => {
+    if (!shouldRenderTierTwoSections || shouldRenderTierThreeSections) {
+      return;
+    }
+
+    const node = tierThreeSentinelRef.current;
+    if (!node) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldRenderTierThreeSections(true);
+          observer.disconnect();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '420px 0px',
+        threshold: 0.01,
+      }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [shouldRenderTierThreeSections, shouldRenderTierTwoSections]);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setShouldRenderNoiseOverlay(true);
+    }, 1100);
+
+    return () => {
       window.clearTimeout(timeoutId);
     };
   }, []);
@@ -266,28 +426,72 @@ export function Homepage({
         <GlobalLightDarkOverlay />
         {import.meta.env.DEV ? <ScrollDebugger /> : null}
 
-        <NoiseOverlay />
+        {shouldRenderNoiseOverlay ? <NoiseOverlay /> : null}
         <Hero />
-        <LogoCarousel />
         <div
-          className="w-full"
-          style={{
-            backgroundColor: '#084e85',
-            height: 'clamp(3rem, 6vh, 5rem)',
-          }}
+          ref={tierOneSentinelRef}
+          style={{ height: 1, width: '100%' }}
+          aria-hidden="true"
         />
-        <MetricsSection />
-        <ServicesSection />
-        {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
-        <LogisticsMapSection />
-        <ProductsShowcaseSection />
-        <IndustryDynamicsSection />
-        <IndustrySections />
-        {/* COMBINED: Stock explosion - Images persist across scroll */}
-        <StockSustainabilityWrapper />
-        <EnvironmentSection />
-        <PurchaseProcessSection />
-        <PreFooterSection />
+        {shouldRenderTierOneSections ? (
+          <>
+            <LogoCarousel />
+            <div
+              className="w-full"
+              style={{
+                backgroundColor: '#084e85',
+                height: 'clamp(3rem, 6vh, 5rem)',
+              }}
+            />
+            <MetricsSection />
+            <ServicesSection />
+
+            <div
+              ref={tierTwoSentinelRef}
+              style={{ height: 1, width: '100%' }}
+              aria-hidden="true"
+            />
+            {shouldRenderTierTwoSections ? (
+              <>
+                {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
+                <LogisticsMapSection />
+                <ProductsShowcaseSection />
+                <IndustryDynamicsSection />
+                <IndustrySections />
+
+                <div
+                  ref={tierThreeSentinelRef}
+                  style={{ height: 1, width: '100%' }}
+                  aria-hidden="true"
+                />
+                {shouldRenderTierThreeSections ? (
+                  <>
+                    {/* COMBINED: Stock explosion - Images persist across scroll */}
+                    <StockSustainabilityWrapper />
+                    <EnvironmentSection />
+                    <PurchaseProcessSection />
+                    <PreFooterSection />
+                  </>
+                ) : (
+                  <div
+                    style={{ height: '210vh', width: '100%' }}
+                    aria-hidden="true"
+                  />
+                )}
+              </>
+            ) : (
+              <div
+                style={{ height: '220vh', width: '100%' }}
+                aria-hidden="true"
+              />
+            )}
+          </>
+        ) : (
+          <div
+            style={{ height: '460vh', width: '100%' }}
+            aria-hidden="true"
+          />
+        )}
       </main>
       {/* <div className="h-[603.99px]">Footer</div> */}
     </ReactLenis>

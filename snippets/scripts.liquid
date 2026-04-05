@@ -26,6 +26,8 @@
   }
 </script>
 
+{% assign is_index_template = template.name == 'index' %}
+
 {% if settings.transition_to_main_product %}
   {% # theme-check-disable ParserBlockingScript %}
   <script
@@ -41,31 +43,33 @@
   href="{{ 'critical.js' | asset_url }}"
 >
 
-<link
-  rel="modulepreload"
-  href="{{ 'utilities.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'component.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'section-renderer.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'section-hydration.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'morph.js' | asset_url }}"
-  fetchpriority="low"
->
+{% unless is_index_template %}
+  <link
+    rel="modulepreload"
+    href="{{ 'utilities.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'component.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'section-renderer.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'section-hydration.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'morph.js' | asset_url }}"
+    fetchpriority="low"
+  >
+{% endunless %}
 
 {% if template.name == 'collection' or template.name == 'search' %}
   <link
@@ -86,31 +90,55 @@
   >
 {% endif %}
 
-<link
-  rel="modulepreload"
-  href="{{ 'focus.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'recently-viewed-products.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'scrolling.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
-  href="{{ 'events.js' | asset_url }}"
-  fetchpriority="low"
->
+{% unless is_index_template %}
+  <link
+    rel="modulepreload"
+    href="{{ 'focus.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'recently-viewed-products.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'scrolling.js' | asset_url }}"
+    fetchpriority="low"
+  >
+  <link
+    rel="modulepreload"
+    href="{{ 'events.js' | asset_url }}"
+    fetchpriority="low"
+  >
+{% endunless %}
 <script
   src="{{ 'popover-polyfill.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>
+<script
+  src="{{ 'dialog.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'disclosure-custom.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'anchored-popover.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'floating-panel.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% unless is_index_template %}
 <script
   src="{{ 'quick-add.js' | asset_url }}"
   type="module"
@@ -123,11 +151,6 @@
     fetchpriority="low"
   ></script>
 {% endif %}
-<script
-  src="{{ 'dialog.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
 <script
   src="{{ 'variant-picker.js' | asset_url }}"
   type="module"
@@ -145,11 +168,6 @@
 ></script>
 <script
   src="{{ 'accordion-custom.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
-  src="{{ 'disclosure-custom.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>
@@ -184,16 +202,6 @@
   fetchpriority="low"
 ></script>
 <script
-  src="{{ 'anchored-popover.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
-  src="{{ 'floating-panel.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
   src="{{ 'video-background.js' | asset_url }}"
   type="module"
   fetchpriority="low"
@@ -218,6 +226,7 @@
   type="module"
   fetchpriority="low"
 ></script>
+{% endunless %}
 
 {% if localization.available_countries.size > 1 or localization.available_languages.size > 1 %}
   <script
@@ -234,7 +243,7 @@
   </script>
 {% endif %}
 
-{% if settings.transition_to_main_product %}
+{% if settings.transition_to_main_product and is_index_template == false %}
   <script
     src="{{ 'product-card-link.js' | asset_url }}"
     type="module"
