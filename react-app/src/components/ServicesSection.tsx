@@ -159,7 +159,7 @@ function TiltCard({ service }: { service: ServiceItem }) {
           </div>
         </div>
 
-        <div className="mt-auto px-2 md:px-0">
+        <div className="mt-auto py-2 md:py-0">
           <h3 className="text-2xl md:text-3xl font-medium mb-4 font-['Montserrat'] leading-tight min-h-[90px] [@media(max-height:760px)]:min-h-[70px] flex items-end">
             {service.title}
           </h3>
