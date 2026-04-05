@@ -12,6 +12,66 @@
   3. Shopify theme dev auto-syncs the new JS file
 {% endcomment %}
 
+{%- assign hero_lcp_product = blank -%}
+
+{%- assign hero_slot_1 = section.settings.hero_featured_product_1 -%}
+{%- assign hero_slot_2 = section.settings.hero_featured_product_2 -%}
+{%- assign hero_slot_3 = section.settings.hero_featured_product_3 -%}
+{%- assign hero_slot_4 = section.settings.hero_featured_product_4 -%}
+
+{%- if hero_slot_1 != blank -%}
+  {%- assign candidate = all_products[hero_slot_1] -%}
+  {%- if candidate != blank and candidate.featured_image != blank -%}
+    {%- assign hero_lcp_product = candidate -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if hero_lcp_product == blank and hero_slot_2 != blank -%}
+  {%- assign candidate = all_products[hero_slot_2] -%}
+  {%- if candidate != blank and candidate.featured_image != blank -%}
+    {%- assign hero_lcp_product = candidate -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if hero_lcp_product == blank and hero_slot_3 != blank -%}
+  {%- assign candidate = all_products[hero_slot_3] -%}
+  {%- if candidate != blank and candidate.featured_image != blank -%}
+    {%- assign hero_lcp_product = candidate -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if hero_lcp_product == blank and hero_slot_4 != blank -%}
+  {%- assign candidate = all_products[hero_slot_4] -%}
+  {%- if candidate != blank and candidate.featured_image != blank -%}
+    {%- assign hero_lcp_product = candidate -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if hero_lcp_product == blank -%}
+  {%- for fallback_product in collections.all.products -%}
+    {%- if fallback_product.featured_image == blank -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- assign hero_lcp_product = fallback_product -%}
+    {%- break -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- if hero_lcp_product != blank and hero_lcp_product.featured_image != blank -%}
+  {%- assign hero_lcp_image_640 = hero_lcp_product.featured_image | image_url: width: 640 -%}
+  {%- assign hero_lcp_image_960 = hero_lcp_product.featured_image | image_url: width: 960 -%}
+  {%- assign hero_lcp_image_1280 = hero_lcp_product.featured_image | image_url: width: 1280 -%}
+  {%- assign hero_lcp_image_1600 = hero_lcp_product.featured_image | image_url: width: 1600 -%}
+  <link
+    rel="preload"
+    as="image"
+    href="{{ hero_lcp_image_960 }}"
+    imagesrcset="{{ hero_lcp_image_640 }} 640w, {{ hero_lcp_image_960 }} 960w, {{ hero_lcp_image_1280 }} 1280w, {{ hero_lcp_image_1600 }} 1600w"
+    imagesizes="100vw"
+    fetchpriority="high"
+  >
+{%- endif -%}
+
 {% comment %}
   ============================================
   PASSING LIQUID DATA TO REACT

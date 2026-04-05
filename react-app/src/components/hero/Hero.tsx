@@ -161,6 +161,8 @@ export function Hero() {
                       alt={product.title}
                       className="absolute inset-0 w-full h-full object-cover object-center"
                       loading={index === 0 ? 'eager' : 'lazy'}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
+                      decoding="async"
                       onLoad={index === 0 ? markHeroReady : undefined}
                       onError={index === 0 ? markHeroReady : undefined}
                     />
