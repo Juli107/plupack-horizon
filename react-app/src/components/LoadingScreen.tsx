@@ -1,4 +1,3 @@
-import { useProgress } from '@react-three/drei';
 import {
   useEffect,
   useLayoutEffect,
@@ -99,7 +98,6 @@ export function LoadingScreen() {
   const [shouldStartReveal, setShouldStartReveal] = useState(false);
   const targetProgressRef = useRef(0);
   const hasStartedRevealRef = useRef(false);
-  const { progress: assetProgress, total } = useProgress();
 
   useLayoutEffect(() => {
     const liquidLoader = document.getElementById(
@@ -133,8 +131,7 @@ export function LoadingScreen() {
   }, []);
 
   const readyForReveal =
-    phase === 'loading' &&
-    ((heroReady && firstPaintComplete) || maxWaitElapsed);
+    phase === 'loading' && (firstPaintComplete || maxWaitElapsed);
 
   useEffect(() => {
     let firstRaf = 0;
@@ -159,7 +156,7 @@ export function LoadingScreen() {
 
     const maxWaitTimeoutId = window.setTimeout(() => {
       setMaxWaitElapsed(true);
-    }, 1200);
+    }, 300);
 
     return () => {
       window.clearTimeout(maxWaitTimeoutId);
@@ -181,17 +178,8 @@ export function LoadingScreen() {
       target = Math.max(target, 38);
     }
 
-    if (total > 0) {
-      const clampedAssetProgress = Math.max(
-        0,
-        Math.min(assetProgress, 100),
-      );
-      target = Math.max(
-        target,
-        38 + (clampedAssetProgress / 100) * 48,
-      );
-    } else if (canvasCreated) {
-      target = Math.max(target, 50);
+    if (canvasCreated) {
+      target = Math.max(target, 58);
     }
 
     if (sceneReady) {
@@ -204,13 +192,11 @@ export function LoadingScreen() {
 
     targetProgressRef.current = target;
   }, [
-    assetProgress,
     canvasCreated,
     heroReady,
     phase,
     readyForReveal,
     sceneReady,
-    total,
   ]);
 
   useEffect(() => {
@@ -269,7 +255,7 @@ export function LoadingScreen() {
 
     const revealDelayId = window.setTimeout(() => {
       setPhase('reveal');
-    }, 120);
+    }, 40);
 
     return () => {
       window.clearTimeout(revealDelayId);
@@ -281,7 +267,7 @@ export function LoadingScreen() {
 
     let startTime: number | null = null;
     let animationFrameId = 0;
-    const duration = 850;
+    const duration = 320;
 
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;

@@ -3,10 +3,7 @@ import { getShopifyData } from '@/types/shopify';
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useLenis } from 'lenis/react';
-import {
-  dispatchHeroReady,
-  LOADING_COMPLETE_EVENT,
-} from '../loadingEvents';
+import { dispatchHeroReady } from '../loadingEvents';
 
 export function Hero() {
   const { getFontFamily } = useShopifyTheme();
@@ -71,29 +68,23 @@ export function Hero() {
           stagger: 0.08,
         },
       );
-    };
 
-    const handleLoadingComplete = () => {
       setAnimationTriggered(true);
-      window.setTimeout(startAnimation, 200);
     };
 
-    if (window.__PLUPACK_LOADING_COMPLETE__) {
-      handleLoadingComplete();
-      return;
-    }
-
-    window.addEventListener(
-      LOADING_COMPLETE_EVENT,
-      handleLoadingComplete,
-      { once: true },
-    );
+    let firstRaf = 0;
+    let secondRaf = 0;
+    let timeoutId = 0;
+    firstRaf = window.requestAnimationFrame(() => {
+      secondRaf = window.requestAnimationFrame(() => {
+        timeoutId = window.setTimeout(startAnimation, 120);
+      });
+    });
 
     return () => {
-      window.removeEventListener(
-        LOADING_COMPLETE_EVENT,
-        handleLoadingComplete,
-      );
+      window.cancelAnimationFrame(firstRaf);
+      window.cancelAnimationFrame(secondRaf);
+      window.clearTimeout(timeoutId);
     };
   }, [animationTriggered]);
 

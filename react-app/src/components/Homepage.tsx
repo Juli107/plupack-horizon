@@ -280,7 +280,6 @@ export function Homepage({
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
         <LogisticsMapSection />
-        {/* <div className="h-[875.24px]">Products</div> */}
         <ProductsShowcaseSection />
         <IndustryDynamicsSection />
         <IndustrySections />
