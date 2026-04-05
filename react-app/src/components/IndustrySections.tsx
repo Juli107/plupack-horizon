@@ -454,7 +454,7 @@ export function IndustrySections() {
         trigger: container,
         start: INDUSTRY_TIMELINE.sectionTrigger.progressRange.start,
         end: INDUSTRY_TIMELINE.sectionTrigger.progressRange.end,
-        scrub: isTouchDevice ? 0.42 : true,
+        scrub: isTouchDevice ? 0.75 : true,
         onToggle: (self) => {
           const sectionProgress = normalizeIndustrySectionProgress(self.progress);
 

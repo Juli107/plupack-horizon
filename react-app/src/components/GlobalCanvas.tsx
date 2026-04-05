@@ -25,7 +25,11 @@ export function GlobalCanvas() {
   const declineStreakRef = useRef(0);
   const inclineStreakRef = useRef(0);
 
-  const targetDprMax = isMobile ? 1.25 : 2;
+  const targetDprMax = isMobile
+    ? isTouchDevice
+      ? 1.1
+      : 1.25
+    : 2;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)');
@@ -74,8 +78,13 @@ export function GlobalCanvas() {
       setQualityTier('high');
       declineStreakRef.current = 0;
       inclineStreakRef.current = 0;
+      return;
     }
-  }, [isMobile]);
+
+    setQualityTier(isTouchDevice ? 'balanced' : 'high');
+    declineStreakRef.current = 0;
+    inclineStreakRef.current = 0;
+  }, [isMobile, isTouchDevice]);
 
   const downgradeQualityTier = () => {
     setQualityTier((prev) => {
