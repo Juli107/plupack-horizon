@@ -160,10 +160,10 @@ function TiltCard({ service }: { service: ServiceItem }) {
         </div>
 
         <div className="mt-auto py-2 md:py-0">
-          <h3 className="text-2xl md:text-3xl [@media(orientation:landscape)_and_(max-height:500px)]:text-xl font-medium mb-4 font-['Montserrat'] leading-tight min-h-[90px] [@media(max-height:760px)]:min-h-[70px] flex items-end">
+          <h3 className="text-2xl md:text-3xl [@media(orientation:landscape)_and_(max-height:500px)]:text-xl font-medium mb-4 font-['Montserrat'] leading-tight md:min-h-[90px] [@media(max-height:760px)]:min-h-[70px] flex items-end">
             {service.title}
           </h3>
-          <p className="text-base [@media(orientation:landscape)_and_(max-height:500px)]:text-sm font-['Open_Sans'] opacity-90 leading-relaxed min-h-40 [@media(max-height:760px)]:min-h-28">
+          <p className="text-base [@media(orientation:landscape)_and_(max-height:500px)]:text-sm font-['Open_Sans'] opacity-90 leading-relaxed md:min-h-40 [@media(max-height:760px)]:min-h-28">
             {service.description}
           </p>
         </div>
@@ -192,6 +192,9 @@ export function ServicesSection() {
       const pinShell = pinShellRef.current;
       const horizontalSection = horizontalRef.current;
       const cards = gsap.utils.toArray<HTMLElement>('.service-card');
+      const isTouchOrSmallScreen =
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.matchMedia('(max-width: 768px)').matches;
       let scrollTween: gsap.core.Tween | undefined;
       let cardTweens: gsap.core.Tween[] = [];
       let resizeRaf: number | null = null;
@@ -204,6 +207,12 @@ export function ServicesSection() {
           scrollTween.kill();
           scrollTween = undefined;
         }
+
+        // Prevent cards from getting stuck invisible after mobile resize/refresh cycles
+        gsap.set(cards, {
+          opacity: 1,
+          y: 0,
+        });
 
         gsap.set(horizontalSection, { x: 0 });
       };
@@ -244,7 +253,7 @@ export function ServicesSection() {
             pin: pinShell,
             pinSpacing: false,
             anticipatePin: 1,
-            invalidateOnRefresh: false,
+            invalidateOnRefresh: true,
           },
         });
 
@@ -276,27 +285,37 @@ export function ServicesSection() {
       const titleElements = document.querySelectorAll(
         '.services-reveal-text',
       );
-      const titleTween = gsap.fromTo(
-        titleElements,
-        {
-          clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
-          y: 20,
-          opacity: 0,
-        },
-        {
+      let titleTween: gsap.core.Tween | null = null;
+
+      if (isTouchOrSmallScreen) {
+        gsap.set(titleElements, {
           clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
           y: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
+        });
+      } else {
+        titleTween = gsap.fromTo(
+          titleElements,
+          {
+            clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+            y: 20,
+            opacity: 0,
           },
-        },
-      );
+          {
+            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 70%',
+              toggleActions: 'play none none reverse',
+            },
+          },
+        );
+      }
 
       const handleResize = () => {
         if (resizeRaf !== null) {
@@ -313,13 +332,15 @@ export function ServicesSection() {
       initHorizontalAnimation();
       ScrollTrigger.refresh();
       window.addEventListener('resize', handleResize);
+      window.addEventListener('orientationchange', handleResize);
 
       return () => {
         if (resizeRaf !== null) {
           window.cancelAnimationFrame(resizeRaf);
         }
         window.removeEventListener('resize', handleResize);
-        titleTween.kill();
+        window.removeEventListener('orientationchange', handleResize);
+        titleTween?.kill();
         killHorizontalAnimation();
         trigger.style.height = '';
       };
@@ -360,7 +381,7 @@ export function ServicesSection() {
           </div>
 
           {/* Cards Section */}
-          <div className="flex items-center gap-8 px-8 shrink-0">
+          <div className="flex items-start md:items-center gap-8 px-8 py-6 md:py-0 shrink-0">
             {services.map((service) => (
               <TiltCard key={service.id} service={service} />
             ))}

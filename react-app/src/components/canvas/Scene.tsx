@@ -33,7 +33,11 @@ function SceneReadySignal() {
 }
 
 export function Scene({ isMobile, isTouchDevice, qualityTier }: SceneProps) {
-  const mobileQualityTier = isMobile ? qualityTier : 'high';
+  const mobileQualityTier = isMobile
+    ? isTouchDevice
+      ? 'low'
+      : qualityTier
+    : 'high';
   const environmentResolution =
     mobileQualityTier === 'low'
       ? 32

@@ -27,7 +27,7 @@ export function GlobalCanvas() {
 
   const targetDprMax = isMobile
     ? isTouchDevice
-      ? 1.1
+      ? 1
       : 1.25
     : 2;
 
@@ -81,7 +81,7 @@ export function GlobalCanvas() {
       return;
     }
 
-    setQualityTier(isTouchDevice ? 'balanced' : 'high');
+    setQualityTier(isTouchDevice ? 'low' : 'high');
     declineStreakRef.current = 0;
     inclineStreakRef.current = 0;
   }, [isMobile, isTouchDevice]);

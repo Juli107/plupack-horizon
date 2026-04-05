@@ -139,34 +139,58 @@ export function IndustryCylinder({
   const wrapperModel = useMemo(() => {
     const useBalancedProfile = qualityTier === 'balanced';
     const useLowProfile = qualityTier === 'low';
+    const useTouchProfile = isTouchDevice;
     const cloned = scene.clone();
     cloned.traverse((obj) => {
       if ((obj as THREE.Mesh).isMesh) {
-        (obj as THREE.Mesh).material = new THREE.MeshPhysicalMaterial(
-          {
+        if (useTouchProfile) {
+          (obj as THREE.Mesh).material = new THREE.MeshStandardMaterial({
+            color: '#d9f4ff',
+            transparent: true,
+            opacity: 0.26,
+            roughness: 0.3,
+            metalness: 0.02,
+            envMapIntensity: 0.65,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+          });
+        } else {
+          (obj as THREE.Mesh).material = new THREE.MeshPhysicalMaterial({
             color: '#d9f4ff',
             transparent: true,
             opacity: useLowProfile ? 0.22 : 0.26,
             roughness: useLowProfile ? 0.14 : 0.08,
             metalness: 0,
-            transmission: useLowProfile ? 0.75 : useBalancedProfile ? 0.84 : 0.92,
-            thickness: useLowProfile ? 0.2 : useBalancedProfile ? 0.3 : 0.38,
+            transmission: useLowProfile
+              ? 0.75
+              : useBalancedProfile
+                ? 0.84
+                : 0.92,
+            thickness: useLowProfile
+              ? 0.2
+              : useBalancedProfile
+                ? 0.3
+                : 0.38,
             ior: 1.46,
             clearcoat: useLowProfile ? 0.45 : 0.8,
             clearcoatRoughness: useLowProfile ? 0.22 : 0.12,
-            envMapIntensity: useLowProfile ? 0.95 : useBalancedProfile ? 1.1 : 1.25,
+            envMapIntensity: useLowProfile
+              ? 0.95
+              : useBalancedProfile
+                ? 1.1
+                : 1.25,
             attenuationColor: '#bfe9ff',
             attenuationDistance: useLowProfile ? 1.7 : 2.2,
             side: THREE.DoubleSide,
             depthWrite: false,
-          }
-        );
+          });
+        }
         (obj as THREE.Mesh).castShadow = false;
         (obj as THREE.Mesh).receiveShadow = false;
       }
     });
     return cloned;
-  }, [qualityTier, scene]);
+  }, [isTouchDevice, qualityTier, scene]);
 
   return (
     <group ref={cylinderRef} {...props}>
