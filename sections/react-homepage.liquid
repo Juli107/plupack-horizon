@@ -508,6 +508,9 @@
 {% comment %} Load Tailwind CSS (built from react-app/) {% endcomment %}
 <link rel="stylesheet" href="{{ 'react-homepage.css' | asset_url }}">
 
+{% comment %} Discover React module earlier for faster hydration {% endcomment %}
+<link rel="modulepreload" href="{{ 'react-homepage.js' | asset_url }}">
+
 {% comment %} Load React bundle (built from react-app/) {% endcomment %}
 <script src="{{ 'react-homepage.js' | asset_url }}" type="module" defer></script>
 
