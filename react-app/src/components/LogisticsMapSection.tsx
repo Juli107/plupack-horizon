@@ -588,10 +588,10 @@ export function LogisticsMapSection() {
 
         {/* Argentina Map - Background Layer - Centered with wrapper */}
         <div className="relative z-10 mx-auto flex h-full w-full max-w-[1760px] items-center px-6 py-12 md:px-10 lg:px-16 xl:px-24">
-          <div className="grid w-full grid-cols-1 items-center gap-10 xl:grid-cols-12 xl:gap-20">
+          <div className="grid w-full grid-cols-1 items-center gap-10 landscape:min-[700px]:grid-cols-12 landscape:min-[700px]:gap-10 xl:grid-cols-12 xl:gap-20">
             <div
               ref={mapWrapperRef}
-              className="relative flex w-full items-center justify-center xl:col-span-5"
+              className="relative flex w-full items-center justify-center landscape:min-[700px]:col-span-5 xl:col-span-5"
             >
               <div
                 ref={mapContainerRef}
@@ -601,7 +601,7 @@ export function LogisticsMapSection() {
 
             <div
               ref={textRef}
-              className="relative z-20 flex w-full max-w-[36rem] flex-col items-start text-left will-change-transform xl:col-span-7 xl:max-w-none"
+              className="relative z-20 flex w-full max-w-[36rem] flex-col items-start text-left will-change-transform landscape:min-[700px]:col-span-7 landscape:min-[700px]:max-w-none xl:col-span-7 xl:max-w-none"
             >
               <h2
                 className="map-heading text-white font-bold tracking-tight"
