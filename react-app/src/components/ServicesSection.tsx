@@ -341,7 +341,7 @@ export function ServicesSection() {
           {/* First panel - Title Section */}
           <div className="w-screen h-screen flex flex-col justify-center items-center px-6 shrink-0">
             <div className="container mx-auto text-center">
-              <h2 className="text-4xl md:text-6xl font-medium mb-4 leading-tight font-['Montserrat']">
+              <h2 className="text-4xl md:text-6xl [@media(orientation:landscape)_and_(max-height:500px)]:text-3xl font-medium mb-4 leading-tight font-['Montserrat']">
                 <span className="services-reveal-text block">
                   QUE LA FALTA DE UN INSUMO
                 </span>
@@ -349,7 +349,7 @@ export function ServicesSection() {
                   NO FRENE TU OPERACIÓN
                 </span>
               </h2>
-              <p className="services-reveal-text mt-8 text-lg md:text-xl opacity-90 max-w-3xl mx-auto font-['Open_Sans']">
+              <p className="services-reveal-text mt-8 [@media(orientation:landscape)_and_(max-height:500px)]:mt-5 text-lg md:text-xl [@media(orientation:landscape)_and_(max-height:500px)]:text-base opacity-90 max-w-3xl mx-auto font-['Open_Sans']">
                 Gestionamos los insumos que no generan ingresos
                 directos, pero cuya ausencia puede afectar tiempos,
                 entregas y servicio. Con fabricación propia y
