@@ -678,6 +678,19 @@
     color: #ffffff !important;
   }
 
+  /* Mobile menu drawer: keep readable dark text over light drawer background */
+  html body #header-component.header--internal .menu-drawer,
+  html body #header-component.header--internal .menu-drawer * {
+    --color-foreground: 51, 54, 58 !important;
+    --color-foreground-rgb: 51, 54, 58 !important;
+    color: #33363a !important;
+  }
+
+  /* Avoid long stagger that makes mobile links appear late */
+  html body #header-component.header--internal .menu-drawer-container[open] .menu-drawer__animated-element {
+    animation-delay: 0s !important;
+  }
+
   /* Cart bubble: número azul sobre círculo blanco */
   html body #header-component.header--internal .cart-bubble,
   html body #header-component.header--internal .cart-bubble__text,
