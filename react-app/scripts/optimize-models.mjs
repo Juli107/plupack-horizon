@@ -9,10 +9,7 @@ const MODELS_ROOT = path.join(ROOT, 'src/assets/models');
 const ORIGINALS_DIR = path.join(MODELS_ROOT, 'originals');
 const OPTIMIZED_DIR = path.join(MODELS_ROOT, 'optimized');
 const REPORT_PATH = path.join(MODELS_ROOT, 'optimization-report.json');
-const PRESERVE_TRANSFORM_FILES = new Set([
-  'paper_rolls.glb',
-  'food_container.glb',
-]);
+const PRESERVE_TRANSFORM_FILES = new Set();
 
 const args = new Set(process.argv.slice(2));
 const inspectOnly = args.has('--inspect');
@@ -104,6 +101,8 @@ async function report() {
 
 async function optimize() {
   await fs.mkdir(OPTIMIZED_DIR, { recursive: true });
+  const TMP_DIR = path.join(ROOT, '.tmp-model-opt');
+  await fs.mkdir(TMP_DIR, { recursive: true });
 
   const files = await getModelFiles(ORIGINALS_DIR);
   if (files.length === 0) {
@@ -119,12 +118,30 @@ async function optimize() {
     console.log(`Optimizing ${fileName} ...`);
 
     if (PRESERVE_TRANSFORM_FILES.has(fileName)) {
-      runGltfTransform(['copy', input, output]);
+      const resizedOutput = path.join(TMP_DIR, `${fileName}.resized.glb`);
+      runGltfTransform([
+        'resize',
+        input,
+        resizedOutput,
+        '--width',
+        '1024',
+        '--height',
+        '1024',
+      ]);
+      runGltfTransform([
+        'webp',
+        resizedOutput,
+        output,
+        '--quality',
+        '82',
+        '--effort',
+        '80',
+      ]);
       const before = await fileSizeSafe(input);
       const after = await fileSizeSafe(output);
       rows.push({
         file: fileName,
-        strategy: 'copy (preserve transform/origin)',
+        strategy: 'preserve transform + texture resize/webp',
         before,
         after,
         reductionPercent:
@@ -200,6 +217,7 @@ async function optimize() {
   };
 
   await fs.writeFile(REPORT_PATH, JSON.stringify(reportData, null, 2));
+  await fs.rm(TMP_DIR, { recursive: true, force: true });
 
   console.log('\nOptimization Complete\n');
   console.log(`- models optimized: ${rows.length}`);

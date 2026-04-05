@@ -242,7 +242,13 @@ function useMainMesh(url: string, modelName: string, qualityTier: QualityTier) {
   return useMemo(() => {
     let foundGeometry: THREE.BufferGeometry | null = null;
     let foundMaterial: THREE.Material | THREE.Material[] | null = null;
+    let foundScaleX = 1;
+    let foundScaleY = 1;
+    let foundScaleZ = 1;
+    let hasScaleOverride = false;
     let largestVertexCount = -1;
+
+    scene.updateMatrixWorld(true);
 
     scene.traverse((node: any) => {
       if (node.isMesh && node.geometry) {
@@ -255,12 +261,31 @@ function useMainMesh(url: string, modelName: string, qualityTier: QualityTier) {
         largestVertexCount = vertexCount;
         foundGeometry = node.geometry;
         foundMaterial = node.material ?? null;
+        const worldScale = node.getWorldScale(new THREE.Vector3());
+        foundScaleX = worldScale.x;
+        foundScaleY = worldScale.y;
+        foundScaleZ = worldScale.z;
+        hasScaleOverride = true;
       }
     });
 
     if (!foundGeometry || !foundMaterial) return null;
+
+    const geometry = foundGeometry as THREE.BufferGeometry;
+    const tunedGeometry = geometry.clone();
+    if (hasScaleOverride) {
+      const isIdentityScale =
+        Math.abs(foundScaleX - 1) < 1e-4 &&
+        Math.abs(foundScaleY - 1) < 1e-4 &&
+        Math.abs(foundScaleZ - 1) < 1e-4;
+
+      if (!isIdentityScale) {
+        tunedGeometry.scale(foundScaleX, foundScaleY, foundScaleZ);
+      }
+    }
+
     return {
-      geometry: foundGeometry,
+      geometry: tunedGeometry,
       material: tuneMaterialSet(foundMaterial, modelName, qualityTier),
     };
   }, [modelName, qualityTier, scene, url]);
