@@ -105,29 +105,19 @@ export function IndustryCylinder({
 }: IndustryCylinderProps) {
   const cylinderRef = useRef<THREE.Group>(null);
   const liftGroupRef = useRef<THREE.Group>(null);
-  const smoothedSectionProgressRef = useRef(0);
 
   const clamp01 = (value: number) => {
     return Math.max(0, Math.min(1, value));
   };
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (!cylinderRef.current || !liftGroupRef.current) {
       return;
     }
 
     const { industrySectionProgress, industryVisible } =
       getCameraDirectorDebugState();
-    const sectionProgress = isTouchDevice
-      ? THREE.MathUtils.damp(
-          smoothedSectionProgressRef.current,
-          industrySectionProgress,
-          14,
-          delta,
-        )
-      : industrySectionProgress;
-
-    smoothedSectionProgressRef.current = sectionProgress;
+    const sectionProgress = industrySectionProgress;
 
     const liftProgress =
       PRE_ROTATE_LIFT_END_INDUSTRY_PROGRESS > 0

@@ -10,7 +10,6 @@ import {
 } from './cameraKeyframes';
 import {
   getCameraDirectorEffectiveScrollPercent,
-  getCameraDirectorDebugState,
   setCameraDirectorPageScrollPercent,
 } from './cameraDirector';
 
@@ -28,10 +27,9 @@ interface ScrollCameraProps {
 
 export function ScrollCamera({
   isMobile,
-  isTouchDevice,
+  isTouchDevice: _isTouchDevice,
 }: ScrollCameraProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
-  const smoothedScrollPercentRef = useRef(0);
   const { set } = useThree();
 
   // Set this camera as the default
@@ -46,22 +44,11 @@ export function ScrollCamera({
     setCameraDirectorPageScrollPercent(lenis.progress * 100);
   });
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (!cameraRef.current) return;
 
     const targetScrollPercent = getCameraDirectorEffectiveScrollPercent();
-    const { industryActive } = getCameraDirectorDebugState();
-    const scrollPercent =
-      isTouchDevice && industryActive
-        ? THREE.MathUtils.damp(
-            smoothedScrollPercentRef.current,
-            targetScrollPercent,
-            12,
-            delta,
-          )
-        : targetScrollPercent;
-
-    smoothedScrollPercentRef.current = scrollPercent;
+    const scrollPercent = targetScrollPercent;
 
     const { from, to, t } = findSurroundingKeyframes(scrollPercent);
     const orbitPullback = isMobile ? MOBILE_ORBIT_PULLBACK : 1;

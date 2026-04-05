@@ -417,6 +417,10 @@ export function IndustrySections() {
       const container = containerRef.current;
       const bg = bgRef.current;
       const colors = industries.map((i) => i.color);
+      const isTouchDevice =
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.matchMedia('(hover: none)').matches ||
+        navigator.maxTouchPoints > 0;
 
       // Set initial color and hide it
       bg.style.backgroundColor = colors[0];
@@ -450,7 +454,7 @@ export function IndustrySections() {
         trigger: container,
         start: INDUSTRY_TIMELINE.sectionTrigger.progressRange.start,
         end: INDUSTRY_TIMELINE.sectionTrigger.progressRange.end,
-        scrub: true,
+        scrub: isTouchDevice ? 0.42 : true,
         onToggle: (self) => {
           const sectionProgress = normalizeIndustrySectionProgress(self.progress);
 
