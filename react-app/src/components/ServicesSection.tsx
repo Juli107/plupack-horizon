@@ -174,6 +174,7 @@ function TiltCard({ service }: { service: ServiceItem }) {
 export function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const pinShellRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -181,67 +182,100 @@ export function ServicesSection() {
       if (
         !sectionRef.current ||
         !triggerRef.current ||
+        !pinShellRef.current ||
         !horizontalRef.current
       )
         return;
 
+      const trigger = triggerRef.current;
+      const pinShell = pinShellRef.current;
       const horizontalSection = horizontalRef.current;
-
-      // Get all the cards
       const cards = gsap.utils.toArray<HTMLElement>('.service-card');
+      let scrollTween: gsap.core.Tween | undefined;
+      let cardTweens: gsap.core.Tween[] = [];
+      let resizeRaf: number | null = null;
 
-      // Calculate the total width to scroll
-      // We need to move the content so the last card is visible
+      const killHorizontalAnimation = () => {
+        cardTweens.forEach((tween) => tween.kill());
+        cardTweens = [];
+
+        if (scrollTween) {
+          scrollTween.kill();
+          scrollTween = undefined;
+        }
+
+        gsap.set(horizontalSection, { x: 0 });
+      };
+
       const getScrollDistance = () => {
         const totalWidth = horizontalSection.scrollWidth;
         const viewportWidth = window.innerWidth;
-        return totalWidth - viewportWidth;
+        return Math.max(0, totalWidth - viewportWidth);
       };
 
-      // Create the horizontal scroll animation
-      const scrollTween = gsap.to(horizontalSection, {
-        x: () => -getScrollDistance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: triggerRef.current,
-          start: 'top top',
-          end: () => `+=${getScrollDistance()}`,
-          scrub: 0.5,
-          pin: true,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-        },
-      });
-
-      // Animate cards as they come into view during horizontal scroll
-      cards.forEach((card) => {
-        gsap.fromTo(
-          card,
-          {
-            opacity: 0,
-            y: 30,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: card,
-              containerAnimation: scrollTween,
-              start: 'left 80%',
-              end: 'left 60%',
-              scrub: true,
-            },
-          },
+      const syncPinnedLayout = (distance: number) => {
+        const viewportHeight = window.innerHeight;
+        const reservedHeight = Math.max(
+          viewportHeight,
+          viewportHeight + distance,
         );
-      });
+        trigger.style.height = `${reservedHeight}px`;
+      };
+
+      const initHorizontalAnimation = () => {
+        killHorizontalAnimation();
+
+        const distance = getScrollDistance();
+        syncPinnedLayout(distance);
+
+        if (distance <= 0) {
+          return;
+        }
+
+        scrollTween = gsap.to(horizontalSection, {
+          x: -distance,
+          ease: 'none',
+          scrollTrigger: {
+            trigger,
+            start: 'top top',
+            end: `+=${distance}`,
+            scrub: 0.5,
+            pin: pinShell,
+            pinSpacing: false,
+            anticipatePin: 1,
+            invalidateOnRefresh: false,
+          },
+        });
+
+        cardTweens = cards.map((card) =>
+          gsap.fromTo(
+            card,
+            {
+              opacity: 0,
+              y: 30,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                containerAnimation: scrollTween,
+                start: 'left 80%',
+                end: 'left 60%',
+                scrub: true,
+              },
+            },
+          ),
+        );
+      };
 
       // Title reveal animation (plays once when section enters)
       const titleElements = document.querySelectorAll(
         '.services-reveal-text',
       );
-      gsap.fromTo(
+      const titleTween = gsap.fromTo(
         titleElements,
         {
           clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
@@ -263,8 +297,30 @@ export function ServicesSection() {
         },
       );
 
+      const handleResize = () => {
+        if (resizeRaf !== null) {
+          window.cancelAnimationFrame(resizeRaf);
+        }
+
+        resizeRaf = window.requestAnimationFrame(() => {
+          resizeRaf = null;
+          initHorizontalAnimation();
+          ScrollTrigger.refresh();
+        });
+      };
+
+      initHorizontalAnimation();
+      ScrollTrigger.refresh();
+      window.addEventListener('resize', handleResize);
+
       return () => {
-        scrollTween.scrollTrigger?.kill();
+        if (resizeRaf !== null) {
+          window.cancelAnimationFrame(resizeRaf);
+        }
+        window.removeEventListener('resize', handleResize);
+        titleTween.kill();
+        killHorizontalAnimation();
+        trigger.style.height = '';
       };
     },
     { scope: sectionRef, dependencies: [] },
@@ -273,7 +329,8 @@ export function ServicesSection() {
   return (
     <section ref={sectionRef} className="relative">
       {/* This is the pinned container */}
-      <div ref={triggerRef} className="overflow-hidden">
+      <div ref={triggerRef} className="relative overflow-hidden min-h-screen">
+        <div ref={pinShellRef} className="h-screen overflow-hidden">
         {/* This is what moves horizontally */}
         <div
           ref={horizontalRef}
@@ -309,6 +366,7 @@ export function ServicesSection() {
             {/* End spacer to ensure last card is fully visible */}
             <div className="w-[20vw] shrink-0"></div>
           </div>
+        </div>
         </div>
       </div>
     </section>
