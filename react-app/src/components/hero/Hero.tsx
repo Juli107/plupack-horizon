@@ -27,6 +27,7 @@ export function Hero() {
   const activeProduct = hasFeaturedProducts
     ? featuredProducts[activeProductIndex]
     : null;
+  const heroSizes = '(min-width: 1024px) 70vw, 100vw';
   const featuredMediaHeightClass = 'md:h-[49vh] md:min-h-[25rem]';
   const featuredContentOffsetClass =
     'md:pt-[max(calc(49vh+2.5rem),27.5rem)]';
@@ -158,11 +159,22 @@ export function Hero() {
                     <img
                       ref={index === 0 ? firstFeaturedImageRef : undefined}
                       src={product.image}
+                      srcSet={
+                        product.image640 &&
+                        product.image960 &&
+                        product.image1200 &&
+                        product.image1600
+                          ? `${product.image640} 640w, ${product.image960} 960w, ${product.image1200} 1200w, ${product.image1600} 1600w`
+                          : undefined
+                      }
+                      sizes={heroSizes}
                       alt={product.title}
                       className="absolute inset-0 w-full h-full object-cover object-center"
                       loading={index === 0 ? 'eager' : 'lazy'}
                       fetchPriority={index === 0 ? 'high' : 'auto'}
                       decoding="async"
+                      width={product.imageWidth ?? 1200}
+                      height={product.imageHeight ?? 800}
                       onLoad={index === 0 ? markHeroReady : undefined}
                       onError={index === 0 ? markHeroReady : undefined}
                     />
@@ -223,12 +235,14 @@ export function Hero() {
                       type="button"
                       onClick={() => setActiveProductIndex(index)}
                       aria-label={`Ir al producto ${index + 1}`}
-                      className={`h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-white ring-1 ring-white/50 transition-opacity duration-300 ${
+                      className={`h-6 w-6 md:h-7 md:w-7 flex items-center justify-center rounded-full ring-1 ring-white/50 transition-opacity duration-300 ${
                         index === activeProductIndex
                           ? 'opacity-95'
                           : 'opacity-35 hover:opacity-65'
                       }`}
-                    />
+                    >
+                      <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                    </button>
                   ))}
                 </div>
               ) : null}

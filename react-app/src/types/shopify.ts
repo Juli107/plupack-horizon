@@ -126,6 +126,12 @@ export interface ShopifyHomepageProduct {
   handle: string;
   url: string;
   image: string | null;
+  image640?: string | null;
+  image960?: string | null;
+  image1200?: string | null;
+  image1600?: string | null;
+  imageWidth?: number | null;
+  imageHeight?: number | null;
   price: string;
   description?: string;
 }

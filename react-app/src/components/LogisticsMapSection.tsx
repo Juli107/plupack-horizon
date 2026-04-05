@@ -648,6 +648,10 @@ export function LogisticsMapSection() {
                           src={getTransportistaSrc(transportista.src)}
                           alt={transportista.alt}
                           className="h-full w-full object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                          width={208}
+                          height={64}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     ))}
@@ -665,6 +669,10 @@ export function LogisticsMapSection() {
                           src={getTransportistaSrc(transportista.src)}
                           alt=""
                           className="h-full w-full object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                          width={208}
+                          height={64}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     ))}

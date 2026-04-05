@@ -70,6 +70,19 @@
     imagesizes="100vw"
     fetchpriority="high"
   >
+  <img
+    src="{{ hero_lcp_image_960 }}"
+    srcset="{{ hero_lcp_image_640 }} 640w, {{ hero_lcp_image_960 }} 960w, {{ hero_lcp_image_1280 }} 1280w, {{ hero_lcp_image_1600 }} 1600w"
+    sizes="100vw"
+    width="{{ hero_lcp_product.featured_image.width }}"
+    height="{{ hero_lcp_product.featured_image.height }}"
+    alt=""
+    aria-hidden="true"
+    fetchpriority="high"
+    decoding="async"
+    loading="eager"
+    style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;"
+  >
 {%- endif -%}
 
 {% comment %}
@@ -148,6 +161,12 @@
           handle: {{ selected_product.handle | json }},
           url: {{ selected_product.url | json }},
           image: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+          image640: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 640 | json }}{% else %}null{% endif %},
+          image960: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 960 | json }}{% else %}null{% endif %},
+          image1200: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+          image1600: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 1600 | json }}{% else %}null{% endif %},
+          imageWidth: {% if selected_product.featured_image %}{{ selected_product.featured_image.width | json }}{% else %}null{% endif %},
+          imageHeight: {% if selected_product.featured_image %}{{ selected_product.featured_image.height | json }}{% else %}null{% endif %},
           price: {{ selected_product.price | money | json }},
           description: {{ selected_product.description | strip_html | strip_newlines | truncate: 130 | json }}
         }
@@ -174,6 +193,12 @@
             handle: {{ fallback_product.handle | json }},
             url: {{ fallback_product.url | json }},
             image: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+            image640: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 640 | json }}{% else %}null{% endif %},
+            image960: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 960 | json }}{% else %}null{% endif %},
+            image1200: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+            image1600: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 1600 | json }}{% else %}null{% endif %},
+            imageWidth: {% if fallback_product.featured_image %}{{ fallback_product.featured_image.width | json }}{% else %}null{% endif %},
+            imageHeight: {% if fallback_product.featured_image %}{{ fallback_product.featured_image.height | json }}{% else %}null{% endif %},
             price: {{ fallback_product.price | money | json }},
             description: {{ fallback_product.description | strip_html | strip_newlines | truncate: 130 | json }}
           }
