@@ -2,7 +2,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createRoot } from 'react-dom/client';
 import { Homepage } from '@components/Homepage';
-import { LoadingScreen } from '@components/LoadingScreen';
+// import { LoadingScreen } from '@components/LoadingScreen';
 import { getShopifyData } from '../types/shopify';
 
 // Import Tailwind CSS v4 styles
@@ -17,7 +17,12 @@ const shopifyData = getShopifyData();
 function App() {
   return (
     <>
-      <LoadingScreen />
+      {/*
+        Loading overlay intentionally disabled.
+        We keep the component import for quick rollback, but current
+        performance strategy prioritizes immediate hero paint/LCP.
+      */}
+      {/* <LoadingScreen /> */}
       <Homepage
         backgroundColor={
           shopifyData.settings?.backgroundColor ?? '#084e85'
