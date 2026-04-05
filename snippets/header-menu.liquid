@@ -26,7 +26,6 @@
 {% capture children %}
   {% for link in block_settings.menu.links %}
     <li
-      role="presentation"
       class="menu-list__list-item"
       on:focus="/activate"
       on:blur="/deactivate"
@@ -69,20 +68,19 @@
   {% endfor %}
   <li
     class="menu-list__list-item"
-    role="presentation"
     slot="more"
     on:focus="/activate"
     on:blur="/deactivate"
     on:pointerenter="/activate"
     on:pointerleave="/deactivate"
   >
-    <button role="menuitem" class="button menu-list__link button-unstyled">
+    <button class="button menu-list__link button-unstyled">
       <span class="menu-list__link-title">{{ 'actions.more' | t }}</span>
     </button>
   </li>
 {% endcapture %}
 
-<nav header-menu>
+<nav header-menu aria-label="{{ 'content.menu' | t }}">
   <div
     class="menu-list"
     style="{% render 'menu-font-styles', settings: block_settings %}"
