@@ -118,7 +118,7 @@ function TiltCard({ service }: { service: ServiceItem }) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="service-card w-[85vw] md:w-[600px] max-w-[85vw] md:max-w-[600px] [@media(min-width:768px)_and_(min-height:900px)]:w-[680px] [@media(min-width:768px)_and_(min-height:900px)]:max-w-[680px] [@media(min-width:1024px)_and_(max-height:760px)]:w-[640px] [@media(min-width:1024px)_and_(max-height:760px)]:max-w-[640px] h-[450px] p-8 md:p-12 [@media(max-height:760px)]:h-[390px] [@media(max-height:760px)]:p-6 [@media(orientation:landscape)_and_(max-height:500px)]:!h-[320px] flex flex-col justify-between relative group shrink-0"
+      className="service-card w-[85vw] md:w-[600px] max-w-[85vw] md:max-w-[600px] [@media(min-width:768px)_and_(min-height:900px)]:w-[680px] [@media(min-width:768px)_and_(min-height:900px)]:max-w-[680px] [@media(min-width:1024px)_and_(max-height:760px)]:w-[640px] [@media(min-width:1024px)_and_(max-height:760px)]:max-w-[640px] h-[450px] p-8 md:p-12 [@media(max-height:760px)]:p-6 [@media(orientation:landscape)_and_(max-height:500px)]:!h-[320px] flex flex-col justify-between relative group shrink-0"
       style={{
         transformStyle: 'preserve-3d',
         transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
@@ -159,7 +159,7 @@ function TiltCard({ service }: { service: ServiceItem }) {
           </div>
         </div>
 
-        <div className="mt-auto py-2 md:py-0">
+        <div className="mt-auto pt-2 pb-6 md:py-0">
           <h3 className="text-2xl md:text-3xl [@media(orientation:landscape)_and_(max-height:500px)]:text-xl font-medium mb-4 font-['Montserrat'] leading-tight md:min-h-[90px] [@media(max-height:760px)]:min-h-[70px] flex items-end">
             {service.title}
           </h3>
@@ -381,7 +381,7 @@ export function ServicesSection() {
           </div>
 
           {/* Cards Section */}
-          <div className="flex items-start md:items-center gap-8 px-8 py-6 md:py-0 shrink-0">
+          <div className="flex items-center gap-8 px-8 shrink-0">
             {services.map((service) => (
               <TiltCard key={service.id} service={service} />
             ))}
