@@ -304,7 +304,8 @@
           handle: {{ product.handle | json }},
           url: {{ product.url | json }},
           image: {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
-          price: {{ product.price | money | json }}
+          price: {{ product.price | money | json }},
+          inStock: {% if product.total_inventory > 0 %}true{% else %}false{% endif %}
         }
         {%- assign is_first_product = false -%}
       {%- endfor -%}

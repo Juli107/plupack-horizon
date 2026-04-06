@@ -133,6 +133,7 @@ export interface ShopifyHomepageProduct {
   imageWidth?: number | null;
   imageHeight?: number | null;
   price: string;
+  inStock?: boolean;
   description?: string;
 }
 

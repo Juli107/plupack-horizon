@@ -78,7 +78,7 @@ export function ProductsShowcaseSection() {
                     className="mt-2 text-sm md:text-base text-white/80"
                     style={{ fontFamily: getFontFamily('body') }}
                   >
-                    {product.price} ARS
+                    {product.inStock === false ? 'Contactar para cotizar' : `${product.price} ARS`}
                   </p>
                 </div>
               </a>
