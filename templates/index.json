@@ -14,19 +14,9 @@
       "settings": {
         "background_color": "#084e85",
         "accent_color": "#ffffff",
-        "hero_featured_product_1": "bandejas-dorados-1-kg",
-        "hero_featured_product_2": "",
-        "hero_featured_product_3": "",
-        "hero_featured_product_4": "",
         "stock_section_title": "+200 PRODUCTOS EN STOCK PERMANENTE",
-        "stock_product_count": 200,
-        "stock_rain_image_count": 24,
         "stock_section_button_text": "VER PRODUCTOS",
-        "stock_section_button_url": "shopify://collections/all",
-        "products_showcase_title": "Explora productos para tu operación",
-        "products_showcase_limit": 8,
-        "products_showcase_button_text": "Ver más",
-        "products_showcase_button_url": "shopify://collections/all"
+        "stock_section_button_url": "shopify://collections/all"
       }
     }
   },

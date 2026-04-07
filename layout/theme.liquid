@@ -61,6 +61,23 @@
       .collection-search-item__price {
         display: none !important;
       }
+
+      /* ===== HIDE QUICK ADD & ACCELERATED CHECKOUT ===== */
+      .quick-add,
+      .shopify-payment-button,
+      .quantity-selector,
+      .quantity-label,
+      .quantity-rules {
+        display: none !important;
+      }
+
+      /* ===== STICKY ANNOUNCEMENT BAR (follows header) ===== */
+      .shopify-section-group-header-group:has(.announcement-bar) {
+        position: sticky;
+        top: calc(var(--header-height, 60px) - 2px);
+        z-index: calc(var(--layer-sticky, 1000) - 1);
+        background-color: var(--color-background);
+      }
     </style>
   </head>
 
