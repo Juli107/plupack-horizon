@@ -74,8 +74,9 @@ export function LogoCarousel() {
       });
 
       const refresh = () => {
-        gsap.set(track, { x: 0 });
-        tween.invalidate().restart();
+        const progress = tween.totalProgress();
+        tween.invalidate();
+        tween.totalProgress(progress);
       };
 
       const resizeObserver = new ResizeObserver(refresh);
@@ -124,11 +125,11 @@ export function LogoCarousel() {
 
         <div
           ref={trackRef}
-          className="flex w-max items-center mix-blend-screen will-change-transform gap-8 md:gap-16"
+          className="flex w-max items-center mix-blend-screen will-change-transform gap-12 md:gap-24"
         >
           <div
             ref={setRef}
-            className="flex flex-none shrink-0 gap-8 md:gap-16 items-center"
+            className="flex flex-none shrink-0 gap-12 md:gap-24 items-center"
           >
             {LOGOS.map((logo, index) => (
               <div
@@ -151,7 +152,7 @@ export function LogoCarousel() {
           </div>
           <div
             aria-hidden="true"
-            className="flex flex-none shrink-0 gap-8 md:gap-16 items-center"
+            className="flex flex-none shrink-0 gap-12 md:gap-24 items-center"
           >
             {LOGOS.map((logo, index) => (
               <div
