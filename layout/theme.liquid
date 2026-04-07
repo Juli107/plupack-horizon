@@ -71,12 +71,16 @@
         display: none !important;
       }
 
-      /* ===== STICKY ANNOUNCEMENT BAR (follows header) ===== */
-      .shopify-section-group-header-group:has(.announcement-bar) {
+      /* ===== STICKY HEADER + ANNOUNCEMENT BAR (as one block) ===== */
+      #header-group:has(#header-component[sticky]) {
+        display: block !important;
         position: sticky;
-        top: calc(var(--header-height, 60px) - 2px);
-        z-index: calc(var(--layer-sticky, 1000) - 1);
-        background-color: var(--color-background);
+        top: -1px;
+        z-index: var(--layer-sticky);
+      }
+
+      #header-group:has(#header-component[sticky]) .header-section {
+        position: relative !important;
       }
     </style>
   </head>
