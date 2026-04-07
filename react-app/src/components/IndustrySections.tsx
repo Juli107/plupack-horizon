@@ -429,7 +429,9 @@ export function IndustrySections() {
       // Show/hide the fixed background based on container visibility
       ScrollTrigger.create({
         trigger: container,
-        start: INDUSTRY_TIMELINE.sectionTrigger.visibilityRange.start,
+        start: isTouchDevice
+          ? 'top bottom+=20%'
+          : INDUSTRY_TIMELINE.sectionTrigger.visibilityRange.start,
         end: INDUSTRY_TIMELINE.sectionTrigger.visibilityRange.end,
         onEnter: () => {
           bg.style.opacity = '1';

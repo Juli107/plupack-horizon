@@ -20,6 +20,11 @@ import { PurchaseProcessSection } from './PurchaseProcessSection';
 import { ScrollDebugger } from './ScrollDebugger';
 import { ServicesSection } from './ServicesSection';
 import { StockSustainabilityWrapper } from './StockSustainabilityWrapper';
+import {
+  INDUSTRY_ITEM_NAMES,
+  preloadIndustryWrapModel,
+} from './canvas/industryAssets';
+import { preloadModels } from './canvas/Products';
 
 // ============================================
 // HEADER TINT CONTROLLER
@@ -117,6 +122,8 @@ export function Homepage({
     useState(false);
   const [shouldRenderNoiseOverlay, setShouldRenderNoiseOverlay] =
     useState(false);
+  const industryPreloadTriggerRef = useRef<HTMLDivElement>(null);
+  const industryAssetsPreloadedRef = useRef(false);
 
   // Lenis ref for GSAP integration
   const lenisRef = useRef<LenisRef>(null);
@@ -247,6 +254,35 @@ export function Homepage({
     };
   }, []);
 
+  useGSAP(() => {
+    const triggerEl = industryPreloadTriggerRef.current;
+    if (!triggerEl) return;
+
+    const prewarmIndustryAssets = () => {
+      if (industryAssetsPreloadedRef.current) return;
+      industryAssetsPreloadedRef.current = true;
+      preloadIndustryWrapModel();
+      preloadModels(INDUSTRY_ITEM_NAMES);
+    };
+
+    const trigger = ScrollTrigger.create({
+      trigger: triggerEl,
+      start: 'top bottom',
+      onEnter: prewarmIndustryAssets,
+      onEnterBack: prewarmIndustryAssets,
+    });
+
+    const triggerTop =
+      triggerEl.getBoundingClientRect().top + window.scrollY;
+    if (window.scrollY + window.innerHeight >= triggerTop) {
+      prewarmIndustryAssets();
+    }
+
+    return () => {
+      trigger.kill();
+    };
+  }, []);
+
   return (
     <ReactLenis
       root
@@ -289,6 +325,11 @@ export function Homepage({
           }}
         />
         <MetricsSection />
+        <div
+          ref={industryPreloadTriggerRef}
+          className="pointer-events-none h-px w-full"
+          aria-hidden="true"
+        />
         <ServicesSection />
         {/* SECTION 1: The Logistics Proof - Map transition after horizontal scroll */}
         <LogisticsMapSection />
