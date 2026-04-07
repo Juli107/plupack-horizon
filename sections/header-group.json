@@ -80,9 +80,40 @@
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "inverse"
       }
+    },
+    "header_announcements_aAiMtw": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_3EMYAM": {
+          "type": "_announcement",
+          "settings": {
+            "text": "<strong>Favor de realizar pedidos a través de la página de contacto</strong>",
+            "link": "",
+            "font": "var(--font-accent--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_3EMYAM"
+      ],
+      "name": "t:names.announcement_bar",
+      "settings": {
+        "speed": 5,
+        "section_width": "page-width",
+        "color_scheme": "",
+        "divider_width": 0,
+        "padding-block-start": 15,
+        "padding-block-end": 15
+      }
     }
   },
   "order": [
-    "header_section"
+    "header_section",
+    "header_announcements_aAiMtw"
   ]
 }
