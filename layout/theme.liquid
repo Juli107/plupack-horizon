@@ -97,11 +97,20 @@
         margin-top: -1px !important;
       }
 
-      /* Homepage: header keeps transparent behavior, announcement bar sticks independently */
+      /* Homepage: announcement bar sticks independently below header */
       body:has(.react-homepage) .shopify-section-group-header-group:has(.announcement-bar) {
         position: sticky;
         top: calc(var(--header-height, 60px) - 1px);
         z-index: calc(var(--layer-sticky) - 1);
+      }
+
+      /* Homepage: blue header at top, transparent when scrolling */
+      body:has(.react-homepage) #header-component[transparent]:not([data-sticky-state='active']) .header__row {
+        --header-bg-color: #084e85 !important;
+      }
+
+      body:has(.react-homepage) #header-component[transparent][data-sticky-state='active'] .header__row {
+        --header-bg-color: transparent !important;
       }
     </style>
   </head>
