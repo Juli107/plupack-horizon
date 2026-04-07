@@ -73,33 +73,34 @@ export function LogoCarousel() {
         repeat: -1,
       });
 
+      let lastDistance = getDistance();
+      let refreshRaf = 0;
+
       const refresh = () => {
+        refreshRaf = 0;
+        const nextDistance = getDistance();
+        if (Math.abs(nextDistance - lastDistance) < 0.5) return;
+
         const progress = tween.totalProgress();
+        lastDistance = nextDistance;
         tween.invalidate();
         tween.totalProgress(progress);
       };
 
-      const resizeObserver = new ResizeObserver(refresh);
+      const requestRefresh = () => {
+        if (refreshRaf) return;
+        refreshRaf = window.requestAnimationFrame(refresh);
+      };
+
+      const resizeObserver = new ResizeObserver(requestRefresh);
       resizeObserver.observe(set);
 
-      const container = containerRef.current;
-      const images = Array.from(
-        container?.querySelectorAll('img') ?? [],
-      );
-      const onImgLoad = () => refresh();
-      images.forEach((img) => {
-        if (img.complete) return;
-        img.addEventListener('load', onImgLoad, { once: true });
-        img.addEventListener('error', onImgLoad, { once: true });
-      });
-
       return () => {
+        if (refreshRaf) {
+          window.cancelAnimationFrame(refreshRaf);
+        }
         resizeObserver.disconnect();
         tween.kill();
-        images.forEach((img) => {
-          img.removeEventListener('load', onImgLoad);
-          img.removeEventListener('error', onImgLoad);
-        });
       };
     },
     { scope: containerRef },
