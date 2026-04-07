@@ -71,34 +71,37 @@
         display: none !important;
       }
 
-      /* ===== STICKY HEADER + ANNOUNCEMENT BAR (as one block) ===== */
-      #header-group:has(#header-component[sticky]) {
+      /* ===== STICKY HEADER + ANNOUNCEMENT BAR ===== */
+
+      /* Non-homepage: make header group a single sticky block */
+      body:not(:has(.react-homepage)) #header-group:has(#header-component[sticky]) {
         display: block !important;
         position: sticky;
         top: -1px;
         z-index: var(--layer-sticky);
       }
 
-      #header-group:has(#header-component[sticky]) .header-section {
+      body:not(:has(.react-homepage)) #header-group:has(#header-component[sticky]) .header-section {
         position: relative !important;
       }
 
-      /* Remove ALL gaps between header and announcement bar */
-      #header-group > * {
+      body:not(:has(.react-homepage)) #header-group > * {
         margin: 0 !important;
       }
 
-      #header-group .header__row {
+      body:not(:has(.react-homepage)) #header-group .header__row {
         border-bottom: none !important;
       }
 
-      #header-group .announcement-bar {
-        border-top: none !important;
+      body:not(:has(.react-homepage)) #header-group > *:last-child {
+        margin-top: -1px !important;
       }
 
-      /* Overlap to guarantee zero gap */
-      #header-group > *:last-child {
-        margin-top: -1px !important;
+      /* Homepage: header keeps transparent behavior, announcement bar sticks independently */
+      body:has(.react-homepage) .shopify-section-group-header-group:has(.announcement-bar) {
+        position: sticky;
+        top: calc(var(--header-height, 60px) - 1px);
+        z-index: calc(var(--layer-sticky) - 1);
       }
     </style>
   </head>
