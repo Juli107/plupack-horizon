@@ -198,8 +198,12 @@
   @media (max-width: 989px) {
     .about-future {
       padding-bottom: clamp(3.6rem, 8vh, 4.8rem);
-      padding-left: 0;
-      padding-right: 0;
+      padding-left: clamp(1rem, 2vw, 1.5rem);
+      padding-right: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .about-future__inner {
+      padding-inline: 0;
     }
 
     .about-future__layout {

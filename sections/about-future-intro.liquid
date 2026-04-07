@@ -127,8 +127,12 @@
 
   @media (max-width: 989px) {
     .about-future-intro {
-      padding-left: 0;
-      padding-right: 0;
+      padding-left: clamp(1rem, 2vw, 1.5rem);
+      padding-right: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .about-future-intro__inner {
+      padding-inline: 0;
     }
 
     .about-future-intro__lead {
