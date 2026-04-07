@@ -83,9 +83,22 @@
         position: relative !important;
       }
 
-      /* Remove all gaps between header sections */
+      /* Remove ALL gaps between header and announcement bar */
       #header-group > * {
         margin: 0 !important;
+      }
+
+      #header-group .header__row {
+        border-bottom: none !important;
+      }
+
+      #header-group .announcement-bar {
+        border-top: none !important;
+      }
+
+      /* Overlap to guarantee zero gap */
+      #header-group > *:last-child {
+        margin-top: -1px !important;
       }
     </style>
   </head>
