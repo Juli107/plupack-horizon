@@ -87,7 +87,7 @@
         "announcement_3EMYAM": {
           "type": "_announcement",
           "settings": {
-            "text": "<strong>Favor de realizar pedidos a través de la página de contacto</strong>",
+            "text": "<strong>Haz tu pedido fácilmente desde nuestra página de contacto</strong>",
             "link": "",
             "font": "var(--font-accent--family)",
             "font_size": "1rem",
