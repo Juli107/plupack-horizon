@@ -94,6 +94,13 @@
       #header-group > *:last-child {
         margin-top: -1px !important;
       }
+
+      /* Homepage: keep announcement visually below transparent navbar */
+      body:has(.react-homepage) #header-group:has(#header-component[transparent]) .announcement-bar {
+        position: relative;
+        transform: translateY(var(--header-height, 60px));
+        z-index: calc(var(--layer-sticky) - 1);
+      }
     </style>
   </head>
 
