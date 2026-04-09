@@ -87,8 +87,8 @@
         "announcement_3EMYAM": {
           "type": "_announcement",
           "settings": {
-            "text": "Para cotizar, indicanos en Contacto los productos y cantidades que necesitás.",
-            "link": "/pages/contacto",
+            "text": "Para cotizar, indicanos en Contacto los productos y cantidades que necesitás. <a href=\"/pages/contacto\"><strong>Haz clic aquí</strong></a>",
+            "link": "",
             "font": "var(--font-body--family)",
             "font_size": "0.875rem",
             "weight": "400",
