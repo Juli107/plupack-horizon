@@ -95,10 +95,19 @@
         margin-top: -1px !important;
       }
 
-      /* Homepage: keep announcement visually below transparent navbar */
-      body:has(.react-homepage) #header-group:has(#header-component[transparent]) .announcement-bar {
-        position: relative;
+      /* Homepage: keep announcement section (text + background) below transparent navbar */
+      body:has(.react-homepage)
+        #header-group:has(#header-component[transparent])
+        .shopify-section:has(> .announcement-bar)
+        :is(.section-background, .announcement-bar) {
         transform: translateY(var(--header-height, 60px));
+      }
+
+      body:has(.react-homepage)
+        #header-group:has(#header-component[transparent])
+        .shopify-section:has(> .announcement-bar)
+        .announcement-bar {
+        position: relative;
         z-index: calc(var(--layer-sticky) - 1);
       }
     </style>
