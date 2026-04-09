@@ -110,6 +110,11 @@
         position: relative;
         z-index: calc(var(--layer-sticky) - 1);
       }
+
+      /* Homepage: keep header+banner over the hero (no pushed-down first section) */
+      body:has(.react-homepage) #MainContent {
+        margin-top: calc(var(--header-group-height, 0px) * -1);
+      }
     </style>
   </head>
 
