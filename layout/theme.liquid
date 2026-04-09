@@ -72,45 +72,27 @@
       }
 
       /* ===== STICKY HEADER + ANNOUNCEMENT BAR ===== */
-
-      /* Non-homepage: make header group a single sticky block */
-      body:not(:has(.react-homepage)) #header-group:has(#header-component[sticky]) {
+      #header-group:has(#header-component[sticky]) {
         display: block !important;
         position: sticky;
         top: -1px;
         z-index: var(--layer-sticky);
       }
 
-      body:not(:has(.react-homepage)) #header-group:has(#header-component[sticky]) .header-section {
+      #header-group:has(#header-component[sticky]) .header-section {
         position: relative !important;
       }
 
-      body:not(:has(.react-homepage)) #header-group > * {
+      #header-group > * {
         margin: 0 !important;
       }
 
-      body:not(:has(.react-homepage)) #header-group .header__row {
+      #header-group .header__row {
         border-bottom: none !important;
       }
 
-      body:not(:has(.react-homepage)) #header-group > *:last-child {
+      #header-group > *:last-child {
         margin-top: -1px !important;
-      }
-
-      /* Homepage: announcement bar sticks independently below header */
-      body:has(.react-homepage) .shopify-section-group-header-group:has(.announcement-bar) {
-        position: sticky;
-        top: calc(var(--header-height, 60px) - 1px);
-        z-index: calc(var(--layer-sticky) - 1);
-      }
-
-      /* Homepage: blue header at top, transparent when scrolling */
-      body:has(.react-homepage) #header-component[transparent]:not([data-sticky-state='active']) .header__row {
-        --header-bg-color: #084e85 !important;
-      }
-
-      body:has(.react-homepage) #header-component[transparent][data-sticky-state='active'] .header__row {
-        --header-bg-color: transparent !important;
       }
     </style>
   </head>
