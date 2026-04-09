@@ -95,7 +95,24 @@
         margin-top: -1px !important;
       }
 
-      /* Homepage: keep announcement section (text + background) below transparent navbar */
+      /*
+        HOMEPAGE HEADER + ANNOUNCEMENT OVERLAY OVERRIDES
+        ------------------------------------------------
+        Why this exists:
+        - We want the navbar and announcement bar to behave as one sticky block.
+        - We want both layers to sit on top of the hero (overlay), not push content down.
+        - We keep a blue tint on the navbar only when the page is at the very top.
+
+        IMPORTANT ROLLBACK NOTE (when announcement bar is removed again):
+        - Delete all homepage-specific rules in this block:
+          1) transform on .section-background/.announcement-bar
+          2) .announcement-bar z-index override
+          3) #MainContent negative margin-top
+          4) homepage transparent-header tint rules below
+        - Also restore hero sizing constants in react-app/src/components/hero/Hero.tsx
+          (those currently include var(--header-group-height)).
+        This returns homepage behavior to the pre-announcement implementation.
+      */
       body:has(.react-homepage)
         #header-group:has(#header-component[transparent])
         .shopify-section:has(> .announcement-bar)
@@ -114,6 +131,19 @@
       /* Homepage: keep header+banner over the hero (no pushed-down first section) */
       body:has(.react-homepage) #MainContent {
         margin-top: calc(var(--header-group-height, 0px) * -1);
+      }
+
+      /* Homepage: keep blue navbar tint only while at top */
+      body:has(.react-homepage)
+        #header-component[transparent]:not([data-sticky-state='active'])
+        .header__row {
+        --header-bg-color: #084e85 !important;
+      }
+
+      body:has(.react-homepage)
+        #header-component[transparent][data-sticky-state='active']
+        .header__row {
+        --header-bg-color: transparent !important;
       }
     </style>
   </head>
