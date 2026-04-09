@@ -25,9 +25,15 @@ export function Hero() {
     ? featuredProducts[activeProductIndex]
     : null;
   const heroSizes = '(min-width: 1024px) 70vw, 100vw';
-  const featuredMediaHeightClass = 'md:h-[49vh] md:min-h-[25rem]';
+  // NOTE: Header+announcement overlays the hero on homepage.
+  // We add --header-group-height so the visible media area keeps the original perceived height.
+  // If announcement bar is removed in the future, revert these constants to the previous values:
+  // - featuredMediaHeightClass: 'md:h-[49vh] md:min-h-[25rem]'
+  // - featuredContentOffsetClass: 'md:pt-[max(calc(49vh+2.5rem),27.5rem)]'
+  const featuredMediaHeightClass =
+    'md:h-[calc(49vh+var(--header-group-height,0px))] md:min-h-[calc(25rem+var(--header-group-height,0px))]';
   const featuredContentOffsetClass =
-    'md:pt-[max(calc(49vh+2.5rem),27.5rem)]';
+    'md:pt-[max(calc(49vh+var(--header-group-height,0px)+2.5rem),calc(27.5rem+var(--header-group-height,0px)))]';
 
   const markHeroReady = () => {
     if (hasDispatchedHeroReadyRef.current) {
@@ -135,7 +141,7 @@ export function Hero() {
           <div
             className={`pointer-events-auto w-full md:absolute md:inset-x-0 md:top-0 ${featuredMediaHeightClass}`}
           >
-            <article className="relative overflow-hidden w-full aspect-[4/3] md:aspect-auto md:h-full bg-[#072f4f] text-white">
+            <article className="relative overflow-hidden w-full aspect-[4/3] min-h-[23rem] sm:min-h-[25rem] md:aspect-auto md:min-h-0 md:h-full bg-[#072f4f] text-white">
               {/* Full-bleed images — stacked, crossfade via opacity */}
               {featuredProducts.map((product, index) => (
                 <div

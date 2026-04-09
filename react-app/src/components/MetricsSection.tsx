@@ -195,7 +195,7 @@ export function MetricsSection() {
   return (
     <div
       ref={sectionRef}
-      className="relative z-20 w-full"
+      className="metrics-tint-trigger relative z-20 w-full"
       style={{ backgroundColor: '#E8ECF2' }}
     >
       <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">

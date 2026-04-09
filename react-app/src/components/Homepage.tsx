@@ -187,13 +187,18 @@ export function Homepage({
   const { setHeaderTint } = useHeaderTintControl();
 
   useGSAP(() => {
-    setHeaderTint('light');
+    setHeaderTint('blue');
 
     let pollId = 0;
+    let topTintTrigger: ScrollTrigger | null = null;
+    let metricsTintTrigger: ScrollTrigger | null = null;
     let stockTintTrigger: ScrollTrigger | null = null;
     let preFooterTintTrigger: ScrollTrigger | null = null;
 
     const setupHeaderTintTriggers = () => {
+      const metricsTrigger = document.querySelector(
+        '.metrics-tint-trigger',
+      );
       const stockTrigger = document.querySelector(
         '.stock-sustainability-trigger',
       );
@@ -201,39 +206,81 @@ export function Homepage({
         '.pre-footer-trigger',
       );
 
-      if (!stockTrigger || !preFooterTrigger) {
+      if (
+        !metricsTrigger ||
+        !stockTrigger ||
+        !preFooterTrigger
+      ) {
         return false;
       }
 
-      const stockRect = stockTrigger.getBoundingClientRect();
-      const preFooterRect = preFooterTrigger.getBoundingClientRect();
-      const viewportCenter = window.scrollY + window.innerHeight / 2;
+      const applyTintForCurrentPosition = () => {
+        const viewportCenter =
+          window.scrollY + window.innerHeight / 2;
+        const isNearTop = window.scrollY <= 24;
 
-      const stockTop = stockRect.top + window.scrollY;
-      const preFooterBottom = preFooterRect.bottom + window.scrollY;
+        const metricsRect = metricsTrigger.getBoundingClientRect();
+        const stockRect = stockTrigger.getBoundingClientRect();
+        const preFooterRect = preFooterTrigger.getBoundingClientRect();
 
-      if (
-        viewportCenter >= stockTop &&
-        viewportCenter < preFooterBottom
-      ) {
-        setHeaderTint('blue');
-      } else {
-        setHeaderTint('light');
-      }
+        const metricsTop = metricsRect.top + window.scrollY;
+        const metricsBottom = metricsRect.bottom + window.scrollY;
+        const stockTop = stockRect.top + window.scrollY;
+        const preFooterBottom = preFooterRect.bottom + window.scrollY;
+
+        const isInMetricsRange =
+          viewportCenter >= metricsTop &&
+          window.scrollY < metricsBottom;
+        const isInStockRange =
+          viewportCenter >= stockTop &&
+          viewportCenter < preFooterBottom;
+
+        setHeaderTint(
+          isNearTop || isInMetricsRange || isInStockRange
+            ? 'blue'
+            : 'light',
+        );
+      };
+
+      applyTintForCurrentPosition();
+
+      topTintTrigger = ScrollTrigger.create({
+        trigger: document.body,
+        start: 'top top',
+        end: '+=24',
+        onEnter: applyTintForCurrentPosition,
+        onLeave: applyTintForCurrentPosition,
+        onEnterBack: applyTintForCurrentPosition,
+        onLeaveBack: applyTintForCurrentPosition,
+      });
+
+      metricsTintTrigger = ScrollTrigger.create({
+        trigger: metricsTrigger,
+        start: 'top center',
+        end: 'bottom top',
+        onEnter: applyTintForCurrentPosition,
+        onLeave: applyTintForCurrentPosition,
+        onEnterBack: applyTintForCurrentPosition,
+        onLeaveBack: applyTintForCurrentPosition,
+      });
 
       stockTintTrigger = ScrollTrigger.create({
         trigger: stockTrigger,
         start: 'top center',
-        onEnter: () => setHeaderTint('blue'),
-        onEnterBack: () => setHeaderTint('blue'),
-        onLeaveBack: () => setHeaderTint('light'),
+        end: 'bottom center',
+        onEnter: applyTintForCurrentPosition,
+        onLeave: applyTintForCurrentPosition,
+        onEnterBack: applyTintForCurrentPosition,
+        onLeaveBack: applyTintForCurrentPosition,
       });
 
       preFooterTintTrigger = ScrollTrigger.create({
         trigger: preFooterTrigger,
         start: 'bottom 90%',
-        onEnter: () => setHeaderTint('light'),
-        onLeaveBack: () => setHeaderTint('blue'),
+        onEnter: applyTintForCurrentPosition,
+        onLeave: applyTintForCurrentPosition,
+        onEnterBack: applyTintForCurrentPosition,
+        onLeaveBack: applyTintForCurrentPosition,
       });
 
       return true;
@@ -249,6 +296,8 @@ export function Homepage({
 
     return () => {
       window.clearInterval(pollId);
+      topTintTrigger?.kill();
+      metricsTintTrigger?.kill();
       stockTintTrigger?.kill();
       preFooterTintTrigger?.kill();
     };

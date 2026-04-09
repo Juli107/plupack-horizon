@@ -10,6 +10,7 @@ A hybrid Shopify theme with React Three Fiber for 3D experiences.
 | [Development Guide](docs/DEVELOPMENT.md)           | Full development workflow       |
 | [Technical Decisions](docs/TECHNICAL_DECISIONS.md) | Architecture and reasoning      |
 | [Troubleshooting](docs/TROUBLESHOOTING.md)         | Common issues and solutions     |
+| [Header Banner Rollback](docs/HEADER_BANNER_ROLLBACK.md) | Restore pre-banner homepage behavior |
 
 ## Quick Commands
 
