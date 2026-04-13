@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import noiseImage from '../assets/noise.webp';
 
@@ -23,24 +23,34 @@ export function NoiseOverlay() {
   const noiseUrl = shopifyNoiseUrl || noiseImage;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [docHeight, setDocHeight] = useState<number>(() =>
-    typeof document !== 'undefined' ? getDocumentHeight() : 0,
-  );
+  const overlayRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const container = document.createElement('div');
     containerRef.current = container;
     document.body.appendChild(container);
 
-    const update = () => setDocHeight(getDocumentHeight());
+    let frameId = 0;
 
-    // update initially and on window resize/scroll
-    update();
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, { passive: true });
+    const update = () => {
+      frameId = 0;
+
+      if (!overlayRef.current) return;
+      overlayRef.current.style.height = `${getDocumentHeight()}px`;
+    };
+
+    const requestUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(update);
+    };
+
+    // Keep the overlay tall enough to cover the whole document
+    // without forcing React re-renders during scroll.
+    requestUpdate();
+    window.addEventListener('resize', requestUpdate);
 
     // Observe DOM changes that could change document height
-    const mo = new MutationObserver(update);
+    const mo = new MutationObserver(requestUpdate);
     mo.observe(document.body, {
       childList: true,
       subtree: true,
@@ -49,8 +59,11 @@ export function NoiseOverlay() {
     });
 
     return () => {
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update);
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+
+      window.removeEventListener('resize', requestUpdate);
       mo.disconnect();
       if (containerRef.current && containerRef.current.parentNode) {
         containerRef.current.parentNode.removeChild(
@@ -65,12 +78,13 @@ export function NoiseOverlay() {
 
   const overlay = (
     <div
+      ref={overlayRef}
       style={{
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
-        height: docHeight || '100vh',
+        height: '100vh',
         zIndex: 50,
         pointerEvents: 'none',
         mixBlendMode: 'soft-light',

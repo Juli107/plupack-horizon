@@ -1,7 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useLenis } from 'lenis/react';
 import { useRef, useMemo, useEffect, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
@@ -124,11 +123,6 @@ export function StockSection({
     // Only use as many positions as we have images
     return basePositions.slice(0, productImages.length);
   }, [isMobile, productImages.length]);
-
-  // Sync with Lenis - ensures ScrollTrigger stays in sync with smooth scroll
-  useLenis(() => {
-    ScrollTrigger.update();
-  });
 
   // Auto count-up animation when section enters viewport
   useEffect(() => {

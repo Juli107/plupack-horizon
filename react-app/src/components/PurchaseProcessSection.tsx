@@ -1,7 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useLenis } from 'lenis/react';
 import { useRef, useState } from 'react';
 import {
   ClipboardList,
@@ -60,11 +59,6 @@ export function PurchaseProcessSection() {
   const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
   const { getFontFamily } = useShopifyTheme();
   const [currentStep, setCurrentStep] = useState(0);
-
-  // Sync with Lenis
-  useLenis(() => {
-    ScrollTrigger.update();
-  });
 
   useGSAP(
     () => {
