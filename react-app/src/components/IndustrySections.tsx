@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useId, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import {
   setCameraDirectorIndustryActive,
@@ -53,163 +53,6 @@ function interpolateColors(
 }
 
 // ============================================
-// OUTLINE TEXT COMPONENT WITH KINETIC FILL
-// When in focus: outline fades to reveal solid text + scales up
-// When scrolling away: outline fades back in
-// ============================================
-interface OutlineTextProps {
-  text: string;
-  className?: string;
-  strokeWidth?: number;
-}
-
-function OutlineText({
-  text,
-  className = '',
-  strokeWidth = 2,
-}: OutlineTextProps) {
-  const { getFontFamily } = useShopifyTheme();
-  const isSafari = useMemo(
-    () =>
-      typeof navigator !== 'undefined' &&
-      /Safari/i.test(navigator.userAgent) &&
-      !/Chrome|CriOS|Edg|OPR|FxiOS/i.test(navigator.userAgent),
-    [],
-  );
-  const outlineId = useId();
-  const filterId = useMemo(
-    () => `outline-filter-${text.replace(/\s/g, '-').toLowerCase()}-${outlineId}`,
-    [outlineId, text],
-  );
-
-  if (isSafari) {
-    return (
-      <span
-        className={`relative inline-block whitespace-nowrap ${className}`}
-        style={{
-          transform:
-            'scale(calc(var(--industry-fit-scale, 1) * (1 + var(--industry-fill-progress, 0) * 0.05)))',
-          transition: 'transform 0.24s ease-out',
-        }}
-      >
-        <span
-          className="invisible font-bold tracking-tight"
-          aria-hidden="true"
-        >
-          {text}
-        </span>
-
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 font-bold tracking-tight text-transparent"
-          style={{
-            fontFamily: getFontFamily('heading'),
-            WebkitTextStroke: `${strokeWidth}px white`,
-          }}
-        >
-          {text}
-        </span>
-
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 font-bold tracking-tight text-white"
-          style={{
-            fontFamily: getFontFamily('heading'),
-            opacity: 'var(--industry-fill-progress, 0)',
-            transition: 'opacity 0.2s linear',
-          }}
-        >
-          {text}
-        </span>
-      </span>
-    );
-  }
-
-  return (
-    <span
-      className={`relative inline-block ${className}`}
-      style={{
-        transform:
-          'scale(calc(var(--industry-fit-scale, 1) * (1 + var(--industry-fill-progress, 0) * 0.05)))',
-        transition: 'transform 0.3s ease-out',
-      }}
-    >
-      {/* Invisible text for sizing */}
-      <span
-        className="invisible font-bold tracking-tight"
-        aria-hidden="true"
-      >
-        {text}
-      </span>
-
-      {/* SVG text layers */}
-      <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
-        <defs>
-          <filter
-            id={filterId}
-            x="-10%"
-            y="-10%"
-            width="120%"
-            height="120%"
-          >
-            <feMorphology
-              in="SourceAlpha"
-              result="DILATED"
-              operator="dilate"
-              radius={strokeWidth}
-            />
-            <feComposite
-              in="DILATED"
-              in2="SourceAlpha"
-              operator="out"
-              result="OUTLINE"
-            />
-            <feFlood floodColor="white" result="COLOR" />
-            <feComposite
-              in="COLOR"
-              in2="OUTLINE"
-              operator="in"
-              result="FINAL"
-            />
-          </filter>
-        </defs>
-
-        {/* Outline text - always visible */}
-        <text
-          x="0"
-          y="1.3em"
-          className="font-bold tracking-tight"
-          style={{
-            fontFamily: getFontFamily('heading'),
-            fontSize: 'inherit',
-            filter: `url(#${filterId})`,
-            fill: 'white',
-          }}
-        >
-          {text}
-        </text>
-
-        {/* Solid fill text - fades in on top based on fillProgress */}
-        <text
-          x="0"
-          y="1.3em"
-          className="font-bold tracking-tight"
-          style={{
-            fontFamily: getFontFamily('heading'),
-            fontSize: 'inherit',
-            fill: 'white',
-            opacity: 'var(--industry-fill-progress, 0)',
-            transition: 'opacity 0.3s ease-out',
-          }}
-        >
-          {text}
-        </text>
-      </svg>
-    </span>
-  );
-}
-
-// ============================================
 // SINGLE INDUSTRY SECTION
 // ============================================
 interface IndustrySectionProps {
@@ -226,7 +69,6 @@ function IndustrySection({
   index,
 }: IndustrySectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleMeasureRef = useRef<HTMLSpanElement>(null);
   const { getFontFamily } = useShopifyTheme();
 
   useGSAP(
@@ -235,37 +77,6 @@ function IndustrySection({
 
       const section = sectionRef.current;
       const titleEl = section.querySelector('.industry-title');
-      section.style.setProperty('--industry-fill-progress', '0');
-      section.style.setProperty('--industry-fit-scale', '1');
-
-      let resizeRaf: number | null = null;
-
-      const updateTitleFitScale = () => {
-        if (!sectionRef.current || !titleMeasureRef.current) return;
-
-        const availableWidth = sectionRef.current.clientWidth * 0.94;
-        const titleWidth = titleMeasureRef.current.offsetWidth;
-        if (!titleWidth) return;
-
-        const fitScale = Math.min(1, availableWidth / titleWidth);
-        sectionRef.current.style.setProperty(
-          '--industry-fit-scale',
-          fitScale.toFixed(4),
-        );
-      };
-
-      const scheduleTitleFitScaleUpdate = () => {
-        if (resizeRaf !== null) {
-          cancelAnimationFrame(resizeRaf);
-        }
-
-        resizeRaf = requestAnimationFrame(() => {
-          resizeRaf = null;
-          updateTitleFitScale();
-        });
-      };
-
-      scheduleTitleFitScaleUpdate();
 
       // Title reveal animation
       const tl = gsap.timeline({
@@ -291,55 +102,8 @@ function IndustrySection({
         },
       );
 
-      // Kinetic typography: fill when in center focus
-      // Progress goes 0 -> 1 -> 0 as section scrolls through viewport center
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        scrub: 0.5,
-        onUpdate: (self) => {
-          // Create a bell curve: 0 at edges, 1 at center
-          const progress = self.progress;
-          // Use sine curve for smooth in/out: peaks at 0.5
-          const fillValue = Math.sin(progress * Math.PI);
-          section.style.setProperty(
-            '--industry-fill-progress',
-            fillValue.toFixed(4),
-          );
-        },
-        onLeave: () => section.style.setProperty('--industry-fill-progress', '0'),
-        onLeaveBack: () =>
-          section.style.setProperty('--industry-fill-progress', '0'),
-      });
-
-      let resizeObserver: ResizeObserver | null = null;
-
-      if (typeof ResizeObserver !== 'undefined') {
-        resizeObserver = new ResizeObserver(() => {
-          scheduleTitleFitScaleUpdate();
-        });
-        resizeObserver.observe(section);
-      }
-
-      window.addEventListener('resize', scheduleTitleFitScaleUpdate);
-
-      if (document.fonts && typeof document.fonts.ready?.then === 'function') {
-        void document.fonts.ready.then(() => {
-          scheduleTitleFitScaleUpdate();
-        });
-      }
-
       return () => {
-        if (resizeRaf !== null) {
-          cancelAnimationFrame(resizeRaf);
-        }
-
-        if (resizeObserver) {
-          resizeObserver.disconnect();
-        }
-
-        window.removeEventListener('resize', scheduleTitleFitScaleUpdate);
+        tl.kill();
       };
     },
     { scope: sectionRef },
@@ -358,12 +122,8 @@ function IndustrySection({
           className="industry-title inline-block whitespace-nowrap leading-none text-white will-change-transform"
           style={{ fontFamily: getFontFamily('heading') }}
         >
-          <span ref={titleMeasureRef} className="inline-block">
-            <OutlineText
-              text={title}
-              className="block text-[clamp(3rem,15vw,11.2rem)]"
-              strokeWidth={2}
-            />
+          <span className="block text-[clamp(3rem,15vw,11.2rem)] font-bold tracking-tight">
+            {title}
           </span>
         </h2>
       </div>
