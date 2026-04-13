@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import noiseImage from '../assets/noise.webp';
 
@@ -15,6 +15,12 @@ function getDocumentHeight() {
   );
 }
 
+function syncOverlaySize(overlay: HTMLDivElement | null) {
+  if (!overlay) return;
+
+  overlay.style.height = `${getDocumentHeight()}px`;
+}
+
 export function NoiseOverlay() {
   // Shopify provides the asset URL in production
   // Falls back to local import for dev server
@@ -24,19 +30,34 @@ export function NoiseOverlay() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     const container = document.createElement('div');
     containerRef.current = container;
     document.body.appendChild(container);
+    setIsMounted(true);
+
+    return () => {
+      if (containerRef.current && containerRef.current.parentNode) {
+        containerRef.current.parentNode.removeChild(
+          containerRef.current,
+        );
+      }
+      containerRef.current = null;
+      setIsMounted(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
 
     let frameId = 0;
 
     const update = () => {
       frameId = 0;
 
-      if (!overlayRef.current) return;
-      overlayRef.current.style.height = `${getDocumentHeight()}px`;
+      syncOverlaySize(overlayRef.current);
     };
 
     const requestUpdate = () => {
@@ -65,16 +86,10 @@ export function NoiseOverlay() {
 
       window.removeEventListener('resize', requestUpdate);
       mo.disconnect();
-      if (containerRef.current && containerRef.current.parentNode) {
-        containerRef.current.parentNode.removeChild(
-          containerRef.current,
-        );
-      }
-      containerRef.current = null;
     };
-  }, []);
+  }, [isMounted]);
 
-  if (!containerRef.current) return null;
+  if (!isMounted || !containerRef.current) return null;
 
   const overlay = (
     <div
@@ -83,13 +98,16 @@ export function NoiseOverlay() {
         position: 'absolute',
         top: 0,
         left: 0,
+        right: 0,
         width: '100%',
         height: '100vh',
         zIndex: 50,
         pointerEvents: 'none',
         mixBlendMode: 'soft-light',
         backgroundImage: `url(${noiseUrl})`,
-        backgroundRepeat: 'repeat',
+        backgroundRepeat: 'repeat-y',
+        backgroundSize: '100% auto',
+        backgroundPosition: 'top center',
         backgroundAttachment: 'scroll',
         opacity: 0.08,
       }}
