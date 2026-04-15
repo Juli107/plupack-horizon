@@ -13,9 +13,9 @@
       "type": "about-hero",
       "settings": {
         "eyebrow": "Sobre nosotros",
-        "heading_line_1": "DISTRIBUIDORES",
-        "heading_line_2": "MAYORISTAS",
-        "heading_line_3": "DE INSUMOS OPERATIVOS",
+        "heading_line_1": "DISTRIBUIDOR",
+        "heading_line_2": "MAYORISTA",
+        "heading_line_3": "DE INSUMOS",
         "paragraph_1": "Fabricamos y distribuimos soluciones de embalaje para industria, gastronomía y salud. Organizamos el abastecimiento de nuestros clientes centralizando insumos, coordinando entregas y asegurando continuidad operativa.",
         "paragraph_2": "",
         "value_1": "calidad garantizada",
@@ -37,7 +37,7 @@
       "type": "about-future-intro",
       "settings": {
         "paragraph": "",
-        "padding_top": 4,
+        "padding_top": 0,
         "padding_bottom": 0
       }
     },
