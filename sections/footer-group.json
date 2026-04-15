@@ -56,7 +56,7 @@
             "text_WhTpjd": {
               "type": "text",
               "settings": {
-                "text": "<h2>Únete a nuestra lista de correo</h2>",
+                "text": "<h2>Únete a nuestra comunidad</h2>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -81,7 +81,7 @@
             "text_63rNqT": {
               "type": "text",
               "settings": {
-                "text": "<p>Ofertas exclusivas y acceso anticipado a nuevos productos.</p>",
+                "text": "<h5>Ofertas exclusivas y acceso anticipado a nuevos productos.</h5>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -142,7 +142,7 @@
       "name": "t:names.footer",
       "settings": {
         "section_width": "page-width",
-        "gap": 13,
+        "gap": 15,
         "color_scheme": "scheme-b278931d-61fd-49e6-988e-9022c0328eec",
         "padding-block-start": 36,
         "padding-block-end": 36
@@ -163,7 +163,7 @@
         "hours": "Lunes a Viernes - 7am a 5pm",
         "instagram_url": "https://instagram.com/plupack",
         "facebook_url": "https://facebook.com/plupack",
-        "terms_url": "",
+        "terms_url": "shopify://policies/privacy-policy",
         "terms_text": "Términos y condiciones"
       }
     }
