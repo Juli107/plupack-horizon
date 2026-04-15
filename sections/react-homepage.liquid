@@ -225,6 +225,10 @@
         {%- assign seen_family_twice = '|' -%}
         {%- assign total_products = collections.all.products_count | default: 0 -%}
         {%- assign sample_step = total_products | divided_by: max_images -%}
+        {%- assign strict_family_phase_limit = max_images | times: 75 | divided_by: 100 -%}
+        {%- if strict_family_phase_limit < 12 -%}
+          {%- assign strict_family_phase_limit = 12 -%}
+        {%- endif -%}
         {%- if sample_step < 1 -%}
           {%- assign sample_step = 1 -%}
         {%- endif -%}
@@ -258,7 +262,7 @@
 
             {%- assign family_key = product.title | split: ' - ' | first | strip | downcase -%}
             {%- assign family_token = '|' | append: family_key | append: '|' -%}
-            {%- if seen_family_twice contains family_token -%}
+            {%- if shown_count < strict_family_phase_limit and seen_family_twice contains family_token -%}
               {%- continue -%}
             {%- endif -%}
 
@@ -305,7 +309,7 @@
 
             {%- assign family_key = product.title | split: ' - ' | first | strip | downcase -%}
             {%- assign family_token = '|' | append: family_key | append: '|' -%}
-            {%- if seen_family_twice contains family_token -%}
+            {%- if shown_count < strict_family_phase_limit and seen_family_twice contains family_token -%}
               {%- continue -%}
             {%- endif -%}
 
@@ -356,7 +360,7 @@
 
             {%- assign family_key = product.title | split: ' - ' | first | strip | downcase -%}
             {%- assign family_token = '|' | append: family_key | append: '|' -%}
-            {%- if seen_family_twice contains family_token -%}
+            {%- if shown_count < strict_family_phase_limit and seen_family_twice contains family_token -%}
               {%- continue -%}
             {%- endif -%}
 
@@ -403,7 +407,7 @@
 
             {%- assign family_key = product.title | split: ' - ' | first | strip | downcase -%}
             {%- assign family_token = '|' | append: family_key | append: '|' -%}
-            {%- if seen_family_twice contains family_token -%}
+            {%- if shown_count < strict_family_phase_limit and seen_family_twice contains family_token -%}
               {%- continue -%}
             {%- endif -%}
 
