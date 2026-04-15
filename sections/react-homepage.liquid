@@ -215,63 +215,18 @@
       buttonUrl: {{ section.settings.stock_section_button_url | json }},
       productCount: {{ section.settings.stock_product_count | default: 170 | json }},
       rainImageCount: {{ section.settings.stock_rain_image_count | default: 24 | json }},
-      // Deterministic image list from all available collections
+      // Deterministic image list from catalog products (collections/all)
       productImages: [
         {%- assign max_images = section.settings.stock_rain_image_count | default: 24 -%}
         {%- assign shown_count = 0 -%}
         {%- assign first_item = true -%}
-        {%- assign seen_product_ids = '|' -%}
 
-        {%- for collection in collections -%}
-          {%- if shown_count >= max_images -%}
-            {%- break -%}
-          {%- endif -%}
-          {%- for product in collection.products -%}
-            {%- if shown_count >= max_images -%}
-              {%- break -%}
-            {%- endif -%}
-            {%- assign product_token = '|' | append: product.id | append: '|' -%}
-            {%- if seen_product_ids contains product_token -%}
-              {%- continue -%}
-            {%- endif -%}
-            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
-
-            {%- if product.images != blank -%}
-              {%- for product_image in product.images -%}
-                {%- if shown_count >= max_images -%}
-                  {%- break -%}
-                {%- endif -%}
-                {%- assign product_image_src = product_image.src | downcase -%}
-                {%- unless product_image_src contains '.png' -%}
-                  {%- continue -%}
-                {%- endunless -%}
-                {%- unless first_item -%},{%- endunless -%}
-                { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
-                {%- assign first_item = false -%}
-                {%- assign shown_count = shown_count | plus: 1 -%}
-              {%- endfor -%}
-            {%- elsif product.featured_image != blank -%}
-              {%- assign featured_image_src = product.featured_image.src | downcase -%}
-              {%- if featured_image_src contains '.png' -%}
-              {%- unless first_item -%},{%- endunless -%}
-              { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
-              {%- assign first_item = false -%}
-              {%- assign shown_count = shown_count | plus: 1 -%}
-              {%- endif -%}
-            {%- endif -%}
-          {%- endfor -%}
-        {%- endfor -%}
-
+        {%- comment -%}Pass 1: PNG images first{%- endcomment -%}
         {%- if shown_count < max_images -%}
           {%- for product in collections.all.products -%}
             {%- if shown_count >= max_images -%}
               {%- break -%}
             {%- endif -%}
-            {%- assign product_token = '|' | append: product.id | append: '|' -%}
-            {%- if seen_product_ids contains product_token -%}
-              {%- continue -%}
-            {%- endif -%}
-            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
 
             {%- if product.images != blank -%}
               {%- for product_image in product.images -%}
@@ -290,11 +245,44 @@
             {%- elsif product.featured_image != blank -%}
               {%- assign featured_image_src = product.featured_image.src | downcase -%}
               {%- if featured_image_src contains '.png' -%}
-              {%- unless first_item -%},{%- endunless -%}
-              { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
-              {%- assign first_item = false -%}
-              {%- assign shown_count = shown_count | plus: 1 -%}
+                {%- unless first_item -%},{%- endunless -%}
+                { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+                {%- assign first_item = false -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
               {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- comment -%}Pass 2: fill remaining slots with non-PNG images{%- endcomment -%}
+        {%- if shown_count < max_images -%}
+          {%- for product in collections.all.products -%}
+            {%- if shown_count >= max_images -%}
+              {%- break -%}
+            {%- endif -%}
+
+            {%- if product.images != blank -%}
+              {%- for product_image in product.images -%}
+                {%- if shown_count >= max_images -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- assign product_image_src = product_image.src | downcase -%}
+                {%- if product_image_src contains '.png' -%}
+                  {%- continue -%}
+                {%- endif -%}
+                {%- unless first_item -%},{%- endunless -%}
+                { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+                {%- assign first_item = false -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endfor -%}
+            {%- elsif product.featured_image != blank -%}
+              {%- assign featured_image_src = product.featured_image.src | downcase -%}
+              {%- unless featured_image_src contains '.png' -%}
+                {%- unless first_item -%},{%- endunless -%}
+                { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+                {%- assign first_item = false -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endunless -%}
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
