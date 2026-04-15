@@ -11,8 +11,8 @@
   "current": {
     "logo": "shopify://shop_images/plupack.svg",
     "logo_inverse": "shopify://shop_images/plupack.svg",
-    "logo_height": 36,
-    "logo_height_mobile": 28,
+    "logo_height": 40,
+    "logo_height_mobile": 36,
     "type_body_font": "open_sans_n4",
     "type_subheading_font": "montserrat_n4",
     "type_heading_font": "montserrat_n4",
@@ -62,6 +62,7 @@
     "button_text_case_secondary": "default",
     "cart_type": "drawer",
     "cart_price_font": "secondary",
+    "auto_open_cart_drawer": false,
     "show_cart_note": false,
     "show_add_discount_code": true,
     "drawer_drop_shadow": true,
