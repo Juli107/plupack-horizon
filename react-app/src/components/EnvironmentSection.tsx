@@ -123,8 +123,8 @@ export function EnvironmentSection() {
                   alt="Depósito logístico de PLUPack"
                   className="block w-full h-full object-cover"
                   style={{ objectPosition: 'center 38%', minHeight: '280px' }}
-                  width={1200}
-                  height={800}
+                  width={1600}
+                  height={903}
                   loading="lazy"
                   decoding="async"
                 />

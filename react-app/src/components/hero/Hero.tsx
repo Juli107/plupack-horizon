@@ -24,7 +24,7 @@ export function Hero() {
   const activeProduct = hasFeaturedProducts
     ? featuredProducts[activeProductIndex]
     : null;
-  const heroSizes = '(min-width: 1024px) 70vw, 100vw';
+  const heroSizes = '(min-width: 1024px) 50vw, 100vw';
   // NOTE: Header+announcement overlays the hero on homepage.
   // We add --header-group-height so the visible media area keeps the original perceived height.
   // If announcement bar is removed in the future, revert these constants to the previous values:
@@ -141,108 +141,109 @@ export function Hero() {
           <div
             className={`pointer-events-auto w-full md:absolute md:inset-x-0 md:top-0 ${featuredMediaHeightClass}`}
           >
-            <article className="relative overflow-hidden w-full aspect-[4/3] min-h-[23rem] sm:min-h-[25rem] md:aspect-auto md:min-h-0 md:h-full bg-[#072f4f] text-white">
-              {/* Full-bleed images — stacked, crossfade via opacity */}
-              {featuredProducts.map((product, index) => (
-                <div
-                  key={product.handle}
-                  className="absolute inset-0 transition-opacity duration-700 ease-in-out"
-                  style={{
-                    opacity: index === activeProductIndex ? 1 : 0,
-                  }}
-                  aria-hidden={index !== activeProductIndex}
-                >
-                  {product.image ? (
-                    <img
-                      ref={index === 0 ? firstFeaturedImageRef : undefined}
-                      src={product.image}
-                      srcSet={
-                        product.image640 &&
-                        product.image960 &&
-                        product.image1200 &&
-                        product.image1600
-                          ? `${product.image640} 640w, ${product.image960} 960w, ${product.image1200} 1200w, ${product.image1600} 1600w`
-                          : undefined
-                      }
-                      sizes={heroSizes}
-                      alt={product.title}
-                      className="absolute inset-0 w-full h-full object-cover object-center"
-                      loading={index === 0 ? 'eager' : 'lazy'}
-                      fetchPriority={index === 0 ? 'high' : 'auto'}
-                      decoding="async"
-                      width={product.imageWidth ?? 1200}
-                      height={product.imageHeight ?? 800}
-                      onLoad={index === 0 ? markHeroReady : undefined}
-                      onError={index === 0 ? markHeroReady : undefined}
-                    />
-                  ) : null}
-                </div>
-              ))}
-
-              {/* Gradient scrim — bottom-heavy, tinted PLUPack blue */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#051e34]/90 via-[#051e34]/40 to-transparent pointer-events-none" />
-              {/* Subtle top vignette so navbar stays readable */}
-              <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#051e34]/55 to-transparent pointer-events-none" />
-
-              {/* "Destacados" badge — top-left, below navbar */}
-              <div className="absolute top-16 md:top-20 left-6 md:left-10">
-                <p
-                  className="inline-flex items-center w-max px-2.5 py-1 rounded-full bg-[#0a4f82]/45 border border-[#69b6e8]/45 text-white text-[8px] md:text-[9px] uppercase tracking-[0.16em] font-semibold backdrop-blur-sm"
-                  style={{ fontFamily: getFontFamily('accent') }}
-                >
-                  Destacados
-                </p>
-              </div>
-
-              {/* Text overlay — bottom-left, sitting on scrim */}
-              {activeProduct ? (
-                <div className="absolute bottom-0 left-0 right-0 pl-6 pr-6 md:pl-10 md:pr-20 pb-10 md:pb-8">
-                  <h2
-                    className="text-xl md:text-2xl lg:text-3xl font-medium leading-tight uppercase tracking-wide line-clamp-2"
-                    style={{ fontFamily: getFontFamily('heading') }}
-                  >
-                    {activeProduct.title}
-                  </h2>
-                  {activeProduct.description ? (
+            <article className="relative w-full overflow-hidden bg-[#062742] text-white md:h-full">
+              <div className="relative flex h-full w-full flex-col md:flex-row">
+                <div className="relative order-1 flex w-full flex-col justify-center bg-[#042843] px-6 pb-12 pt-28 sm:px-7 sm:pb-14 sm:pt-32 md:order-1 md:w-1/2 md:items-center md:px-10 md:py-10">
+                  <div className="w-full max-w-[30rem] text-left">
+                    <div className="flex justify-start">
                     <p
-                      className="mt-1.5 text-[11px] md:text-[13px] leading-snug text-white/80 line-clamp-2 max-w-2xl"
-                      style={{ fontFamily: getFontFamily('body') }}
+                      className="inline-flex items-center w-max rounded-full border border-[#69b6e8]/45 bg-[#0a4f82]/45 px-2.5 py-1 text-[8px] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur-sm md:text-[9px]"
+                      style={{ fontFamily: getFontFamily('accent') }}
                     >
-                      {activeProduct.description}
+                      Destacados
                     </p>
-                  ) : null}
-                  <div className="mt-3 md:mt-4">
-                    <a
-                      href={activeProduct.url}
-                      className="inline-flex items-center justify-center rounded-[8px] border border-white/70 bg-white/10 backdrop-blur-sm text-white px-4 py-1.5 md:px-5 md:py-2 uppercase tracking-[0.08em] text-[11px] md:text-xs font-semibold hover:bg-white/25 transition-colors duration-300"
-                      style={{ fontFamily: getFontFamily('body') }}
-                    >
-                      Ver producto
-                    </a>
+                    </div>
+
+                    {activeProduct ? (
+                      <div className="mt-4 md:mt-7">
+                        <h2
+                          className="text-[clamp(1.6rem,5.8vw,2.1rem)] md:text-[clamp(2rem,2.65vw,2.85rem)] font-medium leading-[1.05] uppercase tracking-[0.02em]"
+                          style={{ fontFamily: getFontFamily('heading') }}
+                        >
+                          {activeProduct.title}
+                        </h2>
+                        {activeProduct.description ? (
+                          <p
+                            className="mt-2 max-w-[30ch] text-xs leading-snug text-white/80 md:mt-3 md:text-sm"
+                            style={{ fontFamily: getFontFamily('body') }}
+                          >
+                            {activeProduct.description}
+                          </p>
+                        ) : null}
+                        <div className="mt-4 flex justify-start md:mt-6">
+                          <a
+                            href={activeProduct.url}
+                            className="inline-flex min-h-[42px] items-center justify-center rounded-[11px] border border-white/70 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.09em] text-white transition-colors duration-300 hover:bg-white/25 md:px-7 md:text-xs"
+                            style={{ fontFamily: getFontFamily('body') }}
+                          >
+                            Ver producto
+                          </a>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-              ) : null}
 
-              {/* Controls group — visible on mobile and desktop */}
-              {featuredProducts.length > 1 ? (
-                <div className="absolute bottom-4 right-6 md:bottom-8 md:right-10 z-10 flex items-center gap-2 md:gap-2.5 pointer-events-auto">
-                  {featuredProducts.map((_, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => setActiveProductIndex(index)}
-                      aria-label={`Ir al producto ${index + 1}`}
-                      className={`h-6 w-6 md:h-7 md:w-7 flex items-center justify-center rounded-full ring-1 ring-white/50 transition-opacity duration-300 ${
-                        index === activeProductIndex
-                          ? 'opacity-95'
-                          : 'opacity-35 hover:opacity-65'
-                      }`}
+                <div className="relative order-2 h-[20rem] w-full overflow-hidden bg-[#0a3f67] sm:h-[22rem] md:order-2 md:h-full md:w-1/2">
+                  {featuredProducts.map((product, index) => (
+                    <div
+                      key={product.handle}
+                      className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+                      style={{
+                        opacity: index === activeProductIndex ? 1 : 0,
+                      }}
+                      aria-hidden={index !== activeProductIndex}
                     >
-                      <span className="h-2.5 w-2.5 rounded-full bg-white" />
-                    </button>
+                      {product.image ? (
+                        <img
+                          ref={index === 0 ? firstFeaturedImageRef : undefined}
+                          src={product.image}
+                          srcSet={
+                            product.image640 &&
+                            product.image960 &&
+                            product.image1200 &&
+                            product.image1600
+                              ? `${product.image640} 640w, ${product.image960} 960w, ${product.image1200} 1200w, ${product.image1600} 1600w`
+                              : undefined
+                          }
+                          sizes={heroSizes}
+                          alt={product.title}
+                          className="absolute inset-0 h-full w-full object-cover object-center"
+                          loading={index === 0 ? 'eager' : 'lazy'}
+                          fetchPriority={index === 0 ? 'high' : 'auto'}
+                          decoding="async"
+                          width={product.imageWidth ?? 1200}
+                          height={product.imageHeight ?? 800}
+                          onLoad={index === 0 ? markHeroReady : undefined}
+                          onError={index === 0 ? markHeroReady : undefined}
+                        />
+                      ) : null}
+                    </div>
                   ))}
+
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#08355a]/30 via-transparent to-[#0f4a76]/25" />
+
+                  {featuredProducts.length > 1 ? (
+                    <div className="pointer-events-auto absolute bottom-4 right-4 z-20 flex items-center gap-2 md:bottom-8 md:right-10">
+                      {featuredProducts.map((_, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => setActiveProductIndex(index)}
+                          aria-label={`Ir al producto ${index + 1}`}
+                          className={`flex h-6 w-6 items-center justify-center rounded-full ring-1 ring-white/55 transition-opacity duration-300 md:h-7 md:w-7 ${
+                            index === activeProductIndex
+                              ? 'opacity-95'
+                              : 'opacity-35 hover:opacity-65'
+                          }`}
+                        >
+                          <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
+              </div>
             </article>
           </div>
         ) : null}

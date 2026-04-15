@@ -644,7 +644,7 @@
   id="react-homepage"
   class="react-homepage"
   data-section-id="{{ section.id }}"
-  style="min-height: 600vh;"
+  style="min-height: 100vh;"
 ></div>
 
 {% comment %} Load Tailwind CSS (built from react-app/) {% endcomment %}
@@ -665,12 +665,6 @@
   .react-homepage {
     width: 100%;
     position: relative;
-    min-height: 600vh;
-    /* Prevent footer jumps before React mounts full layout */
-  }
-
-  .react-loaded .react-homepage {
-    min-height: 0;
   }
 
   /* Ensure canvas fills its container */

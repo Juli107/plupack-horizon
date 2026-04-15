@@ -75,20 +75,32 @@ const getTransportistaSrc = (filename: string) => {
 
 const TRANSPORTISTAS: TransportistaItem[] = [
   {
-    src: 'via-cargo.webp',
-    alt: 'Via Cargo',
+    src: 'cruz-del-sur-transporte-y-logistica.webp',
+    alt: 'Cruz del Sur transporte y logistica',
   },
   {
-    src: 'transportes-navas-srl.webp',
-    alt: 'Transportes Navas SRL',
+    src: 'don-pedro-monograma.webp',
+    alt: 'Don Pedro monograma',
   },
   {
-    src: 'distribucion-y-logistica.webp',
-    alt: 'Distribucion y logistica',
+    src: 'don-pedro-transporte-y-logistica.webp',
+    alt: 'Don Pedro transporte y logistica',
   },
   {
-    src: 'cruz-del-sur.webp',
-    alt: 'Cruz del Sur',
+    src: 'e-circular.webp',
+    alt: 'E Circular',
+  },
+  {
+    src: 'e-flecha.webp',
+    alt: 'E Flecha',
+  },
+  {
+    src: 'ev-logistica.webp',
+    alt: 'EV Logistica',
+  },
+  {
+    src: 'expreso-bisonte.webp',
+    alt: 'Expreso Bisonte',
   },
   {
     src: 'g.webp',
@@ -99,12 +111,12 @@ const TRANSPORTISTAS: TransportistaItem[] = [
     alt: 'Mostto logistica y transporte',
   },
   {
-    src: 'transporte-snaider.webp',
-    alt: 'Transporte Snaider',
+    src: 'transportes-navas-srl.webp',
+    alt: 'Transportes Navas SRL',
   },
   {
-    src: 'transportes-premat-sa.webp',
-    alt: 'Transportes Premat SA',
+    src: 'via-cargo.webp',
+    alt: 'Via Cargo',
   },
 ];
 
@@ -642,13 +654,13 @@ export function LogisticsMapSection() {
                     {TRANSPORTISTAS.map((transportista) => (
                       <div
                         key={`transportista-1-${transportista.src}`}
-                        className="relative shrink-0 h-14 w-40 md:h-16 md:w-52 flex items-center justify-center"
+                        className="relative shrink-0 h-14 md:h-16 px-2 flex items-center justify-center"
                       >
                         <img
                           src={getTransportistaSrc(transportista.src)}
                           alt={transportista.alt}
-                          className="h-full w-full object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
-                          width={208}
+                          className="h-full w-auto max-w-[11rem] md:max-w-[14rem] object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                          width={224}
                           height={64}
                           loading="lazy"
                           decoding="async"
@@ -663,13 +675,13 @@ export function LogisticsMapSection() {
                     {TRANSPORTISTAS.map((transportista) => (
                       <div
                         key={`transportista-2-${transportista.src}`}
-                        className="relative shrink-0 h-14 w-40 md:h-16 md:w-52 flex items-center justify-center"
+                        className="relative shrink-0 h-14 md:h-16 px-2 flex items-center justify-center"
                       >
                         <img
                           src={getTransportistaSrc(transportista.src)}
                           alt=""
-                          className="h-full w-full object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
-                          width={208}
+                          className="h-full w-auto max-w-[11rem] md:max-w-[14rem] object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                          width={224}
                           height={64}
                           loading="lazy"
                           decoding="async"
