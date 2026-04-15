@@ -17,9 +17,9 @@
           "name": "Title",
           "settings": {
             "text": "<p>{{ closest.collection.title }}</p>",
-            "width": "fit-content",
+            "width": "100%",
             "max_width": "normal",
-            "alignment": "left",
+            "alignment": "center",
             "type_preset": "custom",
             "font": "var(--font-heading--family)",
             "font_size": "3.5rem",
