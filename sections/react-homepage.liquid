@@ -241,12 +241,15 @@
                 {%- if shown_count >= max_images -%}
                   {%- break -%}
                 {%- endif -%}
+                {%- unless product_image.src contains '.png' -%}
+                  {%- continue -%}
+                {%- endunless -%}
                 {%- unless first_item -%},{%- endunless -%}
                 { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
                 {%- assign first_item = false -%}
                 {%- assign shown_count = shown_count | plus: 1 -%}
               {%- endfor -%}
-            {%- elsif product.featured_image != blank -%}
+            {%- elsif product.featured_image != blank and product.featured_image.src contains '.png' -%}
               {%- unless first_item -%},{%- endunless -%}
               { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
               {%- assign first_item = false -%}
@@ -271,12 +274,15 @@
                 {%- if shown_count >= max_images -%}
                   {%- break -%}
                 {%- endif -%}
+                {%- unless product_image.src contains '.png' -%}
+                  {%- continue -%}
+                {%- endunless -%}
                 {%- unless first_item -%},{%- endunless -%}
                 { src: {{ product_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
                 {%- assign first_item = false -%}
                 {%- assign shown_count = shown_count | plus: 1 -%}
               {%- endfor -%}
-            {%- elsif product.featured_image != blank -%}
+            {%- elsif product.featured_image != blank and product.featured_image.src contains '.png' -%}
               {%- unless first_item -%},{%- endunless -%}
               { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
               {%- assign first_item = false -%}
