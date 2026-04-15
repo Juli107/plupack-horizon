@@ -56,11 +56,11 @@
             "text_WhTpjd": {
               "type": "text",
               "settings": {
-                "text": "<h2>Únete a nuestra comunidad</h2>",
+                "text": "<h3><strong>Únete a nuestra comunidad</strong></h3>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "h4",
+                "type_preset": "h3",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -85,7 +85,7 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "rte",
+                "type_preset": "h4",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -142,10 +142,10 @@
       "name": "t:names.footer",
       "settings": {
         "section_width": "page-width",
-        "gap": 15,
+        "gap": 20,
         "color_scheme": "scheme-b278931d-61fd-49e6-988e-9022c0328eec",
-        "padding-block-start": 36,
-        "padding-block-end": 36
+        "padding-block-start": 50,
+        "padding-block-end": 50
       }
     },
     "footer_custom_JAU6QE": {
