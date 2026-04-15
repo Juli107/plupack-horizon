@@ -82,8 +82,8 @@
               "type": "text",
               "settings": {
                 "text": "<h5>Ofertas exclusivas y acceso anticipado a nuevos productos.</h5>",
-                "width": "100%",
-                "max_width": "normal",
+                "width": "fit-content",
+                "max_width": "narrow",
                 "alignment": "left",
                 "type_preset": "h4",
                 "font": "var(--font-body--family)",
