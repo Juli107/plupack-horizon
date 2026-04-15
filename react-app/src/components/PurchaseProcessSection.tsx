@@ -231,7 +231,7 @@ export function PurchaseProcessSection() {
         </h2>
 
         {/* Main content - 3 column grid for perfect centering */}
-        <div className="grid grid-cols-[1fr_48px_1fr] items-start">
+        <div className="grid grid-cols-[64px_minmax(0,1fr)] md:grid-cols-[1fr_48px_1fr] items-start">
           {/* Left side - Big number (right aligned, sticky) */}
           <div className="hidden md:block h-full">
             <div className="sticky top-[30vh] flex justify-end pr-12 lg:pr-16">
@@ -329,7 +329,7 @@ export function PurchaseProcessSection() {
                     border: '1px solid rgba(27, 75, 107, 0.25)',
                     borderRadius: '6px',
                     backgroundColor: 'rgba(27, 75, 107, 0.06)',
-                    marginRight: 12,
+                    marginRight: 3,
                   }}
                 >
                   <step.Icon
