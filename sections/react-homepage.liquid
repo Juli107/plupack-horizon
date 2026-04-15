@@ -223,6 +223,11 @@
         {%- assign seen_product_ids = '|' -%}
         {%- assign total_products = collections.all.products_count | default: 0 -%}
         {%- assign sample_step = total_products | divided_by: max_images -%}
+        {%- assign tray_count = 0 -%}
+        {%- assign max_tray = max_images | times: 40 | divided_by: 100 -%}
+        {%- if max_tray < 6 -%}
+          {%- assign max_tray = 6 -%}
+        {%- endif -%}
         {%- if sample_step < 1 -%}
           {%- assign sample_step = 1 -%}
         {%- endif -%}
@@ -254,6 +259,11 @@
               {%- continue -%}
             {%- endif -%}
 
+            {%- assign product_title_downcase = product.title | downcase -%}
+            {%- if product_title_downcase contains 'bandeja' and tray_count >= max_tray -%}
+              {%- continue -%}
+            {%- endif -%}
+
             {%- assign selected_image_src = selected_image.src | downcase -%}
             {%- unless selected_image_src contains '.png' -%}
               {%- continue -%}
@@ -264,6 +274,9 @@
             {%- assign first_item = false -%}
             {%- assign shown_count = shown_count | plus: 1 -%}
             {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+            {%- if product_title_downcase contains 'bandeja' -%}
+              {%- assign tray_count = tray_count | plus: 1 -%}
+            {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
 
@@ -290,6 +303,11 @@
               {%- continue -%}
             {%- endif -%}
 
+            {%- assign product_title_downcase = product.title | downcase -%}
+            {%- if product_title_downcase contains 'bandeja' and tray_count >= max_tray -%}
+              {%- continue -%}
+            {%- endif -%}
+
             {%- assign selected_image_src = selected_image.src | downcase -%}
             {%- unless selected_image_src contains '.png' -%}
               {%- continue -%}
@@ -300,6 +318,9 @@
             {%- assign first_item = false -%}
             {%- assign shown_count = shown_count | plus: 1 -%}
             {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+            {%- if product_title_downcase contains 'bandeja' -%}
+              {%- assign tray_count = tray_count | plus: 1 -%}
+            {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
 
@@ -330,6 +351,11 @@
               {%- continue -%}
             {%- endif -%}
 
+            {%- assign product_title_downcase = product.title | downcase -%}
+            {%- if product_title_downcase contains 'bandeja' and tray_count >= max_tray -%}
+              {%- continue -%}
+            {%- endif -%}
+
             {%- assign selected_image_src = selected_image.src | downcase -%}
             {%- if selected_image_src contains '.png' -%}
               {%- continue -%}
@@ -340,6 +366,9 @@
             {%- assign first_item = false -%}
             {%- assign shown_count = shown_count | plus: 1 -%}
             {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+            {%- if product_title_downcase contains 'bandeja' -%}
+              {%- assign tray_count = tray_count | plus: 1 -%}
+            {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
 
@@ -366,6 +395,11 @@
               {%- continue -%}
             {%- endif -%}
 
+            {%- assign product_title_downcase = product.title | downcase -%}
+            {%- if product_title_downcase contains 'bandeja' and tray_count >= max_tray -%}
+              {%- continue -%}
+            {%- endif -%}
+
             {%- assign selected_image_src = selected_image.src | downcase -%}
             {%- if selected_image_src contains '.png' -%}
               {%- continue -%}
@@ -376,6 +410,9 @@
             {%- assign first_item = false -%}
             {%- assign shown_count = shown_count | plus: 1 -%}
             {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+            {%- if product_title_downcase contains 'bandeja' -%}
+              {%- assign tray_count = tray_count | plus: 1 -%}
+            {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
       ]
