@@ -122,7 +122,7 @@ function IndustrySection({
           className="industry-title inline-block whitespace-nowrap leading-none text-white will-change-transform"
           style={{ fontFamily: getFontFamily('heading') }}
         >
-          <span className="block text-[clamp(3rem,15vw,11.2rem)] font-bold tracking-tight">
+          <span className="block text-[clamp(2rem,11vw,3.25rem)] md:text-[clamp(3rem,15vw,11.2rem)] font-bold tracking-tight">
             {title}
           </span>
         </h2>

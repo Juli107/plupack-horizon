@@ -259,7 +259,7 @@ export function Hero() {
               <h1
                 ref={headlineRef}
                 style={{ fontFamily: getFontFamily('heading') }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-[clamp(4.2rem,5.5vw,5.8rem)] xl:text-[clamp(5rem,5.5vw,6.4rem)] leading-[0.92] font-medium uppercase tracking-wide mt-[-0.05em]"
+                className="text-[clamp(2.3rem,10.8vw,2.9rem)] sm:text-6xl md:text-7xl lg:text-[clamp(4.2rem,5.5vw,5.8rem)] xl:text-[clamp(5rem,5.5vw,6.4rem)] leading-[0.92] font-medium uppercase tracking-wide mt-[-0.05em]"
               >
                 <div className="flex flex-col items-start leading-[0.92]">
                   <div className="relative inline-block min-h-[0.92em] leading-[0.92]">
