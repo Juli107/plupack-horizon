@@ -72,20 +72,6 @@ function generateRainPositions(
   });
 }
 
-function getRandomBgColor(index: number): string {
-  const colors = [
-    '#F5E6C8',
-    '#E8D4B8',
-    '#D4E5D7',
-    '#E0EBE8',
-    '#F0E4D7',
-    '#E5E0D4',
-    '#D8E8E8',
-    '#F2E8DC',
-  ];
-  return colors[index % colors.length];
-}
-
 // ============================================
 // STOCK SECTION WRAPPER (Simplified — stock explosion only)
 // Sustainability phase removed; now an independent EnvironmentSection.
@@ -411,15 +397,6 @@ export function StockSustainabilityWrapper() {
               >
                 <div
                   className="relative w-full aspect-square overflow-hidden"
-                  style={{
-                    backgroundColor: getRandomBgColor(index),
-                    boxShadow:
-                      positions[index]?.layer === 3
-                        ? '0 15px 40px rgba(0,0,0,0.2)'
-                        : positions[index]?.layer === 2
-                        ? '0 10px 25px rgba(0,0,0,0.15)'
-                        : '0 5px 15px rgba(0,0,0,0.1)',
-                  }}
                 >
                   <img
                     src={image.src}
