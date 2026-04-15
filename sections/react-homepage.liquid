@@ -220,12 +220,27 @@
         {%- assign max_images = section.settings.stock_rain_image_count | default: 24 -%}
         {%- assign shown_count = 0 -%}
         {%- assign first_item = true -%}
+        {%- assign seen_product_ids = '|' -%}
+        {%- assign total_products = collections.all.products_count | default: 0 -%}
+        {%- assign sample_step = total_products | divided_by: max_images -%}
+        {%- if sample_step < 1 -%}
+          {%- assign sample_step = 1 -%}
+        {%- endif -%}
 
-        {%- comment -%}Pass 1: PNG images first{%- endcomment -%}
+        {%- comment -%}Pass 1: spread selection across catalog (PNG first){%- endcomment -%}
         {%- if shown_count < max_images -%}
           {%- for product in collections.all.products -%}
             {%- if shown_count >= max_images -%}
               {%- break -%}
+            {%- endif -%}
+            {%- assign step_position = forloop.index0 | modulo: sample_step -%}
+            {%- unless step_position == 0 -%}
+              {%- continue -%}
+            {%- endunless -%}
+
+            {%- assign product_token = '|' | append: product.id | append: '|' -%}
+            {%- if seen_product_ids contains product_token -%}
+              {%- continue -%}
             {%- endif -%}
 
             {%- assign selected_image = blank -%}
@@ -248,14 +263,60 @@
             { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
             {%- assign first_item = false -%}
             {%- assign shown_count = shown_count | plus: 1 -%}
+            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
           {%- endfor -%}
         {%- endif -%}
 
-        {%- comment -%}Pass 2: fill remaining slots with non-PNG images{%- endcomment -%}
+        {%- comment -%}Pass 2: fill remaining slots with any remaining PNG products{%- endcomment -%}
         {%- if shown_count < max_images -%}
           {%- for product in collections.all.products -%}
             {%- if shown_count >= max_images -%}
               {%- break -%}
+            {%- endif -%}
+
+            {%- assign product_token = '|' | append: product.id | append: '|' -%}
+            {%- if seen_product_ids contains product_token -%}
+              {%- continue -%}
+            {%- endif -%}
+
+            {%- assign selected_image = blank -%}
+            {%- if product.featured_image != blank -%}
+              {%- assign selected_image = product.featured_image -%}
+            {%- elsif product.images != blank -%}
+              {%- assign selected_image = product.images.first -%}
+            {%- endif -%}
+
+            {%- if selected_image == blank -%}
+              {%- continue -%}
+            {%- endif -%}
+
+            {%- assign selected_image_src = selected_image.src | downcase -%}
+            {%- unless selected_image_src contains '.png' -%}
+              {%- continue -%}
+            {%- endunless -%}
+
+            {%- unless first_item -%},{%- endunless -%}
+            { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+            {%- assign first_item = false -%}
+            {%- assign shown_count = shown_count | plus: 1 -%}
+            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- comment -%}Pass 3: spread selection for non-PNG products{%- endcomment -%}
+        {%- if shown_count < max_images -%}
+          {%- for product in collections.all.products -%}
+            {%- if shown_count >= max_images -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- assign step_position = forloop.index0 | modulo: sample_step -%}
+            {%- unless step_position == 0 -%}
+              {%- continue -%}
+            {%- endunless -%}
+
+            {%- assign product_token = '|' | append: product.id | append: '|' -%}
+            {%- if seen_product_ids contains product_token -%}
+              {%- continue -%}
             {%- endif -%}
 
             {%- assign selected_image = blank -%}
@@ -278,6 +339,43 @@
             { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
             {%- assign first_item = false -%}
             {%- assign shown_count = shown_count | plus: 1 -%}
+            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- comment -%}Pass 4: fill remaining with any non-PNG products{%- endcomment -%}
+        {%- if shown_count < max_images -%}
+          {%- for product in collections.all.products -%}
+            {%- if shown_count >= max_images -%}
+              {%- break -%}
+            {%- endif -%}
+
+            {%- assign product_token = '|' | append: product.id | append: '|' -%}
+            {%- if seen_product_ids contains product_token -%}
+              {%- continue -%}
+            {%- endif -%}
+
+            {%- assign selected_image = blank -%}
+            {%- if product.featured_image != blank -%}
+              {%- assign selected_image = product.featured_image -%}
+            {%- elsif product.images != blank -%}
+              {%- assign selected_image = product.images.first -%}
+            {%- endif -%}
+
+            {%- if selected_image == blank -%}
+              {%- continue -%}
+            {%- endif -%}
+
+            {%- assign selected_image_src = selected_image.src | downcase -%}
+            {%- if selected_image_src contains '.png' -%}
+              {%- continue -%}
+            {%- endif -%}
+
+            {%- unless first_item -%},{%- endunless -%}
+            { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
+            {%- assign first_item = false -%}
+            {%- assign shown_count = shown_count | plus: 1 -%}
+            {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
           {%- endfor -%}
         {%- endif -%}
       ]
