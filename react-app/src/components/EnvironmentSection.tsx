@@ -142,11 +142,11 @@ export function EnvironmentSection() {
                 fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
                 lineHeight: 1.15,
                 letterSpacing: '0.04em',
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
               }}
             >
-              COMPROMETIDOS CON
-              <br />
-              EL MEDIO AMBIENTE
+              COMPROMETIDOS CON EL MEDIO AMBIENTE
             </h2>
 
             <p

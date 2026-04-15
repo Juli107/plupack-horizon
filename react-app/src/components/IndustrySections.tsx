@@ -52,6 +52,14 @@ function interpolateColors(
     .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
+function hexToRgba(hexColor: string, alpha: number): string {
+  const normalizedHex = hexColor.replace('#', '');
+  const r = parseInt(normalizedHex.substring(0, 2), 16);
+  const g = parseInt(normalizedHex.substring(2, 4), 16);
+  const b = parseInt(normalizedHex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 // ============================================
 // SINGLE INDUSTRY SECTION
 // ============================================
@@ -77,6 +85,7 @@ function IndustrySection({
 
       const section = sectionRef.current;
       const titleEl = section.querySelector('.industry-title');
+      const subtitleEl = section.querySelector('.industry-subtitle');
 
       // Title reveal animation
       const tl = gsap.timeline({
@@ -101,6 +110,23 @@ function IndustrySection({
           ease: 'power3.out',
         },
       );
+
+      if (subtitleEl) {
+        tl.fromTo(
+          subtitleEl,
+          {
+            y: 20,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.55,
+            ease: 'power2.out',
+          },
+          '-=0.55',
+        );
+      }
 
       return () => {
         tl.kill();
@@ -130,13 +156,15 @@ function IndustrySection({
 
       {/* Description Layer - ABOVE 3D canvas (z-20) */}
       <div className="absolute z-20 bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:right-6 md:translate-x-0 w-full px-10 md:pb-20 max-w-md pointer-events-auto text-left">
-        <div className="w-10 h-0.5 bg-white/60 mb-1" />
-        <p
-          className="text-white/90 text-md leading-relaxed"
-          style={{ fontFamily: getFontFamily('body') }}
-        >
-          {description}
-        </p>
+        <div className="industry-subtitle px-3 py-2 rounded-md bg-[var(--industry-subtitle-bg)] md:bg-transparent md:rounded-none md:px-0 md:py-0">
+          <div className="w-10 h-0.5 bg-white/60 mb-1" />
+          <p
+            className="text-white/90 text-md leading-relaxed"
+            style={{ fontFamily: getFontFamily('body') }}
+          >
+            {description}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -192,6 +220,10 @@ export function IndustrySections() {
       // Set initial color and hide it
       bg.style.backgroundColor = colors[0];
       bg.style.opacity = '0';
+      container.style.setProperty(
+        '--industry-subtitle-bg',
+        hexToRgba(colors[0], 0.32),
+      );
 
       // Show/hide the fixed background based on container visibility
       ScrollTrigger.create({
@@ -277,6 +309,10 @@ export function IndustrySections() {
             localProgress,
           );
           bg.style.backgroundColor = currentColor;
+          container.style.setProperty(
+            '--industry-subtitle-bg',
+            hexToRgba(currentColor, 0.32),
+          );
         },
       });
 
