@@ -80,40 +80,9 @@
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "inverse"
       }
-    },
-    "header_announcements_aAiMtw": {
-      "type": "header-announcements",
-      "blocks": {
-        "announcement_3EMYAM": {
-          "type": "_announcement",
-          "settings": {
-            "text": "Por ahora, todos los pedidos se gestionan por el formulario de contacto. Para hacer tu pedido, <a href=\"/pages/contacto\"><strong>hacé clic aquí</strong></a>.",
-            "link": "",
-            "font": "var(--font-body--family)",
-            "font_size": "0.875rem",
-            "weight": "400",
-            "letter_spacing": "normal",
-            "case": "none"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "announcement_3EMYAM"
-      ],
-      "name": "t:names.announcement_bar",
-      "settings": {
-        "speed": 5,
-        "section_width": "page-width",
-        "color_scheme": "scheme-5",
-        "divider_width": 0,
-        "padding-block-start": 10,
-        "padding-block-end": 10
-      }
     }
   },
   "order": [
-    "header_section",
-    "header_announcements_aAiMtw"
+    "header_section"
   ]
 }
