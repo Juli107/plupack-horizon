@@ -19,6 +19,9 @@ import {
 // Camera is resolved deterministically from effective scroll
 // on every frame so behavior is consistent across browsers.
 const FOV_EPSILON = 0.02;
+const MOBILE_DISTANCE_PULLBACK = 1.1;
+const MOBILE_FOV_BOOST = 2;
+const MOBILE_MAX_FOV = 55;
 
 interface ScrollCameraProps {
   isMobile: boolean;
@@ -69,11 +72,28 @@ export function ScrollCamera({
       orbitPullback,
     );
 
-    cameraRef.current.position.copy(interpolated.position);
+    if (isMobile) {
+      const viewOffset = interpolated.position
+        .clone()
+        .sub(interpolated.lookAt);
+      const pulledViewOffset = viewOffset.multiplyScalar(
+        MOBILE_DISTANCE_PULLBACK,
+      );
+
+      cameraRef.current.position.copy(interpolated.lookAt).add(
+        pulledViewOffset,
+      );
+    } else {
+      cameraRef.current.position.copy(interpolated.position);
+    }
     cameraRef.current.lookAt(interpolated.lookAt);
 
-    if (Math.abs(cameraRef.current.fov - interpolated.fov) > FOV_EPSILON) {
-      cameraRef.current.fov = interpolated.fov;
+    const nextFov = isMobile
+      ? Math.min(interpolated.fov + MOBILE_FOV_BOOST, MOBILE_MAX_FOV)
+      : interpolated.fov;
+
+    if (Math.abs(cameraRef.current.fov - nextFov) > FOV_EPSILON) {
+      cameraRef.current.fov = nextFov;
       cameraRef.current.updateProjectionMatrix();
     }
   });

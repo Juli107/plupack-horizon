@@ -113,7 +113,7 @@ function IndustrySection({
     <div
       ref={sectionRef}
       id={id}
-      className="industry-section relative w-full min-h-[80vh] md:min-h-screen flex overflow-hidden"
+      className="industry-section relative w-full min-h-[65vh] sm:min-h-[75vh] md:min-h-screen flex overflow-hidden"
       data-industry-index={index}
     >
       {/* Title Layer - BEHIND 3D canvas (z-5) */}
@@ -181,6 +181,13 @@ export function IndustrySections() {
         window.matchMedia('(pointer: coarse)').matches ||
         window.matchMedia('(hover: none)').matches ||
         navigator.maxTouchPoints > 0;
+      const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
+      const progressStart = isMobileViewport
+        ? 'top 60%'
+        : INDUSTRY_TIMELINE.sectionTrigger.progressRange.start;
+      const progressEnd = isMobileViewport
+        ? 'bottom -20%'
+        : INDUSTRY_TIMELINE.sectionTrigger.progressRange.end;
 
       // Set initial color and hide it
       bg.style.backgroundColor = colors[0];
@@ -214,8 +221,8 @@ export function IndustrySections() {
       // Smooth color transition based on scroll position through the container
       ScrollTrigger.create({
         trigger: container,
-        start: INDUSTRY_TIMELINE.sectionTrigger.progressRange.start,
-        end: INDUSTRY_TIMELINE.sectionTrigger.progressRange.end,
+        start: progressStart,
+        end: progressEnd,
         scrub: isTouchDevice ? 0.75 : true,
         onToggle: (self) => {
           const sectionProgress = normalizeIndustrySectionProgress(self.progress);

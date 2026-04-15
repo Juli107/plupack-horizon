@@ -45,7 +45,7 @@ export interface CameraKeyframe {
   orbitHeight?: number;
 }
 
-export const MOBILE_ORBIT_PULLBACK = 1.5;
+export const MOBILE_ORBIT_PULLBACK = 1.6;
 
 // ============================================
 // KEYFRAMES DEFINITION
