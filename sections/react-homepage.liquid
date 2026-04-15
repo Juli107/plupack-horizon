@@ -241,7 +241,8 @@
                 {%- if shown_count >= max_images -%}
                   {%- break -%}
                 {%- endif -%}
-                {%- unless product_image.src contains '.png' -%}
+                {%- assign product_image_src = product_image.src | downcase -%}
+                {%- unless product_image_src contains '.png' -%}
                   {%- continue -%}
                 {%- endunless -%}
                 {%- unless first_item -%},{%- endunless -%}
@@ -249,11 +250,14 @@
                 {%- assign first_item = false -%}
                 {%- assign shown_count = shown_count | plus: 1 -%}
               {%- endfor -%}
-            {%- elsif product.featured_image != blank and product.featured_image.src contains '.png' -%}
+            {%- elsif product.featured_image != blank -%}
+              {%- assign featured_image_src = product.featured_image.src | downcase -%}
+              {%- if featured_image_src contains '.png' -%}
               {%- unless first_item -%},{%- endunless -%}
               { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
               {%- assign first_item = false -%}
               {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endif -%}
             {%- endif -%}
           {%- endfor -%}
         {%- endfor -%}
@@ -274,7 +278,8 @@
                 {%- if shown_count >= max_images -%}
                   {%- break -%}
                 {%- endif -%}
-                {%- unless product_image.src contains '.png' -%}
+                {%- assign product_image_src = product_image.src | downcase -%}
+                {%- unless product_image_src contains '.png' -%}
                   {%- continue -%}
                 {%- endunless -%}
                 {%- unless first_item -%},{%- endunless -%}
@@ -282,11 +287,14 @@
                 {%- assign first_item = false -%}
                 {%- assign shown_count = shown_count | plus: 1 -%}
               {%- endfor -%}
-            {%- elsif product.featured_image != blank and product.featured_image.src contains '.png' -%}
+            {%- elsif product.featured_image != blank -%}
+              {%- assign featured_image_src = product.featured_image.src | downcase -%}
+              {%- if featured_image_src contains '.png' -%}
               {%- unless first_item -%},{%- endunless -%}
               { src: {{ product.featured_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
               {%- assign first_item = false -%}
               {%- assign shown_count = shown_count | plus: 1 -%}
+              {%- endif -%}
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}

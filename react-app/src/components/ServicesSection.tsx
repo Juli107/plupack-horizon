@@ -1,11 +1,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import {
-  useRef,
-  useLayoutEffect,
-  useCallback,
-} from 'react';
+import { useRef, useLayoutEffect, useCallback } from 'react';
 import {
   BadgeDollarSign,
   Boxes,
@@ -188,6 +184,11 @@ export function ServicesSection() {
       )
         return;
 
+      // Ignore mobile URL-bar show/hide resize events (only width changes trigger refresh).
+      // Without this, iOS/Android fire `resize` on URL-bar toggle and GSAP re-measures the
+      // pin mid-scroll, which is what makes the section jump to the bottom on mobile.
+      ScrollTrigger.config({ ignoreMobileResize: true });
+
       const trigger = triggerRef.current;
       const pinShell = pinShellRef.current;
       const horizontalSection = horizontalRef.current;
@@ -197,7 +198,6 @@ export function ServicesSection() {
         window.matchMedia('(max-width: 768px)').matches;
       let scrollTween: gsap.core.Tween | undefined;
       let cardTweens: gsap.core.Tween[] = [];
-      let resizeRaf: number | null = null;
 
       const killHorizontalAnimation = () => {
         cardTweens.forEach((tween) => tween.kill());
@@ -223,35 +223,25 @@ export function ServicesSection() {
         return Math.max(0, totalWidth - viewportWidth);
       };
 
-      const syncPinnedLayout = (distance: number) => {
-        const viewportHeight = window.innerHeight;
-        const reservedHeight = Math.max(
-          viewportHeight,
-          viewportHeight + distance,
-        );
-        trigger.style.height = `${reservedHeight}px`;
-      };
-
       const initHorizontalAnimation = () => {
         killHorizontalAnimation();
 
-        const distance = getScrollDistance();
-        syncPinnedLayout(distance);
-
-        if (distance <= 0) {
+        if (getScrollDistance() <= 0) {
           return;
         }
 
+        // Function-based x/end so invalidateOnRefresh re-measures correctly after a refresh.
+        // pinSpacing defaults to true — GSAP inserts its own spacer equal to the scroll
+        // distance, replacing the previous manual syncPinnedLayout().
         scrollTween = gsap.to(horizontalSection, {
-          x: -distance,
+          x: () => -getScrollDistance(),
           ease: 'none',
           scrollTrigger: {
             trigger,
             start: 'top top',
-            end: `+=${distance}`,
+            end: () => `+=${getScrollDistance()}`,
             scrub: 0.5,
             pin: pinShell,
-            pinSpacing: false,
             anticipatePin: 1,
             invalidateOnRefresh: true,
           },
@@ -317,32 +307,15 @@ export function ServicesSection() {
         );
       }
 
-      const handleResize = () => {
-        if (resizeRaf !== null) {
-          window.cancelAnimationFrame(resizeRaf);
-        }
-
-        resizeRaf = window.requestAnimationFrame(() => {
-          resizeRaf = null;
-          initHorizontalAnimation();
-          ScrollTrigger.refresh();
-        });
-      };
-
+      // GSAP ScrollTrigger handles its own resize refresh (filtered by ignoreMobileResize),
+      // and invalidateOnRefresh + function-based x/end re-measure the distance — no manual
+      // re-init needed here.
       initHorizontalAnimation();
       ScrollTrigger.refresh();
-      window.addEventListener('resize', handleResize);
-      window.addEventListener('orientationchange', handleResize);
 
       return () => {
-        if (resizeRaf !== null) {
-          window.cancelAnimationFrame(resizeRaf);
-        }
-        window.removeEventListener('resize', handleResize);
-        window.removeEventListener('orientationchange', handleResize);
         titleTween?.kill();
         killHorizontalAnimation();
-        trigger.style.height = '';
       };
     },
     { scope: sectionRef, dependencies: [] },
@@ -351,44 +324,44 @@ export function ServicesSection() {
   return (
     <section ref={sectionRef} className="relative">
       {/* This is the pinned container */}
-      <div ref={triggerRef} className="relative overflow-hidden min-h-screen">
-        <div ref={pinShellRef} className="h-screen overflow-hidden">
-        {/* This is what moves horizontally */}
-        <div
-          ref={horizontalRef}
-          className="flex min-h-screen text-white"
-          style={{ width: 'fit-content' }}
-        >
-          {/* First panel - Title Section */}
-          <div className="w-screen h-screen flex flex-col justify-center items-center px-6 shrink-0">
-            <div className="container mx-auto text-center">
-              <h2 className="text-4xl md:text-6xl [@media(orientation:landscape)_and_(max-height:500px)]:text-3xl font-medium mb-4 leading-tight font-['Montserrat']">
-                <span className="services-reveal-text block">
-                  QUE LA FALTA DE UN INSUMO
-                </span>
-                <span className="services-reveal-text inline-block bg-white text-[#084e85] px-4 py-1 mt-2 font-bold transform -skew-x-2">
-                  NO FRENE TU OPERACIÓN
-                </span>
-              </h2>
-              <p className="services-reveal-text mt-8 [@media(orientation:landscape)_and_(max-height:500px)]:mt-5 text-lg md:text-xl [@media(orientation:landscape)_and_(max-height:500px)]:text-base opacity-90 max-w-3xl mx-auto font-['Open_Sans']">
-                Gestionamos los insumos que no generan ingresos
-                directos, pero cuya ausencia puede afectar tiempos,
-                entregas y servicio. Con fabricación propia y
-                logística eficiente, convertimos el abastecimiento en
-                una variable controlada.
-              </p>
+      <div ref={triggerRef} className="relative overflow-hidden">
+        <div ref={pinShellRef} className="h-svh overflow-hidden">
+          {/* This is what moves horizontally */}
+          <div
+            ref={horizontalRef}
+            className="flex min-h-svh text-white"
+            style={{ width: 'fit-content' }}
+          >
+            {/* First panel - Title Section */}
+            <div className="w-screen h-svh flex flex-col justify-center items-center px-6 shrink-0">
+              <div className="container mx-auto text-center">
+                <h2 className="text-4xl md:text-6xl [@media(orientation:landscape)_and_(max-height:500px)]:text-3xl font-medium mb-4 leading-tight font-['Montserrat']">
+                  <span className="services-reveal-text block">
+                    QUE LA FALTA DE UN INSUMO
+                  </span>
+                  <span className="services-reveal-text inline-block bg-white text-[#084e85] px-4 py-1 mt-2 font-bold transform -skew-x-2">
+                    NO FRENE TU OPERACIÓN
+                  </span>
+                </h2>
+                <p className="services-reveal-text mt-8 [@media(orientation:landscape)_and_(max-height:500px)]:mt-5 text-lg md:text-xl [@media(orientation:landscape)_and_(max-height:500px)]:text-base opacity-90 max-w-3xl mx-auto font-['Open_Sans']">
+                  Gestionamos los insumos que no generan ingresos
+                  directos, pero cuya ausencia puede afectar tiempos,
+                  entregas y servicio. Con fabricación propia y
+                  logística eficiente, convertimos el abastecimiento
+                  en una variable controlada.
+                </p>
+              </div>
+            </div>
+
+            {/* Cards Section */}
+            <div className="flex items-center gap-8 px-8 shrink-0">
+              {services.map((service) => (
+                <TiltCard key={service.id} service={service} />
+              ))}
+              {/* End spacer to ensure last card is fully visible */}
+              <div className="w-[20vw] shrink-0"></div>
             </div>
           </div>
-
-          {/* Cards Section */}
-          <div className="flex items-center gap-8 px-8 shrink-0">
-            {services.map((service) => (
-              <TiltCard key={service.id} service={service} />
-            ))}
-            {/* End spacer to ensure last card is fully visible */}
-            <div className="w-[20vw] shrink-0"></div>
-          </div>
-        </div>
         </div>
       </div>
     </section>
