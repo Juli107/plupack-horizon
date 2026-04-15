@@ -25,11 +25,12 @@
     },
     "about_purpose": {
       "type": "about-purpose",
+      "custom_css": [],
       "settings": {
         "heading": "Nuestro propósito",
         "paragraph_1": "Simplificamos la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable: menos fricción, más continuidad operativa.",
         "paragraph_2": "No buscamos ser un proveedor más, sino un aliado estratégico. Trabajamos como socios indirectos de nuestros clientes, generando sinergia y sosteniendo relaciones basadas en rendimiento y eficiencia.",
-        "image": "shopify://shop_images/ChatGPT_Image_15_abr_2026_13_42_00.png",
+        "image": "shopify://shop_images/ChatGPT_Image_15_abr_2026_13_46_59.png",
         "image_alt": ""
       }
     },
