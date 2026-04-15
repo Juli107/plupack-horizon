@@ -117,7 +117,7 @@
             "inherit_color_scheme": true,
             "color_scheme": "",
             "heading": "",
-            "heading_preset": "h3",
+            "heading_preset": "h2",
             "border_style": "none",
             "border_width": 1,
             "border_radius": 100,
@@ -142,7 +142,7 @@
       "name": "t:names.footer",
       "settings": {
         "section_width": "page-width",
-        "gap": 20,
+        "gap": 77,
         "color_scheme": "scheme-b278931d-61fd-49e6-988e-9022c0328eec",
         "padding-block-start": 50,
         "padding-block-end": 50
