@@ -42,6 +42,9 @@
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -76,7 +79,7 @@
             "info_copy": {
               "type": "text",
               "settings": {
-                "text": "<p>Estamos aquí para ayudarte. Si tienes preguntas sobre nuestros productos o pedidos, completa el formulario y te responderemos lo antes posible.</p>",
+                "text": "<p>Estamos aquí para ayudarte. Si tenes preguntas sobre nuestros productos o pedidos, completa el formulario y te responderemos lo antes posible.</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -101,7 +104,7 @@
             "info_phone": {
               "type": "text",
               "settings": {
-                "text": "<p><strong>Teléfono:</strong> +54 11 6059-9214</p>",
+                "text": "<p><strong>Teléfono:</strong> +54 11 3389 4270</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -126,7 +129,7 @@
             "info_hours": {
               "type": "text",
               "settings": {
-                "text": "<p><strong>Horario:</strong> Lunes a Viernes, 9am - 6pm</p>",
+                "text": "<p><strong>Horario:</strong> Lunes a Viernes, 7am a 5pm</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -151,7 +154,7 @@
             "info_address": {
               "type": "text",
               "settings": {
-                "text": "<p><strong>Dirección:</strong> Alvar Núñez 571, B1686 Villa Tesei, Provincia de Buenos Aires, Argentina</p>",
+                "text": "<p><strong>Dirección:</strong> Alvar Núñez 571, Villa Tesei, Buenos Aires - Argentina</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -212,6 +215,9 @@
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
