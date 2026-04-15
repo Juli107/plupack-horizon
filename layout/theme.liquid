@@ -178,7 +178,14 @@
     {% render 'search-modal' %}
 
     {% if settings.quick_add or settings.mobile_quick_add %}
-      {% render 'quick-add-modal' %}
+      {% comment %}
+        Disable quick add modal on homepage only.
+        It can inflate document height after mobile orientation changes,
+        causing a large white gap below the footer.
+      {% endcomment %}
+      {% unless request.page_type == 'index' %}
+        {% render 'quick-add-modal' %}
+      {% endunless %}
     {% endif %}
   </body>
 </html>
