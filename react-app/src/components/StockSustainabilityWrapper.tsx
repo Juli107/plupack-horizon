@@ -19,57 +19,73 @@ interface ImagePosition {
   rotate: number;
   scale: number;
   layer: 1 | 2 | 3;
+  driftY: number;
+  driftRotation: number;
 }
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const DESKTOP_SLOTS: ImagePosition[] = [
+  { x: -45, y: -40, rotate: -12, scale: 0.94, layer: 3, driftY: 8, driftRotation: 2 },
+  { x: -31, y: -43, rotate: -5, scale: 0.86, layer: 2, driftY: 7, driftRotation: -1 },
+  { x: -14, y: -45, rotate: 8, scale: 0.78, layer: 1, driftY: 6, driftRotation: 1 },
+  { x: 6, y: -44, rotate: -7, scale: 0.84, layer: 2, driftY: 7, driftRotation: 2 },
+  { x: 24, y: -42, rotate: 9, scale: 0.9, layer: 3, driftY: 8, driftRotation: -1 },
+  { x: 42, y: -39, rotate: -10, scale: 0.84, layer: 2, driftY: 7, driftRotation: 2 },
 
-const seeded = (seed: number) => {
-  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-  return x - Math.floor(x);
-};
+  { x: -47, y: -18, rotate: -9, scale: 0.92, layer: 3, driftY: 10, driftRotation: 3 },
+  { x: -49, y: 3, rotate: 7, scale: 0.83, layer: 2, driftY: 12, driftRotation: 1 },
+  { x: -46, y: 26, rotate: -6, scale: 0.9, layer: 3, driftY: 11, driftRotation: -1 },
+
+  { x: 46, y: -16, rotate: 11, scale: 0.91, layer: 3, driftY: 10, driftRotation: -2 },
+  { x: 49, y: 5, rotate: -8, scale: 0.83, layer: 2, driftY: 12, driftRotation: 1 },
+  { x: 45, y: 27, rotate: 6, scale: 0.88, layer: 3, driftY: 11, driftRotation: 2 },
+
+  { x: -43, y: 41, rotate: 10, scale: 0.9, layer: 3, driftY: 8, driftRotation: 1 },
+  { x: -26, y: 44, rotate: -7, scale: 0.84, layer: 2, driftY: 7, driftRotation: -2 },
+  { x: -8, y: 45, rotate: 5, scale: 0.78, layer: 1, driftY: 6, driftRotation: 1 },
+  { x: 12, y: 44, rotate: -9, scale: 0.84, layer: 2, driftY: 7, driftRotation: -1 },
+  { x: 29, y: 43, rotate: 8, scale: 0.9, layer: 3, driftY: 8, driftRotation: 2 },
+  { x: 45, y: 40, rotate: -6, scale: 0.84, layer: 2, driftY: 7, driftRotation: -1 },
+
+  { x: -35, y: -30, rotate: 4, scale: 0.76, layer: 1, driftY: 9, driftRotation: 1 },
+  { x: 34, y: -30, rotate: -4, scale: 0.76, layer: 1, driftY: 9, driftRotation: -1 },
+  { x: -36, y: 31, rotate: -3, scale: 0.76, layer: 1, driftY: 9, driftRotation: 1 },
+  { x: 35, y: 31, rotate: 3, scale: 0.76, layer: 1, driftY: 9, driftRotation: -1 },
+  { x: -22, y: 36, rotate: 6, scale: 0.82, layer: 2, driftY: 8, driftRotation: 1 },
+  { x: 21, y: 36, rotate: -6, scale: 0.82, layer: 2, driftY: 8, driftRotation: -1 },
+];
+
+const MOBILE_SLOTS: ImagePosition[] = [
+  { x: -43, y: -39, rotate: -11, scale: 0.9, layer: 3, driftY: 8, driftRotation: 2 },
+  { x: -20, y: -43, rotate: 6, scale: 0.82, layer: 2, driftY: 7, driftRotation: 1 },
+  { x: 6, y: -43, rotate: -7, scale: 0.82, layer: 2, driftY: 7, driftRotation: -1 },
+  { x: 34, y: -39, rotate: 9, scale: 0.88, layer: 3, driftY: 8, driftRotation: 2 },
+
+  { x: -48, y: -10, rotate: -9, scale: 0.86, layer: 2, driftY: 9, driftRotation: 1 },
+  { x: -47, y: 17, rotate: 8, scale: 0.9, layer: 3, driftY: 10, driftRotation: -2 },
+  { x: 48, y: -8, rotate: 10, scale: 0.88, layer: 3, driftY: 9, driftRotation: -1 },
+  { x: 47, y: 18, rotate: -8, scale: 0.86, layer: 2, driftY: 10, driftRotation: 2 },
+
+  { x: -41, y: 41, rotate: 10, scale: 0.9, layer: 3, driftY: 8, driftRotation: 1 },
+  { x: -16, y: 44, rotate: -6, scale: 0.8, layer: 2, driftY: 7, driftRotation: -1 },
+  { x: 11, y: 44, rotate: 7, scale: 0.8, layer: 2, driftY: 7, driftRotation: 1 },
+  { x: 38, y: 41, rotate: -9, scale: 0.88, layer: 3, driftY: 8, driftRotation: -2 },
+
+  { x: -30, y: -28, rotate: 4, scale: 0.74, layer: 1, driftY: 8, driftRotation: 1 },
+  { x: 29, y: -28, rotate: -4, scale: 0.74, layer: 1, driftY: 8, driftRotation: -1 },
+  { x: -31, y: 30, rotate: -5, scale: 0.74, layer: 1, driftY: 8, driftRotation: 1 },
+  { x: 30, y: 30, rotate: 5, scale: 0.74, layer: 1, driftY: 8, driftRotation: -1 },
+];
 
 function generateRainPositions(
   count: number,
   isMobile: boolean
 ): ImagePosition[] {
-  const maxVisible = isMobile ? 24 : 42;
+  const slots = isMobile ? MOBILE_SLOTS : DESKTOP_SLOTS;
+  const maxVisible = slots.length;
   const total = Math.min(count, maxVisible);
   if (total <= 0) return [];
 
-  return Array.from({ length: total }, (_, index) => {
-    const angle = seeded(index + 2000) * Math.PI * 2;
-
-    const radiusX = (isMobile ? 30 : 36) + seeded(index + 2100) * (isMobile ? 14 : 20);
-    const radiusY = (isMobile ? 24 : 28) + seeded(index + 2200) * (isMobile ? 14 : 18);
-
-    let baseX = Math.cos(angle) * radiusX;
-    let baseY = Math.sin(angle) * radiusY;
-
-    const jitterX = (seeded(index + 1) - 0.5) * (isMobile ? 9 : 7);
-    const jitterY = (seeded(index + 101) - 0.5) * (isMobile ? 7 : 6);
-    const depthRand = seeded(index + 500);
-
-    const layer: 1 | 2 | 3 =
-      depthRand > 0.68 ? 3 : depthRand > 0.34 ? 2 : 1;
-
-    const scaleBase = layer === 3 ? 0.92 : layer === 2 ? 0.82 : 0.72;
-    const scale = scaleBase + seeded(index + 800) * 0.12;
-
-    // Keep center relatively clear so text remains readable.
-    if (Math.abs(baseX) < 18 && Math.abs(baseY) < 14) {
-      baseX *= 1.6;
-      baseY *= 1.6;
-    }
-
-    return {
-      x: clamp(baseX + jitterX, -49, 49),
-      y: clamp(baseY + jitterY, -48, 46),
-      rotate: Math.round((seeded(index + 1200) - 0.5) * 24),
-      scale,
-      layer,
-    };
-  });
+  return slots.slice(0, total);
 }
 
 // ============================================
@@ -115,13 +131,13 @@ export function StockSustainabilityWrapper() {
 
     if (isMobile) {
       return dense
-        ? 'clamp(42px, 12vw, 74px)'
-        : 'clamp(50px, 18vw, 100px)';
+        ? 'clamp(62px, 16vw, 108px)'
+        : 'clamp(78px, 22vw, 148px)';
     }
 
     return dense
-      ? 'clamp(56px, 7vw, 96px)'
-      : 'clamp(80px, 12vw, 150px)';
+      ? 'clamp(90px, 9.5vw, 152px)'
+      : 'clamp(120px, 14vw, 230px)';
   }, [isMobile, positions.length]);
 
   // Count-up animation
@@ -279,9 +295,7 @@ export function StockSustainabilityWrapper() {
         xMultiplier: number,
         yMultiplier: number,
         scaleMultiplier: number,
-        opacity: number,
-        driftY: number,
-        driftRotation: number
+        opacity: number
       ) => {
         if (layerElements.length === 0) return;
 
@@ -303,8 +317,13 @@ export function StockSustainabilityWrapper() {
           layerElements,
           {
             y: (i) =>
-              `${layerPositions[i].y * yMultiplier + driftY}vh`,
-            rotation: (i) => layerPositions[i].rotate + driftRotation,
+              `${
+                layerPositions[i].y * yMultiplier +
+                layerPositions[i].driftY
+              }vh`,
+            rotation: (i) =>
+              layerPositions[i].rotate +
+              layerPositions[i].driftRotation,
             duration: 0.5,
             ease: 'none',
           },
@@ -319,9 +338,7 @@ export function StockSustainabilityWrapper() {
         0.8,
         0.8,
         0.85,
-        0.6,
-        8,
-        3
+        0.6
       );
       addLayerTweens(
         midElements,
@@ -330,9 +347,7 @@ export function StockSustainabilityWrapper() {
         1,
         1,
         0.95,
-        0.85,
-        15,
-        -2
+        0.85
       );
       addLayerTweens(
         frontElements,
@@ -341,9 +356,7 @@ export function StockSustainabilityWrapper() {
         1.1,
         1.1,
         1,
-        1,
-        25,
-        4
+        1
       );
 
       // Title fades at end

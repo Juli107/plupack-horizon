@@ -183,6 +183,72 @@ export function Homepage({
   // Sync Lenis with GSAP ScrollTrigger
   useLenisGSAP(lenisRef);
 
+  // Mobile rotation can leave stale ScrollTrigger pin spacers (white gap after footer).
+  // Recalculate only on meaningful viewport changes (width/orientation), not URL-bar height shifts.
+  useEffect(() => {
+    let refreshTimeoutId = 0;
+    let rafId = 0;
+    let nestedRafId = 0;
+
+    let lastWidth = window.innerWidth;
+    let lastOrientation =
+      window.innerWidth > window.innerHeight
+        ? 'landscape'
+        : 'portrait';
+
+    const scheduleLayoutRefresh = () => {
+      window.clearTimeout(refreshTimeoutId);
+      window.cancelAnimationFrame(rafId);
+      window.cancelAnimationFrame(nestedRafId);
+
+      refreshTimeoutId = window.setTimeout(() => {
+        rafId = window.requestAnimationFrame(() => {
+          nestedRafId = window.requestAnimationFrame(() => {
+            lenisRef.current?.lenis?.resize?.();
+            ScrollTrigger.refresh();
+          });
+        });
+      }, 220);
+    };
+
+    const handleResize = () => {
+      const nextWidth = window.innerWidth;
+      const nextOrientation =
+        window.innerWidth > window.innerHeight
+          ? 'landscape'
+          : 'portrait';
+
+      const widthChanged = Math.abs(nextWidth - lastWidth) > 2;
+      const orientationChanged = nextOrientation !== lastOrientation;
+
+      if (!widthChanged && !orientationChanged) {
+        return;
+      }
+
+      lastWidth = nextWidth;
+      lastOrientation = nextOrientation;
+      scheduleLayoutRefresh();
+    };
+
+    const handleOrientationChange = () => {
+      scheduleLayoutRefresh();
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener(
+        'orientationchange',
+        handleOrientationChange,
+      );
+      window.clearTimeout(refreshTimeoutId);
+      window.cancelAnimationFrame(rafId);
+      window.cancelAnimationFrame(nestedRafId);
+    };
+  }, []);
+
   // Header tint controller
   const { setHeaderTint } = useHeaderTintControl();
 
