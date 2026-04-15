@@ -13,11 +13,11 @@
       "type": "about-hero",
       "settings": {
         "eyebrow": "Sobre nosotros",
-        "heading_line_1": "Soluciones",
-        "heading_line_2": "integrales en",
-        "heading_line_3": "embalaje",
-        "paragraph_1": "Somos una empresa argentina que fabrica y distribuye soluciones de embalaje para industria, gastronomía y salud. Más que vender productos, organizamos el abastecimiento: centralizamos insumos, coordinamos entregas y sostenemos el suministro para dar continuidad a la operación de cada cliente.",
-        "paragraph_2": "Trabajamos con estándares claros de calidad, cumplimiento y atención directa, con una estructura preparada para responder con agilidad, anticipar necesidades recurrentes y acompañar operaciones que no pueden detenerse.",
+        "heading_line_1": "DISTRIBUIDORES",
+        "heading_line_2": "MAYORISTAS",
+        "heading_line_3": "DE INSUMOS OPERATIVOS",
+        "paragraph_1": "Fabricamos y distribuimos soluciones de embalaje para industria, gastronomía y salud. Organizamos el abastecimiento de nuestros clientes centralizando insumos, coordinando entregas y asegurando continuidad operativa.",
+        "paragraph_2": "",
         "value_1": "calidad garantizada",
         "value_2": "entrega eficiente",
         "value_3": "asesoría cercana"
@@ -27,33 +27,33 @@
       "type": "about-purpose",
       "settings": {
         "heading": "Nuestro propósito",
-        "paragraph_1": "Simplificar la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable. Menos fricción, menos vueltas, más continuidad operativa.",
-        "paragraph_2": "No buscamos ser un proveedor más. Buscamos ser el punto de referencia al que volvés porque responde, cumple y sostiene acuerdos en el tiempo.",
-        "image": "",
-        "image_alt": "Equipo de trabajo en laboratorio"
+        "paragraph_1": "Simplificamos la compra y el abastecimiento de insumos de embalaje con un servicio ágil, transparente y confiable: menos fricción, más continuidad operativa.",
+        "paragraph_2": "No buscamos ser un proveedor más, sino un aliado estratégico. Trabajamos como socios indirectos de nuestros clientes, generando sinergia y sosteniendo relaciones basadas en rendimiento y eficiencia.",
+        "image": "shopify://shop_images/ChatGPT_Image_15_abr_2026_10_32_25.png",
+        "image_alt": ""
       }
     },
     "about_future": {
       "type": "about-future-intro",
       "settings": {
-        "paragraph": "Buscamos consolidarnos como una de las marcas de embalaje más modernas y confiables de Argentina. Nuestra proyección se sostiene en cinco ejes concretos.",
-        "padding_top": 24,
-        "padding_bottom": 120
+        "paragraph": "",
+        "padding_top": 4,
+        "padding_bottom": 0
       }
     },
     "about_future_axes": {
       "type": "about-future",
       "settings": {
         "heading": "Futuro",
-        "axis_1_title": "Expansión nacional",
+        "axis_1_title": "Expansión Nacional",
         "axis_1_text": "Presencia operativa en todas las provincias con cobertura logística eficiente.",
-        "axis_2_title": "Fortalecimiento estructural",
+        "axis_2_title": "Fortalecimiento Estructural",
         "axis_2_text": "Optimización de procesos internos y mejora continua en tiempos de entrega.",
-        "axis_3_title": "Ampliación de catálogo",
+        "axis_3_title": "Ampliación de Catálogo",
         "axis_3_text": "Desarrollo de nuevas líneas según demanda real del mercado.",
-        "axis_4_title": "Sustentabilidad aplicada",
+        "axis_4_title": "Sustentabilidad Aplicada",
         "axis_4_text": "Incorporación progresiva de materiales reciclables y biodegradables donde aporten valor operativo.",
-        "axis_5_title": "Relaciones a largo plazo",
+        "axis_5_title": "Relaciones a Largo Plazo",
         "axis_5_text": "Acuerdos estables con clientes estratégicos basados en previsibilidad y cumplimiento."
       }
     },
