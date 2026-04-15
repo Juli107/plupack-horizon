@@ -113,7 +113,7 @@
           "type": "email-signup",
           "settings": {
             "width": "fill",
-            "custom_width": 66,
+            "custom_width": 65,
             "inherit_color_scheme": true,
             "color_scheme": "",
             "heading": "",
