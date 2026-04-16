@@ -668,10 +668,10 @@ export function LogisticsMapSection() {
                 className="map-heading text-white font-bold tracking-tight"
                 style={{
                   fontFamily: getFontFamily('heading'),
-                  fontSize: 'clamp(3.2rem, 6.2vw, 6.2rem)',
+                  fontSize: 'clamp(2.65rem, 6vw, 6.2rem)',
                   letterSpacing: '-0.03em',
-                  lineHeight: 0.9,
-                  maxWidth: '13ch',
+                  lineHeight: 0.92,
+                  maxWidth: '12.5ch',
                 }}
               >
                 COBERTURA NACIONAL

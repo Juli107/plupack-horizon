@@ -70,21 +70,21 @@ export function IndustryDynamicsSection() {
       className="relative w-full flex items-center justify-center overflow-hidden"
       style={{
         backgroundColor: '#084e85',
-        minHeight: '65vh',
-        padding: 'clamp(4rem, 10vh, 8rem) 1.5rem',
+        minHeight: 'auto',
+        padding: 'clamp(3.25rem, 8vh, 7rem) 1.25rem',
       }}
     >
-      <div className="relative z-10 text-center max-w-6xl mx-auto px-6">
+      <div className="relative z-10 text-center w-full max-w-4xl mx-auto px-4 sm:px-6">
         {/* Title */}
         <h2
           ref={titleRef}
-          className="font-bold uppercase tracking-wider mb-8"
+          className="font-bold uppercase tracking-wider mb-6 sm:mb-8"
           style={{
             fontFamily: getFontFamily('heading'),
             color: '#FFFFFF',
-            fontSize: 'clamp(2.2rem, 7vw, 4.5rem)',
-            lineHeight: 1,
-            letterSpacing: '0.06em',
+            fontSize: 'clamp(1.9rem, 7.4vw, 4.5rem)',
+            lineHeight: 0.95,
+            letterSpacing: '0.045em',
           }}
         >
           ATENCIÓN A MEDIDA
@@ -93,13 +93,13 @@ export function IndustryDynamicsSection() {
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="font-medium uppercase tracking-widest"
+          className="font-medium uppercase tracking-[0.08em] sm:tracking-widest"
           style={{
             fontFamily: getFontFamily('body'),
-            color: 'rgba(255, 255, 255, 0.7)',
-            fontSize: 'clamp(0.9rem, 2.5vw, 1.35rem)',
-            lineHeight: 1.6,
-            letterSpacing: '0.12em',
+            color: 'rgba(255, 255, 255, 0.82)',
+            fontSize: 'clamp(0.85rem, 2.5vw, 1.35rem)',
+            lineHeight: 1.45,
+            letterSpacing: '0.08em',
           }}
         >
           NOS ADAPTAMOS A LA NECESIDAD DE TU EMPRESA

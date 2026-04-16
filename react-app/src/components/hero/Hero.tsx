@@ -128,7 +128,7 @@ export function Hero() {
   }, [activeProductIndex, featuredProducts.length]);
 
   return (
-    <section className="relative w-full min-h-screen">
+    <section className="relative w-full min-h-[100svh]">
       {/* Responsive SVG filter switcher: mobile uses thinner dilate radius */}
       <style>{`
         .hero-outline-text { filter: url(#outline-filter-hero-mobile); }
@@ -143,7 +143,7 @@ export function Hero() {
           >
             <article className="relative w-full overflow-hidden bg-[#062742] text-white md:h-full">
               <div className="relative flex h-full w-full flex-col md:flex-row">
-                <div className="relative order-1 flex w-full flex-col justify-center bg-[#042843] px-6 pb-12 pt-28 sm:px-7 sm:pb-14 sm:pt-32 md:order-1 md:w-1/2 md:items-center md:px-10 md:py-10">
+                <div className="relative order-1 flex w-full flex-col justify-center bg-[#042843] px-5 pb-10 pt-24 sm:px-7 sm:pb-14 sm:pt-32 md:order-1 md:w-1/2 md:items-center md:px-10 md:py-10">
                   <div className="w-full max-w-[30rem] text-left">
                     <div className="flex justify-start">
                     <p
@@ -157,14 +157,14 @@ export function Hero() {
                     {activeProduct ? (
                       <div className="mt-4 md:mt-7">
                         <h2
-                          className="text-[clamp(1.6rem,5.8vw,2.1rem)] md:text-[clamp(2rem,2.65vw,2.85rem)] font-medium leading-[1.05] uppercase tracking-[0.02em]"
+                          className="text-[clamp(1.45rem,5.5vw,2.1rem)] md:text-[clamp(2rem,2.65vw,2.85rem)] font-medium leading-[1.03] uppercase tracking-[0.01em] sm:tracking-[0.02em]"
                           style={{ fontFamily: getFontFamily('heading') }}
                         >
                           {activeProduct.title}
                         </h2>
                         {activeProduct.description ? (
                           <p
-                            className="mt-2 max-w-[30ch] text-xs leading-snug text-white/80 md:mt-3 md:text-sm"
+                            className="mt-2 max-w-[28ch] text-[0.78rem] leading-snug text-white/80 md:mt-3 md:max-w-[30ch] md:text-sm"
                             style={{ fontFamily: getFontFamily('body') }}
                           >
                             {activeProduct.description}
@@ -173,7 +173,7 @@ export function Hero() {
                         <div className="mt-4 flex justify-start md:mt-6">
                           <a
                             href={activeProduct.url}
-                            className="inline-flex min-h-[42px] items-center justify-center rounded-[11px] border border-white/70 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.09em] text-white transition-colors duration-300 hover:bg-white/25 md:px-7 md:text-xs"
+                            className="inline-flex min-h-[42px] w-full sm:w-auto items-center justify-center rounded-[11px] border border-white/70 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.09em] text-white transition-colors duration-300 hover:bg-white/25 md:px-7 md:text-xs"
                             style={{ fontFamily: getFontFamily('body') }}
                           >
                             Ver producto
@@ -184,7 +184,7 @@ export function Hero() {
                   </div>
                 </div>
 
-                <div className="relative order-2 h-[20rem] w-full overflow-hidden bg-[#0a3f67] sm:h-[22rem] md:order-2 md:h-full md:w-1/2">
+                <div className="relative order-2 h-[18rem] w-full overflow-hidden bg-[#0a3f67] sm:h-[22rem] md:order-2 md:h-full md:w-1/2">
                   {featuredProducts.map((product, index) => (
                     <div
                       key={product.handle}
@@ -249,18 +249,18 @@ export function Hero() {
         ) : null}
 
         <div
-          className={`flex-1 md:h-full flex items-center pl-6 pr-6 md:pl-7 md:pr-10 xl:pl-9 xl:pr-12 pb-8 md:pb-10 pt-8 ${
+          className={`flex-1 md:h-full flex items-center px-5 md:px-7 md:pr-10 xl:pl-9 xl:pr-12 pb-8 md:pb-10 pt-8 ${
             hasFeaturedProducts
               ? featuredContentOffsetClass
               : 'md:pt-28'
           }`}
         >
-          <div className="flex flex-col lg:flex-row w-full relative items-start lg:justify-between gap-8 lg:gap-6">
+          <div className="flex flex-col lg:flex-row w-full relative items-start lg:justify-between gap-7 lg:gap-6">
             <div className="lg:w-3/5 xl:w-7/12 flex flex-col justify-start relative">
               <h1
                 ref={headlineRef}
                 style={{ fontFamily: getFontFamily('heading') }}
-                className="text-[clamp(2.3rem,10.8vw,2.9rem)] sm:text-6xl md:text-7xl lg:text-[clamp(4.2rem,5.5vw,5.8rem)] xl:text-[clamp(5rem,5.5vw,6.4rem)] leading-[0.92] font-medium uppercase tracking-wide mt-[-0.05em]"
+                className="text-[clamp(2.05rem,9.6vw,2.9rem)] sm:text-6xl md:text-7xl lg:text-[clamp(4.2rem,5.5vw,5.8rem)] xl:text-[clamp(5rem,5.5vw,6.4rem)] leading-[0.92] font-medium uppercase tracking-[0.01em] sm:tracking-wide mt-[-0.05em]"
               >
                 <div className="flex flex-col items-start leading-[0.92]">
                   <div className="relative inline-block min-h-[0.92em] leading-[0.92]">

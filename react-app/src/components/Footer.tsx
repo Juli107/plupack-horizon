@@ -74,16 +74,16 @@ export function Footer() {
     <footer className="relative w-full bg-gradient-to-b from-[#1E4377] to-[#143059] text-white">
       {/* Logo Section - Full Width */}
       <div className="w-full border-b border-white/20">
-        <div className="px-8 md:px-12 lg:px-16 py-12 md:py-16">
+        <div className="px-6 sm:px-8 md:px-12 lg:px-16 py-8 md:py-16">
           {logoUrl ? (
             <img
               src={logoUrl}
               alt="PLUPack Embalajes"
-              className="h-16 md:h-20 lg:h-24 w-auto"
+              className="h-12 sm:h-14 md:h-20 lg:h-24 w-auto"
             />
           ) : (
             <span
-              className="text-2xl md:text-3xl font-bold"
+              className="text-xl sm:text-2xl md:text-3xl font-bold"
               style={{ fontFamily: getFontFamily('heading') }}
             >
               PLUPACK
@@ -96,16 +96,16 @@ export function Footer() {
       <div className="w-full grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/20 border-b border-white/20">
         {/* Column 1: Dónde estamos */}
         <div
-          className="p-8 md:p-12 lg:p-16"
+          className="p-6 sm:p-8 md:p-12 lg:p-16"
           style={{ fontFamily: getFontFamily('body') }}
         >
           <h3
-            className="text-xs font-medium uppercase tracking-[0.125em] mb-6 opacity-70"
+            className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.125em] mb-4 sm:mb-6 opacity-70"
             style={{ fontFamily: "'Roboto Mono', monospace" }}
           >
             DÓNDE ESTAMOS
           </h3>
-          <p className="text-lg md:text-xl leading-relaxed mb-6 font-medium">
+          <p className="text-base sm:text-lg md:text-xl leading-relaxed mb-5 sm:mb-6 font-medium max-w-[20ch]">
             Alvar Núñez 571, B1686 Villa
             <br />
             Tesei, Provincia de Buenos Aires,
@@ -125,37 +125,37 @@ export function Footer() {
 
         {/* Column 2: Navegación */}
         <div
-          className="p-8 md:p-12 lg:p-16"
+          className="p-6 sm:p-8 md:p-12 lg:p-16"
           style={{ fontFamily: getFontFamily('body') }}
         >
           <h3
-            className="text-xs font-medium uppercase tracking-[0.125em] mb-6 opacity-70"
+            className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.125em] mb-4 sm:mb-6 opacity-70"
             style={{ fontFamily: "'Roboto Mono', monospace" }}
           >
             NAVEGACIÓN
           </h3>
-          <nav className="flex flex-col gap-3">
+          <nav className="flex flex-col gap-2.5 sm:gap-3">
             <a
               href="/collections/all"
-              className="text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
+              className="text-base sm:text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
             >
               Catálogo
             </a>
             <a
               href="/pages/cotizar"
-              className="text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
+              className="text-base sm:text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
             >
               Cotizar
             </a>
             <a
               href="/pages/nosotros"
-              className="text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
+              className="text-base sm:text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
             >
               Nosotros
             </a>
             <a
               href="/pages/contacto"
-              className="text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
+              className="text-base sm:text-lg md:text-xl font-medium hover:opacity-70 transition-opacity"
             >
               Contacto
             </a>
@@ -164,22 +164,22 @@ export function Footer() {
 
         {/* Column 3: Llámanos */}
         <div
-          className="p-8 md:p-12 lg:p-16"
+          className="p-6 sm:p-8 md:p-12 lg:p-16"
           style={{ fontFamily: getFontFamily('body') }}
         >
           <h3
-            className="text-xs font-medium uppercase tracking-[0.125em] mb-6 opacity-70"
+            className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.125em] mb-4 sm:mb-6 opacity-70"
             style={{ fontFamily: "'Roboto Mono', monospace" }}
           >
             LLÁMANOS
           </h3>
           <a
             href="tel:+541160599214"
-            className="text-2xl md:text-3xl font-medium hover:opacity-70 transition-opacity block mb-2"
+            className="text-xl sm:text-2xl md:text-3xl font-medium hover:opacity-70 transition-opacity block mb-2 leading-tight"
           >
             +54 11 6059-9214
           </a>
-          <p className="text-sm opacity-70 mb-8">
+          <p className="text-sm opacity-70 mb-6 sm:mb-8">
             Lunes a Viernes, 9am - 6pm
           </p>
 
@@ -208,8 +208,8 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="w-full px-8 md:px-12 lg:px-16 py-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 py-5 md:py-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-center md:text-left">
           <p
             className="text-xs font-medium uppercase tracking-widest opacity-70"
             style={{ fontFamily: "'Roboto Mono', monospace" }}
