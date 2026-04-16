@@ -656,10 +656,10 @@
 <style>
   /* MÁXIMA ESPECIFICIDAD: Header azul en páginas internas */
   
-  html body .header-section #header-component.header--internal .header__row--top.color-scheme-1,
-  html body .header-section #header-component.header--internal .header__row.color-scheme-1,
-  html body #header-component.header--internal .header__row--top,
-  html body #header-component.header--internal .header__row {
+  html body .header-section #header-component.header--internal.header--internal-blur .header__row--top.color-scheme-1,
+  html body .header-section #header-component.header--internal.header--internal-blur .header__row.color-scheme-1,
+  html body #header-component.header--internal.header--internal-blur .header__row--top,
+  html body #header-component.header--internal.header--internal-blur .header__row {
     background: rgba(8, 78, 133, 0.82) !important;
     background-color: rgba(8, 78, 133, 0.82) !important;
     border-bottom: 1px solid rgba(27, 75, 107, 0.18) !important;
@@ -679,6 +679,8 @@
     backdrop-filter: blur(20px) saturate(140%) !important;
   }
 
+  html body .header-section #header-component.header--internal.header--internal-solid .header__row--top.color-scheme-1,
+  html body .header-section #header-component.header--internal.header--internal-solid .header__row.color-scheme-1,
   html body #header-component.header--internal.header--internal-solid .header__row--top,
   html body #header-component.header--internal.header--internal-solid .header__row,
   html body #header-component.header--internal.header--internal-solid {
