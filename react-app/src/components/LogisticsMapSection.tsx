@@ -539,27 +539,42 @@ export function LogisticsMapSection() {
         return Number.isFinite(parsed) ? parsed : 0;
       };
 
-      const getDistance = () => set.scrollWidth + getSetGap();
+      const getDistance = () =>
+        Math.max(1, Math.round(set.scrollWidth + getSetGap()));
+      const PIXELS_PER_SECOND = 160;
+      const getDuration = (distance: number) =>
+        Math.max(0.1, distance / PIXELS_PER_SECOND);
 
-      const tween = gsap.to(track, {
-        x: () => -getDistance(),
-        ease: 'none',
-        duration: 36,
-        repeat: -1,
-      });
-
-      let lastDistance = getDistance();
+      let tween: gsap.core.Tween | null = null;
+      let lastDistance = 0;
       let refreshRaf = 0;
+
+      const buildTween = () => {
+        const nextDistance = getDistance();
+        if (Math.abs(nextDistance - lastDistance) < 0.5 && tween)
+          return;
+
+        const progress = tween?.totalProgress() ?? 0;
+        tween?.kill();
+
+        lastDistance = nextDistance;
+        tween = gsap.fromTo(
+          track,
+          { x: 0 },
+          {
+            x: -nextDistance,
+            ease: 'none',
+            duration: getDuration(nextDistance),
+            repeat: -1,
+            force3D: true,
+          },
+        );
+        tween.totalProgress(progress % 1);
+      };
 
       const refresh = () => {
         refreshRaf = 0;
-        const nextDistance = getDistance();
-        if (Math.abs(nextDistance - lastDistance) < 0.5) return;
-
-        const progress = tween.totalProgress();
-        lastDistance = nextDistance;
-        tween.invalidate();
-        tween.totalProgress(progress);
+        buildTween();
       };
 
       const requestRefresh = () => {
@@ -575,10 +590,27 @@ export function LogisticsMapSection() {
         container?.querySelectorAll('img') ?? [],
       );
       const onImgLoad = () => requestRefresh();
+
+      const imageReadyPromises = images.map((img) => {
+        if (img.complete) {
+          return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+        }
+
+        return new Promise<void>((resolve) => {
+          const done = () => resolve();
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        });
+      });
+
       images.forEach((img) => {
         if (img.complete) return;
         img.addEventListener('load', onImgLoad, { once: true });
         img.addEventListener('error', onImgLoad, { once: true });
+      });
+
+      void Promise.all(imageReadyPromises).then(() => {
+        buildTween();
       });
 
       return () => {
@@ -586,7 +618,7 @@ export function LogisticsMapSection() {
           window.cancelAnimationFrame(refreshRaf);
         }
         resizeObserver.disconnect();
-        tween.kill();
+        tween?.kill();
         images.forEach((img) => {
           img.removeEventListener('load', onImgLoad);
           img.removeEventListener('error', onImgLoad);
@@ -662,11 +694,11 @@ export function LogisticsMapSection() {
                 <div className="absolute right-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-l from-[#1B4B6B] to-transparent pointer-events-none" />
                 <div
                   ref={transportTrackRef}
-                  className="flex w-max items-center mix-blend-screen will-change-transform gap-8 md:gap-12"
+                  className="flex w-max items-center mix-blend-screen will-change-transform gap-10 md:gap-14"
                 >
                   <div
                     ref={transportSetRef}
-                    className="flex flex-none shrink-0 gap-8 md:gap-12 items-center"
+                    className="flex flex-none shrink-0 gap-10 md:gap-14 items-center"
                   >
                     {TRANSPORTISTAS.map((transportista) => (
                       <div
@@ -679,7 +711,7 @@ export function LogisticsMapSection() {
                           className="h-full w-auto max-w-[11rem] md:max-w-[14rem] object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
                           width={224}
                           height={64}
-                          loading="lazy"
+                          loading="eager"
                           decoding="async"
                         />
                       </div>
@@ -687,7 +719,7 @@ export function LogisticsMapSection() {
                   </div>
                   <div
                     aria-hidden="true"
-                    className="flex flex-none shrink-0 gap-8 md:gap-12 items-center"
+                    className="flex flex-none shrink-0 gap-10 md:gap-14 items-center"
                   >
                     {TRANSPORTISTAS.map((transportista) => (
                       <div
@@ -700,7 +732,7 @@ export function LogisticsMapSection() {
                           className="h-full w-auto max-w-[11rem] md:max-w-[14rem] object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
                           width={224}
                           height={64}
-                          loading="lazy"
+                          loading="eager"
                           decoding="async"
                         />
                       </div>
