@@ -548,19 +548,33 @@ export function LogisticsMapSection() {
         repeat: -1,
       });
 
+      let lastDistance = getDistance();
+      let refreshRaf = 0;
+
       const refresh = () => {
-        gsap.set(track, { x: 0 });
-        tween.invalidate().restart();
+        refreshRaf = 0;
+        const nextDistance = getDistance();
+        if (Math.abs(nextDistance - lastDistance) < 0.5) return;
+
+        const progress = tween.totalProgress();
+        lastDistance = nextDistance;
+        tween.invalidate();
+        tween.totalProgress(progress);
       };
 
-      const resizeObserver = new ResizeObserver(refresh);
+      const requestRefresh = () => {
+        if (refreshRaf) return;
+        refreshRaf = window.requestAnimationFrame(refresh);
+      };
+
+      const resizeObserver = new ResizeObserver(requestRefresh);
       resizeObserver.observe(set);
 
       const container = transportCarouselRef.current;
       const images = Array.from(
         container?.querySelectorAll('img') ?? [],
       );
-      const onImgLoad = () => refresh();
+      const onImgLoad = () => requestRefresh();
       images.forEach((img) => {
         if (img.complete) return;
         img.addEventListener('load', onImgLoad, { once: true });
@@ -568,6 +582,9 @@ export function LogisticsMapSection() {
       });
 
       return () => {
+        if (refreshRaf) {
+          window.cancelAnimationFrame(refreshRaf);
+        }
         resizeObserver.disconnect();
         tween.kill();
         images.forEach((img) => {
