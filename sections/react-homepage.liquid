@@ -127,37 +127,56 @@
     },
 
     heroFeaturedProducts: [
-      {%- capture hero_featured_handles_csv -%}
-        {%- if section.settings.hero_featured_product_1 != blank -%}{{ section.settings.hero_featured_product_1 }},{%- endif -%}
-        {%- if section.settings.hero_featured_product_2 != blank -%}{{ section.settings.hero_featured_product_2 }},{%- endif -%}
-        {%- if section.settings.hero_featured_product_3 != blank -%}{{ section.settings.hero_featured_product_3 }},{%- endif -%}
-        {%- if section.settings.hero_featured_product_4 != blank -%}{{ section.settings.hero_featured_product_4 }},{%- endif -%}
-      {%- endcapture -%}
-      {%- assign hero_featured_handles = hero_featured_handles_csv | split: ',' -%}
-
       {%- assign hero_first_item = true -%}
       {%- assign hero_selected_count = 0 -%}
       {%- assign hero_seen_product_ids = '|' -%}
 
-      {%- for product_handle in hero_featured_handles -%}
-        {%- if product_handle == blank -%}
-          {%- continue -%}
-        {%- endif -%}
+      {%- for slot_index in (1..4) -%}
         {%- if hero_selected_count >= 4 -%}
           {%- break -%}
         {%- endif -%}
-        {%- assign selected_product = all_products[product_handle] -%}
+
+        {%- assign selected_product_handle = blank -%}
+        {%- assign hero_title_override = blank -%}
+        {%- assign hero_description_override = blank -%}
+
+        {%- case slot_index -%}
+          {%- when 1 -%}
+            {%- assign selected_product_handle = section.settings.hero_featured_product_1 -%}
+            {%- assign hero_title_override = section.settings.hero_featured_product_1_title_override -%}
+            {%- assign hero_description_override = section.settings.hero_featured_product_1_description_override -%}
+          {%- when 2 -%}
+            {%- assign selected_product_handle = section.settings.hero_featured_product_2 -%}
+            {%- assign hero_title_override = section.settings.hero_featured_product_2_title_override -%}
+            {%- assign hero_description_override = section.settings.hero_featured_product_2_description_override -%}
+          {%- when 3 -%}
+            {%- assign selected_product_handle = section.settings.hero_featured_product_3 -%}
+            {%- assign hero_title_override = section.settings.hero_featured_product_3_title_override -%}
+            {%- assign hero_description_override = section.settings.hero_featured_product_3_description_override -%}
+          {%- when 4 -%}
+            {%- assign selected_product_handle = section.settings.hero_featured_product_4 -%}
+            {%- assign hero_title_override = section.settings.hero_featured_product_4_title_override -%}
+            {%- assign hero_description_override = section.settings.hero_featured_product_4_description_override -%}
+        {%- endcase -%}
+
+        {%- if selected_product_handle == blank -%}
+          {%- continue -%}
+        {%- endif -%}
+
+        {%- assign selected_product = all_products[selected_product_handle] -%}
         {%- if selected_product == blank -%}
           {%- continue -%}
         {%- endif -%}
+
         {%- assign selected_product_token = '|' | append: selected_product.id | append: '|' -%}
         {%- if hero_seen_product_ids contains selected_product_token -%}
           {%- continue -%}
         {%- endif -%}
+
         {%- assign hero_seen_product_ids = hero_seen_product_ids | append: selected_product_token -%}
         {%- unless hero_first_item -%},{%- endunless -%}
         {
-          title: {{ selected_product.title | json }},
+          title: {% if hero_title_override != blank %}{{ hero_title_override | strip | json }}{% else %}{{ selected_product.title | json }}{% endif %},
           handle: {{ selected_product.handle | json }},
           url: {{ selected_product.url | json }},
           image: {% if selected_product.featured_image %}{{ selected_product.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
@@ -168,7 +187,7 @@
           imageWidth: {% if selected_product.featured_image %}{{ selected_product.featured_image.width | json }}{% else %}null{% endif %},
           imageHeight: {% if selected_product.featured_image %}{{ selected_product.featured_image.height | json }}{% else %}null{% endif %},
           price: {{ selected_product.price | money | json }},
-          description: {{ selected_product.description | strip_html | strip_newlines | truncate: 130 | json }}
+          description: {% if hero_description_override != blank %}{{ hero_description_override | strip | strip_newlines | truncate: 130 | json }}{% else %}{{ selected_product.description | strip_html | strip_newlines | truncate: 130 | json }}{% endif %}
         }
         {%- assign hero_first_item = false -%}
         {%- assign hero_selected_count = hero_selected_count | plus: 1 -%}
@@ -639,6 +658,50 @@
       "type": "product",
       "id": "hero_featured_product_4",
       "label": "Hero featured product 4"
+    },
+    {
+      "type": "header",
+      "content": "Hero Featured Product Text Overrides (Optional)"
+    },
+    {
+      "type": "text",
+      "id": "hero_featured_product_1_title_override",
+      "label": "Product 1 title override"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_featured_product_1_description_override",
+      "label": "Product 1 description override"
+    },
+    {
+      "type": "text",
+      "id": "hero_featured_product_2_title_override",
+      "label": "Product 2 title override"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_featured_product_2_description_override",
+      "label": "Product 2 description override"
+    },
+    {
+      "type": "text",
+      "id": "hero_featured_product_3_title_override",
+      "label": "Product 3 title override"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_featured_product_3_description_override",
+      "label": "Product 3 description override"
+    },
+    {
+      "type": "text",
+      "id": "hero_featured_product_4_title_override",
+      "label": "Product 4 title override"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_featured_product_4_description_override",
+      "label": "Product 4 description override"
     },
     {
       "type": "header",

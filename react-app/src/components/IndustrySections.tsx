@@ -222,7 +222,7 @@ export function IndustrySections() {
       bg.style.opacity = '0';
       container.style.setProperty(
         '--industry-subtitle-bg',
-        hexToRgba(colors[0], 0.32),
+        hexToRgba(colors[0], 0.42),
       );
 
       // Show/hide the fixed background based on container visibility
@@ -311,7 +311,7 @@ export function IndustrySections() {
           bg.style.backgroundColor = currentColor;
           container.style.setProperty(
             '--industry-subtitle-bg',
-            hexToRgba(currentColor, 0.32),
+            hexToRgba(currentColor, 0.42),
           );
         },
       });
