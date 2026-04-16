@@ -151,6 +151,12 @@
     assign class = class | append: ' header--home'
   else
     assign class = class | append: ' header--internal'
+
+    if template.suffix == 'nosotros'
+      assign class = class | append: ' header--internal-blur'
+    else
+      assign class = class | append: ' header--internal-solid'
+    endif
   endif
 
   if transparent_color_scheme
@@ -648,7 +654,7 @@
 {% endunless %}
 
 <style>
-  /* MÁXIMA ESPECIFICIDAD: Header azul blur (solo páginas internas) */
+  /* MÁXIMA ESPECIFICIDAD: Header azul en páginas internas */
   
   html body .header-section #header-component.header--internal .header__row--top.color-scheme-1,
   html body .header-section #header-component.header--internal .header__row.color-scheme-1,
@@ -656,8 +662,6 @@
   html body #header-component.header--internal .header__row {
     background: rgba(8, 78, 133, 0.82) !important;
     background-color: rgba(8, 78, 133, 0.82) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
-    backdrop-filter: blur(20px) saturate(140%) !important;
     border-bottom: 1px solid rgba(27, 75, 107, 0.18) !important;
     --color-background: 8, 78, 133 !important;
     --color-background-rgb: 8, 78, 133 !important;
@@ -666,8 +670,22 @@
   html body #header-component.header--internal {
     background: transparent !important;
     background-color: transparent !important;
+  }
+
+  html body #header-component.header--internal.header--internal-blur .header__row--top,
+  html body #header-component.header--internal.header--internal-blur .header__row,
+  html body #header-component.header--internal.header--internal-blur {
     -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
     backdrop-filter: blur(20px) saturate(140%) !important;
+  }
+
+  html body #header-component.header--internal.header--internal-solid .header__row--top,
+  html body #header-component.header--internal.header--internal-solid .header__row,
+  html body #header-component.header--internal.header--internal-solid {
+    background: #084e85 !important;
+    background-color: #084e85 !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
   
   /* Texto blanco con especificidad alta */
