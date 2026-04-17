@@ -156,15 +156,7 @@
   {%- comment -%} Bottom Bar {%- endcomment -%}
   <div class="footer-custom__bottom">
     <div class="footer-custom__bottom-content">
-      <div class="footer-custom__bottom-left">
-        <p class="footer-custom__copyright">{{ shop.name | upcase }} © {{ 'now' | date: '%Y' }}</p>
-        <p class="footer-custom__site-by">
-          <span>Site by</span>
-          <a href="https://davidlangarica.dev" target="_blank" rel="noopener noreferrer">DLANGARICA</a>
-          <span>&</span>
-          <a href="https://jpcabrera.dev" target="_blank" rel="noopener noreferrer">JPCABRERA</a>
-        </p>
-      </div>
+      <p class="footer-custom__copyright">{{ shop.name | upcase }} © {{ 'now' | date: '%Y' }}</p>
       {%- if section.settings.terms_url != blank -%}
         <a href="{{ section.settings.terms_url }}" class="footer-custom__terms">
           {{ section.settings.terms_text }}
@@ -436,25 +428,14 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    width: 100%;
   }
 
   @media screen and (min-width: 750px) {
     .footer-custom__bottom-content {
       flex-direction: row;
       justify-content: space-between;
-      align-items: center;
     }
   }
-
-  .footer-custom__bottom-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  /* Keep stacked always */
 
   .footer-custom__copyright {
     font-size: 0.75rem;
@@ -463,22 +444,6 @@
     letter-spacing: 0.1em;
     opacity: 0.7;
     font-family: 'Roboto Mono', monospace;
-  }
-
-  .footer-custom__site-by {
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
-    font-family: 'Roboto Mono', monospace;
-    color: white;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-  }
-
-  .footer-custom__site-by:hover {
-    opacity: 1;
   }
 
   .footer-custom__terms {
