@@ -158,12 +158,12 @@
     <div class="footer-custom__bottom-content">
       <div class="footer-custom__bottom-left">
         <p class="footer-custom__copyright">{{ shop.name | upcase }} © {{ 'now' | date: '%Y' }}</p>
-        <div class="footer-custom__site-by-row">
-          <span class="footer-custom__site-by-label">Site by</span>
-          <a href="https://davidlangarica.dev" target="_blank" rel="noopener noreferrer" class="footer-custom__site-by">DLANGARICA</a>
-          <span class="footer-custom__site-by-separator">&</span>
-          <a href="https://jpcabrera.dev" target="_blank" rel="noopener noreferrer" class="footer-custom__site-by">JPCABRERA</a>
-        </div>
+        <p class="footer-custom__site-by">
+          <span>Site by</span>
+          <a href="https://davidlangarica.dev" target="_blank" rel="noopener noreferrer">DLANGARICA</a>
+          <span>&</span>
+          <a href="https://jpcabrera.dev" target="_blank" rel="noopener noreferrer">JPCABRERA</a>
+        </p>
       </div>
       {%- if section.settings.terms_url != blank -%}
         <a href="{{ section.settings.terms_url }}" class="footer-custom__terms">
@@ -454,43 +454,7 @@
     gap: 0.5rem;
   }
 
-  /* Keep stacked always - never side by side */
-
-  .footer-custom__site-by-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  /* Keep stacked on all sizes */
-
-  .footer-custom__site-by-row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  /* Keep stacked on all sizes */
-
-  .footer-custom__site-by-label {
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
-    font-family: 'Roboto Mono', monospace;
-  }
-
-  .footer-custom__site-by-separator {
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
-    font-family: 'Roboto Mono', monospace;
-  }
+  /* Keep stacked always */
 
   .footer-custom__copyright {
     font-size: 0.75rem;
