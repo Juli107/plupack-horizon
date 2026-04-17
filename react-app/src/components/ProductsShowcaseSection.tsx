@@ -41,6 +41,7 @@ export function ProductsShowcaseSection() {
 
       <div className="relative w-full">
         <ul
+          data-lenis-prevent
           className="m-0 list-none flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory pl-5 md:pl-[max(3rem,calc((100vw-80rem)/2+3rem))] scroll-pl-5 md:scroll-pl-[max(3rem,calc((100vw-80rem)/2+3rem))] [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.4)_transparent]"
         >
           {products.map((product, index) => (
