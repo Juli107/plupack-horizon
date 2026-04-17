@@ -155,7 +155,10 @@
           "embalaje-industrial",
           "guantes",
           "papel",
-          "papel-alimenticio"
+          "papel-alimenticio",
+          "limpieza",
+          "articulos-textiles",
+          "articulos-personalizados"
         ],
         "section_width": "page-width",
         "color_scheme": "scheme-1",
