@@ -151,10 +151,7 @@
         "visible_count": 6,
         "collection_list": [
           "todos-los-productos",
-          "embalajes-y-proteccion",
-          "descartables-e-higiene",
           "cintas-y-adhesivos",
-          "papel-y-envoltura",
           "articulos-de-aluminio",
           "articulos-de-limpieza",
           "articulos-dorados",
@@ -167,7 +164,10 @@
           "guantes",
           "linea-de-plasticos",
           "papel",
-          "papel-alimenticio"
+          "papel-alimenticio",
+          "articulos-textiles",
+          "articulos-personalizados",
+          "limpieza"
         ],
         "section_width": "page-width",
         "color_scheme": "scheme-1",
