@@ -1,0 +1,24 @@
+<div
+  class="section section--page-width spacing-style"
+  style="--padding-block-start: 0px; --padding-block-end: 16px;"
+>
+  <a
+    href="{{ 'productos.pdf' | asset_url }}"
+    target="_blank"
+    style="display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: underline; font-family: var(--font-body--family); font-size: 0.95rem;"
+  >
+    Descargar catálogo de productos (PDF)
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "Catálogo PDF",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Catálogo PDF"
+    }
+  ]
+}
+{% endschema %}
