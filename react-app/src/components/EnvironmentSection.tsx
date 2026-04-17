@@ -8,10 +8,11 @@ import warehouseImage from '@/assets/warehouse-environment.webp';
 // CHECKLIST DATA
 // ============================================
 const CHECKLIST_ITEMS = [
-  'Envases y embalajes reciclables',
-  'Reducción de huella de carbono logística',
-  'Optimización de rutas de distribución',
-  'Reutilización de materiales de empaque',
+  'Uso de envases y embalajes reciclables',
+  'Compra y recuperación de scrap plástico para su reutilización industrial',
+  'Producción de líneas de film con material recuperado',
+  'Reducción de la huella de carbono logística',
+  'Reutilización de materiales de empaque en circuitos internos',
 ];
 
 // ============================================
@@ -146,9 +147,31 @@ export function EnvironmentSection() {
                 overflowWrap: 'break-word',
               }}
             >
-              COMPROMETIDOS CON EL MEDIO AMBIENTE
+              COMPROMETIDOS CON LA SUSTENTABILIDAD
             </h2>
 
+            <p
+              className="env-animate mb-5"
+              style={{
+                fontFamily: getFontFamily('body'),
+                color: 'rgba(255, 255, 255, 0.75)',
+                fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
+                lineHeight: 1.75,
+              }}
+            >
+              Trabajamos bajo un modelo de economía circular aplicada al embalaje, donde cada etapa está orientada a reducir el impacto ambiental y optimizar el uso de recursos.
+            </p>
+            <p
+              className="env-animate mb-5"
+              style={{
+                fontFamily: getFontFamily('body'),
+                color: 'rgba(255, 255, 255, 0.75)',
+                fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
+                lineHeight: 1.75,
+              }}
+            >
+              Promovemos activamente la recolección y recuperación de scrap plástico industrial, integrándolo nuevamente en procesos productivos para extender el ciclo de vida de los materiales y disminuir el consumo de recursos vírgenes.
+            </p>
             <p
               className="env-animate mb-8"
               style={{
@@ -158,13 +181,21 @@ export function EnvironmentSection() {
                 lineHeight: 1.75,
               }}
             >
-              Trabajamos bajo un modelo de economía circular, priorizando
-              materiales reciclables y procesos logísticos que reducen el
-              impacto ambiental. Cada decisión operativa está orientada
-              hacia la sustentabilidad.
+              Nuestra operación combina eficiencia logística con criterios ambientales concretos, generando soluciones de abastecimiento responsables para nuestros clientes.
             </p>
 
             {/* Checklist */}
+            <h3
+              className="env-animate font-bold mb-4"
+              style={{
+                fontFamily: getFontFamily('heading'),
+                color: '#FFFFFF',
+                fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Principales Acciones:
+            </h3>
             <ul className="flex flex-col gap-3.5">
               {CHECKLIST_ITEMS.map((item) => (
                 <li
