@@ -232,176 +232,100 @@
       title: {{ section.settings.stock_section_title | json }},
       buttonText: {{ section.settings.stock_section_button_text | json }},
       buttonUrl: {{ section.settings.stock_section_button_url | json }},
-      productCount: {{ section.settings.stock_product_count | default: 170 | json }},
-      rainImageCount: {{ section.settings.stock_rain_image_count | default: 24 | json }},
-      // Deterministic image list from catalog products (collections/all)
-      productImages: [
-        {%- assign max_images = section.settings.stock_rain_image_count | default: 24 -%}
-        {%- assign shown_count = 0 -%}
-        {%- assign first_item = true -%}
-        {%- assign seen_product_ids = '|' -%}
-        {%- assign seed_roots = 'stretch,cinta,bandej,pluribol,corrug,servillet,guant' | split: ',' -%}
-        {%- assign seeded_roots = '|' -%}
-
-        {%- paginate collections.all.products by 250 -%}
-          {%- comment -%}Pass 1: seed category variety with PNG products{%- endcomment -%}
-          {%- if shown_count < max_images -%}
-            {%- for root in seed_roots -%}
-              {%- if shown_count >= max_images -%}
-                {%- break -%}
-              {%- endif -%}
-              {%- assign root_token = '|' | append: root | append: '|' -%}
-              {%- if seeded_roots contains root_token -%}
-                {%- continue -%}
-              {%- endif -%}
-
-              {%- assign seeded_this_root = false -%}
-              {%- for product in collections.all.products -%}
-                {%- if shown_count >= max_images or seeded_this_root -%}
-                  {%- break -%}
-                {%- endif -%}
-
-                {%- assign product_token = '|' | append: product.id | append: '|' -%}
-                {%- if seen_product_ids contains product_token -%}
-                  {%- continue -%}
-                {%- endif -%}
-
-                {%- assign product_title_downcase = product.title | downcase -%}
-                {%- unless product_title_downcase contains root -%}
-                  {%- continue -%}
-                {%- endunless -%}
-
-                {%- assign selected_image = blank -%}
-                {%- if product.images != blank -%}
-                  {%- for product_image in product.images -%}
-                    {%- assign product_image_src = product_image.src | downcase -%}
-                    {%- if product_image_src contains '.png' -%}
-                      {%- assign selected_image = product_image -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-                {%- endif -%}
-
-                {%- if selected_image == blank and product.featured_image != blank -%}
-                  {%- assign featured_image_src = product.featured_image.src | downcase -%}
-                  {%- if featured_image_src contains '.png' -%}
-                    {%- assign selected_image = product.featured_image -%}
-                  {%- endif -%}
-                {%- endif -%}
-
-                {%- if selected_image == blank -%}
-                  {%- continue -%}
-                {%- endif -%}
-
-                {%- unless first_item -%},{%- endunless -%}
-                { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
-                {%- assign first_item = false -%}
-                {%- assign shown_count = shown_count | plus: 1 -%}
-                {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
-                {%- assign seeded_roots = seeded_roots | append: root_token -%}
-                {%- assign seeded_this_root = true -%}
-              {%- endfor -%}
-            {%- endfor -%}
-          {%- endif -%}
-
-          {%- comment -%}Pass 2: fill remaining with PNG products{%- endcomment -%}
-          {%- if shown_count < max_images -%}
-            {%- for product in collections.all.products -%}
-              {%- if shown_count >= max_images -%}
-                {%- break -%}
-              {%- endif -%}
-
-              {%- assign product_token = '|' | append: product.id | append: '|' -%}
-              {%- if seen_product_ids contains product_token -%}
-                {%- continue -%}
-              {%- endif -%}
-
-              {%- assign selected_image = blank -%}
-              {%- if product.images != blank -%}
-                {%- for product_image in product.images -%}
-                  {%- assign product_image_src = product_image.src | downcase -%}
-                  {%- if product_image_src contains '.png' -%}
-                    {%- assign selected_image = product_image -%}
-                    {%- break -%}
-                  {%- endif -%}
-                {%- endfor -%}
-              {%- endif -%}
-
-              {%- if selected_image == blank and product.featured_image != blank -%}
-                {%- assign featured_image_src = product.featured_image.src | downcase -%}
-                {%- if featured_image_src contains '.png' -%}
-                  {%- assign selected_image = product.featured_image -%}
-                {%- endif -%}
-              {%- endif -%}
-
-              {%- if selected_image == blank -%}
-                {%- continue -%}
-              {%- endif -%}
-
-              {%- unless first_item -%},{%- endunless -%}
-              { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
-              {%- assign first_item = false -%}
-              {%- assign shown_count = shown_count | plus: 1 -%}
-              {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
-            {%- endfor -%}
-          {%- endif -%}
-
-          {%- comment -%}Pass 3: fill remaining with any available image{%- endcomment -%}
-          {%- if shown_count < max_images -%}
-            {%- for product in collections.all.products -%}
-              {%- if shown_count >= max_images -%}
-                {%- break -%}
-              {%- endif -%}
-
-              {%- assign product_token = '|' | append: product.id | append: '|' -%}
-              {%- if seen_product_ids contains product_token -%}
-                {%- continue -%}
-              {%- endif -%}
-
-              {%- assign selected_image = blank -%}
-              {%- if product.featured_image != blank -%}
-                {%- assign selected_image = product.featured_image -%}
-              {%- elsif product.images != blank -%}
-                {%- assign selected_image = product.images.first -%}
-              {%- endif -%}
-
-              {%- if selected_image == blank -%}
-                {%- continue -%}
-              {%- endif -%}
-
-              {%- unless first_item -%},{%- endunless -%}
-              { src: {{ selected_image | image_url: width: 300 | json }}, alt: {{ product.title | json }} }
-              {%- assign first_item = false -%}
-              {%- assign shown_count = shown_count | plus: 1 -%}
-              {%- assign seen_product_ids = seen_product_ids | append: product_token -%}
-            {%- endfor -%}
-          {%- endif -%}
-        {%- endpaginate -%}
-      ]
+      productCount: {{ section.settings.stock_product_count | default: 170 | json }}
     },
 
     productsShowcase: {
       title: {{ section.settings.products_showcase_title | json }},
       buttonText: {{ section.settings.products_showcase_button_text | json }},
       buttonUrl: {{ section.settings.products_showcase_button_url | json }},
-      maxProducts: {{ section.settings.products_showcase_limit | default: 8 | json }}
+      maxProducts: 8
     },
 
     products: [
-      {%- assign showcase_limit = section.settings.products_showcase_limit | default: 8 -%}
-      {%- assign is_first_product = true -%}
-      {%- for product in collections.all.products limit: showcase_limit -%}
-        {%- unless is_first_product -%},{%- endunless -%}
+      {%- assign showcase_limit = 8 -%}
+      {%- assign showcase_first_item = true -%}
+      {%- assign showcase_selected_count = 0 -%}
+      {%- assign showcase_seen_product_ids = '|' -%}
+
+      {%- for slot_index in (1..8) -%}
+        {%- if showcase_selected_count >= showcase_limit -%}
+          {%- break -%}
+        {%- endif -%}
+
+        {%- assign showcase_selected_product_handle = blank -%}
+        {%- case slot_index -%}
+          {%- when 1 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_1 -%}
+          {%- when 2 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_2 -%}
+          {%- when 3 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_3 -%}
+          {%- when 4 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_4 -%}
+          {%- when 5 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_5 -%}
+          {%- when 6 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_6 -%}
+          {%- when 7 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_7 -%}
+          {%- when 8 -%}
+            {%- assign showcase_selected_product_handle = section.settings.products_showcase_product_8 -%}
+        {%- endcase -%}
+
+        {%- if showcase_selected_product_handle == blank -%}
+          {%- continue -%}
+        {%- endif -%}
+
+        {%- assign showcase_selected_product = all_products[showcase_selected_product_handle] -%}
+        {%- if showcase_selected_product == blank -%}
+          {%- continue -%}
+        {%- endif -%}
+
+        {%- assign showcase_selected_product_token = '|' | append: showcase_selected_product.id | append: '|' -%}
+        {%- if showcase_seen_product_ids contains showcase_selected_product_token -%}
+          {%- continue -%}
+        {%- endif -%}
+
+        {%- assign showcase_seen_product_ids = showcase_seen_product_ids | append: showcase_selected_product_token -%}
+        {%- unless showcase_first_item -%},{%- endunless -%}
         {
-          title: {{ product.title | json }},
-          handle: {{ product.handle | json }},
-          url: {{ product.url | json }},
-          image: {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
-          price: {{ product.price | money | json }},
-          inStock: {% if product.total_inventory > 0 %}true{% else %}false{% endif %}
+          title: {{ showcase_selected_product.title | json }},
+          handle: {{ showcase_selected_product.handle | json }},
+          url: {{ showcase_selected_product.url | json }},
+          image: {% if showcase_selected_product.featured_image %}{{ showcase_selected_product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
+          price: {{ showcase_selected_product.price | money | json }},
+          inStock: {% if showcase_selected_product.total_inventory > 0 %}true{% else %}false{% endif %}
         }
-        {%- assign is_first_product = false -%}
+        {%- assign showcase_first_item = false -%}
+        {%- assign showcase_selected_count = showcase_selected_count | plus: 1 -%}
       {%- endfor -%}
+
+      {%- if showcase_selected_count < showcase_limit -%}
+        {%- for fallback_product in collections.all.products -%}
+          {%- if showcase_selected_count >= showcase_limit -%}
+            {%- break -%}
+          {%- endif -%}
+
+          {%- assign fallback_product_token = '|' | append: fallback_product.id | append: '|' -%}
+          {%- if showcase_seen_product_ids contains fallback_product_token -%}
+            {%- continue -%}
+          {%- endif -%}
+
+          {%- assign showcase_seen_product_ids = showcase_seen_product_ids | append: fallback_product_token -%}
+          {%- unless showcase_first_item -%},{%- endunless -%}
+          {
+            title: {{ fallback_product.title | json }},
+            handle: {{ fallback_product.handle | json }},
+            url: {{ fallback_product.url | json }},
+            image: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
+            price: {{ fallback_product.price | money | json }},
+            inStock: {% if fallback_product.total_inventory > 0 %}true{% else %}false{% endif %}
+          }
+          {%- assign showcase_first_item = false -%}
+          {%- assign showcase_selected_count = showcase_selected_count | plus: 1 -%}
+        {%- endfor -%}
+      {%- endif -%}
     ],
 
     // ============================================
@@ -727,15 +651,6 @@
       "default": 200
     },
     {
-      "type": "range",
-      "id": "stock_rain_image_count",
-      "label": "Rain image count",
-      "min": 8,
-      "max": 42,
-      "step": 1,
-      "default": 24
-    },
-    {
       "type": "text",
       "id": "stock_section_button_text",
       "label": "Button Text",
@@ -752,19 +667,54 @@
       "content": "Products Showcase Section"
     },
     {
+      "type": "paragraph",
+      "content": "Selecciona hasta 8 productos. Si faltan lugares, se completan automaticamente con productos del catalogo."
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_1",
+      "label": "Producto destacado 1"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_2",
+      "label": "Producto destacado 2"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_3",
+      "label": "Producto destacado 3"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_4",
+      "label": "Producto destacado 4"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_5",
+      "label": "Producto destacado 5"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_6",
+      "label": "Producto destacado 6"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_7",
+      "label": "Producto destacado 7"
+    },
+    {
+      "type": "product",
+      "id": "products_showcase_product_8",
+      "label": "Producto destacado 8"
+    },
+    {
       "type": "text",
       "id": "products_showcase_title",
       "label": "Title",
       "default": "Explora productos para tu operación"
-    },
-    {
-      "type": "range",
-      "id": "products_showcase_limit",
-      "label": "Products to show",
-      "min": 4,
-      "max": 12,
-      "step": 1,
-      "default": 8
     },
     {
       "type": "text",

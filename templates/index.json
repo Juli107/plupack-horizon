@@ -28,11 +28,9 @@
         "hero_featured_product_4_description_override": "",
         "stock_section_title": "+200 PRODUCTOS EN STOCK PERMANENTE",
         "stock_product_count": 200,
-        "stock_rain_image_count": 24,
         "stock_section_button_text": "VER PRODUCTOS",
         "stock_section_button_url": "shopify://collections/all",
         "products_showcase_title": "Explora productos para tu operación",
-        "products_showcase_limit": 8,
         "products_showcase_button_text": "Ver más",
         "products_showcase_button_url": "shopify://collections/all"
       }

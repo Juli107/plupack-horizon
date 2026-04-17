@@ -164,7 +164,7 @@ export function Hero() {
                         </h2>
                         {activeProduct.description ? (
                           <p
-                            className="mt-2 max-w-[28ch] text-[0.78rem] leading-snug text-white/80 md:mt-3 md:max-w-[30ch] md:text-sm"
+                            className="mt-2 text-[0.78rem] leading-snug text-white/80 md:mt-3 md:text-sm"
                             style={{ fontFamily: getFontFamily('body') }}
                           >
                             {activeProduct.description}

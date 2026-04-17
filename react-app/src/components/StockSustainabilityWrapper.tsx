@@ -1,16 +1,11 @@
-import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 import { getShopifyData } from '@/types/shopify';
 
-gsap.registerPlugin(ScrollTrigger);
-
 export function StockSustainabilityWrapper() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
 
   const { getFontFamily } = useShopifyTheme();
   const [hasCountedUp, setHasCountedUp] = useState(false);
@@ -52,43 +47,14 @@ export function StockSustainabilityWrapper() {
     return () => observer.disconnect();
   }, [hasCountedUp, productCount]);
 
-  useGSAP(
-    () => {
-      const wrapper = wrapperRef.current;
-      const title = titleRef.current;
-      if (!wrapper || !title) return;
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: wrapper,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 0.8,
-        },
-      });
-
-      timeline.to(
-        title,
-        { opacity: 0, y: -50, duration: 0.2, ease: 'power2.in' },
-        0.78
-      );
-
-      return () => {
-        timeline.scrollTrigger?.kill();
-        timeline.kill();
-      };
-    },
-    { scope: wrapperRef }
-  );
-
   return (
     <div
       ref={wrapperRef}
       className="stock-sustainability-trigger relative z-20"
-      style={{ height: '150vh' }}
+      style={{ height: 'clamp(420px, 62vh, 680px)' }}
     >
       <div
-        className="sticky top-0 h-screen w-full overflow-hidden"
+        className="relative h-full w-full overflow-hidden"
         style={{ backgroundColor: '#E8ECF2' }}
       >
         <div
@@ -100,7 +66,6 @@ export function StockSustainabilityWrapper() {
         />
 
         <div
-          ref={titleRef}
           className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"
         >
           <div className="text-center px-6 max-w-3xl mx-auto pointer-events-auto">
