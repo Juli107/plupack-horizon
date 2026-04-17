@@ -173,7 +173,7 @@
           "type": "filters",
           "static": true,
           "settings": {
-            "enable_filtering": false,
+            "enable_filtering": true,
             "filter_style": "horizontal",
             "filter_width": "centered",
             "text_label_case": "default",
@@ -181,7 +181,7 @@
             "show_filter_label": false,
             "enable_sorting": true,
             "enable_grid_density": false,
-            "inherit_color_scheme": false,
+            "inherit_color_scheme": true,
             "color_scheme": "scheme-1",
             "padding-block-start": 8,
             "padding-block-end": 8,
