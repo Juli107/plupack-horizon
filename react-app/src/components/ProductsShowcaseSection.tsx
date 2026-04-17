@@ -1,9 +1,28 @@
+import { useEffect, useRef } from 'react';
 import { getShopifyData } from '@/types/shopify';
 import { useShopifyTheme } from '@/hooks/useShopifyTheme';
 
 export function ProductsShowcaseSection() {
   const { getFontFamily } = useShopifyTheme();
   const shopifyData = getShopifyData();
+  const scrollerRef = useRef<HTMLUListElement>(null);
+
+  // Intercept wheel only for horizontal-dominant gestures so Lenis still handles
+  // vertical scroll while the cursor is over the carousel. Capture phase runs
+  // before Lenis's window listener, so stopPropagation keeps Lenis untouched.
+  useEffect(() => {
+    const ul = scrollerRef.current;
+    if (!ul) return;
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.stopPropagation();
+      }
+    };
+
+    ul.addEventListener('wheel', onWheel, { capture: true, passive: true });
+    return () => ul.removeEventListener('wheel', onWheel, { capture: true });
+  }, []);
 
   const showcase = shopifyData.productsShowcase;
   const allProducts = shopifyData.products ?? [];
@@ -41,7 +60,7 @@ export function ProductsShowcaseSection() {
 
       <div className="relative w-full">
         <ul
-          data-lenis-prevent
+          ref={scrollerRef}
           className="m-0 list-none flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory pl-5 md:pl-[max(3rem,calc((100vw-80rem)/2+3rem))] scroll-pl-5 md:scroll-pl-[max(3rem,calc((100vw-80rem)/2+3rem))] [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.4)_transparent]"
         >
           {products.map((product, index) => (
