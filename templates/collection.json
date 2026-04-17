@@ -144,7 +144,7 @@
       ],
       "name": "t:names.collection_links_text",
       "settings": {
-        "visible_count": 6,
+        "visible_count": 7,
         "collection_list": [
           "todos-los-productos",
           "cintas-y-adhesivos",
