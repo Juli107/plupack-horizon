@@ -1,12 +1,26 @@
 {%- doc -%}
-  Renders a "Contact us to quote" link instead of add-to-cart.
-  Original add-to-cart functionality is disabled store-wide.
+  Renders an add-to-cart replacement CTA.
+
+  @param {boolean} can_add_to_cart - Whether the selected variant can be purchased.
+  @param {string} [class] - Additional classes for styling.
 {%- enddoc -%}
 
-<a
-  href="/pages/contacto"
-  class="button {{ class }}"
-  style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; width: 100%;"
->
-  <span>Contáctanos para cotizar</span>
-</a>
+{% if can_add_to_cart %}
+  <a
+    href="/pages/contacto"
+    class="button {{ class }}"
+    style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; width: 100%;"
+  >
+    <span>Contáctanos para cotizar</span>
+  </a>
+{% else %}
+  <button
+    type="button"
+    class="button {{ class }}"
+    disabled
+    aria-disabled="true"
+    style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;"
+  >
+    <span>{{ 'products.product.sold_out' | t }}</span>
+  </button>
+{% endif %}
