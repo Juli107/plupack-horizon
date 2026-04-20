@@ -100,18 +100,20 @@ export function ProductsShowcaseSection() {
                   <h3 className="overflow-hidden text-[0.98rem] md:text-lg font-medium leading-snug text-white font-['Montserrat'] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
                     {product.title}
                   </h3>
-                  <span
-                    className={`mt-auto inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
-                      product.inStock === false
-                        ? 'border-white/35 bg-transparent text-white/75'
-                        : 'border-white bg-white text-[#0F5575] group-hover:bg-transparent group-hover:text-white'
-                    }`}
-                    style={{ fontFamily: getFontFamily('body') }}
-                  >
-                    {product.inStock === false
-                      ? 'Agotado'
-                      : 'Ver producto'}
-                  </span>
+                  <div className="mt-auto">
+                    <span
+                      className={`mt-4 md:mt-5 inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
+                        product.inStock === false
+                          ? 'border-white/35 bg-transparent text-white/75'
+                          : 'border-white bg-white text-[#0F5575] group-hover:bg-transparent group-hover:text-white'
+                      }`}
+                      style={{ fontFamily: getFontFamily('body') }}
+                    >
+                      {product.inStock === false
+                        ? 'Agotado'
+                        : 'Ver producto'}
+                    </span>
+                  </div>
                 </div>
               </a>
             </li>
