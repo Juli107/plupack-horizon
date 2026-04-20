@@ -72,12 +72,12 @@ export function ProductsShowcaseSection() {
                 href={product.url}
                 className="group flex h-full flex-col overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300"
               >
-                <div className="relative aspect-square bg-[#0A3D54]">
+                <div className="relative aspect-[4/3] md:aspect-square bg-[#0A3D54]">
                   {product.image ? (
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="w-full h-full object-contain p-5 md:p-6 transition-transform duration-500 group-hover:scale-[1.03]"
                       width={900}
                       height={900}
                       loading="lazy"
