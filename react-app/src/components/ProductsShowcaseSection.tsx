@@ -20,8 +20,12 @@ export function ProductsShowcaseSection() {
       }
     };
 
-    ul.addEventListener('wheel', onWheel, { capture: true, passive: true });
-    return () => ul.removeEventListener('wheel', onWheel, { capture: true });
+    ul.addEventListener('wheel', onWheel, {
+      capture: true,
+      passive: true,
+    });
+    return () =>
+      ul.removeEventListener('wheel', onWheel, { capture: true });
   }, []);
 
   const showcase = shopifyData.productsShowcase;
@@ -47,7 +51,11 @@ export function ProductsShowcaseSection() {
           </div>
 
           <a
-            href={showcase?.buttonUrl ?? shopifyData.routes?.allProducts ?? '/collections/all'}
+            href={
+              showcase?.buttonUrl ??
+              shopifyData.routes?.allProducts ??
+              '/collections/all'
+            }
             className="shrink-0 inline-flex w-full md:w-auto items-center justify-center gap-2 border border-white rounded-[10px] px-4 py-2.5 md:px-5 md:py-2.5 text-xs md:text-sm uppercase tracking-[0.08em] font-semibold bg-transparent text-white hover:bg-white hover:text-[#0F5575] transition-colors duration-300"
             style={{
               fontFamily: getFontFamily('body'),
@@ -72,12 +80,12 @@ export function ProductsShowcaseSection() {
                 href={product.url}
                 className="group flex h-full flex-col overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300"
               >
-                <div className="relative aspect-[4/3] md:aspect-square bg-[#0A3D54]">
+                <div className="relative h-[15.5rem] sm:h-[17.5rem] md:h-[20rem] lg:h-[21rem] bg-[#0A3D54]">
                   {product.image ? (
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="w-full h-full object-contain p-5 md:p-6 transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="block w-full h-full object-contain object-center transition-transform duration-500 group-hover:scale-[1.03]"
                       width={900}
                       height={900}
                       loading="lazy"
@@ -89,20 +97,20 @@ export function ProductsShowcaseSection() {
                 </div>
 
                 <div className="flex flex-1 flex-col p-4 md:p-5">
-                  <h3
-                    className="overflow-hidden text-[0.98rem] md:text-lg font-medium leading-snug text-white font-['Montserrat'] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]"
-                  >
+                  <h3 className="overflow-hidden text-[0.98rem] md:text-lg font-medium leading-snug text-white font-['Montserrat'] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
                     {product.title}
                   </h3>
                   <span
-                    className={`mt-auto pt-3 inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
+                    className={`mt-auto inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
                       product.inStock === false
                         ? 'border-white/35 bg-transparent text-white/75'
                         : 'border-white bg-white text-[#0F5575] group-hover:bg-transparent group-hover:text-white'
                     }`}
                     style={{ fontFamily: getFontFamily('body') }}
                   >
-                    {product.inStock === false ? 'Agotado' : 'Ver producto'}
+                    {product.inStock === false
+                      ? 'Agotado'
+                      : 'Ver producto'}
                   </span>
                 </div>
               </a>
