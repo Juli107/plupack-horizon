@@ -70,7 +70,7 @@ export function ProductsShowcaseSection() {
             >
               <a
                 href={product.url}
-                className="group block h-full overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300"
+                className="group flex h-full flex-col overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300"
               >
                 <div className="relative aspect-square bg-[#0A3D54]">
                   {product.image ? (
@@ -88,14 +88,14 @@ export function ProductsShowcaseSection() {
                   )}
                 </div>
 
-                <div className="p-4 md:p-5">
+                <div className="flex flex-1 flex-col p-4 md:p-5">
                   <h3
-                    className="text-[0.98rem] md:text-lg font-medium leading-snug text-white font-['Montserrat']"
+                    className="overflow-hidden text-[0.98rem] md:text-lg font-medium leading-snug text-white font-['Montserrat'] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]"
                   >
                     {product.title}
                   </h3>
                   <span
-                    className={`mt-3 inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
+                    className={`mt-auto pt-3 inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
                       product.inStock === false
                         ? 'border-white/35 bg-transparent text-white/75'
                         : 'border-white bg-white text-[#0F5575] group-hover:bg-transparent group-hover:text-white'
