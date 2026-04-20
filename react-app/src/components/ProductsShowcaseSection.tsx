@@ -94,12 +94,16 @@ export function ProductsShowcaseSection() {
                   >
                     {product.title}
                   </h3>
-                  <p
-                    className="mt-1.5 text-[0.85rem] md:text-base text-white/80"
+                  <span
+                    className={`mt-3 inline-flex w-full items-center justify-center rounded-[10px] border px-4 py-2.5 text-[0.72rem] md:text-xs uppercase tracking-[0.08em] font-semibold transition-colors duration-300 ${
+                      product.inStock === false
+                        ? 'border-white/35 bg-transparent text-white/75'
+                        : 'border-white bg-white text-[#0F5575] group-hover:bg-transparent group-hover:text-white'
+                    }`}
                     style={{ fontFamily: getFontFamily('body') }}
                   >
-                    {product.inStock === false ? 'Contactar para cotizar' : `${product.price} ARS`}
-                  </p>
+                    {product.inStock === false ? 'Agotado' : 'Ver producto'}
+                  </span>
                 </div>
               </a>
             </li>
