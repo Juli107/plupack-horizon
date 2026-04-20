@@ -44,105 +44,56 @@
     {{ content_for_header }}
 
     <style>
-      /* ===== HIDE ALL PRICES STORE-WIDE ===== */
-      product-price,
-      .price,
-      .compare-at-price,
-      .unit-price,
-      .cart-items__price,
-      .cart-items__price-unit,
-      .cart__summary-totals,
-      .cart__original-total,
-      .cart__total,
-      .cart__original-total-value,
-      .cart__total-value,
-      price-facet-component,
-      .price-facet,
-      .collection-search-item__price {
-        display: none !important;
+      /* ===== ALIGN PRODUCT CARD BUTTONS TO BOTTOM ===== */
+      .product-card__content {
+        height: 100%;
       }
 
-      /* ===== HIDE QUICK ADD & ACCELERATED CHECKOUT ===== */
-      .quick-add,
-      .shopify-payment-button,
-      .quantity-selector,
-      .quantity-label,
-      .quantity-rules {
-        display: none !important;
+      .product-card__content .buy-buttons-block {
+        margin-top: auto;
       }
+
+
 
       /* ===== STICKY HEADER + ANNOUNCEMENT BAR ===== */
-      #header-group:has(#header-component[sticky]) {
+
+      /* Non-homepage: make header group a single sticky block */
+      body:not(:has(.react-homepage)) #header-group:has(#header-component[sticky]) {
         display: block !important;
         position: sticky;
         top: -1px;
         z-index: var(--layer-sticky);
       }
 
-      #header-group:has(#header-component[sticky]) .header-section {
+      body:not(:has(.react-homepage)) #header-group:has(#header-component[sticky]) .header-section {
         position: relative !important;
       }
 
-      #header-group > * {
+      body:not(:has(.react-homepage)) #header-group > * {
         margin: 0 !important;
       }
 
-      #header-group .header__row {
+      body:not(:has(.react-homepage)) #header-group .header__row {
         border-bottom: none !important;
       }
 
-      #header-group > *:last-child {
+      body:not(:has(.react-homepage)) #header-group > *:last-child {
         margin-top: -1px !important;
       }
 
-      /*
-        HOMEPAGE HEADER + ANNOUNCEMENT OVERLAY OVERRIDES
-        ------------------------------------------------
-        Why this exists:
-        - We want the navbar and announcement bar to behave as one sticky block.
-        - We want both layers to sit on top of the hero (overlay), not push content down.
-        - We keep a blue tint on the navbar only when the page is at the very top.
-
-        IMPORTANT ROLLBACK NOTE (when announcement bar is removed again):
-        - Delete all homepage-specific rules in this block:
-          1) transform on .section-background/.announcement-bar
-          2) .announcement-bar z-index override
-          3) #MainContent negative margin-top
-          4) homepage transparent-header tint rules below
-        - Also restore hero sizing constants in react-app/src/components/hero/Hero.tsx
-          (those currently include var(--header-group-height)).
-        This returns homepage behavior to the pre-announcement implementation.
-      */
-      body:has(.react-homepage)
-        #header-group:has(#header-component[transparent])
-        .shopify-section:has(> .announcement-bar)
-        :is(.section-background, .announcement-bar) {
-        transform: translateY(var(--header-height, 60px));
-      }
-
-      body:has(.react-homepage)
-        #header-group:has(#header-component[transparent])
-        .shopify-section:has(> .announcement-bar)
-        .announcement-bar {
-        position: relative;
+      /* Homepage: announcement bar sticks independently below header */
+      body:has(.react-homepage) .shopify-section-group-header-group:has(.announcement-bar) {
+        position: sticky;
+        top: calc(var(--header-height, 60px) - 1px);
         z-index: calc(var(--layer-sticky) - 1);
       }
 
-      /* Homepage: keep header+banner over the hero (no pushed-down first section) */
-      body:has(.react-homepage) #MainContent {
-        margin-top: calc(var(--header-group-height, 0px) * -1);
-      }
-
-      /* Homepage: keep blue navbar tint only while at top */
-      body:has(.react-homepage)
-        #header-component[transparent]:not([data-sticky-state='active'])
-        .header__row {
+      /* Homepage: blue header at top, transparent when scrolling */
+      body:has(.react-homepage) #header-component[transparent]:not([data-sticky-state='active']) .header__row {
         --header-bg-color: #084e85 !important;
       }
 
-      body:has(.react-homepage)
-        #header-component[transparent][data-sticky-state='active']
-        .header__row {
+      body:has(.react-homepage) #header-component[transparent][data-sticky-state='active'] .header__row {
         --header-bg-color: transparent !important;
       }
     </style>
@@ -180,5 +131,34 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <!-- WhatsApp floating button -->
+    <a
+      href="https://wa.me/5491133894270?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20productos"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+      style="
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        width: 60px;
+        height: 60px;
+        background-color: #25D366;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      "
+      onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)'"
+      onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.25)'"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </a>
   </body>
 </html>
