@@ -148,6 +148,14 @@
       margin-inline-end: calc(-1 * max(var(--padding-xs), var(--padding-inline-end)));
     }
   }
+
+  @media screen and (max-width: 749px) {
+    /* iPhone Chrome can incorrectly cull nested product-card slides during fast reverse scroll. */
+    #ResultsList .card-gallery slideshow-component > slideshow-container > slideshow-slides > slideshow-slide {
+      content-visibility: visible;
+      contain-intrinsic-size: none;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
