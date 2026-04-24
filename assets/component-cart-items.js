@@ -294,6 +294,40 @@ class CartItemsComponent extends Component {
   }
 
   /**
+   * Marks any open :modal dialogs inside the section so morph-related flashes
+   * (animation retrigger + brief non-modal paint) are suppressed via CSS.
+   * @returns {HTMLDialogElement[]} The dialogs that were marked.
+   */
+  #markModalDialogsForMorph() {
+    const section = document.getElementById(`shopify-section-${this.sectionId}`);
+    if (!section) return [];
+
+    const dialogs = /** @type {HTMLDialogElement[]} */ (
+      Array.from(section.querySelectorAll('dialog')).filter(
+        (d) => d instanceof HTMLDialogElement && d.open && d.matches(':modal')
+      )
+    );
+
+    for (const d of dialogs) d.setAttribute('data-morph-restoring-modal', '');
+    return dialogs;
+  }
+
+  /**
+   * Schedules marker removal only after the dialog is actually closed. Removing
+   * it while the dialog is still open would retrigger the slide-in animation
+   * because `animation-name` would change from `none` back to the real value.
+   * @param {HTMLDialogElement[]} dialogs - The dialogs previously marked.
+   */
+  #unmarkModalDialogsAfterMorph(dialogs) {
+    if (!dialogs.length) return;
+
+    for (const d of dialogs) {
+      const clear = () => d.removeAttribute('data-morph-restoring-modal');
+      d.addEventListener('close', clear, { once: true });
+    }
+  }
+
+  /**
    * Gets the section id.
    * @returns {string} The section id.
    */
