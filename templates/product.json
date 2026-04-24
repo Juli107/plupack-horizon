@@ -216,9 +216,9 @@
               "type": "buy-buttons",
               "settings": {
                 "stacking": true,
-                "show_pickup_availability": false,
+                "show_pickup_availability": true,
                 "gift_card_form": true,
-                "padding-block-start": 9,
+                "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
