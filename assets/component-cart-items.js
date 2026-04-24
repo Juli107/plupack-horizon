@@ -322,8 +322,13 @@ class CartItemsComponent extends Component {
     if (!dialogs.length) return;
 
     for (const d of dialogs) {
+      const parent = d.closest('cart-drawer-component, dialog-component');
+      if (!parent) {
+        d.removeAttribute('data-morph-restoring-modal');
+        continue;
+      }
       const clear = () => d.removeAttribute('data-morph-restoring-modal');
-      d.addEventListener('close', clear, { once: true });
+      parent.addEventListener('dialog:close', clear, { once: true });
     }
   }
 
