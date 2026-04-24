@@ -1387,6 +1387,12 @@ results-list[initialized] {
     var(--animation-speed) var(--animation-easing) forwards;
 }
 
+dialog[data-morph-restoring-modal][open],
+dialog[data-morph-restoring-modal][open]::backdrop {
+  animation: none !important;
+  transition: none !important;
+}
+
 .dialog-drawer.dialog-closing {
   animation: var(--dialog-drawer-closing-animation)
     var(--animation-speed) var(--animation-easing);

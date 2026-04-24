@@ -214,10 +214,17 @@ function updateNode(newNode, oldNode, options) {
       if (oldNode.matches(':modal')) return;
 
       try {
+        oldNode.setAttribute('data-morph-restoring-modal', '');
         oldNode.close();
         oldNode.showModal();
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            oldNode.removeAttribute('data-morph-restoring-modal');
+          });
+        });
       } catch (_err) {
-        // dialog removed between check and call
+        oldNode.removeAttribute('data-morph-restoring-modal');
       }
     });
   }
