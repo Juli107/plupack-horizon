@@ -45,7 +45,7 @@
     "type_line_height_h6": "display-loose",
     "type_letter_spacing_h6": "heading-loose",
     "page_width": "narrow",
-    "page_transition_enabled": true,
+    "page_transition_enabled": false,
     "transition_to_main_product": true,
     "card_hover_effect": "scale",
     "badge_position": "top-right",
