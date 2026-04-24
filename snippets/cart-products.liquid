@@ -19,18 +19,24 @@
   {% endif %}
 >
   {% if cart.empty? %}
-    {%- if shop.customer_accounts_enabled and customer == null -%}
-      <p>
-        {{ 'actions.log_in_html' | t: link: routes.account_login_url }}
+    <div class="cart-items__empty-state">
+      <p class="cart-items__empty-copy h4">
+        {{ 'content.your_cart_is_empty' | t }}
       </p>
-    {%- endif -%}
 
-    <a
-      class="button cart-items__empty-button"
-      href="/collections/todos-los-productos"
-    >
-      {{ 'actions.continue_shopping' | t }}
-    </a>
+      {%- if shop.customer_accounts_enabled and customer == null -%}
+        <p>
+          {{ 'actions.log_in_html' | t: link: routes.account_login_url }}
+        </p>
+      {%- endif -%}
+
+      <a
+        class="button cart-items__empty-button"
+        href="/collections/todos-los-productos"
+      >
+        {{ 'actions.continue_shopping' | t }}
+      </a>
+    </div>
   {%- else -%}
     <span
       class="visually-hidden"
@@ -342,6 +348,21 @@
     container-name: cart-items;
     container-type: inline-size;
     width: 100%;
+  }
+
+  .cart-items__empty-state {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-md);
+    min-height: 100%;
+    text-align: center;
+  }
+
+  .cart-items__empty-copy {
+    color: var(--color-foreground);
   }
 
   .cart-items-disabled {
