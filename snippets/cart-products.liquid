@@ -382,23 +382,8 @@
   }
 
   .cart-items__table-row.removing {
-    overflow: hidden;
-    animation: removeRow calc(var(--animation-speed) * 2) var(--animation-easing) forwards;
-    animation-delay: var(--animation-speed);
-  }
-
-  @keyframes removeRow {
-    0% {
-      height: var(--row-height);
-    }
-
-    100% {
-      opacity: 0;
-      height: 0;
-      padding-bottom: 0;
-      margin-bottom: 0;
-      border-color: transparent;
-    }
+    opacity: 0.45;
+    pointer-events: none;
   }
 
   .cart-items__table-row:last-child {
