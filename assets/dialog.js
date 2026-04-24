@@ -51,15 +51,18 @@ export class DialogComponent extends Component {
     const scrollY = window.scrollY;
     this.#previousScrollY = scrollY;
 
-    document.body.style.width = '100%';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
+    // Prevent layout thrashing by separating DOM reads from DOM writes
+    requestAnimationFrame(() => {
+      document.body.style.width = '100%';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
 
-    dialog.showModal();
-    this.dispatchEvent(new DialogOpenEvent());
+      dialog.showModal();
+      this.dispatchEvent(new DialogOpenEvent());
 
-    this.addEventListener('click', this.#handleClick);
-    this.addEventListener('keydown', this.#handleKeyDown);
+      this.addEventListener('click', this.#handleClick);
+      this.addEventListener('keydown', this.#handleKeyDown);
+    });
   }
 
   /**
