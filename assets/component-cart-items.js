@@ -73,18 +73,16 @@ class CartItemsComponent extends Component {
    * @param {number} line - The line item index.
    */
   onLineItemRemove(line) {
+    const keepDrawerOpen = this.#isCartDrawerOpen();
+
     this.updateQuantity({
       line,
       quantity: 0,
       action: 'clear',
+      keepDrawerOpen,
     });
 
-    const cartItemRow = this.refs.cartItemRows[line - 1];
-    if (!cartItemRow) return;
-
-    if (!prefersReducedMotion()) {
-      cartItemRow.classList.add('removing');
-    }
+    this.#optimisticallyRemoveRows(line);
   }
 
   /**
@@ -108,7 +106,7 @@ class CartItemsComponent extends Component {
 
     this.#disableCartItems();
 
-    const { line, quantity } = config;
+    const { line, quantity, keepDrawerOpen = false } = config;
     const { cartTotal } = this.refs;
 
     const cartItemsComponents = document.querySelectorAll('cart-items-component');
@@ -168,6 +166,8 @@ class CartItemsComponent extends Component {
         );
 
         morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
+
+        this.#ensureCartDrawerOpen(keepDrawerOpen);
 
         this.#updateCartQuantitySelectorButtonStates();
       })
@@ -296,6 +296,57 @@ class CartItemsComponent extends Component {
         selector.updateButtonStates();
       }
     }
+  }
+
+  #isCartDrawerOpen() {
+    return !!document.querySelector('cart-drawer-component dialog[open]');
+  }
+
+  #ensureCartDrawerOpen(keepOpen) {
+    if (!keepOpen) return;
+
+    requestAnimationFrame(() => {
+      const drawer = document.querySelector('cart-drawer-component');
+
+      if (drawer && typeof drawer.open === 'function') {
+        drawer.open();
+      }
+    });
+  }
+
+  #optimisticallyRemoveRows(line) {
+    const cartItemRow = this.refs.cartItemRows[line - 1];
+    if (!cartItemRow) return;
+
+    const rowsToRemove = [
+      cartItemRow,
+      ...this.refs.cartItemRows.filter((row) => row.dataset.parentKey === cartItemRow.dataset.key),
+    ];
+
+    rowsToRemove.forEach((row) => {
+      if (prefersReducedMotion()) {
+        row.remove();
+        return;
+      }
+
+      row.classList.add('removing');
+
+      const rowHeight = row.clientHeight;
+      row.style.maxHeight = `${rowHeight}px`;
+      row.style.overflow = 'hidden';
+
+      requestAnimationFrame(() => {
+        row.style.maxHeight = '0px';
+        row.style.marginBottom = '0';
+        row.style.paddingBottom = '0';
+        row.style.opacity = '0';
+        row.style.borderColor = 'transparent';
+      });
+
+      setTimeout(() => {
+        row.remove();
+      }, 220);
+    });
   }
 
   /**
