@@ -1387,14 +1387,14 @@ results-list[initialized] {
     var(--animation-speed) var(--animation-easing) forwards;
 }
 
-dialog[data-morph-restoring-modal][open],
-dialog[data-morph-restoring-modal][open]::backdrop {
+dialog[data-morph-restoring-modal][open]:not(.dialog-closing),
+dialog[data-morph-restoring-modal][open]:not(.dialog-closing)::backdrop {
   animation: none !important;
   animation-name: none !important;
   transition: none !important;
 }
 
-dialog[data-morph-restoring-modal][open]::backdrop {
+dialog[data-morph-restoring-modal][open]:not(.dialog-closing)::backdrop {
   opacity: 1 !important;
   background: rgb(
     var(--backdrop-color-rgb) / var(--backdrop-opacity)
