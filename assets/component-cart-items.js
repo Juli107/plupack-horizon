@@ -141,7 +141,13 @@ class CartItemsComponent extends Component {
         resetShimmer(this);
 
         if (parsedResponseText.errors) {
-          this.#handleCartError(line, parsedResponseText);
+          if (quantity === 0) {
+            sectionRenderer.renderSection(this.sectionId, { cache: false });
+            this.#ensureCartDrawerOpen(keepDrawerOpen);
+          } else {
+            this.#handleCartError(line, parsedResponseText);
+          }
+
           return;
         }
 
@@ -173,6 +179,11 @@ class CartItemsComponent extends Component {
       })
       .catch((error) => {
         if (error?.name !== 'AbortError') {
+          if (quantity === 0) {
+            sectionRenderer.renderSection(this.sectionId, { cache: false });
+            this.#ensureCartDrawerOpen(keepDrawerOpen);
+          }
+
           console.error(error);
         }
       })
