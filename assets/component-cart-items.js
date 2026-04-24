@@ -23,7 +23,7 @@ import { cartPerformance } from '@theme/performance';
  * @extends {Component<Refs>}
  */
 class CartItemsComponent extends Component {
-  #debouncedOnChange = debounce(this.#onQuantityChange, 300).bind(this);
+  #debouncedOnChange = debounce(this.#onQuantityChange, 120).bind(this);
   #pendingUpdateController = null;
   #updateRequestId = 0;
 
@@ -74,15 +74,21 @@ class CartItemsComponent extends Component {
    */
   onLineItemRemove(line) {
     const keepDrawerOpen = this.#isCartDrawerOpen();
+    const isLastItem = this.#isRemovingLastItem(line);
 
     this.updateQuantity({
       line,
       quantity: 0,
       action: 'clear',
       keepDrawerOpen,
+      isLastItem,
     });
 
-    this.#optimisticallyRemoveRows(line);
+    this.#optimisticallyRemoveRows(line, { isLastItem });
+
+    if (isLastItem) {
+      this.#optimisticallySetCartTotalToZero();
+    }
   }
 
   /**
@@ -106,7 +112,7 @@ class CartItemsComponent extends Component {
 
     this.#disableCartItems();
 
-    const { line, quantity, keepDrawerOpen = false } = config;
+    const { line, quantity, keepDrawerOpen = false, isLastItem = false } = config;
     const { cartTotal } = this.refs;
 
     const cartItemsComponents = document.querySelectorAll('cart-items-component');
@@ -174,6 +180,10 @@ class CartItemsComponent extends Component {
         morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
 
         this.#ensureCartDrawerOpen(keepDrawerOpen);
+
+        if (isLastItem && newCartItemCount === 0) {
+          this.#ensureCartDrawerOpen(true);
+        }
 
         this.#updateCartQuantitySelectorButtonStates();
       })
@@ -325,7 +335,7 @@ class CartItemsComponent extends Component {
     });
   }
 
-  #optimisticallyRemoveRows(line) {
+  #optimisticallyRemoveRows(line, { isLastItem = false } = {}) {
     const cartItemRow = this.refs.cartItemRows[line - 1];
     if (!cartItemRow) return;
 
@@ -341,6 +351,10 @@ class CartItemsComponent extends Component {
       }
 
       row.classList.add('removing');
+
+      if (isLastItem) {
+        return;
+      }
 
       const rowHeight = row.clientHeight;
       row.style.maxHeight = `${rowHeight}px`;
@@ -358,6 +372,37 @@ class CartItemsComponent extends Component {
         row.remove();
       }, 220);
     });
+  }
+
+  #isRemovingLastItem(line) {
+    const rows = this.refs.cartItemRows ?? [];
+    if (rows.length <= 1) return true;
+
+    const lineRow = rows[line - 1];
+    if (!lineRow) return false;
+
+    const topLevelRows = rows.filter((row) => !row.dataset.parentKey);
+    if (topLevelRows.length <= 1) return true;
+
+    return !lineRow.dataset.parentKey && topLevelRows.length === 1;
+  }
+
+  #optimisticallySetCartTotalToZero() {
+    const total = this.querySelector('[ref="cartTotal"]');
+    if (total instanceof HTMLElement) {
+      const current = total.textContent?.trim() ?? '';
+      const numericToken = current.match(/[\d.,]+/);
+      const zeroValue = numericToken?.[0]?.includes(',') ? '0,00' : '0';
+      const nextText = numericToken ? current.replace(numericToken[0], zeroValue) : '0';
+
+      total.textContent = nextText;
+      total.setAttribute('value', nextText);
+    }
+
+    const checkoutButton = this.querySelector('.cart__checkout-button');
+    if (checkoutButton instanceof HTMLButtonElement) {
+      checkoutButton.disabled = true;
+    }
   }
 
   /**
