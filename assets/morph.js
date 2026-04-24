@@ -210,14 +210,19 @@ function updateNode(newNode, oldNode, options) {
   if (
     shouldRestoreModalState &&
     oldNode instanceof HTMLDialogElement &&
+    oldNode.isConnected &&
     oldNode.open &&
     !oldNode.matches(':modal')
   ) {
     queueMicrotask(() => {
-      if (!oldNode.open || oldNode.matches(':modal')) return;
+      if (!oldNode.isConnected || !oldNode.open || oldNode.matches(':modal')) return;
 
-      oldNode.close();
-      oldNode.showModal();
+      try {
+        oldNode.close();
+        oldNode.showModal();
+      } catch (_err) {
+        // swallow: dialog may have been removed between check and call
+      }
     });
   }
 
