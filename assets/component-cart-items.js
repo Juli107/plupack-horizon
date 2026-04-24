@@ -24,6 +24,8 @@ import { cartPerformance } from '@theme/performance';
  */
 class CartItemsComponent extends Component {
   #debouncedOnChange = debounce(this.#onQuantityChange, 300).bind(this);
+  #pendingUpdateController = null;
+  #updateRequestId = 0;
 
   connectedCallback() {
     super.connectedCallback();
@@ -109,6 +111,15 @@ class CartItemsComponent extends Component {
    * @param {string} config.action - The action.
    */
   updateQuantity(config) {
+    const requestId = ++this.#updateRequestId;
+
+    if (this.#pendingUpdateController) {
+      this.#pendingUpdateController.abort();
+    }
+
+    const pendingUpdateController = new AbortController();
+    this.#pendingUpdateController = pendingUpdateController;
+
     const cartPerformaceUpdateMarker = cartPerformance.createStartingMarker(`${config.action}:user-action`);
 
     this.#disableCartItems();
@@ -133,11 +144,16 @@ class CartItemsComponent extends Component {
 
     cartTotal?.shimmer();
 
-    fetch(`${Theme.routes.cart_change_url}`, fetchConfig('json', { body }))
+    fetch(`${Theme.routes.cart_change_url}`, {
+      ...fetchConfig('json', { body }),
+      signal: pendingUpdateController.signal,
+    })
       .then((response) => {
         return response.text();
       })
       .then((responseText) => {
+        if (requestId !== this.#updateRequestId) return;
+
         const parsedResponseText = JSON.parse(responseText);
 
         resetShimmer(this);
@@ -172,10 +188,19 @@ class CartItemsComponent extends Component {
         this.#updateCartQuantitySelectorButtonStates();
       })
       .catch((error) => {
-        console.error(error);
+        if (error?.name !== 'AbortError') {
+          console.error(error);
+        }
       })
       .finally(() => {
-        this.#enableCartItems();
+        if (requestId === this.#updateRequestId) {
+          this.#enableCartItems();
+        }
+
+        if (this.#pendingUpdateController === pendingUpdateController) {
+          this.#pendingUpdateController = null;
+        }
+
         cartPerformance.measureFromMarker(cartPerformaceUpdateMarker);
       });
   }
