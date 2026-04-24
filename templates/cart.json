@@ -16,7 +16,7 @@
           "type": "_cart-title",
           "static": true,
           "settings": {
-            "title": "Cart",
+            "title": "Carrito de Compras",
             "show_count": true,
             "type_preset": "h4",
             "alignment": "left",
