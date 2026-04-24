@@ -207,21 +207,17 @@ function updateNode(newNode, oldNode, options) {
     }
   }
 
-  if (
-    shouldRestoreModalState &&
-    oldNode instanceof HTMLDialogElement &&
-    oldNode.isConnected &&
-    oldNode.open &&
-    !oldNode.matches(':modal')
-  ) {
+  if (shouldRestoreModalState && oldNode instanceof HTMLDialogElement) {
     queueMicrotask(() => {
-      if (!oldNode.isConnected || !oldNode.open || oldNode.matches(':modal')) return;
+      if (!oldNode.isConnected) return;
+      if (!oldNode.open) return;
+      if (oldNode.matches(':modal')) return;
 
       try {
         oldNode.close();
         oldNode.showModal();
       } catch (_err) {
-        // swallow: dialog may have been removed between check and call
+        // dialog removed between check and call
       }
     });
   }
