@@ -138,6 +138,12 @@
   fetchpriority="low"
 ></script>
 
+<script
+  src="{{ 'product-form.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
 {% unless is_index_template %}
 <script
   src="{{ 'quick-add.js' | asset_url }}"
@@ -158,11 +164,6 @@
 ></script>
 <script
   src="{{ 'product-card.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
-  src="{{ 'product-form.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>

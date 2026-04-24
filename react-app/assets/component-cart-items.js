@@ -1,6 +1,14 @@
 import { Component } from '@theme/component';
-import { fetchConfig, debounce, onAnimationEnd, prefersReducedMotion, resetShimmer } from '@theme/utilities';
-import { morphSection, sectionRenderer } from '@theme/section-renderer';
+import {
+  fetchConfig,
+  debounce,
+  prefersReducedMotion,
+  resetShimmer,
+} from '@theme/utilities';
+import {
+  morphSection,
+  sectionRenderer,
+} from '@theme/section-renderer';
 import {
   ThemeEvents,
   CartUpdateEvent,
@@ -23,21 +31,41 @@ import { cartPerformance } from '@theme/performance';
  * @extends {Component<Refs>}
  */
 class CartItemsComponent extends Component {
-  #debouncedOnChange = debounce(this.#onQuantityChange, 300).bind(this);
+  #debouncedOnChange = debounce(this.#onQuantityChange, 120).bind(
+    this,
+  );
+  #pendingUpdateController = null;
+  #updateRequestId = 0;
+  #lastItemFadeStartTime = null;
 
   connectedCallback() {
     super.connectedCallback();
 
-    document.addEventListener(ThemeEvents.cartUpdate, this.#handleCartUpdate);
-    document.addEventListener(ThemeEvents.discountUpdate, this.handleDiscountUpdate);
-    document.addEventListener(ThemeEvents.quantitySelectorUpdate, this.#debouncedOnChange);
+    document.addEventListener(
+      ThemeEvents.cartUpdate,
+      this.#handleCartUpdate,
+    );
+    document.addEventListener(
+      ThemeEvents.discountUpdate,
+      this.handleDiscountUpdate,
+    );
+    document.addEventListener(
+      ThemeEvents.quantitySelectorUpdate,
+      this.#debouncedOnChange,
+    );
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
-    document.removeEventListener(ThemeEvents.cartUpdate, this.#handleCartUpdate);
-    document.removeEventListener(ThemeEvents.quantitySelectorUpdate, this.#debouncedOnChange);
+    document.removeEventListener(
+      ThemeEvents.cartUpdate,
+      this.#handleCartUpdate,
+    );
+    document.removeEventListener(
+      ThemeEvents.quantitySelectorUpdate,
+      this.#debouncedOnChange,
+    );
   }
 
   /**
@@ -62,7 +90,9 @@ class CartItemsComponent extends Component {
 
     if (!lineItemRow) return;
 
-    const textComponent = /** @type {TextComponent | undefined} */ (lineItemRow.querySelector('text-component'));
+    const textComponent = /** @type {TextComponent | undefined} */ (
+      lineItemRow.querySelector('text-component')
+    );
     textComponent?.shimmer();
   }
 
@@ -71,34 +101,22 @@ class CartItemsComponent extends Component {
    * @param {number} line - The line item index.
    */
   onLineItemRemove(line) {
+    const keepDrawerOpen = this.#isCartDrawerOpen();
+    const isLastItem = this.#isRemovingLastItem(line);
+
     this.updateQuantity({
       line,
       quantity: 0,
       action: 'clear',
+      keepDrawerOpen,
+      isLastItem,
     });
 
-    const cartItemRowToRemove = this.refs.cartItemRows[line - 1];
+    this.#optimisticallyRemoveRows(line, { isLastItem });
 
-    if (!cartItemRowToRemove) return;
-
-    const rowsToRemove = [
-      cartItemRowToRemove,
-      // Get all nested lines of the row to remove
-      ...this.refs.cartItemRows.filter((row) => row.dataset.parentKey === cartItemRowToRemove.dataset.key),
-    ];
-
-    // Add class to the row to trigger the animation
-    rowsToRemove.forEach((row) => {
-      const remove = () => row.remove();
-
-      if (prefersReducedMotion()) return remove();
-
-      row.style.setProperty('--row-height', `${row.clientHeight}px`);
-      row.classList.add('removing');
-
-      // Remove the row after the animation ends
-      onAnimationEnd(row, remove);
-    });
+    if (isLastItem) {
+      this.#optimisticallySetCartTotalToZero();
+    }
   }
 
   /**
@@ -109,14 +127,33 @@ class CartItemsComponent extends Component {
    * @param {string} config.action - The action.
    */
   updateQuantity(config) {
-    const cartPerformaceUpdateMarker = cartPerformance.createStartingMarker(`${config.action}:user-action`);
+    const requestId = ++this.#updateRequestId;
+
+    if (this.#pendingUpdateController) {
+      this.#pendingUpdateController.abort();
+    }
+
+    const pendingUpdateController = new AbortController();
+    this.#pendingUpdateController = pendingUpdateController;
+
+    const cartPerformaceUpdateMarker =
+      cartPerformance.createStartingMarker(
+        `${config.action}:user-action`,
+      );
 
     this.#disableCartItems();
 
-    const { line, quantity } = config;
+    const {
+      line,
+      quantity,
+      keepDrawerOpen = false,
+      isLastItem = false,
+    } = config;
     const { cartTotal } = this.refs;
 
-    const cartItemsComponents = document.querySelectorAll('cart-items-component');
+    const cartItemsComponents = document.querySelectorAll(
+      'cart-items-component',
+    );
     const sectionsToUpdate = new Set([this.sectionId]);
     cartItemsComponents.forEach((item) => {
       if (item instanceof HTMLElement && item.dataset.sectionId) {
@@ -133,28 +170,45 @@ class CartItemsComponent extends Component {
 
     cartTotal?.shimmer();
 
-    fetch(`${Theme.routes.cart_change_url}`, fetchConfig('json', { body }))
+    fetch(`${Theme.routes.cart_change_url}`, {
+      ...fetchConfig('json', { body }),
+      signal: pendingUpdateController.signal,
+    })
       .then((response) => {
         return response.text();
       })
       .then((responseText) => {
+        if (requestId !== this.#updateRequestId) return;
+
         const parsedResponseText = JSON.parse(responseText);
 
         resetShimmer(this);
 
         if (parsedResponseText.errors) {
-          this.#handleCartError(line, parsedResponseText);
+          if (quantity === 0) {
+            sectionRenderer.renderSection(this.sectionId, {
+              cache: false,
+            });
+            this.#ensureCartDrawerOpen(keepDrawerOpen);
+          } else {
+            this.#handleCartError(line, parsedResponseText);
+          }
+
           return;
         }
 
         const newSectionHTML = new DOMParser().parseFromString(
           parsedResponseText.sections[this.sectionId],
-          'text/html'
+          'text/html',
         );
 
         // Grab the new cart item count from a hidden element
-        const newCartHiddenItemCount = newSectionHTML.querySelector('[ref="cartItemCount"]')?.textContent;
-        const newCartItemCount = newCartHiddenItemCount ? parseInt(newCartHiddenItemCount, 10) : 0;
+        const newCartHiddenItemCount = newSectionHTML.querySelector(
+          '[ref="cartItemCount"]',
+        )?.textContent;
+        const newCartItemCount = newCartHiddenItemCount
+          ? parseInt(newCartHiddenItemCount, 10)
+          : 0;
 
         // Update data-cart-quantity for all matching variants
         this.#updateQuantitySelectors(parsedResponseText);
@@ -164,18 +218,56 @@ class CartItemsComponent extends Component {
             itemCount: newCartItemCount,
             source: 'cart-items-component',
             sections: parsedResponseText.sections,
-          })
+          }),
         );
 
-        morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
+        const doMorph = () => {
+          morphSection(
+            this.sectionId,
+            parsedResponseText.sections[this.sectionId],
+          );
+          this.#ensureCartDrawerOpen(
+            isLastItem && newCartItemCount === 0
+              ? true
+              : keepDrawerOpen,
+          );
+          this.#updateCartQuantitySelectorButtonStates();
+        };
 
-        this.#updateCartQuantitySelectorButtonStates();
+        if (isLastItem && newCartItemCount === 0) {
+          const elapsed =
+            performance.now() -
+            (this.#lastItemFadeStartTime ?? performance.now());
+          const delay = Math.max(0, 200 - elapsed);
+          this.#lastItemFadeStartTime = null;
+          setTimeout(doMorph, delay);
+        } else {
+          doMorph();
+        }
       })
       .catch((error) => {
-        console.error(error);
+        if (error?.name !== 'AbortError') {
+          if (quantity === 0) {
+            sectionRenderer.renderSection(this.sectionId, {
+              cache: false,
+            });
+            this.#ensureCartDrawerOpen(keepDrawerOpen);
+          }
+
+          console.error(error);
+        }
       })
       .finally(() => {
-        this.#enableCartItems();
+        if (requestId === this.#updateRequestId) {
+          this.#enableCartItems();
+        }
+
+        if (
+          this.#pendingUpdateController === pendingUpdateController
+        ) {
+          this.#pendingUpdateController = null;
+        }
+
         cartPerformance.measureFromMarker(cartPerformaceUpdateMarker);
       });
   }
@@ -203,10 +295,13 @@ class CartItemsComponent extends Component {
     quantityInput.value = quantityInput.defaultValue;
 
     const cartItemError = this.refs[`cartItemError-${line}`];
-    const cartItemErrorContainer = this.refs[`cartItemErrorContainer-${line}`];
+    const cartItemErrorContainer =
+      this.refs[`cartItemErrorContainer-${line}`];
 
-    if (!(cartItemError instanceof HTMLElement)) throw new Error('Cart item error not found');
-    if (!(cartItemErrorContainer instanceof HTMLElement)) throw new Error('Cart item error container not found');
+    if (!(cartItemError instanceof HTMLElement))
+      throw new Error('Cart item error not found');
+    if (!(cartItemErrorContainer instanceof HTMLElement))
+      throw new Error('Cart item error container not found');
 
     cartItemError.textContent = parsedResponseText.errors;
     cartItemErrorContainer.classList.remove('hidden');
@@ -224,7 +319,8 @@ class CartItemsComponent extends Component {
     }
     if (event.target === this) return;
 
-    const cartItemsHtml = event.detail.data.sections?.[this.sectionId];
+    const cartItemsHtml =
+      event.detail.data.sections?.[this.sectionId];
     if (cartItemsHtml) {
       morphSection(this.sectionId, cartItemsHtml);
 
@@ -260,17 +356,25 @@ class CartItemsComponent extends Component {
     for (const item of updatedCart.items) {
       const variantId = item.variant_id.toString();
       const selectors = document.querySelectorAll(
-        `quantity-selector-component[data-variant-id="${variantId}"], cart-quantity-selector-component[data-variant-id="${variantId}"]`
+        `quantity-selector-component[data-variant-id="${variantId}"], cart-quantity-selector-component[data-variant-id="${variantId}"]`,
       );
 
       for (const selector of selectors) {
-        const input = selector.querySelector('input[data-cart-quantity]');
+        const input = selector.querySelector(
+          'input[data-cart-quantity]',
+        );
         if (!input) continue;
 
-        input.setAttribute('data-cart-quantity', item.quantity.toString());
+        input.setAttribute(
+          'data-cart-quantity',
+          item.quantity.toString(),
+        );
 
         // Update the quantity selector's internal state
-        if ('updateCartQuantity' in selector && typeof selector.updateCartQuantity === 'function') {
+        if (
+          'updateCartQuantity' in selector &&
+          typeof selector.updateCartQuantity === 'function'
+        ) {
           selector.updateCartQuantity();
         }
       }
@@ -281,11 +385,122 @@ class CartItemsComponent extends Component {
    * Updates button states for all cart quantity selector components.
    */
   #updateCartQuantitySelectorButtonStates() {
-    const cartQuantitySelectors = document.querySelectorAll('cart-quantity-selector-component');
+    const cartQuantitySelectors = document.querySelectorAll(
+      'cart-quantity-selector-component',
+    );
     for (const selector of cartQuantitySelectors) {
-      if ('updateButtonStates' in selector && typeof selector.updateButtonStates === 'function') {
+      if (
+        'updateButtonStates' in selector &&
+        typeof selector.updateButtonStates === 'function'
+      ) {
         selector.updateButtonStates();
       }
+    }
+  }
+
+  #isCartDrawerOpen() {
+    return !!document.querySelector(
+      'cart-drawer-component dialog[open]',
+    );
+  }
+
+  #ensureCartDrawerOpen(keepOpen) {
+    if (!keepOpen) return;
+
+    requestAnimationFrame(() => {
+      const drawer = document.querySelector('cart-drawer-component');
+
+      if (drawer && typeof drawer.open === 'function') {
+        drawer.open();
+      }
+    });
+  }
+
+  #optimisticallyRemoveRows(line, { isLastItem = false } = {}) {
+    const cartItemRow = this.refs.cartItemRows[line - 1];
+    if (!cartItemRow) return;
+
+    const rowsToRemove = [
+      cartItemRow,
+      ...this.refs.cartItemRows.filter(
+        (row) => row.dataset.parentKey === cartItemRow.dataset.key,
+      ),
+    ];
+
+    if (isLastItem && !prefersReducedMotion()) {
+      this.#lastItemFadeStartTime = performance.now();
+      const summary = this.querySelector('.cart-drawer__summary');
+      if (summary instanceof HTMLElement) {
+        summary.style.transition = 'opacity 180ms ease';
+        summary.style.opacity = '0';
+      }
+    }
+
+    rowsToRemove.forEach((row) => {
+      if (prefersReducedMotion()) {
+        row.remove();
+        return;
+      }
+
+      row.classList.add('removing');
+
+      if (isLastItem) {
+        row.style.opacity = '0';
+        return;
+      }
+
+      const rowHeight = row.clientHeight;
+      row.style.maxHeight = `${rowHeight}px`;
+      row.style.overflow = 'hidden';
+
+      requestAnimationFrame(() => {
+        row.style.maxHeight = '0px';
+        row.style.marginBottom = '0';
+        row.style.paddingBottom = '0';
+        row.style.opacity = '0';
+        row.style.borderColor = 'transparent';
+      });
+
+      setTimeout(() => {
+        row.remove();
+      }, 220);
+    });
+  }
+
+  #isRemovingLastItem(line) {
+    const rows = this.refs.cartItemRows ?? [];
+    if (rows.length <= 1) return true;
+
+    const lineRow = rows[line - 1];
+    if (!lineRow) return false;
+
+    const topLevelRows = rows.filter((row) => !row.dataset.parentKey);
+    if (topLevelRows.length <= 1) return true;
+
+    return !lineRow.dataset.parentKey && topLevelRows.length === 1;
+  }
+
+  #optimisticallySetCartTotalToZero() {
+    const total = this.querySelector('[ref="cartTotal"]');
+    if (total instanceof HTMLElement) {
+      const current = total.textContent?.trim() ?? '';
+      const numericToken = current.match(/[\d.,]+/);
+      const zeroValue = numericToken?.[0]?.includes(',')
+        ? '0,00'
+        : '0';
+      const nextText = numericToken
+        ? current.replace(numericToken[0], zeroValue)
+        : '0';
+
+      total.textContent = nextText;
+      total.setAttribute('value', nextText);
+    }
+
+    const checkoutButton = this.querySelector(
+      '.cart__checkout-button',
+    );
+    if (checkoutButton instanceof HTMLButtonElement) {
+      checkoutButton.disabled = true;
     }
   }
 

@@ -171,10 +171,16 @@ function walk(newNode, oldNode, options) {
 function updateNode(newNode, oldNode, options) {
   options.onBeforeUpdate?.(oldNode, newNode);
 
+  let shouldRestoreModalState = false;
+
   if (
     (newNode instanceof HTMLDetailsElement && oldNode instanceof HTMLDetailsElement) ||
     (newNode instanceof HTMLDialogElement && oldNode instanceof HTMLDialogElement)
   ) {
+    if (newNode instanceof HTMLDialogElement && oldNode instanceof HTMLDialogElement) {
+      shouldRestoreModalState = oldNode.matches(':modal');
+    }
+
     if (!newNode.hasAttribute('declarative-open')) {
       newNode.open = oldNode.open;
     }
@@ -199,6 +205,20 @@ function updateNode(newNode, oldNode, options) {
     if (oldNode.nodeValue !== newNode.nodeValue) {
       oldNode.nodeValue = newNode.nodeValue;
     }
+  }
+
+  if (
+    shouldRestoreModalState &&
+    oldNode instanceof HTMLDialogElement &&
+    oldNode.open &&
+    !oldNode.matches(':modal')
+  ) {
+    queueMicrotask(() => {
+      if (!oldNode.open || oldNode.matches(':modal')) return;
+
+      oldNode.close();
+      oldNode.showModal();
+    });
   }
 
   // Handle special elements
