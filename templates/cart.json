@@ -105,7 +105,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>Productos que te  interesan</h3>",
+                "text": "<h3>Otros productos recomendados</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
