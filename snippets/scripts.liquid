@@ -26,6 +26,8 @@
   }
 </script>
 
+{% assign is_index_template = template.name == 'index' %}
+
 {% if settings.transition_to_main_product %}
   {% # theme-check-disable ParserBlockingScript %}
   <script
@@ -41,7 +43,7 @@
   href="{{ 'critical.js' | asset_url }}"
 >
 
-{% unless template.name == 'index' %}
+{% unless is_index_template %}
   <link
     rel="modulepreload"
     href="{{ 'utilities.js' | asset_url }}"
@@ -88,7 +90,7 @@
   >
 {% endif %}
 
-{% unless template.name == 'index' %}
+{% unless is_index_template %}
   <link
     rel="modulepreload"
     href="{{ 'focus.js' | asset_url }}"
@@ -136,7 +138,7 @@
   fetchpriority="low"
 ></script>
 
-{% unless template.name == 'index' %}
+{% unless is_index_template %}
 <script
   src="{{ 'quick-add.js' | asset_url }}"
   type="module"
@@ -241,7 +243,7 @@
   </script>
 {% endif %}
 
-{% if settings.transition_to_main_product and template.name != 'index' %}
+{% if settings.transition_to_main_product and is_index_template == false %}
   <script
     src="{{ 'product-card-link.js' | asset_url }}"
     type="module"

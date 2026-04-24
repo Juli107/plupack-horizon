@@ -345,7 +345,7 @@
   }
 
   .cart-items-disabled {
-    opacity: 0.98;
+    pointer-events: none;
   }
 
   .cart-items__table {
@@ -382,14 +382,23 @@
   }
 
   .cart-items__table-row.removing {
-    opacity: 0.45;
-    pointer-events: none;
-    transition:
-      max-height 220ms var(--animation-easing),
-      margin-bottom 220ms var(--animation-easing),
-      padding-bottom 220ms var(--animation-easing),
-      opacity 180ms var(--animation-easing),
-      border-color 220ms var(--animation-easing);
+    overflow: hidden;
+    animation: removeRow calc(var(--animation-speed) * 2) var(--animation-easing) forwards;
+    animation-delay: var(--animation-speed);
+  }
+
+  @keyframes removeRow {
+    0% {
+      height: var(--row-height);
+    }
+
+    100% {
+      opacity: 0;
+      height: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-color: transparent;
+    }
   }
 
   .cart-items__table-row:last-child {

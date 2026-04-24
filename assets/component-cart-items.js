@@ -1,5 +1,5 @@
 import { Component } from '@theme/component';
-import { fetchConfig, debounce, prefersReducedMotion, resetShimmer } from '@theme/utilities';
+import { fetchConfig, debounce, onAnimationEnd, prefersReducedMotion, resetShimmer } from '@theme/utilities';
 import { morphSection, sectionRenderer } from '@theme/section-renderer';
 import {
   ThemeEvents,
@@ -24,8 +24,6 @@ import { cartPerformance } from '@theme/performance';
  */
 class CartItemsComponent extends Component {
   #debouncedOnChange = debounce(this.#onQuantityChange, 300).bind(this);
-  #pendingUpdateController = null;
-  #updateRequestId = 0;
 
   connectedCallback() {
     super.connectedCallback();
@@ -73,16 +71,34 @@ class CartItemsComponent extends Component {
    * @param {number} line - The line item index.
    */
   onLineItemRemove(line) {
-    const keepDrawerOpen = this.#isCartDrawerOpen();
-
     this.updateQuantity({
       line,
       quantity: 0,
       action: 'clear',
-      keepDrawerOpen,
     });
 
-    this.#optimisticallyRemoveRows(line);
+    const cartItemRowToRemove = this.refs.cartItemRows[line - 1];
+
+    if (!cartItemRowToRemove) return;
+
+    const rowsToRemove = [
+      cartItemRowToRemove,
+      // Get all nested lines of the row to remove
+      ...this.refs.cartItemRows.filter((row) => row.dataset.parentKey === cartItemRowToRemove.dataset.key),
+    ];
+
+    // Add class to the row to trigger the animation
+    rowsToRemove.forEach((row) => {
+      const remove = () => row.remove();
+
+      if (prefersReducedMotion()) return remove();
+
+      row.style.setProperty('--row-height', `${row.clientHeight}px`);
+      row.classList.add('removing');
+
+      // Remove the row after the animation ends
+      onAnimationEnd(row, remove);
+    });
   }
 
   /**
@@ -93,20 +109,11 @@ class CartItemsComponent extends Component {
    * @param {string} config.action - The action.
    */
   updateQuantity(config) {
-    const requestId = ++this.#updateRequestId;
-
-    if (this.#pendingUpdateController) {
-      this.#pendingUpdateController.abort();
-    }
-
-    const pendingUpdateController = new AbortController();
-    this.#pendingUpdateController = pendingUpdateController;
-
     const cartPerformaceUpdateMarker = cartPerformance.createStartingMarker(`${config.action}:user-action`);
 
     this.#disableCartItems();
 
-    const { line, quantity, keepDrawerOpen = false } = config;
+    const { line, quantity } = config;
     const { cartTotal } = this.refs;
 
     const cartItemsComponents = document.querySelectorAll('cart-items-component');
@@ -126,28 +133,17 @@ class CartItemsComponent extends Component {
 
     cartTotal?.shimmer();
 
-    fetch(`${Theme.routes.cart_change_url}`, {
-      ...fetchConfig('json', { body }),
-      signal: pendingUpdateController.signal,
-    })
+    fetch(`${Theme.routes.cart_change_url}`, fetchConfig('json', { body }))
       .then((response) => {
         return response.text();
       })
       .then((responseText) => {
-        if (requestId !== this.#updateRequestId) return;
-
         const parsedResponseText = JSON.parse(responseText);
 
         resetShimmer(this);
 
         if (parsedResponseText.errors) {
-          if (quantity === 0) {
-            sectionRenderer.renderSection(this.sectionId, { cache: false });
-            this.#ensureCartDrawerOpen(keepDrawerOpen);
-          } else {
-            this.#handleCartError(line, parsedResponseText);
-          }
-
+          this.#handleCartError(line, parsedResponseText);
           return;
         }
 
@@ -173,29 +169,13 @@ class CartItemsComponent extends Component {
 
         morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
 
-        this.#ensureCartDrawerOpen(keepDrawerOpen);
-
         this.#updateCartQuantitySelectorButtonStates();
       })
       .catch((error) => {
-        if (error?.name !== 'AbortError') {
-          if (quantity === 0) {
-            sectionRenderer.renderSection(this.sectionId, { cache: false });
-            this.#ensureCartDrawerOpen(keepDrawerOpen);
-          }
-
-          console.error(error);
-        }
+        console.error(error);
       })
       .finally(() => {
-        if (requestId === this.#updateRequestId) {
-          this.#enableCartItems();
-        }
-
-        if (this.#pendingUpdateController === pendingUpdateController) {
-          this.#pendingUpdateController = null;
-        }
-
+        this.#enableCartItems();
         cartPerformance.measureFromMarker(cartPerformaceUpdateMarker);
       });
   }
@@ -307,57 +287,6 @@ class CartItemsComponent extends Component {
         selector.updateButtonStates();
       }
     }
-  }
-
-  #isCartDrawerOpen() {
-    return !!document.querySelector('cart-drawer-component dialog[open]');
-  }
-
-  #ensureCartDrawerOpen(keepOpen) {
-    if (!keepOpen) return;
-
-    requestAnimationFrame(() => {
-      const drawer = document.querySelector('cart-drawer-component');
-
-      if (drawer && typeof drawer.open === 'function') {
-        drawer.open();
-      }
-    });
-  }
-
-  #optimisticallyRemoveRows(line) {
-    const cartItemRow = this.refs.cartItemRows[line - 1];
-    if (!cartItemRow) return;
-
-    const rowsToRemove = [
-      cartItemRow,
-      ...this.refs.cartItemRows.filter((row) => row.dataset.parentKey === cartItemRow.dataset.key),
-    ];
-
-    rowsToRemove.forEach((row) => {
-      if (prefersReducedMotion()) {
-        row.remove();
-        return;
-      }
-
-      row.classList.add('removing');
-
-      const rowHeight = row.clientHeight;
-      row.style.maxHeight = `${rowHeight}px`;
-      row.style.overflow = 'hidden';
-
-      requestAnimationFrame(() => {
-        row.style.maxHeight = '0px';
-        row.style.marginBottom = '0';
-        row.style.paddingBottom = '0';
-        row.style.opacity = '0';
-        row.style.borderColor = 'transparent';
-      });
-
-      setTimeout(() => {
-        row.remove();
-      }, 220);
-    });
   }
 
   /**
