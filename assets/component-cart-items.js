@@ -291,6 +291,32 @@ class CartItemsComponent extends Component {
   }
 
   /**
+   * Morphs only the inner cart-items-component subtree(s) for the current
+   * section, instead of morphing the entire header section. This avoids
+   * touching the surrounding <dialog> (cart drawer), which would otherwise
+   * lose its top-layer `:modal` state and retrigger slide-in animations.
+   * @param {string} sectionHtml - New section HTML from Section Rendering API.
+   */
+  #morphCartItemsOnly(sectionHtml) {
+    const newSection = new DOMParser().parseFromString(sectionHtml, 'text/html');
+    const newCartItems = newSection.querySelector(
+      `cart-items-component[data-section-id="${this.sectionId}"]`
+    );
+    if (!newCartItems) {
+      morphSection(this.sectionId, sectionHtml);
+      return;
+    }
+
+    const existingCartItems = document.querySelectorAll(
+      `cart-items-component[data-section-id="${this.sectionId}"]`
+    );
+
+    for (const existing of existingCartItems) {
+      morph(existing, newCartItems.cloneNode(true));
+    }
+  }
+
+  /**
    * Marks any open :modal dialogs inside the section so morph-related flashes
    * (animation retrigger + brief non-modal paint) are suppressed via CSS.
    * @returns {HTMLDialogElement[]} The dialogs that were marked.
