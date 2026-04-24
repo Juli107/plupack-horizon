@@ -26,6 +26,13 @@
   }
 </script>
 
+{% assign is_index_template = template.name == 'index' %}
+{% assign has_add_to_cart_forms = false %}
+
+{% if request.page_type == 'product' or template.name == 'collection' or template.name == 'search' or settings.quick_add or settings.mobile_quick_add %}
+  {% assign has_add_to_cart_forms = true %}
+{% endif %}
+
 {% if settings.transition_to_main_product %}
   {% # theme-check-disable ParserBlockingScript %}
   <script
@@ -41,7 +48,7 @@
   href="{{ 'critical.js' | asset_url }}"
 >
 
-{% unless template.name == 'index' %}
+{% unless is_index_template %}
   <link
     rel="modulepreload"
     href="{{ 'utilities.js' | asset_url }}"
@@ -88,7 +95,7 @@
   >
 {% endif %}
 
-{% unless template.name == 'index' %}
+{% unless is_index_template %}
   <link
     rel="modulepreload"
     href="{{ 'focus.js' | asset_url }}"
@@ -136,7 +143,15 @@
   fetchpriority="low"
 ></script>
 
-{% unless template.name == 'index' %}
+{% if has_add_to_cart_forms %}
+<script
+  src="{{ 'product-form.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+{% endif %}
+
+{% unless is_index_template %}
 <script
   src="{{ 'quick-add.js' | asset_url }}"
   type="module"
@@ -156,11 +171,6 @@
 ></script>
 <script
   src="{{ 'product-card.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
-  src="{{ 'product-form.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>
@@ -241,7 +251,7 @@
   </script>
 {% endif %}
 
-{% if settings.transition_to_main_product and template.name != 'index' %}
+{% if settings.transition_to_main_product and is_index_template == false %}
   <script
     src="{{ 'product-card-link.js' | asset_url }}"
     type="module"
