@@ -167,7 +167,9 @@ class CartItemsComponent extends Component {
           })
         );
 
+        const modalDialogs = this.#markModalDialogsForMorph();
         morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
+        this.#unmarkModalDialogsAfterMorph(modalDialogs);
 
         this.#updateCartQuantitySelectorButtonStates();
       })
@@ -226,7 +228,9 @@ class CartItemsComponent extends Component {
 
     const cartItemsHtml = event.detail.data.sections?.[this.sectionId];
     if (cartItemsHtml) {
+      const modalDialogs = this.#markModalDialogsForMorph();
       morphSection(this.sectionId, cartItemsHtml);
+      this.#unmarkModalDialogsAfterMorph(modalDialogs);
 
       // Update button states for all cart quantity selectors after morph
       this.#updateCartQuantitySelectorButtonStates();
