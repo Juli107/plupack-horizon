@@ -1390,7 +1390,15 @@ results-list[initialized] {
 dialog[data-morph-restoring-modal][open],
 dialog[data-morph-restoring-modal][open]::backdrop {
   animation: none !important;
+  animation-name: none !important;
   transition: none !important;
+}
+
+dialog[data-morph-restoring-modal][open]::backdrop {
+  opacity: 1 !important;
+  background: rgb(
+    var(--backdrop-color-rgb) / var(--backdrop-opacity)
+  ) !important;
 }
 
 .dialog-drawer.dialog-closing {
