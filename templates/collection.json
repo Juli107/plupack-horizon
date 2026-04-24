@@ -100,7 +100,9 @@
     },
     "catalog_pdf": {
       "type": "catalog-pdf",
-      "settings": {}
+      "settings": {
+        "catalog_pdf_url": "https://cdn.shopify.com/s/files/1/0710/1834/8589/files/Catalogo_de_PLUPack_Embalajes.pdf?v=1777043455"
+      }
     },
     "collection_links_AyeMg8": {
       "type": "collection-links",
