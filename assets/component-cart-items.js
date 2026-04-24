@@ -314,6 +314,32 @@ class CartItemsComponent extends Component {
     for (const existing of existingCartItems) {
       morph(existing, newCartItems.cloneNode(true));
     }
+
+    this.#syncCartDrawerDialogClass(newSection);
+  }
+
+  /**
+   * Syncs class attribute on the surrounding cart-drawer <dialog> from the new
+   * section HTML. Needed because the enclosing morph is bypassed, so the
+   * empty/non-empty class toggle on the dialog would otherwise never update.
+   * @param {Document} newSection
+   */
+  #syncCartDrawerDialogClass(newSection) {
+    const existingDialog = this.closest('cart-drawer-component')?.querySelector(
+      'dialog.cart-drawer__dialog'
+    );
+    const newDialog = newSection.querySelector('dialog.cart-drawer__dialog');
+    if (!existingDialog || !newDialog) return;
+
+    const newClass = newDialog.getAttribute('class') || '';
+    if (existingDialog.getAttribute('class') !== newClass) {
+      existingDialog.setAttribute('class', newClass);
+    }
+
+    const newLabelledBy = newDialog.getAttribute('aria-labelledby');
+    if (newLabelledBy && existingDialog.getAttribute('aria-labelledby') !== newLabelledBy) {
+      existingDialog.setAttribute('aria-labelledby', newLabelledBy);
+    }
   }
 
   /**
