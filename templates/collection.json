@@ -9,6 +9,11 @@
  */
 {
   "sections": {
+    "catalog_pdf_6wqzcR": {
+      "type": "catalog-pdf",
+      "name": "Catálogo PDF",
+      "settings": {}
+    },
     "section": {
       "type": "section",
       "blocks": {
@@ -349,6 +354,7 @@
     }
   },
   "order": [
+    "catalog_pdf_6wqzcR",
     "section",
     "catalog_pdf",
     "collection_links_AyeMg8",
