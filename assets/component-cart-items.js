@@ -1,6 +1,7 @@
 import { Component } from '@theme/component';
 import { fetchConfig, debounce, onAnimationEnd, prefersReducedMotion, resetShimmer } from '@theme/utilities';
 import { morphSection, sectionRenderer } from '@theme/section-renderer';
+import { morph } from '@theme/morph';
 import {
   ThemeEvents,
   CartUpdateEvent,
@@ -167,9 +168,7 @@ class CartItemsComponent extends Component {
           })
         );
 
-        const modalDialogs = this.#markModalDialogsForMorph();
-        morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
-        this.#unmarkModalDialogsAfterMorph(modalDialogs);
+        this.#morphCartItemsOnly(parsedResponseText.sections[this.sectionId]);
 
         this.#updateCartQuantitySelectorButtonStates();
       })
@@ -228,9 +227,7 @@ class CartItemsComponent extends Component {
 
     const cartItemsHtml = event.detail.data.sections?.[this.sectionId];
     if (cartItemsHtml) {
-      const modalDialogs = this.#markModalDialogsForMorph();
-      morphSection(this.sectionId, cartItemsHtml);
-      this.#unmarkModalDialogsAfterMorph(modalDialogs);
+      this.#morphCartItemsOnly(cartItemsHtml);
 
       // Update button states for all cart quantity selectors after morph
       this.#updateCartQuantitySelectorButtonStates();
