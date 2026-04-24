@@ -27,11 +27,6 @@
 </script>
 
 {% assign is_index_template = template.name == 'index' %}
-{% assign has_add_to_cart_forms = false %}
-
-{% if request.page_type == 'product' or template.name == 'collection' or template.name == 'search' or settings.quick_add or settings.mobile_quick_add %}
-  {% assign has_add_to_cart_forms = true %}
-{% endif %}
 
 {% if settings.transition_to_main_product %}
   {% # theme-check-disable ParserBlockingScript %}
@@ -143,13 +138,11 @@
   fetchpriority="low"
 ></script>
 
-{% if has_add_to_cart_forms %}
 <script
   src="{{ 'product-form.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>
-{% endif %}
 
 {% unless is_index_template %}
 <script
