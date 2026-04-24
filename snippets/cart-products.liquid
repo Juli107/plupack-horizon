@@ -19,24 +19,18 @@
   {% endif %}
 >
   {% if cart.empty? %}
-    <div class="cart-items__empty-state">
-      <p class="cart-items__empty-copy h4">
-        {{ 'content.your_cart_is_empty' | t }}
+    {%- if shop.customer_accounts_enabled and customer == null -%}
+      <p>
+        {{ 'actions.log_in_html' | t: link: routes.account_login_url }}
       </p>
+    {%- endif -%}
 
-      {%- if shop.customer_accounts_enabled and customer == null -%}
-        <p>
-          {{ 'actions.log_in_html' | t: link: routes.account_login_url }}
-        </p>
-      {%- endif -%}
-
-      <a
-        class="button cart-items__empty-button"
-        href="/collections/todos-los-productos"
-      >
-        {{ 'actions.continue_shopping' | t }}
-      </a>
-    </div>
+    <a
+      class="button cart-items__empty-button"
+      href="/collections/todos-los-productos"
+    >
+      {{ 'actions.continue_shopping' | t }}
+    </a>
   {%- else -%}
     <span
       class="visually-hidden"
@@ -350,23 +344,8 @@
     width: 100%;
   }
 
-  .cart-items__empty-state {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-md);
-    min-height: 100%;
-    text-align: center;
-  }
-
-  .cart-items__empty-copy {
-    color: var(--color-foreground);
-  }
-
   .cart-items-disabled {
-    opacity: 0.98;
+    pointer-events: none;
   }
 
   .cart-items__table {
@@ -403,14 +382,23 @@
   }
 
   .cart-items__table-row.removing {
-    opacity: 0.45;
-    pointer-events: none;
-    transition:
-      max-height 220ms var(--animation-easing),
-      margin-bottom 220ms var(--animation-easing),
-      padding-bottom 220ms var(--animation-easing),
-      opacity 180ms var(--animation-easing),
-      border-color 220ms var(--animation-easing);
+    overflow: hidden;
+    animation: removeRow calc(var(--animation-speed) * 2) var(--animation-easing) forwards;
+    animation-delay: var(--animation-speed);
+  }
+
+  @keyframes removeRow {
+    0% {
+      height: var(--row-height);
+    }
+
+    100% {
+      opacity: 0;
+      height: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-color: transparent;
+    }
   }
 
   .cart-items__table-row:last-child {
