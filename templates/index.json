@@ -13,7 +13,7 @@
       "type": "react-homepage",
       "settings": {
         "background_color": "#084E85",
-        "accent_color": "#0B6386",
+        "accent_color": "#FFFFFF",
         "hero_featured_product_1": "fs",
         "hero_featured_product_2": "fa",
         "hero_featured_product_3": "bp",
