@@ -16,7 +16,7 @@
           "type": "_product-media-gallery",
           "static": true,
           "settings": {
-            "media_presentation": "carousel",
+            "media_presentation": "grid",
             "media_columns": "two",
             "image_gap": 0,
             "large_first_image": false,
@@ -28,7 +28,7 @@
             "aspect_ratio": "1",
             "constrain_to_viewport": false,
             "media_fit": "contain",
-            "media_radius": 31,
+            "media_radius": 25,
             "extend_media": false,
             "zoom": true,
             "video_loop": false,
