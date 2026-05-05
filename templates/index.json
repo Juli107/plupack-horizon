@@ -12,7 +12,7 @@
     "react_homepage": {
       "type": "react-homepage",
       "settings": {
-        "background_color": "#084e85",
+        "background_color": "#1B4B6B",
         "accent_color": "#ffffff",
         "hero_featured_product_1": "zbp-copia",
         "hero_featured_product_2": "fa",
