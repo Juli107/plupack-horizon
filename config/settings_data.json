@@ -687,6 +687,10 @@
     }
   },
   "platform_customizations": {
-    "custom_css": []
+    "custom_css": [
+      ".card__media {position: relative;}",
+      ".card__media img:nth-child(2) {position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease;}",
+      ".card:hover .card__media img:nth-child(2) {opacity: 1;}"
+    ]
   }
 }
