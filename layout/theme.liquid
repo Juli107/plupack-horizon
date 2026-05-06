@@ -65,11 +65,6 @@
           pointer-events: none;
         }
 
-        .card-gallery:hover slideshow-slide[hidden]:nth-child(2) {
-          opacity: 1;
-        }
-
-        /* Also handle non-hidden second slides */
         .card-gallery slideshow-slide:nth-child(2):not([hidden]) {
           position: absolute;
           inset: 0;
@@ -79,7 +74,12 @@
           pointer-events: none;
         }
 
-        .card-gallery:hover slideshow-slide:nth-child(2):not([hidden]) {
+        /* On hover: hide first image, show second */
+        .card-gallery:hover slideshow-slide:first-child {
+          opacity: 0;
+        }
+
+        .card-gallery:hover slideshow-slide:nth-child(2) {
           opacity: 1;
         }
       }
