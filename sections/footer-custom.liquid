@@ -178,6 +178,83 @@
             JPCABRERA
           </a>
         </p>
+        <div class="footer-custom__asset-credits" data-asset-credits>
+          <button
+            type="button"
+            class="footer-custom__asset-credits-trigger"
+            data-asset-credits-trigger
+            aria-expanded="false"
+            aria-controls="asset-credits-popover-{{ section.id }}"
+          >
+            ASSET CREDITS
+          </button>
+          <div
+            id="asset-credits-popover-{{ section.id }}"
+            class="footer-custom__asset-credits-popover"
+            data-asset-credits-popover
+            role="dialog"
+            aria-label="3D asset credits"
+          >
+            <button
+              type="button"
+              class="footer-custom__asset-credits-close"
+              data-asset-credits-close
+              aria-label="Close asset credits"
+            >
+              x
+            </button>
+            <p class="footer-custom__asset-credits-title">3D ASSETS</p>
+            <p class="footer-custom__asset-credits-item">
+              <a
+                href="https://sketchfab.com/3d-models/latex-gloves-fallen-bd695b3f7ecf48dab7898c0a8b9a9840"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-custom__asset-credits-link"
+              >
+                Latex Gloves Fallen
+              </a>
+              by
+              <a
+                href="https://sketchfab.com/abdillaamy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-custom__asset-credits-link"
+              >
+                abdillaamy
+              </a>
+            </p>
+            <p class="footer-custom__asset-credits-item">
+              <a
+                href="https://sketchfab.com/3d-models/aluminum-tray-398c1b3b8114409a89eb02f9b42f8064"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-custom__asset-credits-link"
+              >
+                Aluminum tray
+              </a>
+              by
+              <a
+                href="https://sketchfab.com/extracrispi"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-custom__asset-credits-link"
+              >
+                Kathrin&amp;Christian
+              </a>
+            </p>
+            <p class="footer-custom__asset-credits-license">
+              Licensed under
+              <a
+                href="https://creativecommons.org/licenses/by/4.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-custom__asset-credits-link"
+              >
+                CC BY 4.0
+              </a>
+            </p>
+          </div>
+        </div>
       </div>
       {%- if section.settings.terms_url != blank -%}
         <a href="{{ section.settings.terms_url }}" class="footer-custom__terms">
@@ -187,6 +264,49 @@
     </div>
   </div>
 </footer>
+
+{% javascript %}
+  (() => {
+    const containers = document.querySelectorAll('[data-asset-credits]');
+
+    containers.forEach((container) => {
+      const trigger = container.querySelector('[data-asset-credits-trigger]');
+      const popover = container.querySelector('[data-asset-credits-popover]');
+      const close = container.querySelector('[data-asset-credits-close]');
+
+      if (!trigger || !popover || !close) return;
+
+      const setOpen = (isOpen) => {
+        container.classList.toggle('is-open', isOpen);
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      };
+
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        const isOpen = container.classList.contains('is-open');
+        setOpen(!isOpen);
+      });
+
+      close.addEventListener('click', (event) => {
+        event.preventDefault();
+        setOpen(false);
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!container.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+
+      container.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          setOpen(false);
+          trigger.focus();
+        }
+      });
+    });
+  })();
+{% endjavascript %}
 
 {% stylesheet %}
   .footer-custom {
@@ -493,6 +613,125 @@
     font-family: 'Roboto Mono', monospace;
     line-height: 1.1;
     margin: 0;
+  }
+
+  .footer-custom__asset-credits {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-custom__asset-credits-trigger {
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Roboto Mono', monospace;
+    line-height: 1.1;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .footer-custom__asset-credits-trigger:hover,
+  .footer-custom__asset-credits-trigger:focus-visible,
+  .footer-custom__asset-credits.is-open .footer-custom__asset-credits-trigger {
+    color: #fff;
+  }
+
+  .footer-custom__asset-credits-popover {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.5rem);
+    transform: translateX(-50%);
+    width: min(320px, 86vw);
+    background: rgba(20, 48, 89, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    padding: 0.8rem 0.9rem 0.75rem;
+    display: none;
+    z-index: 5;
+  }
+
+  .footer-custom__asset-credits:hover .footer-custom__asset-credits-popover,
+  .footer-custom__asset-credits:focus-within .footer-custom__asset-credits-popover,
+  .footer-custom__asset-credits.is-open .footer-custom__asset-credits-popover {
+    display: block;
+  }
+
+  .footer-custom__asset-credits-title,
+  .footer-custom__asset-credits-item,
+  .footer-custom__asset-credits-license {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .footer-custom__asset-credits-title {
+    margin-bottom: 0.35rem;
+    color: #fff;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-custom__asset-credits-item + .footer-custom__asset-credits-item {
+    margin-top: 0.3rem;
+  }
+
+  .footer-custom__asset-credits-license {
+    margin-top: 0.45rem;
+    opacity: 0.92;
+  }
+
+  .footer-custom__asset-credits-link {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-custom__asset-credits-link:hover,
+  .footer-custom__asset-credits-link:focus-visible {
+    opacity: 0.78;
+  }
+
+  .footer-custom__asset-credits-close {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.45rem;
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.78);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.1rem 0.2rem;
+  }
+
+  .footer-custom__asset-credits-close:hover,
+  .footer-custom__asset-credits-close:focus-visible {
+    color: #fff;
+  }
+
+  @media screen and (min-width: 750px) {
+    .footer-custom__asset-credits {
+      align-items: flex-start;
+    }
+
+    .footer-custom__asset-credits-popover {
+      left: 0;
+      transform: none;
+    }
   }
 
   .footer-custom__site-by-link {
