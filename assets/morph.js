@@ -16,7 +16,10 @@ import { Component } from '@theme/component';
 const MORPH_OPTIONS = {
   childrenOnly: true,
   reject(oldNode, newNode) {
-    if (newNode.nodeType === Node.TEXT_NODE && newNode.nodeValue?.trim() === '') {
+    if (
+      newNode.nodeType === Node.TEXT_NODE &&
+      newNode.nodeValue?.trim() === ''
+    ) {
       return true;
     }
 
@@ -25,14 +28,18 @@ const MORPH_OPTIONS = {
       newNode.shadowRootMode === 'open' &&
       oldNode.parentElement &&
       newNode.parentElement &&
-      oldNode.parentElement.tagName === newNode.parentElement.tagName &&
+      oldNode.parentElement.tagName ===
+        newNode.parentElement.tagName &&
       oldNode.parentElement?.shadowRoot != null
     ) {
       // Ignore template elements of components that are already initialized
       return true;
     }
 
-    if (newNode.nodeType === Node.COMMENT_NODE && newNode.nodeValue === 'shopify:rendered_by_section_api') {
+    if (
+      newNode.nodeType === Node.COMMENT_NODE &&
+      newNode.nodeValue === 'shopify:rendered_by_section_api'
+    ) {
       // Remove a comment node injected by the Section Rendering API in the Theme Editor
       return true;
     }
@@ -41,7 +48,11 @@ const MORPH_OPTIONS = {
   },
   onBeforeUpdate(oldNode, newNode) {
     if (oldNode instanceof Element && newNode instanceof Element) {
-      const attributes = ['product-grid-view', 'data-current-checked', 'data-previous-checked'];
+      const attributes = [
+        'product-grid-view',
+        'data-current-checked',
+        'data-previous-checked',
+      ];
 
       for (const attribute of attributes) {
         const oldValue = oldNode.getAttribute(attribute);
@@ -53,7 +64,10 @@ const MORPH_OPTIONS = {
       }
 
       // Special case for elements that need to keep their style
-      const elements = ['floating-panel-component', 'fieldset.variant-option'];
+      const elements = [
+        'floating-panel-component',
+        'fieldset.variant-option',
+      ];
       const ids = ['account-popover'];
 
       for (const element of elements) {
@@ -70,8 +84,13 @@ const MORPH_OPTIONS = {
       }
 
       // Preserve temporary view transition name
-      if (oldNode instanceof HTMLElement && newNode instanceof HTMLElement && oldNode.style.viewTransitionName) {
-        newNode.style.viewTransitionName = oldNode.style.viewTransitionName;
+      if (
+        oldNode instanceof HTMLElement &&
+        newNode instanceof HTMLElement &&
+        oldNode.style.viewTransitionName
+      ) {
+        newNode.style.viewTransitionName =
+          oldNode.style.viewTransitionName;
       }
     }
   },
@@ -95,7 +114,10 @@ export function morph(oldTree, newTree, options = MORPH_OPTIONS) {
   }
 
   if (typeof newTree === 'string') {
-    const parsedNewTree = new DOMParser().parseFromString(newTree, 'text/html').body.firstChild;
+    const parsedNewTree = new DOMParser().parseFromString(
+      newTree,
+      'text/html',
+    ).body.firstChild;
     if (!parsedNewTree) {
       throw new Error('newTree string is not valid HTML');
     }
@@ -108,7 +130,9 @@ export function morph(oldTree, newTree, options = MORPH_OPTIONS) {
   }
 
   if (newTree.nodeType === 11) {
-    throw new Error('newTree should have one root node (not a DocumentFragment)');
+    throw new Error(
+      'newTree should have one root node (not a DocumentFragment)',
+    );
   }
 
   return walk(newTree, oldTree, options);
@@ -133,7 +157,8 @@ function walk(newNode, oldNode, options) {
   if (newNode.nodeType !== oldNode.nodeType) return newNode;
   if (newNode instanceof Element && oldNode instanceof Element) {
     // Skip morphing if the node is shopify-accelerated-checkout-cart https://shopify.dev/docs/storefronts/themes/pricing-payments/accelerated-checkout#implement-accelerated-checkout-buttons-on-cart
-    if (oldNode.tagName === 'SHOPIFY-ACCELERATED-CHECKOUT-CART') return oldNode;
+    if (oldNode.tagName === 'SHOPIFY-ACCELERATED-CHECKOUT-CART')
+      return oldNode;
 
     if (newNode.tagName !== oldNode.tagName) return newNode;
 
@@ -174,10 +199,15 @@ function updateNode(newNode, oldNode, options) {
   let shouldRestoreModalState = false;
 
   if (
-    (newNode instanceof HTMLDetailsElement && oldNode instanceof HTMLDetailsElement) ||
-    (newNode instanceof HTMLDialogElement && oldNode instanceof HTMLDialogElement)
+    (newNode instanceof HTMLDetailsElement &&
+      oldNode instanceof HTMLDetailsElement) ||
+    (newNode instanceof HTMLDialogElement &&
+      oldNode instanceof HTMLDialogElement)
   ) {
-    if (newNode instanceof HTMLDialogElement && oldNode instanceof HTMLDialogElement) {
+    if (
+      newNode instanceof HTMLDialogElement &&
+      oldNode instanceof HTMLDialogElement
+    ) {
       shouldRestoreModalState = oldNode.matches(':modal');
     }
 
@@ -186,13 +216,18 @@ function updateNode(newNode, oldNode, options) {
     }
   }
 
-  if (oldNode instanceof HTMLElement && newNode instanceof HTMLElement) {
+  if (
+    oldNode instanceof HTMLElement &&
+    newNode instanceof HTMLElement
+  ) {
     for (const attr of ['slot', 'sizes']) {
       const oldValue = oldNode.getAttribute(attr);
       const newValue = newNode.getAttribute(attr);
 
       if (oldValue !== newValue) {
-        oldValue == null ? newNode.removeAttribute(attr) : newNode.setAttribute(attr, oldValue);
+        oldValue == null
+          ? newNode.removeAttribute(attr)
+          : newNode.setAttribute(attr, oldValue);
       }
     }
   }
@@ -209,24 +244,44 @@ function updateNode(newNode, oldNode, options) {
 
   if (
     shouldRestoreModalState &&
-    oldNode instanceof HTMLDialogElement &&
-    oldNode.open &&
-    !oldNode.matches(':modal')
+    oldNode instanceof HTMLDialogElement
   ) {
     queueMicrotask(() => {
-      if (!oldNode.open || oldNode.matches(':modal')) return;
+      if (!oldNode.isConnected) return;
+      if (!oldNode.open) return;
+      if (oldNode.matches(':modal')) return;
 
-      oldNode.close();
-      oldNode.showModal();
+      try {
+        oldNode.setAttribute('data-morph-restoring-modal', '');
+        oldNode.close();
+        oldNode.showModal();
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            oldNode.removeAttribute('data-morph-restoring-modal');
+          });
+        });
+      } catch (_err) {
+        oldNode.removeAttribute('data-morph-restoring-modal');
+      }
     });
   }
 
   // Handle special elements
-  if (newNode instanceof HTMLInputElement && oldNode instanceof HTMLInputElement) {
+  if (
+    newNode instanceof HTMLInputElement &&
+    oldNode instanceof HTMLInputElement
+  ) {
     updateInput(newNode, oldNode);
-  } else if (newNode instanceof HTMLOptionElement && oldNode instanceof HTMLOptionElement) {
+  } else if (
+    newNode instanceof HTMLOptionElement &&
+    oldNode instanceof HTMLOptionElement
+  ) {
     updateAttribute(newNode, oldNode, 'selected');
-  } else if (newNode instanceof HTMLTextAreaElement && oldNode instanceof HTMLTextAreaElement) {
+  } else if (
+    newNode instanceof HTMLTextAreaElement &&
+    oldNode instanceof HTMLTextAreaElement
+  ) {
     updateTextarea(newNode, oldNode);
   }
 }
@@ -238,7 +293,10 @@ function updateNode(newNode, oldNode, options) {
  * @returns {string|number|undefined} The node's key if one exists
  */
 function getNodeKey(node, options) {
-  return options?.getNodeKey?.(node) ?? (node instanceof Element ? node.id : undefined);
+  return (
+    options?.getNodeKey?.(node) ??
+    (node instanceof Element ? node.id : undefined)
+  );
 }
 
 /**
@@ -269,19 +327,35 @@ function copyAttributes(newNode, oldNode) {
 
   // Update or add new attributes
   for (const attr of Array.from(newAttrs)) {
-    const { name: attrName, namespaceURI: attrNamespaceURI, value: attrValue } = attr;
+    const {
+      name: attrName,
+      namespaceURI: attrNamespaceURI,
+      value: attrValue,
+    } = attr;
     const localName = attr.localName || attrName;
 
-    if (attrName === 'src' || attrName === 'href' || attrName === 'srcset' || attrName === 'poster') {
+    if (
+      attrName === 'src' ||
+      attrName === 'href' ||
+      attrName === 'srcset' ||
+      attrName === 'poster'
+    ) {
       // Skip updating resource attributes when the value hasn't changed
       // to prevent unnecessary network requests
       if (oldNode.getAttribute(attrName) === attrValue) continue;
     }
 
     if (attrNamespaceURI) {
-      const fromValue = oldNode.getAttributeNS(attrNamespaceURI, localName);
+      const fromValue = oldNode.getAttributeNS(
+        attrNamespaceURI,
+        localName,
+      );
       if (fromValue !== attrValue) {
-        oldNode.setAttributeNS(attrNamespaceURI, localName, attrValue);
+        oldNode.setAttributeNS(
+          attrNamespaceURI,
+          localName,
+          attrValue,
+        );
       }
     } else {
       if (!oldNode.hasAttribute(attrName)) {
@@ -367,7 +441,10 @@ function updateTextarea(newNode, oldNode) {
 
   const firstChild = oldNode.firstChild;
   if (firstChild?.nodeType === Node.TEXT_NODE) {
-    if (newValue === '' && firstChild.nodeValue === oldNode.placeholder) {
+    if (
+      newValue === '' &&
+      firstChild.nodeValue === oldNode.placeholder
+    ) {
       return;
     }
     firstChild.nodeValue = newValue;
@@ -437,7 +514,10 @@ function updateChildren(newNode, oldNode, options) {
     for (let j = i; j < oldNode.childNodes.length; j++) {
       const potentialOldNode = oldNode.childNodes[j];
 
-      if (potentialOldNode && same(potentialOldNode, newChild, options)) {
+      if (
+        potentialOldNode &&
+        same(potentialOldNode, newChild, options)
+      ) {
         oldMatch = potentialOldNode;
         break;
       }
@@ -447,7 +527,10 @@ function updateChildren(newNode, oldNode, options) {
       morphed = walk(newChild, oldMatch, options);
       if (morphed !== oldMatch) offset++;
       oldNode.insertBefore(morphed, oldChild);
-    } else if (!getNodeKey(newChild, options) && !getNodeKey(oldChild, options)) {
+    } else if (
+      !getNodeKey(newChild, options) &&
+      !getNodeKey(oldChild, options)
+    ) {
       // Safe to morph in-place if neither has a key
       morphed = walk(newChild, oldChild, options);
       if (morphed !== oldChild) {
@@ -475,7 +558,12 @@ function same(a, b, options) {
 
   // For elements, check tag name first
   if (a.nodeType === Node.ELEMENT_NODE) {
-    if (a instanceof Element && b instanceof Element && a.tagName !== b.tagName) return false;
+    if (
+      a instanceof Element &&
+      b instanceof Element &&
+      a.tagName !== b.tagName
+    )
+      return false;
 
     // Only compare keys if both nodes have them
     const aKey = getNodeKey(a, options);
@@ -487,7 +575,11 @@ function same(a, b, options) {
   if (a.nodeType === Node.TEXT_NODE && b.nodeType === Node.TEXT_NODE)
     // Trim whitespace to avoid false negatives
     return a.nodeValue?.trim() === b.nodeValue?.trim();
-  if (a.nodeType === Node.COMMENT_NODE && b.nodeType === Node.COMMENT_NODE) return a.nodeValue === b.nodeValue;
+  if (
+    a.nodeType === Node.COMMENT_NODE &&
+    b.nodeType === Node.COMMENT_NODE
+  )
+    return a.nodeValue === b.nodeValue;
 
   // If we get here and nodes are elements with same tag (and compatible keys), they're the same
   return true;

@@ -53,7 +53,36 @@
         margin-top: auto;
       }
 
+      /* ===== HOVER SECOND IMAGE ON PRODUCT CARDS (CSS-only) ===== */
+      @media (hover: hover) {
+        .card-gallery slideshow-slide[hidden]:nth-child(2) {
+          display: block !important;
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          z-index: 1;
+          transition: opacity 0.35s ease;
+          pointer-events: none;
+        }
 
+        .card-gallery slideshow-slide:nth-child(2):not([hidden]) {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          z-index: 1;
+          transition: opacity 0.35s ease;
+          pointer-events: none;
+        }
+
+        /* On hover: hide first image only when a second slide exists, show second */
+        .card-gallery:has(slideshow-slide:nth-child(2)):hover slideshow-slide:first-child {
+          opacity: 0;
+        }
+
+        .card-gallery:hover slideshow-slide:nth-child(2) {
+          opacity: 1;
+        }
+      }
 
       /* ===== STICKY HEADER + ANNOUNCEMENT BAR ===== */
 

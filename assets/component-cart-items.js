@@ -1,6 +1,7 @@
 import { Component } from '@theme/component';
 import { fetchConfig, debounce, onAnimationEnd, prefersReducedMotion, resetShimmer } from '@theme/utilities';
 import { morphSection, sectionRenderer } from '@theme/section-renderer';
+import { morph } from '@theme/morph';
 import {
   ThemeEvents,
   CartUpdateEvent,
@@ -167,7 +168,7 @@ class CartItemsComponent extends Component {
           })
         );
 
-        morphSection(this.sectionId, parsedResponseText.sections[this.sectionId]);
+        this.#morphCartItemsOnly(parsedResponseText.sections[this.sectionId]);
 
         this.#updateCartQuantitySelectorButtonStates();
       })
@@ -226,7 +227,7 @@ class CartItemsComponent extends Component {
 
     const cartItemsHtml = event.detail.data.sections?.[this.sectionId];
     if (cartItemsHtml) {
-      morphSection(this.sectionId, cartItemsHtml);
+      this.#morphCartItemsOnly(cartItemsHtml);
 
       // Update button states for all cart quantity selectors after morph
       this.#updateCartQuantitySelectorButtonStates();
@@ -286,6 +287,97 @@ class CartItemsComponent extends Component {
       if ('updateButtonStates' in selector && typeof selector.updateButtonStates === 'function') {
         selector.updateButtonStates();
       }
+    }
+  }
+
+  /**
+   * Morphs only the inner cart-items-component subtree(s) for the current
+   * section, instead of morphing the entire header section. This avoids
+   * touching the surrounding <dialog> (cart drawer), which would otherwise
+   * lose its top-layer `:modal` state and retrigger slide-in animations.
+   * @param {string} sectionHtml - New section HTML from Section Rendering API.
+   */
+  #morphCartItemsOnly(sectionHtml) {
+    const newSection = new DOMParser().parseFromString(sectionHtml, 'text/html');
+    const newCartItems = newSection.querySelector(
+      `cart-items-component[data-section-id="${this.sectionId}"]`
+    );
+    if (!newCartItems) {
+      morphSection(this.sectionId, sectionHtml);
+      return;
+    }
+
+    const existingCartItems = document.querySelectorAll(
+      `cart-items-component[data-section-id="${this.sectionId}"]`
+    );
+
+    for (const existing of existingCartItems) {
+      morph(existing, newCartItems.cloneNode(true));
+    }
+
+    this.#syncCartDrawerDialogClass(newSection);
+  }
+
+  /**
+   * Syncs class attribute on the surrounding cart-drawer <dialog> from the new
+   * section HTML. Needed because the enclosing morph is bypassed, so the
+   * empty/non-empty class toggle on the dialog would otherwise never update.
+   * @param {Document} newSection
+   */
+  #syncCartDrawerDialogClass(newSection) {
+    const existingDialog = this.closest('cart-drawer-component')?.querySelector(
+      'dialog.cart-drawer__dialog'
+    );
+    const newDialog = newSection.querySelector('dialog.cart-drawer__dialog');
+    if (!existingDialog || !newDialog) return;
+
+    const newClass = newDialog.getAttribute('class') || '';
+    if (existingDialog.getAttribute('class') !== newClass) {
+      existingDialog.setAttribute('class', newClass);
+    }
+
+    const newLabelledBy = newDialog.getAttribute('aria-labelledby');
+    if (newLabelledBy && existingDialog.getAttribute('aria-labelledby') !== newLabelledBy) {
+      existingDialog.setAttribute('aria-labelledby', newLabelledBy);
+    }
+  }
+
+  /**
+   * Marks any open :modal dialogs inside the section so morph-related flashes
+   * (animation retrigger + brief non-modal paint) are suppressed via CSS.
+   * @returns {HTMLDialogElement[]} The dialogs that were marked.
+   */
+  #markModalDialogsForMorph() {
+    const section = document.getElementById(`shopify-section-${this.sectionId}`);
+    if (!section) return [];
+
+    const dialogs = /** @type {HTMLDialogElement[]} */ (
+      Array.from(section.querySelectorAll('dialog')).filter(
+        (d) => d instanceof HTMLDialogElement && d.open && d.matches(':modal')
+      )
+    );
+
+    for (const d of dialogs) d.setAttribute('data-morph-restoring-modal', '');
+    return dialogs;
+  }
+
+  /**
+   * Schedules marker removal only after the dialog is actually closed. Removing
+   * it while the dialog is still open would retrigger the slide-in animation
+   * because `animation-name` would change from `none` back to the real value.
+   * @param {HTMLDialogElement[]} dialogs - The dialogs previously marked.
+   */
+  #unmarkModalDialogsAfterMorph(dialogs) {
+    if (!dialogs.length) return;
+
+    for (const d of dialogs) {
+      const parent = d.closest('cart-drawer-component, dialog-component');
+      if (!parent) {
+        d.removeAttribute('data-morph-restoring-modal');
+        continue;
+      }
+      const clear = () => d.removeAttribute('data-morph-restoring-modal');
+      parent.addEventListener('dialog:close', clear, { once: true });
     }
   }
 
