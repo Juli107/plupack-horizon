@@ -158,8 +158,12 @@
                 assign hidden = true
               endunless
             elsif forloop.first == false
-              # hide all variant images that aren't the first one (when there are no combined listings or colour filters applied)
-              assign hidden = true
+              # hide all variant images that aren't the first one, except keep 2nd visible for hover preview
+              if settings.show_second_image_on_hover and forloop.index == 2
+                assign hidden = false
+              else
+                assign hidden = true
+              endif
             endif
           endif
 
