@@ -74,8 +74,8 @@
           pointer-events: none;
         }
 
-        /* On hover: hide first image, show second */
-        .card-gallery:hover slideshow-slide:first-child {
+        /* On hover: hide first image only when a second slide exists, show second */
+        .card-gallery:has(slideshow-slide:nth-child(2)):hover slideshow-slide:first-child {
           opacity: 0;
         }
 
