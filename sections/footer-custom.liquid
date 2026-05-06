@@ -279,6 +279,9 @@
 
       const setOpen = (isOpen) => {
         container.classList.toggle('is-open', isOpen);
+        if (isOpen) {
+          container.classList.remove('is-dismissed');
+        }
         trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       };
 
@@ -290,7 +293,16 @@
 
       close.addEventListener('click', (event) => {
         event.preventDefault();
+        container.classList.add('is-dismissed');
         setOpen(false);
+      });
+
+      trigger.addEventListener('mouseenter', () => {
+        container.classList.remove('is-dismissed');
+      });
+
+      trigger.addEventListener('focus', () => {
+        container.classList.remove('is-dismissed');
       });
 
       document.addEventListener('click', (event) => {
@@ -657,8 +669,8 @@
     z-index: 5;
   }
 
-  .footer-custom__asset-credits:hover .footer-custom__asset-credits-popover,
-  .footer-custom__asset-credits:focus-within .footer-custom__asset-credits-popover,
+  .footer-custom__asset-credits:not(.is-dismissed):hover .footer-custom__asset-credits-popover,
+  .footer-custom__asset-credits:not(.is-dismissed):focus-within .footer-custom__asset-credits-popover,
   .footer-custom__asset-credits.is-open .footer-custom__asset-credits-popover {
     display: block;
   }
