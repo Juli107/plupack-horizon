@@ -295,7 +295,7 @@
           url: {{ showcase_selected_product.url | json }},
           image: {% if showcase_selected_product.featured_image %}{{ showcase_selected_product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
           price: {{ showcase_selected_product.price | money | json }},
-          inStock: {% if showcase_selected_product.total_inventory > 0 %}true{% else %}false{% endif %}
+          inStock: {% if showcase_selected_product.available %}true{% else %}false{% endif %}
         }
         {%- assign showcase_first_item = false -%}
         {%- assign showcase_selected_count = showcase_selected_count | plus: 1 -%}
@@ -320,7 +320,7 @@
             url: {{ fallback_product.url | json }},
             image: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
             price: {{ fallback_product.price | money | json }},
-            inStock: {% if fallback_product.total_inventory > 0 %}true{% else %}false{% endif %}
+            inStock: {% if fallback_product.available %}true{% else %}false{% endif %}
           }
           {%- assign showcase_first_item = false -%}
           {%- assign showcase_selected_count = showcase_selected_count | plus: 1 -%}
