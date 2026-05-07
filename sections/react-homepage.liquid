@@ -288,6 +288,11 @@
         {%- endif -%}
 
         {%- assign showcase_seen_product_ids = showcase_seen_product_ids | append: showcase_selected_product_token -%}
+        {%- assign showcase_available_variants_count = showcase_selected_product.variants | where: 'available', true | size -%}
+        {%- assign showcase_is_available = false -%}
+        {%- if showcase_available_variants_count > 0 or showcase_selected_product.available -%}
+          {%- assign showcase_is_available = true -%}
+        {%- endif -%}
         {%- unless showcase_first_item -%},{%- endunless -%}
         {
           title: {{ showcase_selected_product.title | json }},
@@ -295,7 +300,7 @@
           url: {{ showcase_selected_product.url | json }},
           image: {% if showcase_selected_product.featured_image %}{{ showcase_selected_product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
           price: {{ showcase_selected_product.price | money | json }},
-          inStock: {% if showcase_selected_product.available %}true{% else %}false{% endif %}
+          inStock: {% if showcase_is_available %}true{% else %}false{% endif %}
         }
         {%- assign showcase_first_item = false -%}
         {%- assign showcase_selected_count = showcase_selected_count | plus: 1 -%}
@@ -313,6 +318,11 @@
           {%- endif -%}
 
           {%- assign showcase_seen_product_ids = showcase_seen_product_ids | append: fallback_product_token -%}
+          {%- assign fallback_available_variants_count = fallback_product.variants | where: 'available', true | size -%}
+          {%- assign fallback_is_available = false -%}
+          {%- if fallback_available_variants_count > 0 or fallback_product.available -%}
+            {%- assign fallback_is_available = true -%}
+          {%- endif -%}
           {%- unless showcase_first_item -%},{%- endunless -%}
           {
             title: {{ fallback_product.title | json }},
@@ -320,7 +330,7 @@
             url: {{ fallback_product.url | json }},
             image: {% if fallback_product.featured_image %}{{ fallback_product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
             price: {{ fallback_product.price | money | json }},
-            inStock: {% if fallback_product.available %}true{% else %}false{% endif %}
+            inStock: {% if fallback_is_available %}true{% else %}false{% endif %}
           }
           {%- assign showcase_first_item = false -%}
           {%- assign showcase_selected_count = showcase_selected_count | plus: 1 -%}
