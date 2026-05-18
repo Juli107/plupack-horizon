@@ -846,7 +846,7 @@ export function LogisticsMapSection() {
                 </div>
               </div>
               {reducedMotion ? (
-                <div className="mt-3 flex items-center justify-center gap-2">
+                <div className="mt-3 flex w-full items-center justify-end gap-2 pr-1">
                   <button
                     type="button"
                     onClick={() =>
@@ -856,7 +856,20 @@ export function LogisticsMapSection() {
                     aria-label="Desplazar carrusel de transportistas a la izquierda"
                     className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/45 bg-white/10 text-white transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-35"
                   >
-                    <span aria-hidden="true">&lsaquo;</span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 16 16"
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                    >
+                      <path
+                        d="M9.75 3.25 5 8l4.75 4.75"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                   <button
                     type="button"
@@ -867,7 +880,20 @@ export function LogisticsMapSection() {
                     aria-label="Desplazar carrusel de transportistas a la derecha"
                     className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/45 bg-white/10 text-white transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-35"
                   >
-                    <span aria-hidden="true">&rsaquo;</span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 16 16"
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                    >
+                      <path
+                        d="M6.25 3.25 11 8l-4.75 4.75"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                 </div>
               ) : null}
