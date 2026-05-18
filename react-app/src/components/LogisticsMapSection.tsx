@@ -175,6 +175,8 @@ export function LogisticsMapSection() {
       window.matchMedia?.('(prefers-reduced-motion: reduce)')
         ?.matches,
   );
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const animationInitialized = useRef(false);
 
   useEffect(() => {
@@ -554,6 +556,51 @@ export function LogisticsMapSection() {
     { scope: sectionRef, dependencies: [svgLoaded] },
   );
 
+  useEffect(() => {
+    if (!reducedMotion) {
+      setCanScrollLeft(false);
+      setCanScrollRight(false);
+      return;
+    }
+
+    const container = transportCarouselRef.current;
+    if (!container) return;
+
+    const updateScrollButtons = () => {
+      const maxScrollLeft = Math.max(
+        0,
+        container.scrollWidth - container.clientWidth,
+      );
+      const current = container.scrollLeft;
+      setCanScrollLeft(current > 1);
+      setCanScrollRight(current < maxScrollLeft - 1);
+    };
+
+    updateScrollButtons();
+    container.addEventListener('scroll', updateScrollButtons, {
+      passive: true,
+    });
+    window.addEventListener('resize', updateScrollButtons);
+
+    return () => {
+      container.removeEventListener('scroll', updateScrollButtons);
+      window.removeEventListener('resize', updateScrollButtons);
+    };
+  }, [reducedMotion, svgLoaded]);
+
+  const scrollTransportCarouselBy = (
+    direction: 'left' | 'right',
+  ) => {
+    const container = transportCarouselRef.current;
+    if (!container) return;
+
+    const amount = Math.max(120, Math.round(container.clientWidth * 0.7));
+    container.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    });
+  };
+
   useGSAP(
     () => {
       if (
@@ -798,6 +845,32 @@ export function LogisticsMapSection() {
                   ) : null}
                 </div>
               </div>
+              {reducedMotion ? (
+                <div className="mt-3 flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      scrollTransportCarouselBy('left')
+                    }
+                    disabled={!canScrollLeft}
+                    aria-label="Desplazar carrusel de transportistas a la izquierda"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/45 bg-white/10 text-white transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-35"
+                  >
+                    <span aria-hidden="true">&lsaquo;</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      scrollTransportCarouselBy('right')
+                    }
+                    disabled={!canScrollRight}
+                    aria-label="Desplazar carrusel de transportistas a la derecha"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/45 bg-white/10 text-white transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-35"
+                  >
+                    <span aria-hidden="true">&rsaquo;</span>
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

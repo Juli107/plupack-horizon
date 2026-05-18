@@ -49,6 +49,8 @@ export function LogoCarousel() {
       window.matchMedia?.('(prefers-reduced-motion: reduce)')
         ?.matches,
   );
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   useEffect(() => {
     if (!window.matchMedia) return;
@@ -141,6 +143,49 @@ export function LogoCarousel() {
     { scope: containerRef, dependencies: [reducedMotion] },
   );
 
+  useEffect(() => {
+    if (!reducedMotion) {
+      setCanScrollLeft(false);
+      setCanScrollRight(false);
+      return;
+    }
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const updateScrollButtons = () => {
+      const maxScrollLeft = Math.max(
+        0,
+        container.scrollWidth - container.clientWidth,
+      );
+      const current = container.scrollLeft;
+      setCanScrollLeft(current > 1);
+      setCanScrollRight(current < maxScrollLeft - 1);
+    };
+
+    updateScrollButtons();
+    container.addEventListener('scroll', updateScrollButtons, {
+      passive: true,
+    });
+    window.addEventListener('resize', updateScrollButtons);
+
+    return () => {
+      container.removeEventListener('scroll', updateScrollButtons);
+      window.removeEventListener('resize', updateScrollButtons);
+    };
+  }, [reducedMotion]);
+
+  const scrollCarouselBy = (direction: 'left' | 'right') => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const amount = Math.max(120, Math.round(container.clientWidth * 0.7));
+    container.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <section className="relative w-full py-12 md:pt-28 md:-mb-10 overflow-hidden">
       {/* Intro Text */}
@@ -229,6 +274,28 @@ export function LogoCarousel() {
           ) : null}
         </div>
       </div>
+      {reducedMotion ? (
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => scrollCarouselBy('left')}
+            disabled={!canScrollLeft}
+            aria-label="Desplazar carrusel de marcas a la izquierda"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/45 bg-white/10 text-white transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-35"
+          >
+            <span aria-hidden="true">&lsaquo;</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollCarouselBy('right')}
+            disabled={!canScrollRight}
+            aria-label="Desplazar carrusel de marcas a la derecha"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/45 bg-white/10 text-white transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-35"
+          >
+            <span aria-hidden="true">&rsaquo;</span>
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }
