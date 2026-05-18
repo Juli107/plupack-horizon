@@ -1,6 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface LogoItem {
   src: string;
@@ -43,14 +43,39 @@ export function LogoCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const setRef = useRef<HTMLDivElement>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (!window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    );
+    const updateReducedMotion = () => {
+      setReducedMotion(mediaQuery.matches);
+    };
+
+    updateReducedMotion();
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', updateReducedMotion);
+      return () => {
+        mediaQuery.removeEventListener(
+          'change',
+          updateReducedMotion,
+        );
+      };
+    }
+
+    mediaQuery.addListener(updateReducedMotion);
+    return () => {
+      mediaQuery.removeListener(updateReducedMotion);
+    };
+  }, []);
 
   useGSAP(
     () => {
-      if (
-        window.matchMedia?.('(prefers-reduced-motion: reduce)')
-          ?.matches
-      )
-        return;
+      if (reducedMotion) return;
 
       const track = trackRef.current;
       const set = setRef.current;
@@ -103,7 +128,7 @@ export function LogoCarousel() {
         tween.kill();
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [reducedMotion] },
   );
 
   return (
@@ -118,7 +143,25 @@ export function LogoCarousel() {
       {/* Carousel Container */}
       <div
         ref={containerRef}
-        className="w-full relative flex overflow-hidden mask-gradient-x"
+        className={`w-full relative flex mask-gradient-x ${
+          reducedMotion
+            ? 'overflow-x-auto overflow-y-hidden'
+            : 'overflow-hidden'
+        }`}
+        style={
+          reducedMotion
+            ? {
+                touchAction: 'pan-x',
+                WebkitOverflowScrolling: 'touch',
+              }
+            : undefined
+        }
+        tabIndex={reducedMotion ? 0 : undefined}
+        aria-label={
+          reducedMotion
+            ? 'Carrusel de marcas, deslizable horizontalmente'
+            : undefined
+        }
       >
         {/* Gradient Masks for fading edges */}
         <div className="absolute left-0 top-0 bottom-0 w-8 md:w-20 lg:w-24 z-1 bg-linear-to-r from-[#084e85] to-transparent pointer-events-none" />
@@ -151,27 +194,29 @@ export function LogoCarousel() {
               </div>
             ))}
           </div>
-          <div
-            aria-hidden="true"
-            className="flex flex-none shrink-0 gap-12 md:gap-24 items-center"
-          >
-            {LOGOS.map((logo, index) => (
-              <div
-                key={`logo-2-${index}`}
-                className="relative group shrink-0 h-12 w-28 md:h-16 md:w-40 flex items-center justify-center"
-              >
-                <img
-                  src={getLogoSrc(logo.src)}
-                  alt=""
-                  className="h-full w-full object-contain object-center grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
-                  width={160}
-                  height={64}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            ))}
-          </div>
+          {!reducedMotion ? (
+            <div
+              aria-hidden="true"
+              className="flex flex-none shrink-0 gap-12 md:gap-24 items-center"
+            >
+              {LOGOS.map((logo, index) => (
+                <div
+                  key={`logo-2-${index}`}
+                  className="relative group shrink-0 h-12 w-28 md:h-16 md:w-40 flex items-center justify-center"
+                >
+                  <img
+                    src={getLogoSrc(logo.src)}
+                    alt=""
+                    className="h-full w-full object-contain object-center grayscale opacity-70 transition-opacity duration-300 contrast-[1.5] brightness-[0.7]"
+                    width={160}
+                    height={64}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

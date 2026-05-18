@@ -169,7 +169,36 @@ export function LogisticsMapSection() {
   const linesGroupRef = useRef<SVGGElement | null>(null);
   const { getFontFamily } = useShopifyTheme();
   const [svgLoaded, setSvgLoaded] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const animationInitialized = useRef(false);
+
+  useEffect(() => {
+    if (!window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    );
+    const updateReducedMotion = () => {
+      setReducedMotion(mediaQuery.matches);
+    };
+
+    updateReducedMotion();
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', updateReducedMotion);
+      return () => {
+        mediaQuery.removeEventListener(
+          'change',
+          updateReducedMotion,
+        );
+      };
+    }
+
+    mediaQuery.addListener(updateReducedMotion);
+    return () => {
+      mediaQuery.removeListener(updateReducedMotion);
+    };
+  }, []);
 
   // Inject the bundled SVG into the DOM
   useEffect(() => {
@@ -522,11 +551,7 @@ export function LogisticsMapSection() {
 
   useGSAP(
     () => {
-      if (
-        window.matchMedia?.('(prefers-reduced-motion: reduce)')
-          ?.matches
-      )
-        return;
+      if (reducedMotion) return;
 
       const track = transportTrackRef.current;
       const set = transportSetRef.current;
@@ -625,7 +650,10 @@ export function LogisticsMapSection() {
         });
       };
     },
-    { scope: transportCarouselRef, dependencies: [svgLoaded] },
+    {
+      scope: transportCarouselRef,
+      dependencies: [svgLoaded, reducedMotion],
+    },
   );
 
   return (
@@ -688,7 +716,25 @@ export function LogisticsMapSection() {
 
               <div
                 ref={transportCarouselRef}
-                className="relative mt-14 md:mt-16 w-full overflow-hidden mask-gradient-x"
+                className={`relative mt-14 md:mt-16 w-full mask-gradient-x ${
+                  reducedMotion
+                    ? 'overflow-x-auto overflow-y-hidden'
+                    : 'overflow-hidden'
+                }`}
+                style={
+                  reducedMotion
+                    ? {
+                        touchAction: 'pan-x',
+                        WebkitOverflowScrolling: 'touch',
+                      }
+                    : undefined
+                }
+                tabIndex={reducedMotion ? 0 : undefined}
+                aria-label={
+                  reducedMotion
+                    ? 'Carrusel de transportistas, deslizable horizontalmente'
+                    : undefined
+                }
               >
                 <div className="absolute left-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-r from-[#1B4B6B] to-transparent pointer-events-none" />
                 <div className="absolute right-0 top-0 bottom-0 w-8 md:w-16 z-10 bg-linear-to-l from-[#1B4B6B] to-transparent pointer-events-none" />
@@ -717,27 +763,29 @@ export function LogisticsMapSection() {
                       </div>
                     ))}
                   </div>
-                  <div
-                    aria-hidden="true"
-                    className="flex flex-none shrink-0 gap-10 md:gap-14 items-center"
-                  >
-                    {TRANSPORTISTAS.map((transportista) => (
-                      <div
-                        key={`transportista-2-${transportista.src}`}
-                        className="relative shrink-0 h-14 md:h-16 px-2 flex items-center justify-center"
-                      >
-                        <img
-                          src={getTransportistaSrc(transportista.src)}
-                          alt=""
-                          className="h-full w-auto max-w-[11rem] md:max-w-[14rem] object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
-                          width={224}
-                          height={64}
-                          loading="eager"
-                          decoding="async"
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  {!reducedMotion ? (
+                    <div
+                      aria-hidden="true"
+                      className="flex flex-none shrink-0 gap-10 md:gap-14 items-center"
+                    >
+                      {TRANSPORTISTAS.map((transportista) => (
+                        <div
+                          key={`transportista-2-${transportista.src}`}
+                          className="relative shrink-0 h-14 md:h-16 px-2 flex items-center justify-center"
+                        >
+                          <img
+                            src={getTransportistaSrc(transportista.src)}
+                            alt=""
+                            className="h-full w-auto max-w-[11rem] md:max-w-[14rem] object-contain object-center grayscale opacity-70 contrast-[1.5] brightness-[0.7]"
+                            width={224}
+                            height={64}
+                            loading="eager"
+                            decoding="async"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
