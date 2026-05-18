@@ -169,7 +169,12 @@ export function LogisticsMapSection() {
   const linesGroupRef = useRef<SVGGElement | null>(null);
   const { getFontFamily } = useShopifyTheme();
   const [svgLoaded, setSvgLoaded] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')
+        ?.matches,
+  );
   const animationInitialized = useRef(false);
 
   useEffect(() => {
@@ -551,7 +556,12 @@ export function LogisticsMapSection() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (
+        reducedMotion ||
+        window.matchMedia?.('(prefers-reduced-motion: reduce)')
+          ?.matches
+      )
+        return;
 
       const track = transportTrackRef.current;
       const set = transportSetRef.current;

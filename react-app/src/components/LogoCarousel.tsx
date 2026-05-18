@@ -43,7 +43,12 @@ export function LogoCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const setRef = useRef<HTMLDivElement>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')
+        ?.matches,
+  );
 
   useEffect(() => {
     if (!window.matchMedia) return;
@@ -75,7 +80,12 @@ export function LogoCarousel() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (
+        reducedMotion ||
+        window.matchMedia?.('(prefers-reduced-motion: reduce)')
+          ?.matches
+      )
+        return;
 
       const track = trackRef.current;
       const set = setRef.current;
