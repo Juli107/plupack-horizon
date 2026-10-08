@@ -1,0 +1,23 @@
+{%- comment -%}
+  PLUPack · Accesos de contacto al final del menú del celular.
+  Usa el teléfono cargado en la tienda; si no hay, usa el de la página de contacto.
+{%- endcomment -%}
+
+{%- liquid
+  assign plu_phone = shop.phone | default: '+54 11 3389 4270'
+  assign plu_phone_link = plu_phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' | remove: '.'
+  assign plu_contact_url = pages['contacto'].url | default: '/pages/contacto'
+-%}
+
+<div class="plu-drawer-contact">
+  <a class="plu-drawer-contact__btn plu-drawer-contact__btn--primary" href="{{ plu_contact_url }}">
+    Pedir cotización
+  </a>
+  <a class="plu-drawer-contact__btn plu-drawer-contact__btn--secondary" href="tel:{{ plu_phone_link }}">
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M4.4 2.8h2.7l1.4 3.4-1.7 1.1a9.2 9.2 0 0 0 4.9 4.9l1.1-1.7 3.4 1.4v2.7a1.7 1.7 0 0 1-1.7 1.7A12.9 12.9 0 0 1 2.7 4.5a1.7 1.7 0 0 1 1.7-1.7Z" fill="currentColor"/>
+    </svg>
+    Llamar {{ plu_phone | escape }}
+  </a>
+  <p class="plu-drawer-contact__meta">Lunes a viernes, de 7 a 17 h · Villa Tesei, Buenos Aires</p>
+</div>
